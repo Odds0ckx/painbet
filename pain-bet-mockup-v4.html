@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAIN.BET v4 — Crypto Casino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · macrostructure: App-Shell Lobby v4 (studied-DNA: rounded cards + tailwind-dark hovers + liquid bubble scale)
+ * genre: atmospheric · studied: yes · pre-emit critique: P5 H4 E5 S5 R5 V5
+ * brand rule: arterial red = pain/action · morphine blue = money back only · fonts: Archivo Black / Archivo
+ */
+:root{
+  --bg:#232427;            /* charcoal grey so card shadows read */
+  --card:#1b1d20;--card-2:#232529;--card-hi:hsla(0,0%,100%,.04);--card-hi2:hsla(0,0%,100%,.07);
+  --ink:hsla(0,0%,100%,.55);--ink-hi:hsla(0,0%,100%,.75);--ink-lo:hsla(0,0%,100%,.25);--white:#fff;
+  --red:#E10600;--redhi:#FF3B33;--red-dim:#8f0400;--red-deep:#520703;
+  --blue:#7FD6E8;--blue-dim:#16333a;
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo',sans-serif;
+  --r-lg:16px;--r-md:12px;--r-sm:8px;--r-pill:999px;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --shadow:0 10px 28px rgba(0,0,0,.35);
+  --shadow-lg:0 18px 44px rgba(0,0,0,.5);
+  --nav-w:240px;
+}
+body.navmin{--nav-w:76px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+html{background:var(--bg)!important;color-scheme:dark}
+body{background:var(--bg)!important;color:var(--ink);font:14.5px/1.5 var(--sans);}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+/* ambient brand motion (ticker, liquid, ekg) stays on even under OS reduce-motion per client request */
+
+.tri{display:inline-block;width:.82em;height:.73em;background:var(--red);clip-path:polygon(50% 0,100% 100%,0 100%);margin:0 .015em;vertical-align:baseline}
+.card{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.card:hover{box-shadow:var(--shadow-lg)}
+
+/* ================= APP SHELL ================= */
+.app{display:flex;min-height:100vh}
+
+/* ---------- sidebar (collapsible) ---------- */
+.sidebar{width:var(--nav-w);flex:none;background:var(--card);box-shadow:var(--shadow);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;transition:width .3s var(--ease-out);z-index:30}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-logo{display:flex;align-items:baseline;padding:20px 20px 14px;white-space:nowrap}
+.sb-logo .lg{font-family:var(--disp);font-size:24px;letter-spacing:.02em;color:var(--white);text-transform:uppercase}
+.sb-logo .tld{font-weight:600;font-size:11px;color:var(--ink-lo);margin-left:3px;letter-spacing:.08em}
+body.navmin .sb-logo{padding:20px 0 14px;justify-content:center}
+body.navmin .sb-logo .rest,body.navmin .sb-logo .tld{display:none}
+
+/* liquid bubble pain scale */
+.painscale-card{margin:6px 14px 10px;background:var(--card-2);border-radius:var(--r-lg);padding:16px 14px 14px;text-align:center;transition:opacity .2s var(--ease-out)}
+body.navmin .painscale-card{display:none}
+.painscale-card .k{display:flex;justify-content:space-between;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin-bottom:12px}
+.painscale-card .k b{color:var(--redhi)}
+.bubble{position:relative;width:128px;height:128px;margin:0 auto;border-radius:50%;border:4px solid var(--red);box-shadow:0 0 22px rgba(225,6,0,.45),inset 0 0 14px rgba(225,6,0,.25);transition:box-shadow .3s var(--ease-out)}
+.painscale-card:hover .bubble{box-shadow:0 0 30px rgba(225,6,0,.65),inset 0 0 16px rgba(225,6,0,.35)}
+.bubble .inner{position:absolute;inset:3px;border-radius:50%;overflow:hidden;background:#150607}
+.bubble .water,.bubble .water2{position:absolute;left:-50%;width:200%;height:200%;border-radius:40%;animation:spin 10s linear infinite}
+.bubble .water{top:32%;background:rgba(225,6,0,.55);box-shadow:0 0 20px rgba(225,6,0,.6)}
+.bubble .water2{top:36%;border-radius:36%;background:rgba(143,4,0,.5);animation-duration:13s;animation-direction:reverse}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.bubble .bub{position:absolute;bottom:6%;border-radius:50%;background:rgba(255,140,130,.5);animation:rise 4s linear infinite;z-index:2}
+.bubble .bub:nth-child(3){left:30%;width:7px;height:7px;animation-delay:0s}
+.bubble .bub:nth-child(4){left:52%;width:5px;height:5px;animation-delay:1.3s;animation-duration:3.4s}
+.bubble .bub:nth-child(5){left:66%;width:8px;height:8px;animation-delay:2.1s;animation-duration:4.6s}
+.bubble .bub:nth-child(6){left:42%;width:4px;height:4px;animation-delay:2.8s;animation-duration:3s}
+@keyframes rise{0%{transform:translateY(0) scale(1);opacity:0}12%{opacity:.9}100%{transform:translateY(-72px) scale(1.25);opacity:0}}
+.bubble .glare{position:absolute;top:-120%;left:-120%;z-index:5;width:200%;height:200%;transform:rotate(45deg);border-radius:50%;background:rgba(255,255,255,.08)}
+.bubble .percent{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--disp);color:#fff;text-shadow:0 0 12px rgba(225,6,0,.9)}
+.bubble .percent .n{font-size:30px;line-height:1}
+.bubble .percent .lvl{font-family:var(--sans);font-weight:700;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-top:4px}
+.painscale-card .sub{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--ink-lo);margin-top:12px}
+
+.sb-group{padding:8px 14px 4px}
+.sb-title{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-lo);padding:0 10px 8px;white-space:nowrap}
+body.navmin .sb-title{visibility:hidden;height:0;padding:0}
+.sb-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 12px;border-radius:var(--r-md);color:var(--ink);font-weight:600;font-size:13.5px;white-space:nowrap;transition:background .3s var(--ease-out),color .3s var(--ease-out),transform .3s var(--ease-out)}
+.sb-item:hover{background:var(--card-hi);color:var(--white);transform:translateX(2px)}
+.sb-item:active{transform:translateY(1px)}
+.sb-item.sel{background:var(--card-hi);color:var(--white);box-shadow:inset 3px 0 0 var(--red)}
+.sb-item .ic{width:18px;height:18px;flex:none;color:var(--ink-lo);transition:color .3s var(--ease-out)}
+.sb-item.sel .ic,.sb-item:hover .ic{color:var(--redhi)}
+.sb-item .tag{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill)}
+.sb-item .tag.pk{background:var(--blue-dim);color:var(--blue)}
+body.navmin .sb-item{justify-content:center;padding:12px 0}
+body.navmin .sb-item .lbl,body.navmin .sb-item .tag{display:none}
+body.navmin .sb-item.sel{box-shadow:inset 3px 0 0 var(--red)}
+.sb-foot{margin-top:auto;padding:14px}
+
+/* ---------- main ---------- */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;height:66px;padding:0 22px;background:rgba(35,36,39,.9);backdrop-filter:blur(10px);box-shadow:0 2px 14px rgba(0,0,0,.25)}
+.navtoggle{width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:var(--r-md);color:var(--ink);transition:background .3s var(--ease-out),color .3s var(--ease-out)}
+.navtoggle:hover{background:var(--card-hi);color:var(--white)}
+.search{flex:1;max-width:400px;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:var(--r-pill);padding:0 16px;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.04);transition:box-shadow .3s var(--ease-out)}
+.search:focus-within{box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.18)}
+.search .ic{color:var(--ink-lo);font-size:14px}
+.search input{flex:1;background:none;border:none;color:var(--white);font-family:var(--sans);font-weight:500;font-size:12px;letter-spacing:.05em;padding:10px 0;outline:none;min-width:0}
+.search input::placeholder{color:var(--ink-lo)}
+.topbar .spacer{flex:1}
+.balance{display:flex;align-items:center;gap:10px;font-weight:700;font-size:13px;color:var(--ink-hi);background:var(--card);border-radius:var(--r-pill);padding:9px 16px;box-shadow:var(--shadow);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.balance:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.balance .coin{color:var(--blue)}
+.btn{font-weight:800;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:10px 20px;border-radius:var(--r-pill);transition:background .3s var(--ease-out),color .3s var(--ease-out),transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 6px 18px rgba(225,6,0,.35)}
+.btn-red:hover{background:var(--redhi);box-shadow:0 10px 24px rgba(225,6,0,.45)}
+.btn-ghost{background:var(--card-hi);color:var(--ink-hi)}
+.btn-ghost:hover{background:var(--card-hi2);color:var(--white)}
+.btn-blue{background:var(--blue);color:#101314;box-shadow:0 6px 18px rgba(127,214,232,.25)}
+.btn-blue:hover{background:#a5e4f1}
+
+/* ---------- ticker (JS marquee) ---------- */
+.ticker{display:flex;align-items:center;height:38px;overflow:hidden;background:var(--card);box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.ticker .lbl{flex:none;display:flex;align-items:center;gap:7px;height:100%;padding:0 16px;font-weight:800;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);background:var(--card-hi)}
+.ticker .lbl .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px 2px rgba(127,214,232,.5)}
+.ticker .win{flex:1;overflow:hidden}
+.ticker .track{display:inline-flex;gap:36px;white-space:nowrap;width:max-content;will-change:transform;padding-left:22px;animation:tick 45s linear infinite}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker .ti{font-weight:600;font-size:12px;color:var(--ink-lo)}
+.ticker .ti .g{color:var(--ink)}
+.ticker .ti b{color:var(--blue);font-weight:800}
+
+/* ---------- content ---------- */
+.content{padding:22px;max-width:1320px;width:100%;margin:0 auto}
+.view{display:none}
+.view.on{display:block}
+section.blk{margin-bottom:34px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--disp);font-size:24px;text-transform:uppercase;line-height:1;color:#fff;overflow-wrap:anywhere;min-width:0}
+.sec-head .tag{font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.sec-head .tag a,.sec-head .tag button{color:var(--redhi);cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit}
+
+/* ---------- promo banners ---------- */
+.promos{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:16px}
+.promo{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--card);box-shadow:var(--shadow);padding:24px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.promo:hover{transform:translateY(-5px) scale(1.01);box-shadow:var(--shadow-lg)}
+.promo>*{position:relative;z-index:1}
+.promo .bigtri{position:absolute;right:-36px;top:-46px;width:200px;height:180px;clip-path:polygon(50% 0,100% 100%,0 100%);background:var(--red-deep);opacity:.55;z-index:0;transition:transform .5s var(--ease-out)}
+.promo:hover .bigtri{transform:scale(1.07) rotate(2deg)}
+.promo .k{font-weight:800;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--redhi);margin-bottom:10px}
+.promo h3{font-family:var(--disp);font-size:26px;text-transform:uppercase;line-height:1;margin-bottom:8px;color:#fff;overflow-wrap:anywhere}
+.promo p{font-size:12.5px;color:var(--ink);max-width:330px;margin-bottom:14px}
+.promo .btn{align-self:flex-start;padding:9px 18px;font-size:10.5px}
+.promo.hero-promo{
+  background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/welcome-dose-bg.png');
+  background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:#1c0605;
+}
+.promo.hero-promo .bigtri,.promo.hero-promo .ekg{display:none}
+.promo.blue-promo .k{color:var(--blue)}
+.promo.blue-promo .bigtri{background:var(--blue-dim);opacity:.9}
+.promo .ekg{position:absolute;left:0;right:0;bottom:6px;height:36px;opacity:.35;pointer-events:none;z-index:0}
+.promo .ekg svg{width:200%;height:100%;animation:ekgmove 8s linear infinite}
+@keyframes ekgmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- category chips ---------- */
+.cat-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.chip{font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:9px 18px;border-radius:var(--r-pill);background:var(--card);color:var(--ink);box-shadow:var(--shadow);transition:color .3s var(--ease-out),background .3s var(--ease-out),transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.chip:hover{color:var(--white);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.chip.active{background:var(--red);color:#fff;box-shadow:0 6px 18px rgba(225,6,0,.35)}
+.chip:active{transform:translateY(1px)}
+
+/* ---------- game rails ---------- */
+.rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.gcard{position:relative;aspect-ratio:3/4;border-radius:var(--r-lg);overflow:hidden;background:var(--card);box-shadow:var(--shadow);text-align:left;padding:0;display:block;width:100%;transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.gcard:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 0 0 2px var(--red),var(--shadow-lg)}
+.gcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s var(--ease-out)}
+.gcard:hover img{transform:scale(1.06)}
+.gcard .art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--disp);text-transform:uppercase;line-height:.95;padding:14px;font-size:27px}
+.gcard .meta{position:absolute;left:0;right:0;bottom:0;padding:12px 14px 10px;background:linear-gradient(transparent,rgba(16,17,18,.95) 62%);display:block;z-index:1}
+.gcard .meta .t{display:block;font-weight:700;font-size:12.5px;color:var(--white)}
+.gcard .meta .p{display:block;font-weight:600;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-top:2px}
+.gcard .badge{position:absolute;top:12px;left:12px;font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);background:var(--red);color:#fff;z-index:2}
+.gcard .badge.relief{background:var(--blue);color:#101314}
+.a-flatline{background:linear-gradient(160deg,#e10600 0%,#7c0300 60%,#2b0100 100%);color:#fff}
+.a-nerve{background:linear-gradient(160deg,#8f0400 0%,#3c0200 70%,#160100 100%);color:#ffb4b0}
+.a-bonesaw{background:linear-gradient(160deg,#ff3b33 0%,#a30500 55%,#340100 100%);color:#fff}
+.a-dosage{background:linear-gradient(160deg,#520703 0%,#1c0402 70%,#0f0202 100%);color:#ff6d66}
+.a-tolerance{background:linear-gradient(160deg,#b50500 0%,#520200 60%,#1a0100 100%);color:#ffd9d7}
+.a-threshold{background:linear-gradient(160deg,#2f3033 0%,#1a1b1d 60%,#121314 100%);color:#e6e1da}
+.gcard .artline{position:absolute;left:0;right:0;top:56%;height:26px;opacity:.5;pointer-events:none}
+.providers{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.prov{font-weight:600;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);background:var(--card);padding:8px 16px;border-radius:var(--r-pill);box-shadow:var(--shadow);transition:color .3s var(--ease-out)}
+.prov:hover{color:var(--ink-hi)}
+
+/* ---------- two-col: race + relief ---------- */
+.duo{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
+.panel{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .3s var(--ease-out)}
+.panel:hover{box-shadow:var(--shadow-lg)}
+.panel h4{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding:15px 18px;border-bottom:1px solid hsla(0,0%,100%,.05);flex-wrap:wrap}
+.panel h4 b{color:var(--redhi)}
+.panel table{width:100%;border-collapse:collapse;font-weight:600;font-size:12.5px}
+.panel td,.panel th{padding:11px 18px;border-bottom:1px solid hsla(0,0%,100%,.04);text-align:left}
+.panel th{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);font-weight:700}
+.panel tr:last-child td{border-bottom:none}
+.panel tbody tr{transition:background .3s var(--ease-out)}
+.panel tbody tr:hover{background:var(--card-hi)}
+.panel .rank{color:var(--redhi);width:40px}
+.panel .u{color:var(--white)}
+.panel .amt{color:var(--blue);text-align:right}
+.status{display:inline-block;background:rgba(255,255,255,.05);padding:4px 9px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.status.agony{color:var(--redhi)}
+.status.burn{color:#d9766f}
+.status.threshold{color:var(--blue)}
+.relief-body{padding:18px}
+.relief-body .row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid hsla(0,0%,100%,.05);font-weight:600;font-size:12.5px}
+.relief-body .row:last-of-type{border-bottom:none}
+.relief-body .row .k{color:var(--ink-lo);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.relief-body .row .v{color:var(--ink-hi)}
+.relief-body .row .v.blue{color:var(--blue)}
+.relief-body .btn{width:100%;margin-top:14px;text-align:center;border-radius:var(--r-md)}
+
+/* ---------- pain scale tiers ---------- */
+.tiers{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.tier{position:relative;background:var(--card);border-radius:var(--r-lg);padding:18px 16px 14px;overflow:hidden;box-shadow:var(--shadow);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.tier:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow-lg)}
+.tier .heat{position:absolute;top:0;left:0;right:0;height:4px}
+.t0 .heat{background:#3f4044}.t1 .heat{background:#6e1410}.t2 .heat{background:#8f0400}
+.t3 .heat{background:#b50500}.t4 .heat{background:var(--red);box-shadow:0 1px 10px 1px rgba(225,6,0,.5)}
+.t5 .heat{background:var(--blue);box-shadow:0 1px 10px 1px rgba(127,214,232,.45)}
+.tier .num{font-weight:700;font-size:9.5px;letter-spacing:.14em;color:var(--ink-lo)}
+.tier h3{font-family:var(--disp);font-size:19px;text-transform:uppercase;margin:7px 0 10px;line-height:1;color:#fff}
+.t5 h3{color:var(--blue)}
+.tier ul{list-style:none;font-size:11.5px;color:var(--ink)}
+.tier li{padding:5px 0;border-top:1px solid hsla(0,0%,100%,.05);display:flex;justify-content:space-between;gap:6px}
+.tier li b{color:var(--ink-hi);font-weight:700;font-size:11px}
+.tier.you{box-shadow:0 0 0 2px var(--red),var(--shadow)}
+.tier.you::after{content:'YOU';position:absolute;top:12px;right:12px;font-size:8.5px;font-weight:800;letter-spacing:.14em;background:var(--red);color:#fff;padding:3px 8px;border-radius:var(--r-pill)}
+
+/* ---------- rails / chains ---------- */
+.rails{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.railc{background:var(--card);border-radius:var(--r-lg);padding:18px 14px;text-align:center;box-shadow:var(--shadow);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.railc:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow-lg)}
+.railc .sym{font-family:var(--disp);font-size:22px;color:#fff}
+.railc .n{font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-top:6px}
+.rails-note{font-weight:600;font-size:11.5px;color:var(--ink-lo);margin-top:14px}
+.rails-note b{color:var(--blue)}
+
+/* ---------- game view (Flatline) ---------- */
+.gcrumb{font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:16px}
+.gcrumb button{color:var(--redhi);font:inherit;letter-spacing:inherit;text-transform:inherit}
+.glayout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}
+.gpanel{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:14px}
+.fld label{display:block;font-weight:700;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:7px}
+.fld .inp{display:flex;background:var(--bg);border-radius:var(--r-md);overflow:hidden;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.04);transition:box-shadow .3s var(--ease-out)}
+.fld .inp:focus-within{box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.18)}
+.fld input{flex:1;background:none;border:none;color:var(--white);font-family:var(--sans);font-weight:700;font-size:14px;padding:11px 13px;outline:none;min-width:0}
+.fld .unit{font-weight:700;font-size:11px;color:var(--ink-lo);padding:11px 13px;border-left:1px solid hsla(0,0%,100%,.05)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}
+.quick button{font-weight:700;font-size:11px;padding:7px 0;background:var(--card-hi);color:var(--ink);border-radius:var(--r-sm);transition:background .3s var(--ease-out),color .3s var(--ease-out)}
+.quick button:hover{background:var(--card-hi2);color:var(--white)}
+.betbtn{font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:15px;background:var(--red);color:#fff;border-radius:var(--r-md);box-shadow:0 6px 18px rgba(225,6,0,.35);transition:background .3s var(--ease-out),transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.betbtn:hover{background:var(--redhi);transform:translateY(-1px);box-shadow:0 10px 24px rgba(225,6,0,.45)}
+.betbtn:active{transform:translateY(1px)}
+.gmeta{display:flex;gap:18px;font-weight:600;font-size:10.5px;color:var(--ink-lo);flex-wrap:wrap}
+.gmeta b{color:var(--ink-hi)}
+.gmeta .fair{color:var(--blue);cursor:pointer}
+.gstage{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);position:relative;min-height:430px;display:flex;flex-direction:column;overflow:hidden}
+.gstage .mult{position:absolute;top:24px;left:28px;font-family:var(--disp);font-size:58px;line-height:1;color:#fff;z-index:2}
+.gstage .mult.bust{color:var(--redhi)}
+.gstage .mult .st{display:block;font-family:var(--sans);font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-lo);margin-top:5px}
+.gstage canvas{width:100%;height:100%;flex:1}
+.ghist{display:flex;gap:8px;padding:13px 16px;flex-wrap:wrap;background:hsla(0,0%,100%,.02)}
+.ghist span{font-weight:700;font-size:11px;padding:5px 11px;background:var(--card-hi);color:var(--ink);border-radius:var(--r-pill)}
+.ghist span.hi{color:var(--blue);box-shadow:inset 0 0 0 1px rgba(127,214,232,.5)}
+.ghist span.lo{color:var(--redhi);box-shadow:inset 0 0 0 1px rgba(143,4,0,.8)}
+.livebets{margin-top:16px}
+.livebets .lose{color:var(--redhi);text-align:right}
+
+/* ---------- wallet modal ---------- */
+.modal-bg{position:fixed;inset:0;background:rgba(16,17,18,.82);backdrop-filter:blur(4px);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.on{display:flex}
+.modal{width:100%;max-width:470px;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);overflow:hidden}
+.mhead{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid hsla(0,0%,100%,.05)}
+.mhead h3{font-family:var(--disp);font-size:20px;text-transform:uppercase;color:#fff}
+.mhead .x{color:var(--ink);font-size:15px;padding:4px 8px;border-radius:var(--r-sm)}
+.mhead .x:hover{color:#fff;background:var(--card-hi)}
+.mtabs{display:flex;padding:0 14px;gap:4px;border-bottom:1px solid hsla(0,0%,100%,.05)}
+.mtabs button{font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:13px 16px;color:var(--ink-lo);border-bottom:2px solid transparent;transition:color .3s var(--ease-out)}
+.mtabs button:hover{color:var(--ink)}
+.mtabs button.active{color:#fff;border-bottom-color:var(--red)}
+.mbody{padding:20px}
+.chainrow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.chain{font-weight:700;font-size:11px;padding:10px 0;text-align:center;background:var(--bg);color:var(--ink);border-radius:var(--r-md);transition:color .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.chain:hover{color:var(--white)}
+.chain.active{color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.addr{background:var(--bg);border-radius:var(--r-md);padding:14px;display:flex;gap:12px;align-items:center}
+.addr .qr{width:72px;height:72px;flex:none;border-radius:var(--r-sm);background:
+  repeating-linear-gradient(0deg,#fff 0 6px,transparent 6px 12px),
+  repeating-linear-gradient(90deg,#fff 0 6px,#0a0a0a 6px 12px)}
+.addr .a{font-weight:600;font-size:11.5px;word-break:break-all;color:var(--ink-hi);line-height:1.6}
+.addr .a .lbl{display:block;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:5px}
+.mnote{font-weight:500;font-size:11px;color:var(--ink-lo);margin-top:14px;line-height:1.7}
+.mnote b{color:var(--blue)}
+.mbody .btn{width:100%;margin-top:16px;padding:13px;border-radius:var(--r-md)}
+
+/* ---------- footer ---------- */
+footer{padding:22px}
+.foot-inner{max-width:1320px;margin:0 auto;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:24px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-weight:500;font-size:11px;color:var(--ink-lo)}
+.foot-inner .rg{max-width:560px;line-height:1.7}
+.foot-inner .rg b{color:var(--ink)}
+.foot-links{display:flex;gap:18px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;flex-wrap:wrap}
+.foot-links a:hover{color:var(--white)}
+
+/* ---------- mobile bottom bar (replaces sidebar under 860px) ---------- */
+.mobilebar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:70;height:60px;padding:0 4px calc(env(safe-area-inset-bottom));background:var(--card);box-shadow:0 -8px 26px rgba(0,0,0,.45);grid-template-columns:1fr 1fr 78px 1fr 1fr;align-items:center}
+.mbar-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:60px;color:var(--ink-lo);font-size:8.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;transition:color .2s var(--ease-out)}
+.mbar-item .ic{width:19px;height:19px}
+.mbar-item.sel{color:var(--redhi)}
+.mbar-item:active{transform:translateY(1px)}
+.mbar-center{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative}
+.mbar-center .bubble.mini{width:52px;height:52px;border-width:3px;margin-top:-26px;box-shadow:0 0 0 5px var(--bg),0 4px 16px rgba(0,0,0,.5),0 0 18px rgba(225,6,0,.5),inset 0 0 10px rgba(225,6,0,.3)}
+.mbar-center .bubble.mini .percent .n{font-size:12px}
+.mbar-center .bubble.mini .percent .lvl{display:none}
+.mbar-center .mbar-label{margin-top:2px;font-size:8.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--redhi)}
+
+/* bottom sheet (More menu + Pain Scale) */
+.sheet-bg{position:fixed;inset:0;background:rgba(16,17,18,.82);backdrop-filter:blur(4px);z-index:95;display:none;align-items:flex-end;justify-content:center}
+.sheet-bg.on{display:flex}
+.sheet{width:100%;max-width:520px;max-height:82vh;overflow-y:auto;background:var(--card);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--shadow-lg);padding-bottom:calc(14px + env(safe-area-inset-bottom));animation:sheetup .25s var(--ease-out)}
+@keyframes sheetup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet .shead2{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid hsla(0,0%,100%,.05)}
+.sheet .shead2 h3{font-family:var(--disp);font-size:19px;text-transform:uppercase;color:#fff}
+.sheet .shead2 .x{color:var(--ink);font-size:15px;padding:4px 8px;border-radius:var(--r-sm)}
+.sheet .shead2 .x:hover{color:#fff;background:var(--card-hi)}
+.sheet-list{padding:8px}
+.sheet-list button{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:13px 12px;border-radius:var(--r-md);color:var(--ink-hi);font-weight:600;font-size:14px;transition:background .2s var(--ease-out)}
+.sheet-list button:hover{background:var(--card-hi)}
+.sheet-list button .ic{width:19px;height:19px;color:var(--ink-lo);flex:none}
+.sheet-list button .tag{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill);background:var(--blue-dim);color:var(--blue)}
+.sheet-painscale{padding:22px 20px}
+.sheet-painscale .painscale-card{margin:0;padding:0}
+.sheet-painscale .painscale-card .bubble{width:150px;height:150px;border-width:5px}
+.sheet-painscale .painscale-card .percent .n{font-size:34px}
+.sheet-painscale .btn{width:100%;margin-top:18px;text-align:center;border-radius:var(--r-md)}
+
+/* ---------- responsive ---------- */
+@media(max-width:1100px){
+  .rail{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tiers{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .promos,.duo,.glayout{grid-template-columns:1fr}
+  .gpanel{order:2}
+}
+@media(max-width:860px){
+  .sidebar{display:none}
+  .mobilebar{display:grid}
+  .content{padding-bottom:84px}
+  footer{padding-bottom:84px}
+}
+@media(max-width:600px){
+  .rail{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rails{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .balance{display:none}
+  .chainrow{grid-template-columns:repeat(3,1fr)}
+  .sec-head h2{font-size:20px}
+  .promo h3{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sb-logo"><span class="lg">P<span class="tri" aria-hidden="true"></span><span class="rest">IN</span></span><span class="tld">.BET</span></div>
+
+    <div class="painscale-card" role="img" aria-label="Pain scale level 7 of 10, Agony">
+      <div class="k"><span>Pain scale</span><b>AGONY</b></div>
+      <div class="bubble">
+        <div class="inner">
+          <div class="water"></div>
+          <div class="water2"></div>
+          <span class="bub"></span><span class="bub"></span><span class="bub"></span><span class="bub"></span>
+          <div class="glare"></div>
+          <div class="percent"><span class="n">7/10</span><span class="lvl">Chronic</span></div>
+        </div>
+      </div>
+      <div class="sub">12.8 / 20.0 BTC to level 8</div>
+    </div>
+
+    <nav class="sb-group" aria-label="Casino">
+      <div class="sb-title">Casino</div>
+      <button class="sb-item sel" data-view="home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg><span class="lbl">Lobby</span></button>
+      <button class="sb-item" data-view="game"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span class="lbl">Originals</span></button>
+      <button class="sb-item" data-view="home" data-scroll="lobby"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14"/></svg><span class="lbl">Slots</span></button>
+      <button class="sb-item" data-view="home" data-scroll="lobby"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span class="lbl">Live casino</span></button>
+    </nav>
+
+    <nav class="sb-group" aria-label="Pain system">
+      <div class="sb-title">Pain system</div>
+      <button class="sb-item" data-view="home" data-scroll="tiers"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h3v-6H4zM10 18h3V6h-3zM16 18h3v-9h-3z"/></svg><span class="lbl">Pain scale</span></button>
+      <button class="sb-item" data-view="home" data-scroll="relief"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg><span class="lbl">PainKillers</span><span class="tag pk">1,250</span></button>
+      <button class="sb-item" data-view="home" data-scroll="relief"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg><span class="lbl">Anesthesia</span></button>
+      <button class="sb-item" data-view="home" data-scroll="race"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M6 3h12v5a6 6 0 0 1-12 0zM6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3"/></svg><span class="lbl">Threshold race</span></button>
+    </nav>
+
+    <div class="sb-foot">
+      <button class="sb-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 1 0-10 0M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/></svg><span class="lbl">Affiliate</span></button>
+      <button class="sb-item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15a8 8 0 1 1 16 0M4 15v3a2 2 0 0 0 2 2h2v-7H6M20 15v3a2 2 0 0 1-2 2h-2v-7h2"/></svg><span class="lbl">Live support</span></button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+
+    <header class="topbar">
+      <button class="navtoggle" onclick="toggleNav()" aria-label="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="search"><span class="ic">⌕</span><input type="text" placeholder="SEARCH GAMES, PROVIDERS..." aria-label="Search games"></div>
+      <div class="spacer"></div>
+      <button class="balance" onclick="openWallet()"><span class="coin">₿</span> 0.0421 <span style="opacity:.25">|</span> <span class="coin">PK</span> 1,250</button>
+      <button class="btn btn-ghost">Sign in</button>
+      <button class="btn btn-red" onclick="openWallet()">Deposit</button>
+    </header>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="lbl"><span class="dot"></span>Live relief</div>
+      <div class="win"><div class="track" id="ticker-track"></div></div>
+    </div>
+
+    <!-- ============ VIEW: HOME ============ -->
+    <div class="view on" id="view-home">
+      <div class="content">
+
+        <section class="blk">
+          <div class="promos">
+            <div class="promo hero-promo">
+              <div class="bigtri"></div>
+              <div class="ekg"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path d="M0 24 H120 L135 24 145 6 155 36 165 24 H400 L415 24 425 6 435 36 445 24 H600 M600 24 H720 L735 24 745 6 755 36 765 24 H1000 L1015 24 1025 6 1035 36 1045 24 H1200" stroke="#FF3B33" stroke-width="2" fill="none"/></svg></div>
+              <div class="k">Welcome dose · crypto only</div>
+              <h3>200% first deposit up to 1 BTC</h3>
+              <p>Credited on first confirmation. 40x wagering, slots weighted 100%.</p>
+              <button class="btn btn-red" onclick="openWallet()">Take the dose</button>
+            </div>
+            <div class="promo blue-promo">
+              <div class="bigtri"></div>
+              <div class="k">Every Monday</div>
+              <h3>Anesthesia payout</h3>
+              <p>Up to 8% of net losses back. No wagering attached.</p>
+              <button class="btn btn-blue" data-view="home" data-scroll="relief">See your relief</button>
+            </div>
+            <div class="promo">
+              <div class="bigtri"></div>
+              <div class="k">Weekly race</div>
+              <h3>$50,000 Threshold race</h3>
+              <p>Top 50 by wagered volume. Resets Sunday 00:00 UTC.</p>
+              <button class="btn btn-ghost" data-view="home" data-scroll="race">Standings</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="blk" id="lobby">
+          <div class="cat-row">
+            <button class="chip active">All</button>
+            <button class="chip">Originals</button>
+            <button class="chip">Slots</button>
+            <button class="chip">Live casino</button>
+            <button class="chip">Crash</button>
+            <button class="chip">Table</button>
+          </div>
+        </section>
+
+        <section class="blk">
+          <div class="sec-head">
+            <h2>Pain Originals</h2>
+            <div class="tag">Provably fair · <button data-view="game">Play Flatline →</button></div>
+          </div>
+          <div class="rail">
+            <button class="gcard" data-view="game">
+              <span class="art a-flatline">Flat<br>Line</span>
+              <svg class="artline" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 15 H90 L100 15 108 3 116 27 124 15 H300" stroke="rgba(255,255,255,.65)" stroke-width="2" fill="none"/></svg>
+              <span class="badge">Original</span>
+              <span class="meta"><span class="t">Flatline</span><span class="p">Crash · 10,000x</span></span>
+            </button>
+            <button class="gcard"><span class="art a-nerve">Nerve</span><span class="badge">Original</span><span class="meta"><span class="t">Nerve</span><span class="p">Mines · 24 cells</span></span></button>
+            <button class="gcard"><span class="art a-bonesaw">Bone<br>Saw</span><span class="badge relief">Paying</span><span class="meta"><span class="t">Bonesaw</span><span class="p">Plinko · 16 rows</span></span></button>
+            <button class="gcard"><span class="art a-dosage">Dos<br>age</span><span class="badge">Original</span><span class="meta"><span class="t">Dosage</span><span class="p">Dice · 98% RTP</span></span></button>
+            <button class="gcard"><span class="art a-tolerance">Toler<br>ance</span><span class="badge">Original</span><span class="meta"><span class="t">Tolerance</span><span class="p">Limbo · 1,000,000x</span></span></button>
+            <button class="gcard"><span class="art a-threshold">Thresh<br>old</span><span class="badge">Original</span><span class="meta"><span class="t">Threshold</span><span class="p">Towers · 9 floors</span></span></button>
+          </div>
+        </section>
+
+        <section class="blk">
+          <div class="sec-head">
+            <h2>Pick your poison</h2>
+            <div class="tag">5,000+ games · <a>View all →</a></div>
+          </div>
+          <div class="rail">
+            <button class="gcard"><img src="assets/games/wanted.png" alt="Wanted Dead or a Wild"><span class="meta"><span class="t">Wanted Dead or a Wild</span><span class="p">Hacksaw</span></span></button>
+            <button class="gcard"><img src="assets/games/gates.png" alt="Gates of Olympus 1000"><span class="meta"><span class="t">Gates of Olympus 1000</span><span class="p">Pragmatic Play</span></span></button>
+            <button class="gcard"><img src="assets/games/lebandit.png" alt="Le Bandit"><span class="meta"><span class="t">Le Bandit</span><span class="p">Hacksaw</span></span></button>
+            <button class="gcard"><img src="assets/games/bonanza.png" alt="Sweet Bonanza 1000"><span class="meta"><span class="t">Sweet Bonanza 1000</span><span class="p">Pragmatic Play</span></span></button>
+            <button class="gcard"><img src="assets/games/zeusvshades.png" alt="Zeus vs Hades Gods of War"><span class="meta"><span class="t">Zeus vs Hades</span><span class="p">Pragmatic Play</span></span></button>
+            <button class="gcard"><img src="assets/games/ripcity.png" alt="RIP City"><span class="meta"><span class="t">RIP City</span><span class="p">Hacksaw</span></span></button>
+            <button class="gcard"><img src="assets/games/doghouse.png" alt="The Dog House"><span class="meta"><span class="t">The Dog House</span><span class="p">Pragmatic Play</span></span></button>
+            <button class="gcard"><img src="assets/games/sugarrush.png" alt="Sugar Rush 1000"><span class="meta"><span class="t">Sugar Rush 1000</span><span class="p">Pragmatic Play</span></span></button>
+            <button class="gcard"><img src="assets/games/starlight.png" alt="Starlight Princess 1000"><span class="meta"><span class="t">Starlight Princess 1000</span><span class="p">Pragmatic Play</span></span></button>
+            <button class="gcard"><img src="assets/games/bigbass.png" alt="Big Bass Splash"><span class="meta"><span class="t">Big Bass Splash</span><span class="p">Pragmatic Play</span></span></button>
+            <button class="gcard"><img src="assets/games/anubis.png" alt="Hand of Anubis"><span class="meta"><span class="t">Hand of Anubis</span><span class="p">Hacksaw</span></span></button>
+            <button class="gcard"><img src="assets/games/fireportals.png" alt="Fire Portals"><span class="meta"><span class="t">Fire Portals</span><span class="p">Pragmatic Play</span></span></button>
+          </div>
+          <div class="providers">
+            <span class="prov">Pragmatic Play</span><span class="prov">Evolution</span><span class="prov">Hacksaw</span><span class="prov">Nolimit City</span><span class="prov">Push Gaming</span><span class="prov">BGaming</span><span class="prov">+126 more</span>
+          </div>
+        </section>
+
+        <section class="blk" id="race">
+          <div class="duo">
+            <div class="panel">
+              <h4>Threshold race · <b>$50,000 weekly</b><span>Resets Sun 00:00 UTC</span></h4>
+              <table>
+                <tr><th>#</th><th>Player</th><th>Level</th><th>Wagered</th><th style="text-align:right">Prize</th></tr>
+                <tr><td class="rank">01</td><td class="u">nervend***</td><td><span class="status threshold">Threshold</span></td><td>84.2 BTC</td><td class="amt">$12,500</td></tr>
+                <tr><td class="rank">02</td><td class="u">flatlin***</td><td><span class="status agony">Agony</span></td><td>61.7 BTC</td><td class="amt">$7,500</td></tr>
+                <tr><td class="rank">03</td><td class="u">morphi***</td><td><span class="status agony">Agony</span></td><td>44.0 BTC</td><td class="amt">$5,000</td></tr>
+                <tr><td class="rank">04</td><td class="u">bonesa***</td><td><span class="status burn">Burn</span></td><td>39.3 BTC</td><td class="amt">$3,000</td></tr>
+                <tr><td class="rank">05</td><td class="u">stingr***</td><td><span class="status burn">Burn</span></td><td>28.8 BTC</td><td class="amt">$2,000</td></tr>
+              </table>
+            </div>
+            <div class="panel" id="relief">
+              <h4>Your relief</h4>
+              <div class="relief-body">
+                <div class="row"><span class="k">Available PK</span><span class="v blue">1,250 PK</span></div>
+                <div class="row"><span class="k">Relief today</span><span class="v blue">+86 PK</span></div>
+                <div class="row"><span class="k">Rakeback rate</span><span class="v">10%</span></div>
+                <div class="row"><span class="k">Next Anesthesia</span><span class="v">Mon 00:00 UTC</span></div>
+                <div class="row"><span class="k">Est. payout</span><span class="v blue">0.0031 BTC</span></div>
+                <button class="btn btn-blue" onclick="openWallet('pk')">Convert PK to balance</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="blk" id="tiers">
+          <div class="sec-head">
+            <h2>The Pain Scale</h2>
+            <div class="tag">Wager to climb. Level 9 breaks blue.</div>
+          </div>
+          <div class="tiers">
+            <div class="tier t0"><div class="heat"></div><div class="num">LEVEL 0</div><h3>Numb</h3>
+              <ul><li>Rakeback <b>2%</b></li><li>PK / $100 <b>10</b></li><li>Anesthesia <b>0%</b></li></ul></div>
+            <div class="tier t1"><div class="heat"></div><div class="num">LEVEL 1–2</div><h3>Sting</h3>
+              <ul><li>Rakeback <b>4%</b></li><li>PK / $100 <b>14</b></li><li>Anesthesia <b>2%</b></li></ul></div>
+            <div class="tier t2"><div class="heat"></div><div class="num">LEVEL 3–4</div><h3>Ache</h3>
+              <ul><li>Rakeback <b>6%</b></li><li>PK / $100 <b>18</b></li><li>Anesthesia <b>4%</b></li></ul></div>
+            <div class="tier t3"><div class="heat"></div><div class="num">LEVEL 5–6</div><h3>Burn</h3>
+              <ul><li>Rakeback <b>8%</b></li><li>PK / $100 <b>24</b></li><li>Anesthesia <b>6%</b></li></ul></div>
+            <div class="tier t4 you"><div class="heat"></div><div class="num">LEVEL 7–8</div><h3>Agony</h3>
+              <ul><li>Rakeback <b>10%</b></li><li>PK / $100 <b>32</b></li><li>Anesthesia <b>8%</b></li></ul></div>
+            <div class="tier t5"><div class="heat"></div><div class="num">LEVEL 9–10</div><h3>Threshold</h3>
+              <ul><li>Rakeback <b>12%</b></li><li>PK / $100 <b>45</b></li><li>Host <b>Dedicated</b></li></ul></div>
+          </div>
+        </section>
+
+        <section class="blk">
+          <div class="sec-head">
+            <h2>Rails</h2>
+            <div class="tag">Deposit to play in under 60 seconds</div>
+          </div>
+          <div class="rails">
+            <div class="railc"><div class="sym">₿</div><div class="n">Bitcoin</div></div>
+            <div class="railc"><div class="sym">Ξ</div><div class="n">Ethereum</div></div>
+            <div class="railc"><div class="sym">₮</div><div class="n">USDT · TRC20</div></div>
+            <div class="railc"><div class="sym">B</div><div class="n">BNB Chain</div></div>
+            <div class="railc"><div class="sym">T</div><div class="n">TRON</div></div>
+          </div>
+          <div class="rails-note">Payments on DexPay. <b>One confirmation to credit.</b> Withdrawals signed and broadcast automatically.</div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ============ VIEW: FLATLINE ============ -->
+    <div class="view" id="view-game">
+      <div class="content">
+        <div class="gcrumb"><button data-view="home">Lobby</button> / Pain Originals / <span style="color:var(--ink-hi)">Flatline</span></div>
+        <div class="glayout">
+          <div class="gpanel">
+            <div class="fld">
+              <label for="bet-amt">Bet amount</label>
+              <div class="inp"><input id="bet-amt" type="text" value="0.0010"><span class="unit">BTC</span></div>
+              <div class="quick"><button>1/2</button><button>2x</button><button>MAX</button><button>PK</button></div>
+            </div>
+            <div class="fld">
+              <label for="cash-at">Auto cashout</label>
+              <div class="inp"><input id="cash-at" type="text" value="2.00"><span class="unit">×</span></div>
+            </div>
+            <button class="betbtn">Place bet</button>
+            <div class="gmeta"><span>House edge <b>1.0%</b></span><span>Max win <b>10,000×</b></span></div>
+            <div class="gmeta"><span class="fair">⛓ Provably fair · seed 7f3a…c91e</span></div>
+          </div>
+          <div>
+            <div class="gstage">
+              <div class="mult" id="mult">1.00×<span class="st" id="mult-st">Armed</span></div>
+              <canvas id="curve"></canvas>
+              <div class="ghist" id="ghist">
+                <span class="hi">4.21×</span><span class="lo">1.08×</span><span class="hi">12.60×</span><span class="lo">1.31×</span><span>1.94×</span><span class="lo">1.02×</span><span class="hi">3.77×</span><span>2.15×</span>
+              </div>
+            </div>
+            <div class="panel livebets">
+              <h4>Live bets · this round</h4>
+              <table>
+                <tr><td class="u">nervend***</td><td>0.0500 BTC</td><td>@ 2.00×</td><td class="amt">+0.0500 BTC</td></tr>
+                <tr><td class="u">morphi***</td><td>0.0120 BTC</td><td>@ 1.45×</td><td class="amt">+0.0054 BTC</td></tr>
+                <tr><td class="u">stingr***</td><td>0.0080 BTC</td><td>riding</td><td class="lose">—</td></tr>
+                <tr><td class="u">bonesa***</td><td>0.2000 BTC</td><td>riding</td><td class="lose">—</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="foot-inner">
+        <div class="rg"><b>18+ only.</b> Pain.bet is operated under an Anjouan gaming licence. Gambling involves risk. Set limits, take breaks, and only play with what you can afford to lose. Self-exclusion and session limit tools are available in your account.</div>
+        <div class="foot-links">
+          <a>Terms</a><a>Provably fair</a><a>Responsible gaming</a><a>Support</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<!-- ============ MOBILE BOTTOM BAR ============ -->
+<nav class="mobilebar" aria-label="Primary mobile navigation">
+  <button class="mbar-item sel" data-view="home" data-mbar="home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg><span>Lobby</span></button>
+  <button class="mbar-item" data-view="game" data-mbar="game"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span>Originals</span></button>
+  <button class="mbar-center" onclick="openSheet('scale')" aria-label="Pain scale, level 7 of 10">
+    <div class="bubble mini">
+      <div class="inner">
+        <div class="water"></div>
+        <div class="water2"></div>
+        <span class="bub"></span><span class="bub"></span>
+        <div class="glare"></div>
+        <div class="percent"><span class="n">7/10</span></div>
+      </div>
+    </div>
+    <span class="mbar-label">Pain</span>
+  </button>
+  <button class="mbar-item" onclick="openWallet()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 10h5a2 2 0 1 1 0 4H9V9"/></svg><span>Wallet</span></button>
+  <button class="mbar-item" onclick="openSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>More</span></button>
+</nav>
+
+<!-- ============ MOBILE: MORE SHEET ============ -->
+<div class="sheet-bg" id="sheet-more">
+  <div class="sheet" role="dialog" aria-label="More">
+    <div class="shead2"><h3>More</h3><button class="x" onclick="closeSheet('more')">✕</button></div>
+    <div class="sheet-list">
+      <button data-view="home" data-scroll="lobby" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14"/></svg>Slots</button>
+      <button data-view="home" data-scroll="lobby" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Live casino</button>
+      <button data-view="home" data-scroll="tiers" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h3v-6H4zM10 18h3V6h-3zM16 18h3v-9h-3z"/></svg>Pain scale tiers</button>
+      <button data-view="home" data-scroll="relief" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg>PainKillers<span class="tag">1,250</span></button>
+      <button data-view="home" data-scroll="relief" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg>Anesthesia</button>
+      <button data-view="home" data-scroll="race" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M6 3h12v5a6 6 0 0 1-12 0zM6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3"/></svg>Threshold race</button>
+      <button onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8a5 5 0 1 0-10 0M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/></svg>Affiliate</button>
+      <button onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15a8 8 0 1 1 16 0M4 15v3a2 2 0 0 0 2 2h2v-7H6M20 15v3a2 2 0 0 1-2 2h-2v-7h2"/></svg>Live support</button>
+      <button onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Sign in</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MOBILE: PAIN SCALE SHEET ============ -->
+<div class="sheet-bg" id="sheet-scale">
+  <div class="sheet" role="dialog" aria-label="Pain scale">
+    <div class="shead2"><h3>Pain Scale</h3><button class="x" onclick="closeSheet('scale')">✕</button></div>
+    <div class="sheet-painscale">
+      <div class="painscale-card" role="img" aria-label="Pain scale level 7 of 10, Agony">
+        <div class="k"><span>Current level</span><b>AGONY</b></div>
+        <div class="bubble">
+          <div class="inner">
+            <div class="water"></div>
+            <div class="water2"></div>
+            <span class="bub"></span><span class="bub"></span><span class="bub"></span><span class="bub"></span>
+            <div class="glare"></div>
+            <div class="percent"><span class="n">7/10</span><span class="lvl">Chronic</span></div>
+          </div>
+        </div>
+        <div class="sub">12.8 / 20.0 BTC to level 8</div>
+      </div>
+      <button class="btn btn-red" data-view="home" data-scroll="tiers" onclick="closeSheet('scale')">View all tiers</button>
+      <button class="btn btn-blue" data-view="home" data-scroll="relief" onclick="closeSheet('scale')">See PainKillers &amp; relief</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WALLET MODAL ============ -->
+<div class="modal-bg" id="wallet-modal">
+  <div class="modal" role="dialog" aria-label="Wallet">
+    <div class="mhead"><h3>Wallet</h3><button class="x" onclick="closeWallet()">✕</button></div>
+    <div class="mtabs">
+      <button class="active" data-mtab="dep">Deposit</button>
+      <button data-mtab="wd">Withdraw</button>
+      <button data-mtab="pk">PK</button>
+    </div>
+    <div class="mbody" id="mb-dep">
+      <div class="chainrow">
+        <button class="chain active">BTC</button><button class="chain">ETH</button><button class="chain">USDT</button><button class="chain">BNB</button><button class="chain">TRX</button>
+      </div>
+      <div class="addr">
+        <div class="qr" aria-hidden="true"></div>
+        <div class="a"><span class="lbl">Your BTC deposit address</span>bc1q8f2 k7ne 40xw pain 9d3v 55tt hr0l d0se</div>
+      </div>
+      <div class="mnote">Send BTC only. <b>One confirmation to credit.</b> Minimum 0.0001 BTC. Deposits below minimum are not recoverable.</div>
+      <button class="btn btn-red">Copy address</button>
+    </div>
+    <div class="mbody" id="mb-wd" style="display:none">
+      <div class="fld" style="margin-bottom:14px">
+        <label for="wd-addr">Destination address</label>
+        <div class="inp"><input id="wd-addr" type="text" placeholder="bc1q..."></div>
+      </div>
+      <div class="fld">
+        <label for="wd-amt">Amount</label>
+        <div class="inp"><input id="wd-amt" type="text" value="0.0421"><span class="unit">BTC · MAX</span></div>
+      </div>
+      <div class="mnote">Signed and broadcast automatically. Network fee deducted from amount. <b>No manual review below your threshold.</b></div>
+      <button class="btn btn-blue">Withdraw</button>
+    </div>
+    <div class="mbody" id="mb-pk" style="display:none">
+      <div class="relief-body" style="padding:0">
+        <div class="row"><span class="k">Available PK</span><span class="v blue">1,250 PK</span></div>
+        <div class="row"><span class="k">Conversion rate</span><span class="v">1,000 PK = 0.0001 BTC</span></div>
+        <div class="row"><span class="k">You receive</span><span class="v blue">0.000125 BTC</span></div>
+      </div>
+      <div class="mnote">PK converts to withdrawable balance instantly. <b>No wagering attached.</b></div>
+      <button class="btn btn-blue">Convert 1,250 PK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------- collapsible sidebar ----------
+function toggleNav(){
+  document.body.classList.toggle('navmin');
+  try{localStorage.setItem('pb-navmin',document.body.classList.contains('navmin')?'1':'0')}catch(e){}
+}
+try{if(localStorage.getItem('pb-navmin')==='1')document.body.classList.add('navmin')}catch(e){}
+
+// ---------- view switching ----------
+function show(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('on'));
+  document.getElementById('view-'+v).classList.add('on');
+  document.querySelectorAll('.sb-item[data-view]').forEach(a=>{
+    a.classList.toggle('sel',a.dataset.view===v && !a.dataset.scroll);
+  });
+  document.querySelectorAll('.mbar-item[data-mbar]').forEach(a=>{
+    a.classList.toggle('sel',a.dataset.mbar===v);
+  });
+  window.scrollTo(0,0);
+  if(v==='game') startRound(); else stopRound();
+}
+
+// ---------- mobile sheets (More / Pain Scale) ----------
+function openSheet(id){document.getElementById('sheet-'+id).classList.add('on')}
+function closeSheet(id){document.getElementById('sheet-'+id).classList.remove('on')}
+['more','scale'].forEach(id=>{
+  document.getElementById('sheet-'+id).addEventListener('click',e=>{
+    if(e.target.id==='sheet-'+id) closeSheet(id);
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeSheet('more');closeSheet('scale');}
+});
+document.querySelectorAll('[data-view]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    show(el.dataset.view);
+    if(el.dataset.scroll){
+      const t=document.getElementById(el.dataset.scroll);
+      if(t) setTimeout(()=>t.scrollIntoView({behavior:'smooth'}),50);
+    }
+  });
+});
+
+// ---------- chips ----------
+document.querySelectorAll('.cat-row .chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    document.querySelectorAll('.cat-row .chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+  });
+});
+
+// ---------- wallet modal ----------
+function openWallet(tab){
+  document.getElementById('wallet-modal').classList.add('on');
+  if(tab) mtabById(tab);
+}
+function closeWallet(){document.getElementById('wallet-modal').classList.remove('on')}
+document.getElementById('wallet-modal').addEventListener('click',e=>{if(e.target.id==='wallet-modal')closeWallet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeWallet()});
+function mtabById(id){
+  document.querySelectorAll('.mtabs button').forEach(b=>b.classList.toggle('active',b.dataset.mtab===id));
+  ['dep','wd','pk'].forEach(k=>document.getElementById('mb-'+k).style.display = k===id?'block':'none');
+}
+document.querySelectorAll('.mtabs button').forEach(b=>{b.addEventListener('click',()=>mtabById(b.dataset.mtab))});
+document.querySelectorAll('.chainrow .chain').forEach(c=>{
+  c.addEventListener('click',()=>{
+    c.parentElement.querySelectorAll('.chain').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+  });
+});
+
+// ---------- live relief ticker (JS marquee, always rotates) ----------
+const names=['nervend***','flatlin***','morphi***','bonesa***','stingr***','agonyx***','thresh***','numbsk***'];
+const tgames=['Flatline','Nerve','Bonesaw','Gates of Olympus 1000','Wanted Dead or a Wild','Le Bandit','Sugar Rush 1000','Zeus vs Hades'];
+function tickItem(){
+  const n=names[Math.floor(Math.random()*names.length)];
+  const g=tgames[Math.floor(Math.random()*tgames.length)];
+  const amt=(Math.random()*0.4+0.001).toFixed(4);
+  return `<span class="ti">${n} <span class="g">· ${g} ·</span> <b>+${amt} BTC</b></span>`;
+}
+(function(){
+  const track=document.getElementById('ticker-track');
+  let items='';
+  for(let i=0;i<14;i++) items+=tickItem();
+  track.innerHTML=items+items; // duplicate for seamless CSS loop
+})();
+
+// ---------- Flatline curve ----------
+const cv=document.getElementById('curve'), mx=document.getElementById('mult'), st=document.getElementById('mult-st');
+let raf=null, pendingRestart=null;
+function stopRound(){cancelAnimationFrame(raf);clearTimeout(pendingRestart)}
+function startRound(){
+  stopRound();
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth, h=cv.clientHeight;
+  if(!w||!h){pendingRestart=setTimeout(startRound,120);return}
+  cv.width=w*dpr; cv.height=h*dpr; ctx.scale(dpr,dpr);
+  const bust=1+Math.pow(Math.random(),2)*9;
+  let t=0;
+  mx.classList.remove('bust');
+  st.textContent='In flight';
+  function frame(){
+    t+=0.016;
+    const m=Math.exp(t*0.35);
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1;
+    for(let gy=h-40; gy>0; gy-=60){ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(w,gy);ctx.stroke();}
+    ctx.strokeStyle='#E10600'; ctx.lineWidth=3; ctx.beginPath();
+    const steps=140;
+    for(let i=0;i<=steps;i++){
+      const tt=t*i/steps;
+      const mm=Math.exp(tt*0.35);
+      const x=(tt/Math.max(t,3))*(w-60);
+      const y=h-30-((mm-1)/Math.max(m-1,0.5))*(h-110)*0.9;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    if(m>=bust){
+      mx.textContent=bust.toFixed(2)+'×';
+      mx.classList.add('bust');
+      st.textContent='Flatlined';
+      mx.appendChild(st);
+      const hist=document.getElementById('ghist');
+      const s=document.createElement('span');
+      s.textContent=bust.toFixed(2)+'×';
+      s.className=bust>=3?'hi':(bust<1.5?'lo':'');
+      hist.prepend(s);
+      if(hist.children.length>10)hist.lastElementChild.remove();
+      pendingRestart=setTimeout(startRound,2200);
+      return;
+    }
+    mx.textContent=m.toFixed(2)+'×';
+    mx.appendChild(st);
+    raf=requestAnimationFrame(frame);
+  }
+  raf=requestAnimationFrame(frame);
+}
+</script>
+
+</body>
+</html>
