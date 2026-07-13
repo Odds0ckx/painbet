@@ -154,7 +154,11 @@ section.blk{margin-bottom:34px}
 }
 .promo.hero-promo .bigtri,.promo.hero-promo .ekg{display:none}
 .promo.blue-promo .k{color:var(--blue)}
-.promo.blue-promo .bigtri{background:var(--blue-dim);opacity:.9}
+.promo.blue-promo{
+  background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/anesthesia-bg.png');
+  background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:var(--card);
+}
+.promo.blue-promo .bigtri{display:none}
 .promo .ekg{position:absolute;left:0;right:0;bottom:6px;height:36px;opacity:.35;pointer-events:none;z-index:0}
 .promo .ekg svg{width:200%;height:100%;animation:ekgmove 8s linear infinite}
 @keyframes ekgmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
