@@ -144,9 +144,9 @@ section.blk{margin-bottom:34px}
 .promo>*{position:relative;z-index:1}
 .promo .bigtri{position:absolute;right:-36px;top:-46px;width:200px;height:180px;clip-path:polygon(50% 0,100% 100%,0 100%);background:var(--red-deep);opacity:.55;z-index:0;transition:transform .5s var(--ease-out)}
 .promo:hover .bigtri{transform:scale(1.07) rotate(2deg)}
-.promo .k{font-weight:800;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--redhi);margin-bottom:10px}
-.promo h3{font-family:var(--disp);font-size:26px;text-transform:uppercase;line-height:1;margin-bottom:8px;color:#fff;overflow-wrap:anywhere}
-.promo p{font-size:12.5px;color:var(--ink);max-width:330px;margin-bottom:14px}
+.promo .k{font-weight:800;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--redhi);margin-bottom:10px;max-width:70%;overflow-wrap:anywhere}
+.promo h3{font-family:var(--disp);font-size:26px;text-transform:uppercase;line-height:1;margin-bottom:8px;color:#fff;overflow-wrap:anywhere;max-width:70%}
+.promo p{font-size:12.5px;color:var(--ink);max-width:70%;margin-bottom:14px;overflow-wrap:anywhere}
 .promo .btn{align-self:flex-start;padding:9px 18px;font-size:10.5px}
 .promo.hero-promo{
   background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/welcome-dose-bg.png');
@@ -159,6 +159,11 @@ section.blk{margin-bottom:34px}
   background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:var(--card);
 }
 .promo.blue-promo .bigtri{display:none}
+.promo.race-promo{
+  background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/threshold-race-bg.png');
+  background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:var(--card);
+}
+.promo.race-promo .bigtri{display:none}
 .promo .ekg{position:absolute;left:0;right:0;bottom:6px;height:36px;opacity:.35;pointer-events:none;z-index:0}
 .promo .ekg svg{width:200%;height:100%;animation:ekgmove 8s linear infinite}
 @keyframes ekgmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -452,7 +457,7 @@ footer{padding:22px}
               <p>Up to 8% of net losses back. No wagering attached.</p>
               <button class="btn btn-blue" data-view="home" data-scroll="relief">See your relief</button>
             </div>
-            <div class="promo">
+            <div class="promo race-promo">
               <div class="bigtri"></div>
               <div class="k">Weekly race</div>
               <h3>$50,000 Threshold race</h3>
