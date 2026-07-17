@@ -5,6 +5,14 @@
 <meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PAIN.BET v5 — Crypto Casino</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -395,6 +403,17 @@ footer{padding:22px}
 
 
 /* ---------- v5 additions ---------- */
+/* auth activation cinematic (WebGL neuron pulse) */
+#auth-overlay{position:fixed;inset:0;z-index:120;background:#0a0b0e;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 1s var(--ease-out),visibility 1s}
+#auth-overlay.on{opacity:1;visibility:visible;pointer-events:auto}
+#auth-canvas{position:absolute;inset:0;z-index:1;overflow:hidden}
+#auth-canvas canvas{display:block}
+#auth-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 20%,rgba(5,5,7,.95) 100%)}
+.auth-cinematic-mark{position:relative;z-index:10;text-align:center}
+.auth-cinematic-mark .lg{font-family:var(--disp);font-size:34px;color:#fff;letter-spacing:.03em;text-shadow:0 0 30px rgba(225,6,0,.5)}
+.auth-cinematic-mark .lg .tld{font-weight:600;font-size:14px;color:var(--ink-lo);letter-spacing:.08em;margin-left:4px}
+.auth-cinematic-mark .status{margin-top:14px;font-weight:800;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-hi);opacity:.85}
+
 .rail.rx{display:flex;overflow-x:auto;gap:16px;scroll-snap-type:x proximity;padding:16px 6px 18px;margin:-16px -6px -10px;scrollbar-width:thin;scrollbar-color:var(--card-hi2) transparent}
 .rail.rx::-webkit-scrollbar{height:8px}
 .rail.rx::-webkit-scrollbar-thumb{background:var(--card-hi2);border-radius:999px}
@@ -582,7 +601,7 @@ body.trackeropen .drawer{right:0}
       <div class="search"><span class="ic">⌕</span><input type="text" id="gsearch" placeholder="SEARCH GAMES, PROVIDERS..." aria-label="Search games"></div>
       <div class="spacer"></div>
       <button class="balance" onclick="openWallet()"><span class="coin">USDT</span> 2,840 <span style="opacity:.25">|</span> <span class="coin">PK</span> 1,250</button>
-      <button class="btn btn-ghost" onclick="openAuth()">Sign in</button>
+      <button class="btn btn-ghost" data-signin-btn onclick="openAuth()">Sign in</button>
       <button class="btn btn-red" onclick="openWallet()">Deposit</button>
     </header>
 
@@ -1071,8 +1090,7 @@ body.trackeropen .drawer{right:0}
         <button onclick="fakeAuth(this)">Trust</button><button onclick="fakeAuth(this)">Ledger</button><button onclick="fakeAuth(this)">Rabby</button>
       </div>
       <div class="mnote">Sign a message to prove ownership. <b>No gas, no transaction.</b> Your wallet is your account.</div>
-      <div class="ok-note" id="auth-ok">Signature request sent to your wallet. Mockup: no real connection is made.</div>
-    </div>
+      </div>
     <div class="mbody" id="ab-email" style="display:none">
       <div class="fld" style="margin-bottom:14px">
         <label for="au-em">Email</label>
@@ -1083,8 +1101,7 @@ body.trackeropen .drawer{right:0}
         <div class="inp"><input id="au-pw" type="password" placeholder="••••••••"></div>
       </div>
       <button class="btn btn-red" style="width:100%;margin-top:16px;border-radius:var(--r-md)" onclick="fakeAuth(this)">Sign in</button>
-      <div class="ok-note" id="auth-ok2">Mockup only: authentication is not wired.</div>
-    </div>
+      </div>
   </div>
 </div>
 
@@ -1220,6 +1237,16 @@ body.trackeropen .drawer{right:0}
       <button class="btn btn-red" style="width:100%;margin-top:16px;border-radius:var(--r-md)" onclick="closeModal('ginfo-modal');openWallet()">Deposit to play</button>
       <button class="btn btn-ghost" style="width:100%;margin-top:8px;border-radius:var(--r-md)" onclick="location.href='painbet-arcade.html'">Play an Original now</button>
     </div>
+  </div>
+</div>
+
+<!-- ============ AUTH ACTIVATION OVERLAY (WebGL) ============ -->
+<div id="auth-overlay" aria-hidden="true">
+  <div id="auth-canvas"></div>
+  <div id="auth-vignette"></div>
+  <div class="auth-cinematic-mark">
+    <div class="lg">P<span class="tri" aria-hidden="true"></span>IN<span class="tld">.BET</span></div>
+    <div class="status" id="auth-status">Signal in transit</div>
   </div>
 </div>
 
@@ -1478,7 +1505,19 @@ document.querySelectorAll('.prov[data-prov]').forEach(p=>{
 });
 
 // ---------- v5: auth / apply / chat ----------
-function openAuth(){openModal('auth-modal')}
+function openAuth(){
+  if(document.body.classList.contains('signedIn')) return;
+  openModal('auth-modal');
+}
+function markSignedIn(){
+  document.body.classList.add('signedIn');
+  document.querySelectorAll('[data-signin-btn]').forEach(b=>{
+    b.textContent='0x4F2…9A1c';
+    b.classList.remove('btn-ghost');
+    b.onclick=null;
+    b.style.cursor='default';
+  });
+}
 document.querySelectorAll('#auth-modal .mtabs button').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('#auth-modal .mtabs button').forEach(x=>x.classList.remove('active'));
@@ -1488,9 +1527,13 @@ document.querySelectorAll('#auth-modal .mtabs button').forEach(b=>{
   });
 });
 function fakeAuth(btn){
-  const box=btn.closest('.mbody').querySelector('.ok-note');
-  box.classList.add('on');
-  setTimeout(()=>box.classList.remove('on'),3500);
+  closeModal('auth-modal');
+  const method=(btn.textContent||'').trim()||'Email';
+  if(window.playAuthCinematic){
+    window.playAuthCinematic(method, markSignedIn);
+  } else {
+    markSignedIn();
+  }
 }
 function fakeApply(btn){document.getElementById('apply-ok').classList.add('on');btn.disabled=true;btn.style.opacity=.5}
 function sendChat(){
@@ -1536,6 +1579,268 @@ function closeSheet(id){const s=document.getElementById('sheet-'+id);if(s)s.clas
   const s=document.getElementById('sheet-'+id);
   if(s)s.addEventListener('click',e=>{if(e.target===s)closeSheet(id)});
 });
+</script>
+
+<script type="module">
+// ---------- v5: auth activation cinematic (WebGL neuron pulse, lazy-inited) ----------
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+let scene, camera, renderer, composer, material, structureGroup, dustA, dustB, clock;
+let inited = false, isLooping = false;
+let state = 0, pulseProg = -10.0, actProg = 0.0;
+const INPUT_LENGTH = 45.0;
+let onCinematicDone = null;
+const statusEl = () => document.getElementById('auth-status');
+
+function initAuthScene(){
+  const container = document.getElementById('auth-canvas');
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0a0b0e);
+  scene.fog = new THREE.FogExp2(0x0a0b0e, 0.025);
+
+  camera = new THREE.PerspectiveCamera(52, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 5, 40);
+  camera.userData.baseY = camera.position.y;
+
+  renderer = new THREE.WebGLRenderer({ antialias:false, powerPreference:'high-performance' });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  const renderScene = new RenderPass(scene, camera);
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+  bloomPass.threshold = 0.15; bloomPass.strength = 2.2; bloomPass.radius = 0.8;
+  composer = new EffectComposer(renderer);
+  composer.addPass(renderScene);
+  composer.addPass(bloomPass);
+
+  const vertexShader = `
+    attribute float aIsInput;
+    varying vec2 vUv; varying vec3 vWorldPos; varying vec3 vNormal; varying float vIsInput; varying float vDist;
+    void main(){
+      vUv = uv; vIsInput = aIsInput;
+      vec4 worldPos = modelMatrix * vec4(position, 1.0);
+      vWorldPos = worldPos.xyz; vDist = length(worldPos.xyz);
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * viewMatrix * worldPos;
+    }
+  `;
+  const fragmentShader = `
+    uniform float uTime; uniform float uPulseProgress; uniform float uActivation; uniform vec3 uCameraPos;
+    varying vec2 vUv; varying vec3 vWorldPos; varying vec3 vNormal; varying float vIsInput; varying float vDist;
+    float hash(vec3 p){ p = fract(p*0.3183099+.1); p *= 17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+    float noise(vec3 x){
+      vec3 i = floor(x); vec3 f = fract(x); f = f*f*(3.0-2.0*f);
+      return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),
+                     mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                 mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),
+                     mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);
+    }
+    void main(){
+      vec3 viewDir = normalize(uCameraPos - vWorldPos);
+      float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 3.0);
+      float n1 = noise(vWorldPos*0.5 + uTime*0.2);
+      float n2 = noise(vWorldPos*2.0 - uTime*0.5);
+      vec3 baseColor = vec3(0.04,0.04,0.05) + (vec3(0.4,0.02,0.02) * fresnel * n1);
+      baseColor *= (0.4 + 0.6*n2);
+      vec3 pulseColor = vec3(0.0);
+      if (vIsInput > 0.5 && uPulseProgress > -5.0) {
+        float pDist = abs(vDist - uPulseProgress);
+        float core = exp(-pDist*pDist*3.0);
+        float trail = smoothstep(6.0,0.0,vDist-uPulseProgress) * smoothstep(-2.0,0.0,uPulseProgress-vDist);
+        float pi = max(core*3.0, trail*1.5);
+        pulseColor = vec3(4.0,0.1,0.05) * pi * (0.8 + 0.2*n2);
+      }
+      vec3 actColor = vec3(0.0);
+      if (uActivation > 0.0) {
+        float distFromWave = vDist - uActivation;
+        float waveFront = exp(-pow(distFromWave,2.0)*0.2) * step(0.0,-distFromWave);
+        float residual = smoothstep(uActivation, uActivation-25.0, vDist);
+        float actIntensity = waveFront*4.0 + residual*1.5;
+        actIntensity *= (0.6 + 0.4*noise(vWorldPos*1.5 - uTime*2.0));
+        vec3 darkRed = vec3(0.6,0.0,0.0);
+        vec3 brightRed = vec3(1.0,0.2,0.1);
+        vec3 hotGrey = vec3(0.8,0.8,0.8);
+        float mixFactor = clamp(actIntensity*0.5 + (1.0 - vDist*0.05), 0.0, 1.0);
+        vec3 themeColor = mix(darkRed, mix(brightRed, hotGrey, mixFactor-0.5), mixFactor);
+        actColor = themeColor * actIntensity * 1.8;
+        if (vDist < 4.5) {
+          float somaFlash = exp(-pow(uActivation*0.25,2.0)) * 3.0;
+          actColor += vec3(1.0,0.9,0.9) * somaFlash;
+        }
+      }
+      gl_FragColor = vec4(baseColor + pulseColor + actColor, 1.0);
+    }
+  `;
+
+  material = new THREE.ShaderMaterial({
+    vertexShader, fragmentShader,
+    uniforms:{ uTime:{value:0}, uPulseProgress:{value:-10.0}, uActivation:{value:0}, uCameraPos:{value:new THREE.Vector3()} },
+    side: THREE.FrontSide
+  });
+
+  structureGroup = new THREE.Group();
+  scene.add(structureGroup);
+
+  function createWanderingPath(start,dir,length,segments,jitterScale,endPoint){
+    let pts=[start.clone()]; let curr=start.clone(); let cDir=dir.clone().normalize();
+    for(let i=0;i<segments;i++){
+      cDir.x += (Math.random()-0.5)*jitterScale;
+      cDir.y += (Math.random()-0.5)*jitterScale;
+      cDir.z += (Math.random()-0.5)*jitterScale;
+      cDir.normalize();
+      curr = curr.clone().add(cDir.clone().multiplyScalar(length/segments));
+      pts.push(curr);
+    }
+    if(endPoint){ pts[pts.length-1]=endPoint.clone().add(new THREE.Vector3(-1.5,0,0)); pts.push(endPoint.clone()); }
+    return new THREE.CatmullRomCurve3(pts);
+  }
+  function taperGeometry(geo, baseRadius, isInput){
+    const pos=geo.attributes.position, norm=geo.attributes.normal, uv=geo.attributes.uv;
+    for(let i=0;i<pos.count;i++){
+      const u=uv.getX(i); let t = isInput ? 1.0 : (1.0-u);
+      const shrink = baseRadius*(1.0-Math.pow(t,0.6));
+      pos.setXYZ(i, pos.getX(i)-norm.getX(i)*shrink, pos.getY(i)-norm.getY(i)*shrink, pos.getZ(i)-norm.getZ(i)*shrink);
+    }
+    geo.computeVertexNormals();
+  }
+  function addBranch(curve, radius, isInput){
+    const geo = new THREE.TubeGeometry(curve, Math.floor(curve.getLength()*3), radius, 12, false);
+    taperGeometry(geo, radius, isInput);
+    const arr = new Float32Array(geo.attributes.position.count).fill(isInput?1.0:0.0);
+    geo.setAttribute('aIsInput', new THREE.BufferAttribute(arr,1));
+    structureGroup.add(new THREE.Mesh(geo, material));
+    return { curve };
+  }
+
+  const somaRadius = 3.3;
+  const somaGeo = new THREE.IcosahedronGeometry(somaRadius, 16);
+  const spos = somaGeo.attributes.position;
+  for(let i=0;i<spos.count;i++){
+    let v = new THREE.Vector3().fromBufferAttribute(spos,i);
+    let n = Math.sin(v.x*2)*Math.cos(v.y*2)*Math.sin(v.z*2)*0.5 + Math.sin(v.x*5+v.y*3)*0.2;
+    v.add(v.clone().normalize().multiplyScalar(n));
+    spos.setXYZ(i,v.x,v.y,v.z);
+  }
+  somaGeo.computeVertexNormals();
+  const somaIsInput = new Float32Array(spos.count).fill(0.0);
+  somaGeo.setAttribute('aIsInput', new THREE.BufferAttribute(somaIsInput,1));
+  structureGroup.add(new THREE.Mesh(somaGeo, material));
+
+  const inputCurve = createWanderingPath(
+    new THREE.Vector3(-45,0,0), new THREE.Vector3(1,0,0), 46, 30, 0.05,
+    new THREE.Vector3(-somaRadius*0.1,0,0)
+  );
+  addBranch(inputCurve, 0.6, true);
+
+  for(let i=0;i<22;i++){
+    let phi=Math.random()*Math.PI*2, theta=Math.acos(Math.random()*2-1);
+    if(Math.cos(phi)*Math.sin(theta) < -0.3) phi = phi>Math.PI ? phi-Math.PI : phi+Math.PI;
+    let startDir = new THREE.Vector3(Math.cos(phi)*Math.sin(theta), Math.sin(phi)*Math.sin(theta), Math.cos(theta));
+    let start = startDir.clone().multiplyScalar(somaRadius*0.8);
+    let length = 20 + Math.random()*35;
+    let mainRadius = 0.4 + Math.random()*0.3;
+    let { curve: mainCurve } = addBranch(createWanderingPath(start,startDir,length,25,0.4), mainRadius, false);
+    let numSec = Math.floor(Math.random()*4)+2;
+    for(let j=0;j<numSec;j++){
+      let t = 0.2+Math.random()*0.6;
+      let bStart = mainCurve.getPoint(t);
+      let tangent = mainCurve.getTangent(t);
+      let rv = new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize();
+      let bDir = tangent.clone().cross(rv).normalize().add(tangent.multiplyScalar(0.5)).normalize();
+      addBranch(createWanderingPath(bStart,bDir,(1-t)*length*(0.4+Math.random()*0.4),15,0.6), mainRadius*(1-t)*0.8, false);
+    }
+  }
+
+  function makeParticles(count,spread,colorHex,size,opacity){
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array(count*3);
+    for(let i=0;i<count*3;i++) pos[i]=(Math.random()-0.5)*spread;
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+    const mat = new THREE.PointsMaterial({ color:colorHex, size, transparent:true, opacity, blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true });
+    return new THREE.Points(geo, mat);
+  }
+  dustA = makeParticles(1500,120,0x550000,0.08,0.4);
+  dustB = makeParticles(500,90,0x888888,0.12,0.2);
+  scene.add(dustA, dustB);
+
+  clock = new THREE.Clock();
+
+  window.addEventListener('resize', ()=>{
+    if(!renderer) return;
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+function animate(){
+  if(!isLooping) return;
+  requestAnimationFrame(animate);
+  const delta = clock.getDelta();
+
+  structureGroup.rotation.y += delta*0.05;
+  dustA.rotation.y += delta*0.008;
+  dustB.rotation.y -= delta*0.005;
+  material.uniforms.uTime.value += delta;
+  material.uniforms.uCameraPos.value.copy(camera.position);
+
+  if(state===1){
+    pulseProg -= delta*40.0;
+    material.uniforms.uPulseProgress.value = pulseProg;
+    if(pulseProg <= 2.0){
+      state = 2; pulseProg = -10.0;
+      material.uniforms.uPulseProgress.value = -10.0;
+      actProg = 0.0;
+      camera.position.y += 0.8;
+      camera.position.x += (Math.random()-0.5)*1.5;
+      if(statusEl()) statusEl().textContent = 'Verifying identity';
+    }
+  } else if(state===2){
+    actProg += delta*30.0;
+    material.uniforms.uActivation.value = actProg;
+    camera.position.y += (camera.userData.baseY - camera.position.y)*0.1;
+    if(actProg > 40.0 && state !== 3){
+      state = 3;
+      if(statusEl()) statusEl().textContent = 'Access granted';
+      const overlay = document.getElementById('auth-overlay');
+      setTimeout(()=>{
+        overlay.classList.remove('on');
+        const done = onCinematicDone; onCinematicDone = null;
+        setTimeout(()=>{ isLooping=false; if(done) done(); }, 1000);
+      }, 550);
+    }
+  }
+  composer.render();
+}
+
+function playAuthCinematic(method, onDone){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){ if(onDone) onDone(); return; }
+  try{
+    if(!inited){ initAuthScene(); inited = true; }
+  }catch(e){
+    console.warn('auth cinematic unavailable, skipping', e);
+    if(onDone) onDone();
+    return;
+  }
+  onCinematicDone = onDone;
+  state = 1; pulseProg = INPUT_LENGTH; actProg = 0.0;
+  material.uniforms.uActivation.value = 0.0;
+  material.uniforms.uPulseProgress.value = pulseProg;
+  camera.userData.baseY = camera.position.y;
+  if(statusEl()) statusEl().textContent = 'Signal in transit';
+  document.getElementById('auth-overlay').classList.add('on');
+  isLooping = true;
+  clock.getDelta();
+  requestAnimationFrame(animate);
+}
+
+window.playAuthCinematic = playAuthCinematic;
 </script>
 
 </body>
