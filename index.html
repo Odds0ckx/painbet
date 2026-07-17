@@ -395,12 +395,16 @@ footer{padding:22px}
 
 
 /* ---------- v5 additions ---------- */
-.rail.rx{display:flex;overflow-x:auto;gap:16px;scroll-snap-type:x proximity;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:var(--card-hi2) transparent}
+.rail.rx{display:flex;overflow-x:auto;gap:16px;scroll-snap-type:x proximity;padding:16px 6px 18px;margin:-16px -6px -10px;scrollbar-width:thin;scrollbar-color:var(--card-hi2) transparent}
 .rail.rx::-webkit-scrollbar{height:8px}
 .rail.rx::-webkit-scrollbar-thumb{background:var(--card-hi2);border-radius:999px}
 .rail.rx .gcard{flex:0 0 calc((100% - 80px)/6);min-width:150px;scroll-snap-align:start}
 @media(max-width:1100px){.rail.rx .gcard{flex-basis:calc((100% - 32px)/3)}}
 @media(max-width:600px){.rail.rx .gcard{flex-basis:calc((100% - 16px)/2)}}
+.railnav{display:flex;gap:8px;align-items:center}
+.rbtn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:var(--card);box-shadow:var(--shadow);color:var(--ink-hi);font-size:19px;font-weight:800;line-height:1;transition:background .2s,color .2s,transform .2s}
+.rbtn:hover{background:var(--red);color:#fff;transform:translateY(-1px)}
+.rbtn:active{transform:translateY(1px)}
 .arcwrap{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
 .arcwrap iframe{width:100%;border:0;display:block;height:calc(100vh - 170px);min-height:720px;background:var(--bg)}
 
@@ -637,7 +641,9 @@ body.trackeropen .drawer{right:0}
         <section class="blk">
           <div class="sec-head">
             <h2>Pain Originals</h2>
-            <div class="tag">Provably fair · <button onclick="openLegal('fair')">How it works</button> · <button data-view="arcade">Open arcade →</button></div>
+            <div class="tag" style="display:flex;align-items:center;gap:14px">Provably fair · <button onclick="openLegal('fair')">How it works</button> · <button data-view="arcade">Open arcade →</button>
+              <span class="railnav"><button class="rbtn" aria-label="Scroll back" onclick="railScroll(this,-1)">‹</button><button class="rbtn" aria-label="Scroll forward" onclick="railScroll(this,1)">›</button></span>
+            </div>
           </div>
           <div class="rail rx">
             <button data-cats="originals trending" class="gcard" data-game="flatline">
@@ -1298,7 +1304,7 @@ function show(v){
   if(v==='games') buildGames();
   if(v==='arcade'){
     const f=document.getElementById('arc-frame');
-    if(!f.dataset.loaded){f.src='painbet-arcade.html?embed=1';f.dataset.loaded='1'}
+    if(!f.dataset.loaded){f.src='painbet-arcade.html?page=1';f.dataset.loaded='1'}
   }
 }
 document.querySelectorAll('[data-view]').forEach(el=>{
@@ -1413,6 +1419,12 @@ function openTracker(){
   document.body.classList.add('trackeropen');
 }
 function closeTracker(){document.body.classList.remove('trackeropen')}
+
+// ---------- v5: rail arrows ----------
+function railScroll(btn,dir){
+  const rail=btn.closest('section').querySelector('.rail.rx');
+  rail.scrollBy({left:dir*rail.clientWidth*0.8,behavior:'smooth'});
+}
 
 // ---------- v5: wire game cards ----------
 function wireCards(scope){

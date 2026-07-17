@@ -446,6 +446,9 @@ body.embed #arcade .sec-tag,body.embed #arcade>.wrap>h2,body.embed #arcade .sec-
 body.embed .main{margin-left:0!important;width:100%!important}
 body.embed #arcade{padding-top:6px}
 body.locked .tabs{display:none!important}
+/* page mode: full arcade content inside the lobby's Arcade view */
+body.page .sidebar,body.page .pk-bar .navtoggle,body.page .pk-bar .search,body.page .pk-bar .top-btn{display:none!important}
+body.page .main{margin-left:0!important;width:100%!important}
 </style>
 </head>
 <body>
@@ -477,7 +480,7 @@ body.locked .tabs{display:none!important}
 </div></div></div>
 
 <header class="hero"><div class="wrap">
-  <div class="kicker">PainTracker · Arcade · v1 · Internal</div><h1>The <span class="thin">Arcade</span></h1>
+  <div class="kicker">Pain.bet · Nine Originals · PK only</div><h1>The <span class="thin">Arcade</span></h1>
   <p class="hero-sub">Every PK earned in PainTracker can be played here, on the same nine certified Originals, at the same 1% edge, denominated in PK. Win and the balance grows. Convert to real money whenever you clear the desk. Earn, gamble, convert: one loop.</p>
   <div class="vitals"><div class="vital"><div class="v">PK</div><div class="l">Stake currency · arcade wide</div></div><div class="vital"><div class="v">99.00%</div><div class="l">Same certified math</div></div><div class="vital"><div class="v">1,000 = 5</div><div class="l">PK to USDT peg</div></div><div class="vital"><div class="v">3×</div><div class="l">Wagering on conversion</div></div></div>
 </div></header>
@@ -2591,6 +2594,7 @@ document.querySelectorAll('.pkhint').forEach(h=>{
 (function(){
   const q=new URLSearchParams(location.search);
   if(q.get('embed')) document.body.classList.add('embed');
+  if(q.get('page')) document.body.classList.add('page');
   const g=q.get('game');
   if(g){
     const t=document.querySelector('.tab[data-g="'+g+'"]');
