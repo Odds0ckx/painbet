@@ -395,6 +395,17 @@ footer{padding:22px}
 
 
 /* ---------- v5 additions ---------- */
+.rail.rx{display:flex;overflow-x:auto;gap:16px;scroll-snap-type:x proximity;padding:16px 6px 18px;margin:-16px -6px -10px;scrollbar-width:thin;scrollbar-color:var(--card-hi2) transparent}
+.rail.rx::-webkit-scrollbar{height:8px}
+.rail.rx::-webkit-scrollbar-thumb{background:var(--card-hi2);border-radius:999px}
+.rail.rx .gcard{flex:0 0 calc((100% - 80px)/6);min-width:150px;scroll-snap-align:start}
+@media(max-width:1100px){.rail.rx .gcard{flex-basis:calc((100% - 32px)/3)}}
+@media(max-width:600px){.rail.rx .gcard{flex-basis:calc((100% - 16px)/2)}}
+.railnav{display:flex;gap:8px;align-items:center}
+.rbtn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:var(--card);box-shadow:var(--shadow);color:var(--ink-hi);font-size:19px;font-weight:800;line-height:1;transition:background .2s,color .2s,transform .2s}
+.rbtn:hover{background:var(--red);color:#fff;transform:translateY(-1px)}
+.rbtn:active{transform:translateY(1px)}
+
 /* v5: restore generated promo banner artwork (home + promotions views only) */
 #view-home .promo.hero-promo,#view-promos .promo.hero-promo{
   background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/welcome-dose-bg.png');
@@ -539,7 +550,7 @@ body.trackeropen .drawer{right:0}
       <div class="sb-title">Casino</div>
       <button class="sb-item sel" data-view="home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg><span class="lbl">Lobby</span></button>
       <button class="sb-item" data-view="home" data-scroll="lobby"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg><span class="lbl">Originals</span></button>
-      <button class="sb-item" onclick="openArcade()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span class="lbl">Arcade</span></button>
+      <button class="sb-item" onclick="location.href='painbet-arcade.html'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span class="lbl">Arcade</span></button>
       <button class="sb-item" onclick="openGames('slots')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14"/></svg><span class="lbl">Slots</span></button>
       <button class="sb-item" onclick="openGames('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span class="lbl">Live casino</span></button>
       <button class="sb-item" data-view="promos"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13M12 7s-1.5-4-4.5-4C5 3 4 4.5 4 5.5 4 7 5.5 7 7 7h5zm0 0s1.5-4 4.5-4C19 3 20 4.5 20 5.5 20 7 18.5 7 17 7h-5z"/></svg><span class="lbl">Promotions</span></button>
@@ -628,9 +639,11 @@ body.trackeropen .drawer{right:0}
         <section class="blk">
           <div class="sec-head">
             <h2>Pain Originals</h2>
-            <div class="tag">Provably fair · <button onclick="openLegal('fair')">How it works</button> · <button onclick="openArcade()">Open arcade →</button></div>
+            <div class="tag" style="display:flex;align-items:center;gap:14px">Provably fair · <button onclick="openLegal('fair')">How it works</button> · <button onclick="location.href='painbet-arcade.html'">Open arcade →</button>
+              <span class="railnav"><button class="rbtn" aria-label="Scroll back" onclick="railScroll(this,-1)">‹</button><button class="rbtn" aria-label="Scroll forward" onclick="railScroll(this,1)">›</button></span>
+            </div>
           </div>
-          <div class="rail">
+          <div class="rail rx">
             <button data-cats="originals trending" class="gcard" data-game="flatline">
               <span class="art a-flatline">Flat<br>Line</span>
               <svg class="artline" viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 15 H90 L100 15 108 3 116 27 124 15 H300" stroke="rgba(255,255,255,.65)" stroke-width="2" fill="none"/></svg>
@@ -933,7 +946,7 @@ body.trackeropen .drawer{right:0}
               <div class="k">PK sink</div>
               <h3>The Arcade</h3>
               <p>Stake your PK on nine certified Originals at the same 1% edge. Convert winnings once you clear the desk.</p>
-              <button class="btn btn-ghost" onclick="openArcade()">Enter arcade</button>
+              <button class="btn btn-ghost" onclick="location.href='painbet-arcade.html'">Enter arcade</button>
             </div>
           </div>
         </section>
@@ -958,7 +971,7 @@ body.trackeropen .drawer{right:0}
 <!-- ============ MOBILE BOTTOM BAR ============ -->
 <nav class="mobilebar" aria-label="Primary mobile navigation">
   <button class="mbar-item sel" data-view="home" data-mbar="home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg><span>Lobby</span></button>
-  <button class="mbar-item" onclick="openArcade()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span>Arcade</span></button>
+  <button class="mbar-item" onclick="location.href='painbet-arcade.html'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span>Arcade</span></button>
   <button class="mbar-center" onclick="openSheet('scale')" aria-label="Pain scale, level 7 of 10">
     <div class="bubble mini">
       <div class="inner">
@@ -1205,7 +1218,7 @@ body.trackeropen .drawer{right:0}
       </div>
       <div class="mnote">Provider games launch through the aggregator at platform build. This mockup wires the full flow for the nine Pain Originals instead: hit the arcade.</div>
       <button class="btn btn-red" style="width:100%;margin-top:16px;border-radius:var(--r-md)" onclick="closeModal('ginfo-modal');openWallet()">Deposit to play</button>
-      <button class="btn btn-ghost" style="width:100%;margin-top:8px;border-radius:var(--r-md)" onclick="closeModal('ginfo-modal');openArcade()">Play an Original now</button>
+      <button class="btn btn-ghost" style="width:100%;margin-top:8px;border-radius:var(--r-md)" onclick="location.href='painbet-arcade.html'">Play an Original now</button>
     </div>
   </div>
 </div>
@@ -1277,6 +1290,11 @@ function show(v){
   window.scrollTo(0,0);
   if(v==='games') buildGames();
 }
+// hash router: painbet-arcade.html links back into specific views (#pk, #race, ...)
+(function(){
+  const h=location.hash.replace('#','');
+  if(h && document.getElementById('view-'+h)) show(h);
+})();
 document.querySelectorAll('[data-view]').forEach(el=>{
   el.addEventListener('click',()=>{
     closeNav();
@@ -1389,6 +1407,12 @@ function openTracker(){
   document.body.classList.add('trackeropen');
 }
 function closeTracker(){document.body.classList.remove('trackeropen')}
+
+// ---------- v5: rail arrows ----------
+function railScroll(btn,dir){
+  const rail=btn.closest('section').querySelector('.rail.rx');
+  rail.scrollBy({left:dir*rail.clientWidth*0.8,behavior:'smooth'});
+}
 
 // ---------- v5: wire game cards ----------
 function wireCards(scope){
