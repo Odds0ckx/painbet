@@ -1511,6 +1511,7 @@ function openAuth(){
 }
 function markSignedIn(){
   document.body.classList.add('signedIn');
+  try{sessionStorage.setItem('pb_signedIn','1')}catch(e){}
   document.querySelectorAll('[data-signin-btn]').forEach(b=>{
     b.textContent='0x4F2…9A1c';
     b.classList.remove('btn-ghost');
@@ -1518,6 +1519,14 @@ function markSignedIn(){
     b.style.cursor='default';
   });
 }
+// gate: present Sign In automatically on first visit this session, exactly like the
+// original signup animation did (full-screen entry, not a button you had to find)
+(function(){
+  let already=false;
+  try{ already = sessionStorage.getItem('pb_signedIn')==='1'; }catch(e){}
+  if(already){ markSignedIn(); return; }
+  setTimeout(openAuth, 350);
+})();
 document.querySelectorAll('#auth-modal .mtabs button').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('#auth-modal .mtabs button').forEach(x=>x.classList.remove('active'));
