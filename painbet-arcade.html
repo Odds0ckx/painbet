@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAINTRACKER ARCADE · v1 · Pain.bet Internal</title>
+<title>PAIN.BET — The Arcade</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -446,23 +446,20 @@ body.embed #arcade .sec-tag,body.embed #arcade>.wrap>h2,body.embed #arcade .sec-
 body.embed .main{margin-left:0!important;width:100%!important}
 body.embed #arcade{padding-top:6px}
 body.locked .tabs{display:none!important}
-/* page mode: full arcade content inside the lobby's Arcade view */
-body.page .sidebar,body.page .pk-bar .navtoggle,body.page .pk-bar .search,body.page .pk-bar .top-btn{display:none!important}
-body.page .main{margin-left:0!important;width:100%!important}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar" aria-label="Pain.bet navigation">
-    <div class="sb-logo"><span class="lg">P<span class="sb-triangle" aria-hidden="true"></span>IN</span><span class="tld">.BET</span></div>
+    <a class="sb-logo" href="pain-bet-mockup-v5.html"><span class="lg">P<span class="sb-triangle" aria-hidden="true"></span>IN</span><span class="tld">.BET</span></a>
     <div class="painscale-card" role="img" aria-label="Pain scale level 7 of 10, Agony">
       <div class="k"><span>Pain scale</span><b>AGONY</b></div>
       <div class="bubble"><div class="inner"><div class="water"></div><div class="water2"></div><span class="bub"></span><span class="bub"></span><span class="bub"></span><span class="bub"></span><div class="glare"></div><div class="percent"><span class="n">7/10</span><span class="lvl">Chronic</span></div></div></div>
       <div class="sub">12.8 / 20.0 BTC to level 8</div>
     </div>
-    <nav class="sb-group"><div class="sb-title">Casino</div><a class="sb-item sel" href="#arcade">⌂<span>Lobby</span></a><a class="sb-item" href="#arcade">⌁<span>Originals</span></a><a class="sb-item" href="#arcade">▥<span>Slots</span></a><a class="sb-item" href="#arcade">◷<span>Live casino</span></a></nav>
-    <nav class="sb-group"><div class="sb-title">Pain system</div><a class="sb-item" href="#economy">▥<span>Pain scale</span></a><a class="sb-item" href="#convert">⌬<span>PainKillers</span><em>1,250</em></a><a class="sb-item" href="#economy">↕<span>Anesthesia</span></a><a class="sb-item" href="#economy">♜<span>Threshold race</span></a></nav>
-    <div class="sb-foot"><a class="sb-item" href="#economy">♧<span>Affiliate</span></a><a class="sb-item" href="#convert">◌<span>Live support</span></a></div>
+    <nav class="sb-group"><div class="sb-title">Casino</div><a class="sb-item" href="pain-bet-mockup-v5.html">⌂<span>Lobby</span></a><a class="sb-item sel" href="#arcade">⌁<span>Arcade</span></a><a class="sb-item" href="pain-bet-mockup-v5.html#games">▥<span>Slots</span></a><a class="sb-item" href="pain-bet-mockup-v5.html#games">◷<span>Live casino</span></a></nav>
+    <nav class="sb-group"><div class="sb-title">Pain system</div><a class="sb-item" href="pain-bet-mockup-v5.html#painscale">▥<span>Pain scale</span></a><a class="sb-item" href="pain-bet-mockup-v5.html#pk">⌬<span>PainKillers</span><em>1,250</em></a><a class="sb-item" href="pain-bet-mockup-v5.html#anesthesia">↕<span>Anesthesia</span></a><a class="sb-item" href="pain-bet-mockup-v5.html#race">♜<span>Threshold race</span></a></nav>
+    <div class="sb-foot"><a class="sb-item" href="pain-bet-mockup-v5.html#affiliate">♧<span>Affiliate</span></a><a class="sb-item" href="pain-bet-mockup-v5.html#support">◌<span>Live support</span></a></div>
   </aside>
   <div class="main">
 <div class="pk-head"><div class="pk-bar">
@@ -2594,7 +2591,6 @@ document.querySelectorAll('.pkhint').forEach(h=>{
 (function(){
   const q=new URLSearchParams(location.search);
   if(q.get('embed')) document.body.classList.add('embed');
-  if(q.get('page')) document.body.classList.add('page');
   const g=q.get('game');
   if(g){
     const t=document.querySelector('.tab[data-g="'+g+'"]');
