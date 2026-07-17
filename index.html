@@ -176,12 +176,12 @@ section.blk{margin-bottom:34px}
 .gcard .meta .p{display:block;font-weight:600;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-top:2px}
 .gcard .badge{position:absolute;top:12px;left:12px;font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);background:var(--red);color:#fff;z-index:2}
 .gcard .badge.relief{background:var(--blue);color:#101314}
-.a-flatline{background:linear-gradient(160deg,#e10600 0%,#7c0300 60%,#2b0100 100%);color:#fff}
-.a-nerve{background:linear-gradient(160deg,#8f0400 0%,#3c0200 70%,#160100 100%);color:#ffb4b0}
-.a-bonesaw{background:linear-gradient(160deg,#ff3b33 0%,#a30500 55%,#340100 100%);color:#fff}
-.a-dosage{background:linear-gradient(160deg,#520703 0%,#1c0402 70%,#0f0202 100%);color:#ff6d66}
-.a-tolerance{background:linear-gradient(160deg,#b50500 0%,#520200 60%,#1a0100 100%);color:#ffd9d7}
-.a-threshold{background:linear-gradient(160deg,#2f3033 0%,#1a1b1d 60%,#121314 100%);color:#e6e1da}
+.a-flatline{background-image:url('assets/originals/flatline-bg.png');background-size:cover;background-position:center;color:transparent}
+.a-nerve{background-image:url('assets/originals/nerve-bg.png');background-size:cover;background-position:center;color:transparent}
+.a-bonesaw{background-image:url('assets/originals/bonesaw-bg.png');background-size:cover;background-position:center;color:transparent}
+.a-dosage{background-image:url('assets/originals/dosage-bg.png');background-size:cover;background-position:center;color:transparent}
+.a-tolerance{background-image:url('assets/originals/tolerance-bg.png');background-size:cover;background-position:center;color:transparent}
+.a-threshold{background-image:url('assets/originals/threshold-bg.png');background-size:cover;background-position:center;color:transparent}
 .a-crazy{background:linear-gradient(160deg,#b50500 0%,#5e0906 55%,#1d0403 100%);color:#ffd9a8}
 .a-lroul{background:linear-gradient(160deg,#8a6d1d 0%,#4a3a0e 60%,#171205 100%);color:#ffe9b0}
 .a-bj{background:linear-gradient(160deg,#2f3033 0%,#191a1c 60%,#0f1011 100%);color:#e6e1da}
@@ -395,6 +395,23 @@ footer{padding:22px}
 
 
 /* ---------- v5 additions ---------- */
+/* v5: restore generated promo banner artwork (home + promotions views only) */
+#view-home .promo.hero-promo,#view-promos .promo.hero-promo{
+  background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/welcome-dose-bg.png');
+  background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:#1c0605;
+}
+#view-home .promo.hero-promo .bigtri,#view-home .promo.hero-promo .ekg,#view-promos .promo.hero-promo .bigtri,#view-promos .promo.hero-promo .ekg{display:none}
+#view-home>.content>section:first-child .promo.blue-promo,#view-promos .promos:first-of-type .promo.blue-promo{
+  background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/anesthesia-bg.png');
+  background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:var(--card);
+}
+#view-home>.content>section:first-child .promo.blue-promo .bigtri,#view-promos .promos:first-of-type .promo.blue-promo .bigtri{display:none}
+#view-home>.content>section:first-child .promo:last-child,#view-promos .promos:first-of-type .promo:last-child{
+  background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/threshold-race-bg.png');
+  background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:var(--card);
+}
+#view-home>.content>section:first-child .promo:last-child .bigtri,#view-promos .promos:first-of-type .promo:last-child .bigtri{display:none}
+
 .sb-item .badge{margin-left:auto;font-size:10px;font-weight:800;background:var(--red);color:#fff;padding:2px 8px;border-radius:var(--r-pill)}
 .a-blackout{background:linear-gradient(160deg,#232529 0%,#131416 60%,#0b0c0d 100%);color:#cfd3d9}
 .a-rigor{background:linear-gradient(160deg,#6e1410 0%,#2a0503 65%,#140202 100%);color:#ffb4b0}
