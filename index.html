@@ -1858,8 +1858,9 @@ function animate(){
 }
 
 function playAuthCinematic(method, onDone){
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduced){ if(onDone) onDone(); return; }
+  // brand rule: this plays regardless of OS reduce-motion, per client direction
+  // (same policy as the ticker/liquid/EKG ambient motion elsewhere on the site).
+  // Only a genuine WebGL failure below skips it.
   try{
     if(!inited){ initAuthScene(); inited = true; }
   }catch(e){
