@@ -409,7 +409,9 @@ footer{padding:22px}
 #auth-canvas{position:absolute;inset:0;z-index:1;overflow:hidden}
 #auth-canvas canvas{display:block}
 #auth-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 20%,rgba(5,5,7,.95) 100%)}
-.auth-cinematic-mark{position:relative;z-index:10;text-align:center}
+.auth-cinematic-mark{position:relative;z-index:10;text-align:center;opacity:0;transition:opacity .6s var(--ease-out)}
+#auth-overlay.show-mark .auth-cinematic-mark{opacity:1}
+#auth-modal.neuron-mode{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;z-index:130}
 .auth-cinematic-mark .lg{font-family:var(--disp);font-size:34px;color:#fff;letter-spacing:.03em;text-shadow:0 0 30px rgba(225,6,0,.5)}
 .auth-cinematic-mark .lg .tld{font-weight:600;font-size:14px;color:var(--ink-lo);letter-spacing:.08em;margin-left:4px}
 .auth-cinematic-mark .status{margin-top:14px;font-weight:800;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-hi);opacity:.85}
@@ -1081,7 +1083,7 @@ body.trackeropen .drawer{right:0}
 <!-- ============ AUTH MODAL ============ -->
 <div class="modal-bg" id="auth-modal">
   <div class="modal" role="dialog" aria-label="Sign in">
-    <div class="mhead"><h3>Sign in</h3><button class="x" onclick="closeModal('auth-modal')">✕</button></div>
+    <div class="mhead"><h3>Sign in</h3><button class="x" onclick="closeAuth()">✕</button></div>
     <div class="mtabs">
       <button class="active" data-atab="wallet">Wallet</button>
       <button data-atab="email">Email</button>
@@ -1418,11 +1420,17 @@ function tickItem(){
 function openModal(id){document.getElementById(id).classList.add('on')}
 function closeModal(id){document.getElementById(id).classList.remove('on')}
 document.querySelectorAll('.modal-bg').forEach(m=>{
-  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')});
+  m.addEventListener('click',e=>{
+    if(e.target!==m) return;
+    if(m.id==='auth-modal'){ closeAuth(); }
+    else { m.classList.remove('on'); }
+  });
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal-bg.on').forEach(m=>m.classList.remove('on'));
+    // if the sign-in modal was dismissed (and we're not mid-cinematic), stop the neuron too
+    if(!authProceeding) closeAuth();
     closeArcade();closeTracker();
     closeSheet('more');closeSheet('scale');
   }
@@ -1524,6 +1532,10 @@ document.querySelectorAll('.prov[data-prov]').forEach(p=>{
 // ---------- v5: auth / apply / chat ----------
 function openAuth(){
   if(document.body.classList.contains('signedIn')) return;
+  // show the neuron immediately as a live backdrop, with the form floating over it.
+  // the burst (pulse -> activation) only fires later, on submit, via fakeAuth().
+  document.getElementById('auth-modal').classList.add('neuron-mode');
+  if(window.showAuthNeuron) window.showAuthNeuron();
   openModal('auth-modal');
 }
 function markSignedIn(){
@@ -1567,13 +1579,24 @@ document.querySelectorAll('#auth-modal .mtabs button').forEach(b=>{
     document.getElementById('ab-email').style.display=b.dataset.atab==='email'?'block':'none';
   });
 });
+let authProceeding=false;
+// user backed out of sign-in (X / backdrop / ESC): drop the form AND stop the neuron
+function closeAuth(){
+  authProceeding=false;
+  const am=document.getElementById('auth-modal');
+  am.classList.remove('on'); am.classList.remove('neuron-mode');
+  if(window.hideAuthNeuron) window.hideAuthNeuron();
+}
 function fakeAuth(btn){
-  closeModal('auth-modal');
   const method=(btn.textContent||'').trim()||'Email';
-  if(window.playAuthCinematic){
-    window.playAuthCinematic(method, markSignedIn);
+  authProceeding=true;
+  // hide only the form card; the neuron backdrop stays and now fires the burst
+  const am=document.getElementById('auth-modal');
+  am.classList.remove('on'); am.classList.remove('neuron-mode');
+  if(window.fireAuthCinematic){
+    window.fireAuthCinematic(method, ()=>{ authProceeding=false; markSignedIn(); });
   } else {
-    markSignedIn();
+    authProceeding=false; markSignedIn();
   }
 }
 function fakeApply(btn){document.getElementById('apply-ok').classList.add('on');btn.disabled=true;btn.style.opacity=.5}
@@ -1854,6 +1877,7 @@ function animate(){
       const overlay = document.getElementById('auth-overlay');
       setTimeout(()=>{
         overlay.classList.remove('on');
+        overlay.classList.remove('show-mark');
         const done = onCinematicDone; onCinematicDone = null;
         setTimeout(()=>{ isLooping=false; if(done) done(); }, 1000);
       }, 550);
@@ -1862,10 +1886,43 @@ function animate(){
   composer.render();
 }
 
-function playAuthCinematic(method, onDone){
-  // brand rule: this plays regardless of OS reduce-motion, per client direction
-  // (same policy as the ticker/liquid/EKG ambient motion elsewhere on the site).
-  // Only a genuine WebGL failure below skips it.
+function setMark(on){
+  const o = document.getElementById('auth-overlay');
+  if(o) o.classList.toggle('show-mark', !!on);
+}
+
+// Show the neuron as a live, idle backdrop (rotation + glow + dust, no pulse yet).
+// Called when the Sign in modal opens, so the neuron is already there behind the form.
+function showAuthNeuron(){
+  try{
+    if(!inited){ initAuthScene(); inited = true; }
+  }catch(e){
+    console.warn('auth neuron unavailable', e);
+    return false;
+  }
+  state = 0; pulseProg = -10.0; actProg = 0.0;
+  material.uniforms.uPulseProgress.value = -10.0;
+  material.uniforms.uActivation.value = 0.0;
+  camera.position.set(0, 5, 40);
+  camera.userData.baseY = camera.position.y;
+  setMark(false);
+  document.getElementById('auth-overlay').classList.add('on');
+  if(!isLooping){ isLooping = true; clock.getDelta(); requestAnimationFrame(animate); }
+  return true;
+}
+
+// Tear the neuron down when the user backs out of sign-in without submitting.
+function hideAuthNeuron(){
+  const o = document.getElementById('auth-overlay');
+  if(o){ o.classList.remove('on'); o.classList.remove('show-mark'); }
+  isLooping = false;
+  state = 0;
+}
+
+// Fire the burst (pulse travelling in -> activation explosion), then resolve sign-in.
+// brand rule: plays regardless of OS reduce-motion, per client direction
+// (same policy as the ticker/liquid/EKG ambient motion elsewhere on the site).
+function fireAuthCinematic(method, onDone){
   try{
     if(!inited){ initAuthScene(); inited = true; }
   }catch(e){
@@ -1873,19 +1930,35 @@ function playAuthCinematic(method, onDone){
     if(onDone) onDone();
     return;
   }
+  document.getElementById('auth-overlay').classList.add('on');
+  setMark(true);
   onCinematicDone = onDone;
   state = 1; pulseProg = INPUT_LENGTH; actProg = 0.0;
   material.uniforms.uActivation.value = 0.0;
   material.uniforms.uPulseProgress.value = pulseProg;
   camera.userData.baseY = camera.position.y;
   if(statusEl()) statusEl().textContent = 'Signal in transit';
-  document.getElementById('auth-overlay').classList.add('on');
-  isLooping = true;
-  clock.getDelta();
-  requestAnimationFrame(animate);
+  if(!isLooping){ isLooping = true; clock.getDelta(); requestAnimationFrame(animate); }
 }
 
+// back-compat: show the idle neuron then immediately fire the burst
+function playAuthCinematic(method, onDone){ showAuthNeuron(); fireAuthCinematic(method, onDone); }
+
+window.showAuthNeuron    = showAuthNeuron;
+window.hideAuthNeuron    = hideAuthNeuron;
+window.fireAuthCinematic = fireAuthCinematic;
 window.playAuthCinematic = playAuthCinematic;
+
+// The entry gate can open the Sign in modal (~350ms) before this module finishes
+// loading (it parses ~1.2MB of Three.js first). If so, the neuron backdrop was
+// skipped because window.showAuthNeuron did not exist yet, so bring it up now.
+(function(){
+  const am = document.getElementById('auth-modal');
+  if(am && am.classList.contains('on') && am.classList.contains('neuron-mode')
+     && !document.body.classList.contains('signedIn')){
+    showAuthNeuron();
+  }
+})();
 </script>
 
 </body>
