@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAIN.BET — Pain Signal</title>
+<title>PAIN.BET — Threshold Net</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -340,6 +340,32 @@
     .c-bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
     .c-br { bottom: 12px; right: 12px; transform: scale(-1,-1); }
 
+    /* Network-fire drop banner */
+    #drop-banner {
+        position: fixed;
+        left: 50%; bottom: 92px;
+        transform: translate(-50%, 14px);
+        z-index: 11;
+        pointer-events: none;
+        text-align: center;
+        opacity: 0;
+        transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
+    }
+    #drop-banner.on { opacity: 1; transform: translate(-50%, 0); }
+    #drop-banner .db-k {
+        font-weight: 800; font-size: 0.6rem; letter-spacing: .28em; text-transform: uppercase;
+        color: var(--redhi); margin-bottom: 9px;
+    }
+    #drop-banner .db-amt {
+        font-family: var(--disp); font-size: 42px; line-height: 1; color: #fff;
+        text-shadow: 0 0 34px rgba(225,6,0,.65);
+    }
+    #drop-banner .db-sub {
+        margin-top: 9px; font-weight: 700; font-size: 0.62rem; letter-spacing: .14em;
+        text-transform: uppercase; color: var(--ink-hi);
+    }
+    @media (max-width: 600px){ #drop-banner .db-amt { font-size: 32px; } #drop-banner{ bottom: 74px; } }
+
     /* Embed mode (opened inside a modal from the lobby): drop the site chrome */
     body.embed #brandbar,
     body.embed #fire-hint { display: none; }
@@ -383,44 +409,55 @@
         <div class="glass-inner">
             <div class="panel-header">
                 <div class="status-dot" id="status-dot"></div>
-                <span class="panel-title">Pain Signal</span>
+                <span class="panel-title">Threshold Net</span>
                 <span class="panel-id">NX-7A</span>
             </div>
 
             <div class="telemetry">
                 <div class="tele-row">
+                    <span class="tele-label">Pool</span>
+                    <span class="tele-val active" id="tele-pool">0 / 50,000</span>
+                </div>
+                <div class="tele-row">
+                    <span class="tele-label">Contributors</span>
+                    <span class="tele-val" id="tele-contrib">0</span>
+                </div>
+                <div class="tele-row">
                     <span class="tele-label">Membrane V</span>
                     <span class="tele-val" id="tele-mv">&minus;70.0 mV</span>
-                </div>
-                <div class="tele-row">
-                    <span class="tele-label">Dendrites</span>
-                    <span class="tele-val active" id="tele-dend">247</span>
-                </div>
-                <div class="tele-row">
-                    <span class="tele-label">Propagation</span>
-                    <span class="tele-val" id="tele-prop">STANDBY</span>
                 </div>
             </div>
 
             <div class="divider"></div>
 
             <div class="bar-row">
-                <span class="bar-label">Signal</span>
+                <span class="bar-label">Charge</span>
                 <div class="bar-track"><div class="bar-fill" id="bar-signal" style="width:8%"></div></div>
             </div>
             <div class="bar-row" style="margin-top:4px">
-                <span class="bar-label">Axon</span>
+                <span class="bar-label">To fire</span>
                 <div class="bar-track"><div class="bar-fill" id="bar-axon" style="width:100%; background: linear-gradient(90deg, rgba(225,6,0,0.5), rgba(255,59,51,0.85))"></div></div>
             </div>
 
             <div class="divider"></div>
 
-            <div class="status-line idle" id="status-msg">&#9656; AWAITING STIMULUS</div>
+            <div class="tele-row" style="margin-bottom:8px">
+                <span class="tele-label">Last drop</span>
+                <span class="tele-val" id="tele-drop">PENDING</span>
+            </div>
+
+            <div class="status-line idle" id="status-msg">&#9656; CHARGING</div>
         </div>
     </div>
 </div>
 
-<div id="fire-hint">&#9656; Click anywhere to fire the <b>signal</b></div>
+<div id="fire-hint">&#9656; Every wager charges the network &middot; <b>click to add yours</b></div>
+
+<div id="drop-banner" aria-live="polite">
+    <div class="db-k">&#9656; Network fire</div>
+    <div class="db-amt" id="db-amt">50,000 USDT</div>
+    <div class="db-sub" id="db-sub">released across 0 winners</div>
+</div>
 
 <div id="coords">
     <span id="coord-x">X: 0.000</span>
@@ -501,6 +538,7 @@
         uniform float uTime;
         uniform float uPulseProgress;
         uniform float uActivation;
+        uniform float uCharge;
         uniform vec3 uCameraPos;
 
         varying vec2 vUv;
@@ -534,6 +572,11 @@
             // Charcoal body with a deep-red fresnel rim
             vec3 baseColor = vec3(0.04, 0.04, 0.05) + (vec3(0.4, 0.02, 0.02) * fresnel * n1);
             baseColor *= (0.4 + 0.6 * n2);
+
+            // Threshold charge: the closer the network is to firing, the hotter the
+            // core glows and the faster it throbs (tension building toward the drop)
+            float chargeGlow = uCharge * exp(-vDist * 0.16) * (0.55 + 0.45 * sin(uTime * (2.0 + uCharge * 7.0)));
+            baseColor += vec3(0.95, 0.05, 0.03) * chargeGlow * 1.5;
 
             // Incoming pulse (arterial red)
             vec3 pulseColor = vec3(0.0);
@@ -579,6 +622,7 @@
             uTime:          { value: 0 },
             uPulseProgress: { value: -10.0 },
             uActivation:    { value: 0 },
+            uCharge:        { value: 0 },
             uCameraPos:     { value: new THREE.Vector3() }
         },
         transparent: false,
@@ -712,37 +756,100 @@
     const dustC = makeParticles(120,  60, 0x888888, 0.30, 0.12);
     scene.add(dustA, dustB, dustC);
 
+    const elPool   = document.getElementById('tele-pool');
+    const elContrib= document.getElementById('tele-contrib');
     const elMv     = document.getElementById('tele-mv');
-    const elProp   = document.getElementById('tele-prop');
+    const elDropT  = document.getElementById('tele-drop');
     const elSignal = document.getElementById('bar-signal');
     const elAxon   = document.getElementById('bar-axon');
     const elStatus = document.getElementById('status-msg');
     const elDot    = document.getElementById('status-dot');
-    const elPanel  = document.getElementById('ui-panel');
     const elHint   = document.getElementById('fire-hint');
     const elCoordX = document.getElementById('coord-x');
     const elCoordY = document.getElementById('coord-y');
     const elCoordZ = document.getElementById('coord-z');
+    const elBanner = document.getElementById('drop-banner');
+    const elDbAmt  = document.getElementById('db-amt');
+    const elDbSub  = document.getElementById('db-sub');
 
-    let state = 0;
+    // ---- Threshold Net -------------------------------------------------
+    // The axon charges as the community wagers. When the pool crosses the
+    // firing threshold the whole network fires a drop, then it recharges.
+    // Driven by mock live data here (wagerTick); swap that for a real
+    // wager-event feed later and the visuals follow automatically.
+    const TARGET  = 50000;
+    const REST_MV = -70.0, FIRE_MV = -55.0;   // rest -> depolarised firing threshold
+    let pool = TARGET * (0.26 + Math.random() * 0.22);
+    let contributors = 160 + Math.floor(Math.random() * 140);
+    let charge = 0;
+    let firing = false;
+    let lastDrop = null;
+    let clickCd = 0;
+
+    let state = 0;            // 0 charging, 1 mini charge-pulse in flight, 2 network fire
     let pulseProg = -10.0;
     let actProg   = 0.0;
     const INPUT_LENGTH = 45.0;
 
-    let mvBase = -70.0;
-    let mvTarget = -70.0;
+    const fmt = n => Math.round(n).toLocaleString('en-US');
 
-    window.addEventListener('click', () => {
-        if (state !== 0) return;
+    function startMiniPulse(){
+        if (state !== 0) return;          // one representative pulse at a time
         state = 1;
         pulseProg = INPUT_LENGTH;
-        actProg   = 0.0;
         material.uniforms.uActivation.value = 0.0;
-        elPanel.style.opacity = '0';
-        if (elHint) elHint.style.opacity = '0';
+    }
+
+    function addToPool(amt){
+        pool += amt;
+        if (Math.random() < 0.72) contributors++;
+        startMiniPulse();
+        if (pool >= TARGET && !firing) triggerNetworkFire();
+    }
+
+    function triggerNetworkFire(){
+        firing = true;
+        state = 2;
+        actProg = 0.0;
+        pulseProg = -10.0;
+        material.uniforms.uPulseProgress.value = -10.0;
+        const amount  = Math.round(pool);
+        const winners = 12 + Math.floor(Math.random() * 70);
+        lastDrop = { amount, winners };
+        camera.position.y += 0.6;
         document.body.classList.add('active');
-        setTimeout(() => document.body.classList.remove('active'), 300);
-        mvTarget = 40.0;
+        setTimeout(() => document.body.classList.remove('active'), 320);
+        if (elBanner){
+            elDbAmt.textContent = fmt(amount) + ' USDT';
+            elDbSub.textContent = 'released across ' + winners + ' winners';
+            elBanner.classList.add('on');
+        }
+    }
+
+    function endNetworkFire(){
+        firing = false;
+        state = 0;
+        material.uniforms.uActivation.value = 0.0;
+        pool = TARGET * (0.03 + Math.random() * 0.05);   // small residual, recharge
+        contributors = 6 + Math.floor(Math.random() * 22);
+        setTimeout(() => { if (elBanner) elBanner.classList.remove('on'); }, 3600);
+    }
+
+    // mock live wager feed (replace with a real event stream later)
+    function wagerTick(){
+        if (!firing){
+            const whale = Math.random() < 0.05;
+            addToPool(whale ? (700 + Math.random() * 2600) : (12 + Math.random() * 240));
+        }
+        setTimeout(wagerTick, 320 + Math.random() * 900);
+    }
+    setTimeout(wagerTick, 500);
+
+    // click = add your own wager to the charge (throttled), fires a mini pulse
+    window.addEventListener('click', () => {
+        if (firing || clickCd > 0) return;
+        clickCd = 0.6;
+        addToPool(140 + Math.random() * 90);
     });
 
     window.addEventListener('resize', () => {
@@ -771,73 +878,55 @@
         material.uniforms.uTime.value += delta;
         material.uniforms.uCameraPos.value.copy(camera.position);
 
-        mvBase += (Math.random() - 0.5) * 0.4;
-        mvBase = Math.max(-80, Math.min(-55, mvBase));
-        mvTarget += (mvBase - mvTarget) * 0.05;
+        // charge tracks the pool toward the firing threshold
+        charge = Math.min(1, pool / TARGET);
+        material.uniforms.uCharge.value = firing ? 0.0 : charge;
+        if (clickCd > 0) clickCd -= delta;
 
         if (state === 1) {
-            pulseProg -= delta * 35.0;
+            // mini charge-pulse feeding the soma (does NOT explode)
+            pulseProg -= delta * 42.0;
             material.uniforms.uPulseProgress.value = pulseProg;
-            mvTarget = 40.0 * (1.0 - pulseProg / INPUT_LENGTH);
-
             if (pulseProg <= 2.0) {
-                state = 2;
+                state = 0;
                 pulseProg = -10.0;
                 material.uniforms.uPulseProgress.value = -10.0;
-                actProg = 0.0;
-                camera.position.y += 0.5;
             }
         } else if (state === 2) {
+            // network fire: full action-potential explosion
             actProg += delta * 20.0;
             material.uniforms.uActivation.value = actProg;
-
-            if (actProg > 75.0) {
-                state = 0;
-                material.uniforms.uActivation.value = 0.0;
-                mvTarget = -70.0;
-                elStatus.textContent = '▸ RETRIGGER AVAILABLE';
-                elStatus.className   = 'status-line ready';
-                elDot.style.background = '#8a8c90';
-                elDot.style.boxShadow  = '0 0 6px rgba(255,255,255,.4)';
-                elPanel.style.opacity  = '1';
-            }
+            if (actProg > 75.0) endNetworkFire();
         }
 
         if (frameCount % 6 === 0) {
-            const mv = state === 0 ? mvBase : mvTarget;
-            elMv.textContent = (mv >= 0 ? '+' : '−') + Math.abs(mv).toFixed(1) + ' mV';
-            elMv.className   = 'tele-val' + (mv > 0 ? ' alert' : '');
+            const critical = !firing && charge > 0.85;
+            const mv = REST_MV + (FIRE_MV - REST_MV) * charge + (Math.random() - 0.5) * 0.6;
 
-            if (state === 0) {
-                elProp.textContent   = 'STANDBY';
-                elProp.className     = 'tele-val';
-                elStatus.textContent = '▸ AWAITING STIMULUS';
-                elStatus.className   = 'status-line idle';
-                elSignal.style.width = (6 + Math.random() * 4) + '%';
-                elSignal.style.background = 'linear-gradient(90deg, rgba(143,4,0,0.6), rgba(225,6,0,0.95))';
-                elDot.style.background  = '#8a8c90';
-                elDot.style.boxShadow   = '0 0 6px rgba(255,255,255,.4)';
-            } else if (state === 1) {
-                const pct = Math.max(0, Math.min(100, (1 - pulseProg / INPUT_LENGTH) * 100));
-                elProp.textContent = 'PROPAGATING';
-                elProp.className   = 'tele-val alert';
-                elStatus.textContent = '▸ SIGNAL INCOMING';
+            elPool.textContent    = fmt(pool) + ' / ' + fmt(TARGET);
+            elContrib.textContent = fmt(contributors);
+            elSignal.style.width  = (charge * 100).toFixed(1) + '%';
+            elAxon.style.width    = ((1 - charge) * 100).toFixed(1) + '%';
+            if (lastDrop) elDropT.textContent = fmt(lastDrop.amount) + ' · ' + lastDrop.winners + ' won';
+
+            if (firing) {
+                elMv.textContent = '+40.0 mV';
+                elMv.className   = 'tele-val active';
+                elStatus.textContent = '▸ NETWORK FIRE';
                 elStatus.className   = 'status-line firing';
-                elSignal.style.width = pct + '%';
-                elSignal.style.background = 'linear-gradient(90deg, rgba(143,4,0,0.6), rgba(225,6,0,0.95))';
-                elDot.style.background  = '#E10600';
-                elDot.style.boxShadow   = '0 0 8px rgba(225,6,0,.8)';
-            } else if (state === 2) {
-                const pct = Math.min(100, actProg / 75 * 100);
-                elProp.textContent = 'FIRING';
-                elProp.className   = 'tele-val active';
-                elStatus.textContent = '▸ ACTION POTENTIAL';
-                elStatus.className   = 'status-line firing';
-                elSignal.style.width = (100 - pct * 0.7) + '%';
+                elDot.style.background = '#FF3B33';
+                elDot.style.boxShadow  = '0 0 12px rgba(255,59,51,.95)';
                 elSignal.style.background = 'linear-gradient(90deg, rgba(225,6,0,0.7), rgba(255,59,51,0.95))';
-                elAxon.style.width = Math.max(0, 100 - pct) + '%';
-                elDot.style.background  = '#FF3B33';
-                elDot.style.boxShadow   = '0 0 10px rgba(255,59,51,.9)';
+            } else {
+                elMv.textContent = (mv >= 0 ? '+' : '−') + Math.abs(mv).toFixed(1) + ' mV';
+                elMv.className   = 'tele-val' + (critical ? ' alert' : '');
+                elStatus.textContent = critical ? '▸ CRITICAL · THRESHOLD NEAR' : '▸ CHARGING';
+                elStatus.className   = 'status-line ' + (critical ? 'firing' : 'idle');
+                elDot.style.background = critical ? '#E10600' : '#8a8c90';
+                elDot.style.boxShadow  = critical ? '0 0 9px rgba(225,6,0,.85)' : '0 0 6px rgba(255,255,255,.4)';
+                elSignal.style.background = critical
+                    ? 'linear-gradient(90deg, rgba(225,6,0,0.75), rgba(255,59,51,0.95))'
+                    : 'linear-gradient(90deg, rgba(143,4,0,0.6), rgba(225,6,0,0.95))';
             }
         }
 
