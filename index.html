@@ -412,6 +412,34 @@ footer{padding:22px}
 .auth-cinematic-mark{position:relative;z-index:10;text-align:center;opacity:0;transition:opacity .6s var(--ease-out)}
 #auth-overlay.show-mark .auth-cinematic-mark{opacity:1}
 #auth-modal.neuron-mode{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;z-index:130}
+
+/* ---- Threshold Net (synapse) view ---- */
+.syn-live{margin-left:auto;font-weight:800;font-size:10px;letter-spacing:.16em;color:var(--redhi)}
+.syn-stage{position:relative;height:440px;background:radial-gradient(ellipse at 60% 55%,rgba(60,4,3,.5),#0a0b0e 72%);overflow:hidden}
+.syn-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.syn-badge{position:absolute;left:16px;bottom:14px;z-index:2;font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-hi);background:rgba(10,11,14,.55);border:1px solid hsla(0,0%,100%,.08);border-radius:var(--r-pill);padding:6px 12px}
+.syn-badge span{color:var(--redhi)}
+.syn-fire-tag{position:absolute;top:14px;right:16px;z-index:2;font-family:var(--disp);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#fff;text-shadow:0 0 18px rgba(225,6,0,.7);opacity:0;transition:opacity .3s var(--ease-out)}
+.syn-stage.firing .syn-fire-tag{opacity:1}
+.syn-pool{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.syn-pool b{font-family:var(--disp);font-size:34px;line-height:1;color:#fff}
+.syn-pool span{font-weight:700;font-size:12px;letter-spacing:.06em;color:var(--ink-lo)}
+.syn-bar{height:8px;border-radius:var(--r-pill);background:hsla(0,0%,100%,.06);overflow:hidden;margin-bottom:16px}
+.syn-bar-fill{height:100%;width:8%;border-radius:var(--r-pill);background:linear-gradient(90deg,var(--red-dim),var(--red));transition:width .5s var(--ease-out),background .5s var(--ease-out)}
+.syn-bar-fill.crit{background:linear-gradient(90deg,var(--red),var(--redhi))}
+.syn-step{display:flex;gap:13px;padding:12px 0;border-bottom:1px solid hsla(0,0%,100%,.05);font-weight:500;font-size:12.5px;line-height:1.5;color:var(--ink)}
+.syn-step:last-child{border-bottom:none}
+.syn-step .n{flex:none;font-family:var(--disp);font-size:13px;color:var(--redhi);width:26px}
+.syn-step b{color:var(--white);font-weight:700}
+.syn-metastrip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.syn-metastrip>div{display:flex;flex-direction:column;gap:3px;background:var(--card-2);border-radius:var(--r-md);padding:10px 12px}
+.syn-metastrip .k{font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo)}
+.syn-metastrip .v{font-weight:800;font-size:14px;color:var(--white)}
+#syn-lb tr.you td{color:var(--white)}
+#syn-lb tr.you .rank{color:var(--redhi)}
+#syn-lb tr.you{background:linear-gradient(90deg,rgba(225,6,0,.14),transparent)}
+#syn-lb .share{text-align:right;color:var(--blue);font-weight:700}
+@media(max-width:820px){#view-synapse .duo{grid-template-columns:1fr}.syn-stage{height:300px}}
 .auth-cinematic-mark .lg{font-family:var(--disp);font-size:34px;color:#fff;letter-spacing:.03em;text-shadow:0 0 30px rgba(225,6,0,.5)}
 .auth-cinematic-mark .lg .tld{font-weight:600;font-size:14px;color:var(--ink-lo);letter-spacing:.08em;margin-left:4px}
 .auth-cinematic-mark .status{margin-top:14px;font-weight:800;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-hi);opacity:.85}
@@ -580,7 +608,7 @@ body.trackeropen .drawer{right:0}
     <nav class="sb-group" aria-label="Pain system">
       <div class="sb-title">Pain system</div>
       <button class="sb-item" data-view="painscale"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h3v-6H4zM10 18h3V6h-3zM16 18h3v-9h-3z"/></svg><span class="lbl">Pain scale</span></button>
-      <button class="sb-item" onclick="location.href='painbet-synapse.html'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5M12 12l5-5M12 12l5 5"/></svg><span class="lbl">Pain signal</span></button>
+      <button class="sb-item" data-view="synapse"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5M12 12l5-5M12 12l5 5"/></svg><span class="lbl">Threshold Raid</span></button>
       <button class="sb-item" data-view="pk"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg><span class="lbl">PainKillers</span><span class="tag pk">1,250</span></button>
       <button class="sb-item" data-view="anesthesia"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg><span class="lbl">Anesthesia</span></button>
       <button class="sb-item" onclick="openTracker()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span class="lbl">PainTracker</span><span class="badge">2</span></button>
@@ -975,6 +1003,77 @@ body.trackeropen .drawer{right:0}
       </div>
     </div>
 
+    <!-- ============ VIEW: THRESHOLD RAID (synapse boss raid) ============ -->
+    <div class="view" id="view-synapse">
+      <div class="content">
+        <div class="gcrumb"><button data-view="home">Lobby</button> / <span style="color:var(--ink-hi)">Threshold Raid</span></div>
+
+        <section class="blk">
+          <div class="sec-head">
+            <h2>Threshold Raid</h2>
+            <div class="tag" style="display:inline-block;background:var(--card-hi);color:var(--redhi)">Live · community boss raid</div>
+          </div>
+          <div class="duo syn-duo">
+
+            <div class="panel">
+              <h4>Nociceptor <b>NX-7A</b><span class="syn-live" id="syn-status">Raid live</span></h4>
+              <div class="syn-stage">
+                <canvas id="syn-canvas"></canvas>
+                <div class="syn-badge">Overload <span id="syn-charge-pct">0%</span></div>
+                <div class="syn-fire-tag" id="syn-fire-tag">Flatline</div>
+              </div>
+              <div class="relief-body" style="padding:15px 18px">
+                <div class="syn-pool"><b id="syn-pool">0</b><span> / 50,000 USDT bounty</span></div>
+                <div class="syn-bar"><div class="syn-bar-fill" id="syn-bar"></div></div>
+                <div class="syn-metastrip">
+                  <div><span class="k">Overload</span><span class="v" id="syn-mv2">2%</span></div>
+                  <div><span class="k">Raiders</span><span class="v" id="syn-contrib">0</span></div>
+                  <div><span class="k">Membrane</span><span class="v" id="syn-mv">&minus;70.0 mV</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h4>Your raid <span class="syn-live" id="syn-yourrank" style="color:var(--ink-hi)">Unranked</span></h4>
+              <div class="relief-body">
+                <div class="row"><span class="k">Your contribution</span><span class="v" id="syn-yourstake">0 USDT</span></div>
+                <div class="row"><span class="k">Your share of bounty</span><span class="v blue" id="syn-yourshare">0%</span></div>
+                <div class="row"><span class="k">Projected payout</span><span class="v blue" id="syn-yourpayout">0 USDT</span></div>
+                <div class="row"><span class="k">Raiders in cycle</span><span class="v" id="syn-contrib2">0</span></div>
+                <button class="btn btn-red" id="syn-add" style="width:100%;margin-top:16px;border-radius:var(--r-md)">Apply stimulus &middot; stake 250 USDT</button>
+                <div class="mnote" style="margin-top:12px">The more you stake into the raid, the bigger your cut when the nociceptor flatlines. Your share is your contribution divided by the total pool, paid the moment it fires.</div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="blk">
+          <div class="duo syn-duo">
+
+            <div class="panel">
+              <h4>How the raid works</h4>
+              <div class="relief-body">
+                <div class="syn-step"><span class="n">01</span><div><b>The whole community raids one boss.</b> Every stake overloads the nociceptor. The bounty pool grows with every contribution across pain.bet.</div></div>
+                <div class="syn-step"><span class="n">02</span><div><b>Contribute to climb.</b> The more you stake, the higher your share of the bounty and the higher you sit on the raiders board. Your projected payout updates live.</div></div>
+                <div class="syn-step"><span class="n">03</span><div><b>Pressure hits critical.</b> At 85 percent overload the core runs hot. The next stakes can push it past the firing threshold.</div></div>
+                <div class="syn-step"><span class="n">04</span><div><b>It flatlines and pays.</b> Cross 50,000 USDT and the boss discharges. The bounty is split by contribution, everyone holding is paid, then a fresh nociceptor spawns.</div></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h4>Top raiders <span id="syn-nextfire" style="margin-left:auto;font-weight:700;font-size:10px;color:var(--ink-lo)">this cycle</span></h4>
+              <table>
+                <tr><th>#</th><th>Raider</th><th>Contribution</th><th style="text-align:right">Share</th></tr>
+                <tbody id="syn-lb"></tbody>
+              </table>
+            </div>
+
+          </div>
+        </section>
+      </div>
+    </div>
+
     <footer>
   <div class="foot-rails">One confirmation in. One signature out. BTC · ETH · USDT · BNB · TRON · <button data-view="rails" style="color:var(--blue);font-weight:700">Rails →</button></div>
       <div class="foot-inner">
@@ -1019,7 +1118,7 @@ body.trackeropen .drawer{right:0}
       <button onclick="closeSheet('more');openGames('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Live casino</button>
       <button data-view="promos" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13"/></svg>Promotions</button>
       <button data-view="painscale" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h3v-6H4zM10 18h3V6h-3zM16 18h3v-9h-3z"/></svg>Pain scale tiers</button>
-      <button onclick="closeSheet('more');location.href='painbet-synapse.html'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5M12 12l5-5M12 12l5 5"/></svg>Pain signal</button>
+      <button data-view="synapse" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5M12 12l5-5M12 12l5 5"/></svg>Threshold Raid</button>
       <button data-view="pk" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg>PainKillers<span class="tag">1,250</span></button>
       <button data-view="anesthesia" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg>Anesthesia</button>
       <button onclick="closeSheet('more');openTracker()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>PainTracker</button>
@@ -1959,6 +2058,213 @@ window.playAuthCinematic = playAuthCinematic;
     showAuthNeuron();
   }
 })();
+</script>
+
+<script type="module">
+// ---------- Threshold Raid: contained boss-raid neuron (self-hosted three) ----------
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const canvas = document.getElementById('syn-canvas');
+const stage  = canvas ? canvas.parentElement : null;
+const viewEl = document.getElementById('view-synapse');
+if (canvas && stage && viewEl) {
+
+  const TARGET = 50000;                 // bounty + overload threshold
+  const REST_MV = -70.0, FIRE_MV = -55.0;
+  const YOU = { name: 'you', stake: 0, you: true };
+  const BOT_NAMES = ['nervend','flatlin','morphi','bonesa','stingr','agonyx','numbsk','dosage','clotshot','tremor','ischemia','venous','ripcord','coldcut','lastrit'];
+  let raiders = BOT_NAMES.map(n => ({ name: n + '***', stake: 400 + Math.random()*2600, you:false }));
+  raiders.push(YOU);
+  let pool = raiders.reduce((s,r)=>s+r.stake, 0);
+  let charge = 0, firing = false, clickCd = 0;
+
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString('en-US');
+
+  // ---- three scene, contained to the stage panel ----
+  const scene = new THREE.Scene();
+  scene.background = null;               // transparent, the panel gradient shows through
+  scene.fog = new THREE.FogExp2(0x0a0b0e, 0.02);
+  const camera = new THREE.PerspectiveCamera(50, 16/9, 0.1, 1000);
+  camera.position.set(0, 3, 40);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:false, alpha:true, powerPreference:'high-performance' });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+  const bloom = new UnrealBloomPass(new THREE.Vector2(16,9), 1.4, 0.5, 0.9);
+  bloom.threshold = 0.6; bloom.strength = 1.6; bloom.radius = 0.8;
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(bloom);
+
+  const vertexShader = `
+    attribute float aIsInput; varying vec3 vWorldPos; varying vec3 vNormal; varying float vIsInput; varying float vDist;
+    void main(){ vIsInput=aIsInput; vec4 wp=modelMatrix*vec4(position,1.0); vWorldPos=wp.xyz; vDist=length(wp.xyz);
+      vNormal=normalize(normalMatrix*normal); gl_Position=projectionMatrix*viewMatrix*wp; }
+  `;
+  const fragmentShader = `
+    uniform float uTime; uniform float uPulseProgress; uniform float uActivation; uniform float uCharge; uniform vec3 uCameraPos;
+    varying vec3 vWorldPos; varying vec3 vNormal; varying float vIsInput; varying float vDist;
+    float hash(vec3 p){ p=fract(p*0.3183099+.1); p*=17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+    float noise(vec3 x){ vec3 i=floor(x),f=fract(x); f=f*f*(3.0-2.0*f);
+      return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+                 mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); }
+    void main(){
+      vec3 viewDir=normalize(uCameraPos-vWorldPos);
+      float fresnel=pow(1.0-max(dot(vNormal,viewDir),0.0),3.0);
+      float n1=noise(vWorldPos*0.5+uTime*0.2), n2=noise(vWorldPos*2.0-uTime*0.5);
+      vec3 baseColor=vec3(0.05,0.05,0.06)+(vec3(0.45,0.02,0.02)*fresnel*n1);
+      baseColor*=(0.45+0.6*n2);
+      float chargeGlow=uCharge*exp(-vDist*0.16)*(0.55+0.45*sin(uTime*(2.0+uCharge*7.0)));
+      baseColor+=vec3(0.95,0.05,0.03)*chargeGlow*1.5;
+      vec3 pulseColor=vec3(0.0);
+      if(vIsInput>0.5 && uPulseProgress>-5.0){
+        float pDist=abs(vDist-uPulseProgress); float core=exp(-pDist*pDist*3.0);
+        float trail=smoothstep(6.0,0.0,vDist-uPulseProgress)*smoothstep(-2.0,0.0,uPulseProgress-vDist);
+        pulseColor=vec3(4.0,0.1,0.05)*max(core*3.0,trail*1.5)*(0.8+0.2*n2);
+      }
+      vec3 actColor=vec3(0.0);
+      if(uActivation>0.0){
+        float dfw=vDist-uActivation; float wave=exp(-pow(dfw,2.0)*0.2)*step(0.0,-dfw);
+        float residual=smoothstep(uActivation,uActivation-25.0,vDist);
+        float ai=(wave*4.0+residual*1.5)*(0.6+0.4*noise(vWorldPos*1.5-uTime*2.0));
+        vec3 darkRed=vec3(0.6,0.0,0.0),brightRed=vec3(1.0,0.2,0.1),hotGrey=vec3(0.85,0.85,0.85);
+        float mf=clamp(ai*0.5+(1.0-vDist*0.05),0.0,1.0);
+        actColor=mix(darkRed,mix(brightRed,hotGrey,mf-0.5),mf)*ai*1.7;
+        if(vDist<4.0){ actColor+=vec3(1.0,0.92,0.92)*exp(-pow(uActivation*0.2,2.0))*2.8; }
+      }
+      gl_FragColor=vec4(baseColor+pulseColor+actColor,1.0);
+    }
+  `;
+  const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms:{
+    uTime:{value:0}, uPulseProgress:{value:-10}, uActivation:{value:0}, uCharge:{value:0}, uCameraPos:{value:new THREE.Vector3()} }, side:THREE.FrontSide });
+
+  const group = new THREE.Group(); scene.add(group);
+  function wander(start,dir,len,seg,jit,end){ let pts=[start.clone()],cur=start.clone(),cd=dir.clone().normalize();
+    for(let i=0;i<seg;i++){ cd.x+=(Math.random()-.5)*jit; cd.y+=(Math.random()-.5)*jit; cd.z+=(Math.random()-.5)*jit; cd.normalize();
+      cur=cur.clone().add(cd.clone().multiplyScalar(len/seg)); pts.push(cur); }
+    if(end){ pts[pts.length-1]=end.clone().add(new THREE.Vector3(-1.5,0,0)); pts.push(end.clone()); }
+    return new THREE.CatmullRomCurve3(pts); }
+  function taper(geo,r,isIn){ const p=geo.attributes.position,nm=geo.attributes.normal,uv=geo.attributes.uv;
+    for(let i=0;i<p.count;i++){ const u=uv.getX(i); let t=isIn?1:(1-u); const s=r*(1-Math.pow(t,0.6));
+      p.setXYZ(i,p.getX(i)-nm.getX(i)*s,p.getY(i)-nm.getY(i)*s,p.getZ(i)-nm.getZ(i)*s);} geo.computeVertexNormals(); }
+  function branch(curve,r,isIn){ const g=new THREE.TubeGeometry(curve,Math.floor(curve.getLength()*3),r,10,false); taper(g,r,isIn);
+    g.setAttribute('aIsInput',new THREE.BufferAttribute(new Float32Array(g.attributes.position.count).fill(isIn?1:0),1));
+    group.add(new THREE.Mesh(g,material)); return curve; }
+  const somaR=3.3; const soma=new THREE.IcosahedronGeometry(somaR,14); const sp=soma.attributes.position;
+  for(let i=0;i<sp.count;i++){ let v=new THREE.Vector3().fromBufferAttribute(sp,i);
+    let n=Math.sin(v.x*2)*Math.cos(v.y*2)*Math.sin(v.z*2)*0.5+Math.sin(v.x*5+v.y*3)*0.2; v.add(v.clone().normalize().multiplyScalar(n)); sp.setXYZ(i,v.x,v.y,v.z);}
+  soma.computeVertexNormals(); soma.setAttribute('aIsInput',new THREE.BufferAttribute(new Float32Array(sp.count).fill(0),1));
+  group.add(new THREE.Mesh(soma,material));
+  branch(wander(new THREE.Vector3(-45,0,0),new THREE.Vector3(1,0,0),46,30,0.05,new THREE.Vector3(-somaR*0.1,0,0)),0.6,true);
+  for(let i=0;i<16;i++){ let phi=Math.random()*Math.PI*2, th=Math.acos(Math.random()*2-1);
+    if(Math.cos(phi)*Math.sin(th)<-0.3) phi=phi>Math.PI?phi-Math.PI:phi+Math.PI;
+    let sd=new THREE.Vector3(Math.cos(phi)*Math.sin(th),Math.sin(phi)*Math.sin(th),Math.cos(th));
+    let st=sd.clone().multiplyScalar(somaR*0.8), len=18+Math.random()*26, mr=0.4+Math.random()*0.3;
+    let mc=branch(wander(st,sd,len,22,0.4),mr,false);
+    let ns=Math.floor(Math.random()*3)+2;
+    for(let j=0;j<ns;j++){ let t=0.2+Math.random()*0.6, bs=mc.getPoint(t), tg=mc.getTangent(t);
+      let rv=new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize();
+      let bd=tg.clone().cross(rv).normalize().add(tg.multiplyScalar(0.5)).normalize();
+      branch(wander(bs,bd,(1-t)*len*(0.4+Math.random()*0.4),12,0.6),mr*(1-t)*0.8,false); } }
+
+  // ---- state machine ----
+  let state = 0, pulseProg = -10, actProg = 0;
+  const INPUT_LENGTH = 45;
+  function miniPulse(){ if(state!==0) return; state=1; pulseProg=INPUT_LENGTH; material.uniforms.uActivation.value=0; }
+  function addStake(r, amt){ r.stake += amt; pool += amt; miniPulse(); if(pool>=TARGET && !firing) flatline(); }
+  function flatline(){ firing=true; state=2; actProg=0; material.uniforms.uPulseProgress.value=-10;
+    if(stage) stage.classList.add('firing');
+    const total=pool, payout=Math.round(total*(YOU.stake/Math.max(total,1)));
+    // prepend a cleared-raid row to the leaderboard header note
+    const nf=$('syn-nextfire'); if(nf) nf.textContent='cleared · '+fmt(total)+' USDT paid';
+    lastYouPayout=payout;
+  }
+  let lastYouPayout=0;
+  function respawn(){ firing=false; state=0; material.uniforms.uActivation.value=0;
+    if(stage) stage.classList.remove('firing');
+    raiders.forEach(r=>{ r.stake = (r.you? 0 : (20+Math.random()*120)); });
+    pool = raiders.reduce((s,r)=>s+r.stake,0);
+    const nf=$('syn-nextfire'); if(nf) nf.textContent='this cycle';
+  }
+
+  // ---- mock live raid feed (swap for real stake events) ----
+  function feed(){ if(!firing){ const whale=Math.random()<0.06;
+    const r=raiders[Math.floor(Math.random()*(raiders.length-1))]; // a bot (not you)
+    addStake(r, whale ? (600+Math.random()*2400) : (30+Math.random()*280)); }
+    setTimeout(feed, 300+Math.random()*850); }
+  setTimeout(feed, 500);
+
+  const addBtn = $('syn-add');
+  if(addBtn) addBtn.addEventListener('click', ()=>{ if(firing || clickCd>0) return; clickCd=0.5; addStake(YOU, 250); renderStats(); });
+
+  // ---- DOM rendering ----
+  const lb = $('syn-lb');
+  function renderStats(){
+    charge = Math.min(1, pool/TARGET);
+    const crit = !firing && charge>0.85;
+    const share = pool>0 ? YOU.stake/pool : 0;
+    if($('syn-pool'))     $('syn-pool').textContent = fmt(pool);
+    if($('syn-charge-pct'))$('syn-charge-pct').textContent = (charge*100).toFixed(0)+'%';
+    if($('syn-bar')){ const b=$('syn-bar'); b.style.width=(charge*100).toFixed(1)+'%'; b.classList.toggle('crit', crit || firing); }
+    if($('syn-contrib'))  $('syn-contrib').textContent = fmt(raiders.length);
+    if($('syn-contrib2')) $('syn-contrib2').textContent = fmt(raiders.length);
+    if($('syn-mv2'))      $('syn-mv2').textContent = (charge*100).toFixed(0)+'%';
+    const mv = firing ? 40 : (REST_MV+(FIRE_MV-REST_MV)*charge);
+    if($('syn-mv'))       $('syn-mv').textContent = (mv>=0?'+':'−')+Math.abs(mv).toFixed(1)+' mV';
+    if($('syn-yourstake'))$('syn-yourstake').textContent = fmt(YOU.stake)+' USDT';
+    if($('syn-yourshare'))$('syn-yourshare').textContent = (share*100).toFixed(2)+'%';
+    if($('syn-yourpayout'))$('syn-yourpayout').textContent = fmt(share*TARGET)+' USDT';
+    const st=$('syn-status'); if(st){ st.textContent = firing?'Flatline':(crit?'Critical':'Raid live'); st.style.color = (firing||crit)?'var(--redhi)':'var(--ink-hi)'; }
+    // leaderboard
+    if(lb){
+      const sorted=[...raiders].sort((a,b)=>b.stake-a.stake);
+      const youIdx=sorted.indexOf(YOU);
+      let rows=sorted.slice(0,6);
+      if(youIdx>=6) rows=sorted.slice(0,5).concat([YOU]);
+      lb.innerHTML = rows.map(r=>{
+        const rank=sorted.indexOf(r)+1;
+        const sh=pool>0?(r.stake/pool*100):0;
+        return '<tr class="'+(r.you?'you':'')+'"><td class="rank">'+String(rank).padStart(2,'0')+'</td>'+
+          '<td class="u">'+(r.you?'you':r.name)+'</td><td>'+fmt(r.stake)+' USDT</td>'+
+          '<td class="share">'+sh.toFixed(2)+'%</td></tr>'; }).join('');
+      const yr=$('syn-yourrank'); if(yr) yr.textContent='Rank '+(youIdx+1);
+    }
+  }
+
+  // ---- sizing + activation gating ----
+  let sized=false;
+  function resize(){ const w=stage.clientWidth, h=stage.clientHeight; if(w<2||h<2) return;
+    camera.aspect=w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h,false); composer.setSize(w,h); sized=true; }
+  window.addEventListener('resize', ()=>{ if(isActive()) resize(); });
+  const isActive = ()=> viewEl.classList.contains('on');
+
+  const clock = new THREE.Clock(); let fc=0;
+  function animate(){ requestAnimationFrame(animate);
+    const active=isActive();
+    if(active && !sized) resize();
+    const delta=clock.getDelta(); fc++;
+    if(!active) return;                    // pause rendering when off the raid view
+    group.rotation.y += delta*0.06;
+    material.uniforms.uTime.value += delta;
+    material.uniforms.uCameraPos.value.copy(camera.position);
+    material.uniforms.uCharge.value = firing?0:charge;
+    if(clickCd>0) clickCd-=delta;
+
+    if(state===1){ pulseProg-=delta*42; material.uniforms.uPulseProgress.value=pulseProg;
+      if(pulseProg<=2){ state=0; pulseProg=-10; material.uniforms.uPulseProgress.value=-10; } }
+    else if(state===2){ actProg+=delta*20; material.uniforms.uActivation.value=actProg; if(actProg>75) respawn(); }
+
+    if(fc%6===0) renderStats();
+    composer.render();
+  }
+  renderStats();
+  animate();
+}
 </script>
 
 </body>
