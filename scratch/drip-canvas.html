@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Halloween · viscous drip (canvas)</title>
+
+<!-- Font: Fredoka One (weight 400 only) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+
+<style>
+  /* Layout only. All fluid dynamics live on the canvas — no CSS filters, no DOM tricks. */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:#293139;overflow:hidden}
+  canvas{display:block;width:100vw;height:100vh}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+
+<script>
+'use strict';
+
+/* ============================================================================
+   TUNING KNOBS — everything you asked to be adjustable lives here.
+   Units: px, seconds, px/s, px/s².
+============================================================================ */
+const CFG = {
+  GRAVITY      : 1600,        // px/s² — freefall acceleration after the snap
+  STRETCH_TIME : 1.9,         // s — "viscosity": how long a drop hangs + stretches
+  STRETCH_EASE : 2.2,         // easing power for the hang phase (higher = slower start, harder yank at the end)
+  SNAP_DIST    : 78,          // px the drop sinks below the drip tip before the thread breaks
+  DROP_R       : [5.5, 8.5],  // min/max radius of a spawned drop
+  THREAD_NECK  : 7,           // half-width of the liquid thread where it meets the drip tip
+  THREAD_MIN   : 1.1,         // half-width of the thread waist at the moment of the snap
+  RETRACT_TIME : 0.35,        // s — how fast the broken thread springs back into the button
+  SPAWN_DELAY  : [1.2, 3.2],  // s — random idle window per emitter between drops
+  WOBBLE_SPEED : 1.6,         // rad/s — organic pulse of the static drips
+  WOBBLE_AMT   : 0.055,       // fraction of drip length the wobble adds/removes
+  PILL_W       : 340,         // button size (the layout scales around these)
+  PILL_H       : 86,
+  PINK         : '#ff2a6d',
+  PINK_DEEP    : '#e0175a',   // used at the bottom of the fill gradient for depth
+};
+
+/* ============================================================================
+   BOILERPLATE — canvas, DPR scaling, resize
+============================================================================ */
+const cv  = document.getElementById('fx');
+const ctx = cv.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+let bg = null;                        // pre-baked background (gradient + grain + vignette)
+
+function resize(){
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = window.innerWidth; H = window.innerHeight;
+  cv.width = W * DPR; cv.height = H * DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  bakeBackground();
+  layout();
+}
+window.addEventListener('resize', resize);
+
+/* ============================================================================
+   BACKGROUND — dark textured radial gradient, baked ONCE to an offscreen
+   canvas (drawing noise per-frame would be wasteful).
+============================================================================ */
+function bakeBackground(){
+  bg = document.createElement('canvas');
+  bg.width = W * DPR; bg.height = H * DPR;
+  const b = bg.getContext('2d');
+  b.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+  // 1 · radial gradient #424e5c → #293139
+  const g = b.createRadialGradient(W/2, H*0.42, 10, W/2, H*0.42, Math.max(W,H)*0.75);
+  g.addColorStop(0, '#424e5c');
+  g.addColorStop(1, '#293139');
+  b.fillStyle = g;
+  b.fillRect(0, 0, W, H);
+
+  // 2 · grain: a small random-luminance tile, stamped across with low alpha
+  const tile = document.createElement('canvas');
+  tile.width = tile.height = 128;
+  const t = tile.getContext('2d');
+  const img = t.createImageData(128, 128);
+  for (let i = 0; i < img.data.length; i += 4){
+    const v = 90 + Math.random()*130 | 0;          // mid-grey noise
+    img.data[i] = img.data[i+1] = img.data[i+2] = v;
+    img.data[i+3] = 255;
+  }
+  t.putImageData(img, 0, 0);
+  b.globalCompositeOperation = 'overlay';
+  b.globalAlpha = 0.16;
+  for (let y = 0; y < H; y += 128)
+    for (let x = 0; x < W; x += 128)
+      b.drawImage(tile, x, y);
+  b.globalAlpha = 1;
+  b.globalCompositeOperation = 'source-over';
+
+  // 3 · vignette so the edges fall off like the reference
+  const v = b.createRadialGradient(W/2, H/2, Math.min(W,H)*0.35, W/2, H/2, Math.max(W,H)*0.75);
+  v.addColorStop(0, 'rgba(0,0,0,0)');
+  v.addColorStop(1, 'rgba(0,0,0,0.32)');
+  b.fillStyle = v;
+  b.fillRect(0, 0, W, H);
+}
+
+/* ============================================================================
+   LAYOUT — pill geometry + the static drip fringe definition.
+   Drips are defined as fractions (o) along the pill's flat bottom edge.
+   `emit:true` marks the drips whose tips feed the falling-drop system.
+============================================================================ */
+const pill = { x:0, y:0, w:CFG.PILL_W, h:CFG.PILL_H, r:CFG.PILL_H/2 };
+const DRIPS = [
+  { o:0.06, len:26, w:9,  ph:0.0 },
+  { o:0.20, len:20, w:7,  ph:1.7 },
+  { o:0.33, len:46, w:10, ph:3.1, emit:true },
+  { o:0.47, len:22, w:7,  ph:4.4 },
+  { o:0.58, len:72, w:11, ph:0.9, emit:true },   // the long hero drip
+  { o:0.74, len:30, w:8,  ph:2.6 },
+  { o:0.90, len:40, w:9,  ph:5.3, emit:true },
+];
+
+function layout(){
+  pill.x = (W - pill.w) / 2;
+  pill.y = H * 0.40 - pill.h / 2;
+  // resolve each drip's x on the flat part of the bottom edge
+  const x0 = pill.x + pill.r * 0.9, x1 = pill.x + pill.w - pill.r * 0.9;
+  for (const d of DRIPS) d.cx = x0 + (x1 - x0) * d.o;
+}
+
+/* Current wobbled length of a drip (the gentle organic pulse). */
+function dripLen(d, time){
+  return d.len * (1 + CFG.WOBBLE_AMT * Math.sin(time * CFG.WOBBLE_SPEED + d.ph));
+}
+/* Y coordinate of a drip's rounded tip. */
+function dripTipY(d, time){
+  return pill.y + pill.h + dripLen(d, time);
+}
+
+/* ============================================================================
+   THE LIQUID OUTLINE — one continuous path: pill + every static drip.
+   Single path ⇒ single fill ⇒ no seams, and the inner shadow hugs the
+   whole silhouette.
+============================================================================ */
+function liquidPath(c, time){
+  const {x, y, w, h, r} = pill;
+  const yb = y + h;
+  c.moveTo(x + r, y);
+  c.lineTo(x + w - r, y);
+  c.arc(x + w - r, y + r, r, -Math.PI/2, Math.PI/2);       // right cap
+  // bottom edge, right → left, inserting a teardrop finger per drip
+  const sorted = [...DRIPS].sort((a, b) => b.cx - a.cx);
+  for (const d of sorted){
+    const len = dripLen(d, time);
+    const hw  = d.w * (1 + 0.4 * CFG.WOBBLE_AMT * Math.sin(time*CFG.WOBBLE_SPEED*0.8 + d.ph + 2));
+    const tw  = hw * 0.72;                                  // tip half-width (slight taper)
+    c.lineTo(d.cx + hw, yb);
+    // tapered side down…
+    c.quadraticCurveTo(d.cx + hw, yb + len * 0.45, d.cx + tw, yb + len - tw);
+    // …rounded tip…
+    c.arc(d.cx, yb + len - tw, tw, 0, Math.PI);
+    // …tapered side back up
+    c.quadraticCurveTo(d.cx - hw, yb + len * 0.45, d.cx - hw, yb);
+  }
+  c.lineTo(x + r, yb);
+  c.arc(x + r, y + r, r, Math.PI/2, Math.PI * 1.5);         // left cap
+  c.closePath();
+}
+
+/* ============================================================================
+   FALLING DROPS — one particle per emitter, cycling through a tiny
+   state machine:   idle → stretch → fall → (recycled) idle
+============================================================================ */
+const rand = (a, b) => a + Math.random() * (b - a);
+
+class Drop {
+  constructor(drip){
+    this.drip = drip;             // the emitter this drop hangs from
+    this.retract = 0;             // 0..1 — residual thread animation after the snap
+    this.recycle(true);
+  }
+  recycle(first){
+    this.state = 'idle';
+    this.timer = first ? rand(0.3, 1.6) : rand(CFG.SPAWN_DELAY[0], CFG.SPAWN_DELAY[1]);
+    this.p     = 0;                                   // stretch progress 0..1
+    this.r     = rand(CFG.DROP_R[0], CFG.DROP_R[1]);  // target radius this cycle
+    this.y     = 0;
+    this.vy    = 0;
+    this.prevY = 0;
+  }
+  update(dt, time){
+    const tipY = dripTipY(this.drip, time);
+
+    if (this.state === 'idle'){
+      this.timer -= dt;
+      if (this.timer <= 0){ this.state = 'stretch'; this.p = 0; this.prevY = tipY; }
+
+    } else if (this.state === 'stretch'){
+      /* SURFACE-TENSION PHASE — the drop sinks with an ease-in curve
+         (slow, viscous start; accelerating pull right before the break). */
+      this.p = Math.min(1, this.p + dt / CFG.STRETCH_TIME);
+      const eased = Math.pow(this.p, CFG.STRETCH_EASE);
+      this.y = tipY + 4 + CFG.SNAP_DIST * eased;
+      this.vy = (this.y - this.prevY) / dt;           // measured, for a seamless handoff
+      this.prevY = this.y;
+      if (this.p >= 1){
+        /* THE SNAP — thread breaks: drop goes ballistic, thread retracts. */
+        this.state = 'fall';
+        this.retract = 1;
+      }
+
+    } else if (this.state === 'fall'){
+      /* FREEFALL — plain semi-implicit Euler integration. */
+      this.vy += CFG.GRAVITY * dt;
+      this.y  += this.vy * dt;
+      if (this.y - this.r > H) this.recycle(false);   // off-screen → seamless recycle
+    }
+
+    /* retracting thread stub (runs independently of the drop itself) */
+    if (this.retract > 0) this.retract = Math.max(0, this.retract - dt / CFG.RETRACT_TIME);
+  }
+
+  /* Draw thread + drop. Same pink as the button so everything reads as one liquid. */
+  draw(c, time){
+    const d = this.drip, cx = d.cx, tipY = dripTipY(d, time) - 3;
+
+    if (this.state === 'stretch'){
+      const gap   = this.y - tipY;
+      const waist = CFG.THREAD_NECK * 0.8 + (CFG.THREAD_MIN - CFG.THREAD_NECK * 0.8) * this.p;
+      const neck  = CFG.THREAD_NECK * (1 - this.p * 0.35);
+      const dr    = this.r * Math.min(1, 0.35 + this.p * 0.85);   // drop inflates as liquid feeds in
+      const wD    = Math.min(dr * 0.55, neck) * (1 - this.p * 0.55) + 0.6;
+
+      /* the connecting thread: two mirrored cubic Béziers whose control
+         points pull inwards to `waist`, thinning as p → 1 */
+      c.beginPath();
+      c.moveTo(cx - neck, tipY);
+      c.bezierCurveTo(cx - waist, tipY + gap * 0.40,
+                      cx - wD,    this.y - gap * 0.35,
+                      cx - wD,    this.y);
+      c.lineTo(cx + wD, this.y);
+      c.bezierCurveTo(cx + waist, this.y - gap * 0.35,
+                      cx + waist, tipY + gap * 0.40,
+                      cx + neck,  tipY);
+      c.closePath();
+      c.fill();
+
+      /* the hanging drop — slightly stretched vertically while attached */
+      c.beginPath();
+      c.ellipse(cx, this.y, dr * 0.92, dr * 1.1, 0, 0, Math.PI * 2);
+      c.fill();
+
+    } else if (this.state === 'fall'){
+      /* detached: a perfect circle */
+      c.beginPath();
+      c.arc(cx, this.y, this.r, 0, Math.PI * 2);
+      c.fill();
+    }
+
+    /* the snapped thread springing back into the drip tip */
+    if (this.retract > 0){
+      const e = this.retract * this.retract;          // ease-out of the retraction
+      c.beginPath();
+      c.moveTo(cx - CFG.THREAD_NECK * e, tipY);
+      c.quadraticCurveTo(cx, tipY + 26 * e, cx + CFG.THREAD_NECK * e, tipY);
+      c.closePath();
+      c.fill();
+    }
+  }
+}
+
+const drops = [];   // built in start(), one Drop per emit-flagged drip
+
+/* ============================================================================
+   RENDER HELPERS
+============================================================================ */
+
+/* Vertical pink gradient reused for pill, drips, threads and drops. */
+function pinkFill(){
+  const g = ctx.createLinearGradient(0, pill.y, 0, pill.y + pill.h + 90);
+  g.addColorStop(0, '#ff4b84');
+  g.addColorStop(0.55, CFG.PINK);
+  g.addColorStop(1, CFG.PINK_DEEP);
+  return g;
+}
+
+/* Subtle inner shadow using the classic clip + inverse-evenodd-fill trick:
+   fill everything EXCEPT the liquid in black with a blur — the black itself is
+   clipped away, only its shadow bleeds inside the silhouette. */
+function innerShadow(time){
+  ctx.save();
+  ctx.beginPath();
+  liquidPath(ctx, time);
+  ctx.clip();
+  ctx.beginPath();
+  ctx.rect(-80, -80, W + 160, H + 160);
+  liquidPath(ctx, time);
+  ctx.shadowColor = 'rgba(0,0,0,0.38)';
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetY = 6;
+  ctx.fillStyle = '#000';
+  ctx.fill('evenodd');
+  ctx.restore();
+}
+
+function drawLabel(){
+  ctx.save();
+  ctx.font = `400 ${Math.round(pill.h * 0.44)}px "Fredoka One", "Baloo 2", system-ui, sans-serif`;
+  try { ctx.letterSpacing = '2px'; } catch(e){ /* older engines */ }
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // soft offset shadow gives the sticker look
+  ctx.shadowColor = 'rgba(0,0,0,0.30)';
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 3;
+  ctx.fillStyle = '#fff';
+  ctx.fillText('HALLOWEEN', pill.x + pill.w / 2, pill.y + pill.h / 2 + 2);
+  ctx.restore();
+}
+
+/* ============================================================================
+   MAIN LOOP
+============================================================================ */
+let last = 0;
+function frame(ts){
+  const time = ts / 1000;
+  const dt = Math.min(0.033, time - last || 0.016);   // clamp: tab-switch safety
+  last = time;
+
+  // background (pre-baked)
+  ctx.drawImage(bg, 0, 0, W, H);
+
+  // physics
+  for (const p of drops) p.update(dt, time);
+
+  // liquid body: pill + static drips as ONE filled path
+  ctx.save();
+  ctx.fillStyle = pinkFill();
+  // soft drop shadow under the whole blob
+  ctx.shadowColor = 'rgba(0,0,0,0.30)';
+  ctx.shadowBlur = 22;
+  ctx.shadowOffsetY = 10;
+  ctx.beginPath();
+  liquidPath(ctx, time);
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+
+  // threads + falling drops share the same fill
+  for (const p of drops) p.draw(ctx, time);
+  ctx.restore();
+
+  innerShadow(time);
+  drawLabel();
+
+  requestAnimationFrame(frame);
+}
+
+/* ============================================================================
+   BOOT — wait for the display font (with a timeout fallback) then run.
+============================================================================ */
+function start(){
+  resize();
+  for (const d of DRIPS) if (d.emit) drops.push(new Drop(d));
+  requestAnimationFrame(ts => { last = ts / 1000; frame(ts); });
+}
+Promise.race([
+  document.fonts.load('400 40px "Fredoka One"'),
+  new Promise(res => setTimeout(res, 1500)),            // don't block on a slow CDN
+]).then(start);
+</script>
+</body>
+</html>
