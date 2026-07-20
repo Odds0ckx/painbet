@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>pain.bet · PK + Anesthesia concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#232427;
+  --card:#1b1d20;--card-2:#232529;--card-hi:hsla(0,0%,100%,.04);--card-hi2:hsla(0,0%,100%,.07);
+  --ink:hsla(0,0%,100%,.55);--ink-hi:hsla(0,0%,100%,.75);--ink-lo:hsla(0,0%,100%,.25);--white:#fff;
+  --red:#E10600;--redhi:#FF3B33;--red-dim:#8f0400;--red-deep:#520703;
+  --blue:#7FD6E8;--blue-dim:#16333a;
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo',sans-serif;
+  --r-lg:16px;--r-md:12px;--r-sm:8px;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --shadow:0 10px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:14.5px/1.5 var(--sans);padding:34px 22px 80px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-family:var(--disp);color:var(--white);font-size:26px;letter-spacing:.01em}
+h1 .tri{display:inline-block;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-bottom:19px solid var(--red);margin:0 1px}
+h1 .bet{font-size:15px;color:var(--ink-lo)}
+.sub{color:var(--ink);margin:6px 0 30px;max-width:640px}
+.sechead{display:flex;align-items:baseline;gap:12px;margin:44px 0 16px}
+.sechead h2{font-family:var(--disp);font-size:19px;color:var(--white)}
+.sechead .tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo)}
+.sechead.blue h2{color:var(--blue)}
+.sechead.red h2 span{color:var(--redhi)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
+.concept{position:relative;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px 20px 22px;overflow:hidden}
+.concept .num{position:absolute;top:14px;right:16px;font-family:var(--disp);font-size:30px;color:hsla(0,0%,100%,.06);line-height:1}
+.concept h3{font-family:var(--disp);font-size:15px;color:var(--white);margin-bottom:2px;padding-right:52px}
+.concept .desc{font-size:12px;color:var(--ink);margin-bottom:14px;padding-right:40px}
+.k{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-lo)}
+.k.blue{color:var(--blue)}.k.red{color:var(--redhi)}
+.mono{font-variant-numeric:tabular-nums}
+
+/* ============ 01 · relief feed ============ */
+.feedbox{background:var(--card-2);border-radius:var(--r-md);padding:12px 14px;height:238px;overflow:hidden;position:relative}
+.feedbox::after{content:'';position:absolute;left:0;right:0;bottom:0;height:64px;background:linear-gradient(to bottom,transparent,var(--card-2));pointer-events:none}
+.feedhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.feedhead .live{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+.feedhead .live .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px 2px rgba(127,214,232,.5);animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.feedhead .today{font-size:12px;color:var(--ink-hi)}
+.feedhead .today b{color:var(--blue);font-weight:800}
+.frow{display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:var(--r-sm);font-size:12px;animation:fin .5s var(--ease-out)}
+@keyframes fin{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.frow.fresh{background:rgba(127,214,232,.08);outline:1px solid rgba(127,214,232,.18)}
+.frow .g{color:var(--ink-hi);font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frow .w{color:var(--ink-lo);white-space:nowrap}
+.frow .pk{font-weight:800;color:var(--blue);white-space:nowrap}
+.frow .res{font-size:9.5px;font-weight:800;letter-spacing:.1em;padding:2px 6px;border-radius:4px}
+.frow .res.loss{color:var(--redhi);background:rgba(225,6,0,.12)}
+.frow .res.win{color:var(--blue);background:rgba(127,214,232,.1)}
+
+/* ============ 02 · IV drip ============ */
+.ivwrap{display:flex;gap:18px;align-items:stretch}
+.ivstage{flex:none;width:120px;height:238px;position:relative;background:var(--card-2);border-radius:var(--r-md);overflow:hidden}
+.ivbag{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:56px;height:74px;border-radius:8px 8px 14px 14px;background:linear-gradient(to bottom,rgba(127,214,232,.06) 22%,rgba(127,214,232,.35) 22%);border:2px solid rgba(127,214,232,.5);box-shadow:0 0 18px rgba(127,214,232,.15)}
+.ivbag::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:14px;height:8px;border:2px solid rgba(127,214,232,.5);border-bottom:none;border-radius:4px 4px 0 0}
+.ivbag .lbl{position:absolute;inset:auto 0 8px;text-align:center;font-family:var(--disp);font-size:10px;color:var(--white);text-shadow:0 0 8px rgba(127,214,232,.8)}
+.ivtube{position:absolute;top:86px;bottom:52px;left:50%;width:2px;transform:translateX(-50%);background:rgba(127,214,232,.22)}
+.ivdrop{position:absolute;top:90px;left:50%;width:7px;height:10px;transform:translateX(-50%);border-radius:50% 50% 50% 50%/38% 38% 62% 62%;background:var(--blue);box-shadow:0 0 10px rgba(127,214,232,.9);animation:fall 1.7s cubic-bezier(.5,0,.9,.6) infinite}
+@keyframes fall{0%{top:90px;opacity:0;transform:translateX(-50%) scale(.4)}12%{opacity:1;transform:translateX(-50%) scale(1)}86%{top:176px;opacity:1}100%{top:182px;opacity:0;transform:translateX(-50%) scale(1.5)}}
+.ivpool{position:absolute;left:10px;right:10px;bottom:10px;height:40px;border-radius:8px;background:rgba(127,214,232,.1);border:1px solid rgba(127,214,232,.25);overflow:hidden}
+.ivpool .fill{position:absolute;inset:0;top:auto;height:46%;background:rgba(127,214,232,.35);transition:height .5s var(--ease-out)}
+.ivpool.splash{animation:splash .45s var(--ease-out)}
+@keyframes splash{0%{box-shadow:0 0 0 0 rgba(127,214,232,.5)}100%{box-shadow:0 0 0 12px rgba(127,214,232,0)}}
+.ivside{flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.ivbal{font-family:var(--disp);font-size:34px;color:var(--white);line-height:1;transition:text-shadow .3s}
+.ivbal.hit{text-shadow:0 0 22px rgba(127,214,232,.9);color:var(--blue)}
+.ivbal small{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink-lo)}
+.ivrow{display:flex;justify-content:space-between;font-size:12px;padding:8px 10px;background:var(--card-hi);border-radius:var(--r-sm)}
+.ivrow .v{color:var(--ink-hi);font-weight:700}.ivrow .v.blue{color:var(--blue)}
+
+/* ============ 03 · tolerance dial ============ */
+.dialwrap{display:flex;gap:20px;align-items:center}
+.dial{flex:none;width:190px;height:190px;position:relative}
+.dial svg{width:100%;height:100%;transform:rotate(135deg)}
+.dial .track{fill:none;stroke:hsla(0,0%,100%,.07);stroke-width:12;stroke-linecap:round}
+.dial .arc{fill:none;stroke:var(--red);stroke-width:12;stroke-linecap:round;filter:drop-shadow(0 0 8px rgba(225,6,0,.55));transition:stroke-dashoffset 1.4s var(--ease-out)}
+.dial .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dial .x{font-family:var(--disp);font-size:38px;color:var(--white);line-height:1;text-shadow:0 0 16px rgba(225,6,0,.6);animation:dialpulse 2.6s ease-in-out infinite}
+@keyframes dialpulse{0%,100%{text-shadow:0 0 12px rgba(225,6,0,.4)}50%{text-shadow:0 0 26px rgba(225,6,0,.85)}}
+.dial .cap{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-lo);margin-top:5px}
+.dial .tickv{position:absolute;font-size:9px;font-weight:800;color:var(--ink-lo);font-variant-numeric:tabular-nums}
+.dialside{flex:1;display:flex;flex-direction:column;gap:10px}
+.dialside .row{display:flex;justify-content:space-between;font-size:12px;padding:8px 10px;background:var(--card-hi);border-radius:var(--r-sm)}
+.dialside .v{font-weight:700;color:var(--ink-hi)}.dialside .v.red{color:var(--redhi)}.dialside .v.blue{color:var(--blue)}
+.dialside .warn{font-size:11px;color:var(--redhi);background:rgba(225,6,0,.08);border-radius:var(--r-sm);padding:8px 10px;line-height:1.45}
+.dialside .warn b{letter-spacing:.06em}
+
+/* ============ 04 · dose vial ============ */
+.vialwrap{display:flex;gap:20px;align-items:stretch}
+.vialstage{flex:none;width:120px;height:238px;display:flex;align-items:center;justify-content:center;background:var(--card-2);border-radius:var(--r-md)}
+.vial{position:relative;width:64px;height:180px;border:3px solid rgba(127,214,232,.45);border-radius:10px 10px 26px 26px;overflow:hidden;background:rgba(127,214,232,.04)}
+.vial::before{content:'';position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:26px;height:10px;border:3px solid rgba(127,214,232,.45);border-bottom:none;border-radius:6px 6px 0 0}
+.vial .liq{position:absolute;left:0;right:0;bottom:0;height:70%;transition:height 1s var(--ease-out);overflow:visible}
+.vial .liq .body{position:absolute;inset:0;top:6px;background:linear-gradient(to bottom,rgba(127,214,232,.55),rgba(127,214,232,.8));box-shadow:0 0 22px rgba(127,214,232,.5)}
+.vial .liq .surf,.vial .liq .surf2{position:absolute;top:-14px;left:-50%;width:200%;height:28px;border-radius:40%;background:rgba(127,214,232,.7);animation:vspin 7s linear infinite}
+.vial .liq .surf2{border-radius:36%;background:rgba(127,214,232,.4);animation-duration:9s;animation-direction:reverse}
+@keyframes vspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.vial .marks{position:absolute;inset:0;z-index:2}
+.vial .marks i{position:absolute;left:0;width:10px;height:1.5px;background:hsla(0,0%,100%,.28)}
+.vial .amt{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:13px;color:var(--white);text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.vial.drain .liq{transition:height 1.2s cubic-bezier(.5,0,.75,.4)}
+.vialside{flex:1;display:flex;flex-direction:column;justify-content:center;gap:11px}
+.vialside .big{font-family:var(--disp);font-size:22px;color:var(--white)}
+.vialside .big small{font-family:var(--sans);font-size:12px;font-weight:700;color:var(--ink-lo)}
+.vgoal{height:6px;border-radius:3px;background:hsla(0,0%,100%,.08);overflow:hidden}
+.vgoal i{display:block;height:100%;border-radius:3px;background:var(--blue);box-shadow:0 0 10px rgba(127,214,232,.6);transition:width 1s var(--ease-out)}
+.vnote{font-size:11.5px;color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:var(--r-sm);font-weight:800;font-size:12.5px;letter-spacing:.04em;transition:all .2s var(--ease-out)}
+.btn-blue{background:var(--blue);color:#06181d}
+.btn-blue:hover{box-shadow:0 0 18px rgba(127,214,232,.5)}
+.btn-blue:disabled{background:var(--blue-dim);color:hsla(0,0%,100%,.3);cursor:not-allowed;box-shadow:none}
+.cashflash{font-size:12px;font-weight:800;color:var(--blue);opacity:0;transition:opacity .3s}
+.cashflash.show{opacity:1}
+
+/* ============ 05 · countdown monitor ============ */
+.monitor{position:relative;background:#0b0d0e;border-radius:var(--r-md);padding:22px 20px 18px;overflow:hidden;border:1px solid rgba(127,214,232,.15)}
+.monitor::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(255,255,255,.012) 2px 4px);pointer-events:none}
+.monitor .scan{position:absolute;left:0;right:0;height:46px;top:-46px;background:linear-gradient(to bottom,transparent,rgba(127,214,232,.045),transparent);animation:scan 5s linear infinite;pointer-events:none}
+@keyframes scan{from{top:-46px}to{top:100%}}
+.mon-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.mon-top .id{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
+.mon-top .rec{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--ink-lo)}
+.mon-top .rec .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:blink 1.2s ease-in-out infinite}
+.cd{display:flex;gap:10px;justify-content:center}
+.cd .cell{flex:1;max-width:104px;text-align:center;background:rgba(127,214,232,.05);border:1px solid rgba(127,214,232,.14);border-radius:var(--r-sm);padding:12px 4px 9px}
+.cd .n{font-family:var(--disp);font-size:32px;line-height:1;color:var(--blue);text-shadow:0 0 16px rgba(127,214,232,.55)}
+.cd .n.tick{animation:cdtick .4s var(--ease-out)}
+@keyframes cdtick{0%{transform:translateY(-5px);opacity:.4}100%{transform:none;opacity:1}}
+.cd .u{font-size:9px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-lo);margin-top:6px}
+.mon-ekgline{margin-top:14px;height:30px;overflow:hidden;opacity:.7}
+.mon-ekgline svg{width:200%;height:100%;animation:ekgmove 7s linear infinite}
+@keyframes ekgmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mon-foot{display:flex;justify-content:space-between;margin-top:10px;font-size:11px;color:var(--ink)}
+.mon-foot b{color:var(--blue)}
+
+/* ============ 06 · blood loss gauge ============ */
+.gaugebox{background:var(--card-2);border-radius:var(--r-md);padding:16px 16px 18px}
+.gauge-nums{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+.gauge-nums .loss .n{font-family:var(--disp);font-size:30px;color:var(--redhi);line-height:1;text-shadow:0 0 14px rgba(225,6,0,.45)}
+.gauge-nums .back{text-align:right}
+.gauge-nums .back .n{font-family:var(--disp);font-size:30px;color:var(--blue);line-height:1;text-shadow:0 0 14px rgba(127,214,232,.4)}
+.gauge-nums small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-top:5px}
+.bloodbar{position:relative;height:26px;border-radius:13px;background:#141517;overflow:hidden;box-shadow:inset 0 2px 8px rgba(0,0,0,.6)}
+.bloodbar .fill{position:absolute;inset:0;right:auto;width:41%;border-radius:13px;background:linear-gradient(90deg,var(--red-deep),var(--red-dim) 45%,var(--red) 85%,var(--redhi));box-shadow:0 0 18px rgba(225,6,0,.5);transition:width .8s var(--ease-out)}
+.bloodbar .fill::after{content:'';position:absolute;top:0;bottom:0;right:0;width:26px;background:linear-gradient(90deg,transparent,rgba(255,120,110,.55));animation:bleed 1.4s ease-in-out infinite}
+@keyframes bleed{0%,100%{opacity:.35}50%{opacity:1}}
+.bloodbar .refline{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--blue);box-shadow:0 0 8px rgba(127,214,232,.8)}
+.gauge-scale{position:relative;height:24px;margin-top:6px}
+.gauge-scale i{position:absolute;font-size:9px;font-weight:700;color:var(--ink-lo);transform:translateX(-50%);font-variant-numeric:tabular-nums}
+.gauge-note{margin-top:8px;font-size:11.5px;color:var(--ink)}
+.gauge-note b{color:var(--blue)}
+
+/* ============ 07 · EKG payout history ============ */
+.ekgbox{position:relative;background:#0b0d0e;border-radius:var(--r-md);padding:14px 12px 8px;border:1px solid rgba(127,214,232,.12);overflow:hidden}
+.ekgbox svg{display:block;width:100%;height:150px}
+.ekgbox .grid line{stroke:rgba(127,214,232,.05)}
+.ekgbox .trace{fill:none;stroke:var(--blue);stroke-width:2;filter:drop-shadow(0 0 6px rgba(127,214,232,.7))}
+.ekgbox .head{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 12px 3px rgba(127,214,232,.9);pointer-events:none}
+.ekgbox .wklbl{font-size:8.5px;font-weight:700;fill:hsla(0,0%,100%,.25);text-anchor:middle;font-family:var(--sans)}
+.ekgbox .hit{fill:transparent;cursor:pointer}
+.ekgtip{position:absolute;pointer-events:none;background:#101315;border:1px solid rgba(127,214,232,.3);border-radius:var(--r-sm);padding:7px 11px;font-size:11px;color:var(--ink-hi);opacity:0;transition:opacity .15s;white-space:nowrap;z-index:3;box-shadow:var(--shadow)}
+.ekgtip b{color:var(--blue);font-size:13px}
+.ekgtip .fl{color:var(--redhi)}
+.ekgfoot{display:flex;justify-content:space-between;margin-top:10px;font-size:11px;color:var(--ink)}
+.ekgfoot b{color:var(--blue)}
+
+/* ============ 08 · what-if sliders ============ */
+.whatif .out{display:flex;align-items:baseline;justify-content:center;gap:10px;margin:4px 0 16px}
+.whatif .out .n{font-family:var(--disp);font-size:44px;line-height:1;color:var(--blue);text-shadow:0 0 20px rgba(127,214,232,.45);font-variant-numeric:tabular-nums}
+.whatif .out .u{font-size:13px;font-weight:800;color:var(--ink-lo)}
+.wrow{margin-bottom:16px}
+.wrow .lab{display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:8px}
+.wrow .lab .l{letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo)}
+.wrow .lab .v{color:var(--ink-hi)}
+.wrow .lab .v.red{color:var(--redhi)}
+input[type=range]{width:100%;appearance:none;-webkit-appearance:none;height:6px;border-radius:3px;background:hsla(0,0%,100%,.1);outline:none}
+input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--white);border:4px solid var(--red);box-shadow:0 0 12px rgba(225,6,0,.7);cursor:grab}
+input[type=range].bluethumb::-webkit-slider-thumb{border-color:var(--blue);box-shadow:0 0 12px rgba(127,214,232,.7)}
+.tiersteps{display:flex;justify-content:space-between;margin-top:7px}
+.tiersteps i{font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-lo);transition:color .2s}
+.tiersteps i.on{color:var(--redhi)}
+.tiersteps i.you::after{content:' · you';color:var(--blue)}
+.whatif .note{font-size:11px;color:var(--ink);text-align:center}
+.whatif .note b{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>P<span class="tri"></span>IN <span class="bet">.bet</span> &nbsp;·&nbsp; concept board</h1>
+  <p class="sub">Eight interactive treatments for the two emptiest pages. 01 to 04 are PainKillers, 05 to 08 are Anesthesia. Everything runs on mock data. Pick favourites by number.</p>
+
+  <div class="sechead blue"><h2>PainKillers</h2><div class="tag">Relief · the money coming back</div></div>
+  <div class="grid">
+
+    <!-- 01 -->
+    <div class="concept"><div class="num">01</div>
+      <h3>Live Relief Feed</h3>
+      <div class="desc">Every settled bet drips PK in real time, win or lose. The page stops being a static stat and becomes a ledger you can watch.</div>
+      <div class="feedbox">
+        <div class="feedhead">
+          <div class="live"><span class="dot"></span>Relief incoming</div>
+          <div class="today">Today <b id="feed-today" class="mono">+86 PK</b></div>
+        </div>
+        <div id="feed-rows"></div>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="concept"><div class="num">02</div>
+      <h3>IV Drip to Wallet</h3>
+      <div class="desc">A live IV line feeding your PK balance. Each drop that lands is a real relief credit, and the counter ticks with it.</div>
+      <div class="ivwrap">
+        <div class="ivstage">
+          <div class="ivbag"><span class="lbl">PK</span></div>
+          <div class="ivtube"></div>
+          <div class="ivdrop" id="ivdrop"></div>
+          <div class="ivpool" id="ivpool"><div class="fill"></div></div>
+        </div>
+        <div class="ivside">
+          <div><div class="k blue">Your PK wallet</div>
+          <div class="ivbal mono" id="ivbal">1,250 <small>PK</small></div></div>
+          <div class="ivrow"><span class="k">Drip rate</span><span class="v blue">≈ 2.1 PK / min</span></div>
+          <div class="ivrow"><span class="k">Source</span><span class="v">Rakeback · every settled bet</span></div>
+          <div class="ivrow"><span class="k">Session intake</span><span class="v blue mono" id="ivsess">+0 PK</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="concept"><div class="num">03</div>
+      <h3>Tolerance Dial</h3>
+      <div class="desc">Your streak multiplier as a pressure gauge. Red because keeping it alive is the painful part, and it resets if you skip a day.</div>
+      <div class="dialwrap">
+        <div class="dial">
+          <svg viewBox="0 0 190 190">
+            <circle class="track" cx="95" cy="95" r="80" stroke-dasharray="377" stroke-dashoffset="94.25"/>
+            <circle class="arc" id="dialarc" cx="95" cy="95" r="80" stroke-dasharray="377" stroke-dashoffset="377"/>
+          </svg>
+          <div class="center"><div class="x">×1.6</div><div class="cap">Tolerance</div></div>
+          <span class="tickv" style="left:16px;bottom:26px">×1.0</span>
+          <span class="tickv" style="right:8px;bottom:26px">×2.2</span>
+        </div>
+        <div class="dialside">
+          <div class="row"><span class="k">Streak</span><span class="v red">Day 11</span></div>
+          <div class="row"><span class="k">Next step · ×1.8</span><span class="v">Day 14 · 3 days out</span></div>
+          <div class="row"><span class="k">PK boost vs base</span><span class="v blue">+60%</span></div>
+          <div class="warn"><b>Dose due in <span id="dial-cd" class="mono">7:41:22</span>.</b> Miss a day and the dial snaps back to ×1.0.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="concept"><div class="num">04</div>
+      <h3>Dose Vial · Convert</h3>
+      <div class="desc">Your PK sits in a vial that fills as relief arrives. At the 1,000 PK line the convert button arms. Converting drains it with a pour.</div>
+      <div class="vialwrap">
+        <div class="vialstage">
+          <div class="vial" id="vial">
+            <div class="liq" id="vialliq" style="height:70%">
+              <span class="surf"></span><span class="surf2"></span>
+              <div class="body"></div>
+            </div>
+            <div class="marks">
+              <i style="bottom:56%"></i><i style="bottom:37.3%"></i><i style="bottom:18.6%"></i>
+            </div>
+            <div class="amt mono" id="vialamt">1,250</div>
+          </div>
+        </div>
+        <div class="vialside">
+          <div><div class="k blue">Ready to convert</div>
+          <div class="big mono" id="vialusdt">≈ 6.25 <small>USDT</small></div></div>
+          <div>
+            <div class="vgoal"><i id="vialgoal" style="width:100%"></i></div>
+            <div class="vnote" style="margin-top:6px">Minimum dose 1,000 PK · peg 1,000 PK = 5 USDT</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="btn btn-blue" id="vialbtn" onclick="convertVial()">Convert PK</button>
+            <span class="cashflash mono" id="vialflash">+6.25 USDT paid</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sechead blue"><h2>Anesthesia</h2><div class="tag">Weekly cashback · paid Monday 00:00 UTC</div></div>
+  <div class="grid">
+
+    <!-- 05 -->
+    <div class="concept"><div class="num">05</div>
+      <h3>Next Dose Countdown</h3>
+      <div class="desc">A theatre monitor counting down to Monday 00:00 UTC. The payout stops being a footnote and becomes an event you wait on.</div>
+      <div class="monitor">
+        <div class="scan"></div>
+        <div class="mon-top"><span class="id">Anesthesia · next dose</span><span class="rec"><span class="dot"></span>Scheduled</span></div>
+        <div class="cd">
+          <div class="cell"><div class="n mono" id="cd-d">0</div><div class="u">Days</div></div>
+          <div class="cell"><div class="n mono" id="cd-h">00</div><div class="u">Hours</div></div>
+          <div class="cell"><div class="n mono" id="cd-m">00</div><div class="u">Min</div></div>
+          <div class="cell"><div class="n mono" id="cd-s">00</div><div class="u">Sec</div></div>
+        </div>
+        <div class="mon-ekgline"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path d="M0 24 H120 L135 24 145 6 155 36 165 24 H400 L415 24 425 6 435 36 445 24 H600 M600 24 H720 L735 24 745 6 755 36 765 24 H1000 L1015 24 1025 6 1035 36 1045 24 H1200" stroke="#7FD6E8" stroke-width="2" fill="none"/></svg></div>
+        <div class="mon-foot"><span>Projected dose <b class="mono">32.96 USDT</b></span><span>Straight to balance · no wagering</span></div>
+      </div>
+    </div>
+
+    <!-- 06 -->
+    <div class="concept"><div class="num">06</div>
+      <h3>Blood Loss Gauge</h3>
+      <div class="desc">This week's net position as a live blood bar. Red is what the week took, blue is what Monday gives back. It moves as bets settle.</div>
+      <div class="gaugebox">
+        <div class="gauge-nums">
+          <div class="loss"><div class="n mono" id="bl-loss">−412</div><small>Net loss · USDT</small></div>
+          <div class="back"><div class="n mono" id="bl-back">32.96</div><small>Monday dose · 8%</small></div>
+        </div>
+        <div class="bloodbar">
+          <div class="fill" id="bl-fill"></div>
+          <div class="refline" style="left:41.2%" id="bl-ref"></div>
+        </div>
+        <div class="gauge-scale">
+          <i style="left:0%">0</i><i style="left:25%">250</i><i style="left:50%">500</i><i style="left:75%">750</i><i style="left:100%">1,000</i>
+        </div>
+        <div class="gauge-note">A winning week pays zero and nothing carries over. Every extra 100 lost this week is <b>+8.00 USDT</b> back on Monday.</div>
+      </div>
+    </div>
+
+    <!-- 07 -->
+    <div class="concept"><div class="num">07</div>
+      <h3>Payout EKG · History</h3>
+      <div class="desc">Your last eight Monday doses drawn as a heartbeat. Spike height is the payout, a winning week reads as flatline. Hover the beats.</div>
+      <div class="ekgbox" id="ekgbox">
+        <svg id="ekgsvg" viewBox="0 0 560 150" preserveAspectRatio="none"></svg>
+        <div class="ekgtip" id="ekgtip"></div>
+      </div>
+      <div class="ekgfoot"><span>8 week total <b class="mono">191.36 USDT</b></span><span>Avg dose <b class="mono">23.92 USDT</b></span></div>
+    </div>
+
+    <!-- 08 -->
+    <div class="concept"><div class="num">08</div>
+      <h3>What-If Dose Calculator</h3>
+      <div class="desc">Two sliders, one number. Drag the pain you take and the tier you reach, and watch what Monday would hand back.</div>
+      <div class="whatif">
+        <div class="out"><span class="n mono" id="wi-out">32.96</span><span class="u">USDT · Monday</span></div>
+        <div class="wrow">
+          <div class="lab"><span class="l">Net loss this week</span><span class="v red mono" id="wi-lossv">412 USDT</span></div>
+          <input type="range" id="wi-loss" min="0" max="2000" step="10" value="412">
+        </div>
+        <div class="wrow">
+          <div class="lab"><span class="l">Pain Scale tier</span><span class="v mono" id="wi-ratev">Agony · 8%</span></div>
+          <input type="range" class="bluethumb" id="wi-tier" min="0" max="5" step="1" value="4">
+          <div class="tiersteps" id="wi-steps">
+            <i>Numb</i><i>Sting</i><i>Ache</i><i>Burn</i><i class="you">Agony</i><i>Threshold</i>
+          </div>
+        </div>
+        <div class="note">Rates by tier: 0 / 2 / 4 / 6 / 8 / <b>10%</b> · computed on real money net losses only</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- shared mock data ---------- */
+const GAMES=['Flatline','Nerve','Bonesaw','Dosage','Spike','Pulse','Blackout','Rigor','Relapse'];
+const fmt=n=>n.toLocaleString('en-US');
+
+/* ============ 01 · relief feed ============ */
+(function(){
+  const rows=document.getElementById('feed-rows'), todayEl=document.getElementById('feed-today');
+  let today=86;
+  function addRow(){
+    const g=GAMES[Math.random()*GAMES.length|0];
+    const wager=(Math.random()*180+5).toFixed(2);
+    const pk=Math.max(1,Math.round(wager*0.3*(Math.random()*.4+.8)/10));
+    const win=Math.random()<0.42;
+    const r=document.createElement('div');
+    r.className='frow fresh';
+    r.innerHTML=`<span class="g">${g}</span><span class="w mono">${wager} USDT</span><span class="res ${win?'win':'loss'}">${win?'WIN':'LOSS'}</span><span class="pk mono">+${pk} PK</span>`;
+    rows.prepend(r);
+    setTimeout(()=>r.classList.remove('fresh'),900);
+    while(rows.children.length>9)rows.lastChild.remove();
+    today+=pk; todayEl.textContent='+'+fmt(today)+' PK';
+  }
+  for(let i=0;i<6;i++)addRow();
+  (function loop(){ setTimeout(()=>{addRow();loop()}, 900+Math.random()*2200); })();
+})();
+
+/* ============ 02 · IV drip ============ */
+(function(){
+  const bal=document.getElementById('ivbal'), sess=document.getElementById('ivsess'), pool=document.getElementById('ivpool');
+  let balance=1250, session=0;
+  /* one credit per drop landing: the fall animation is 1.7s, credit at ~86% of it */
+  setInterval(()=>{
+    setTimeout(()=>{
+      const pk=Math.random()<0.3?2:1;
+      balance+=pk; session+=pk;
+      bal.innerHTML=fmt(balance)+' <small>PK</small>';
+      sess.textContent='+'+session+' PK';
+      bal.classList.add('hit'); pool.classList.add('splash');
+      setTimeout(()=>{bal.classList.remove('hit');pool.classList.remove('splash')},420);
+    },1460);
+  },1700);
+})();
+
+/* ============ 03 · tolerance dial ============ */
+(function(){
+  /* gauge spans 270deg = dasharray 377 * .75; ×1.6 of ×1.0..×2.2 range = 50% along */
+  const span=377*0.75, prog=0.5;
+  requestAnimationFrame(()=>{ document.getElementById('dialarc').style.strokeDashoffset=377-span*prog; });
+  const cd=document.getElementById('dial-cd');
+  let t=7*3600+41*60+22;
+  setInterval(()=>{ t--; const h=t/3600|0,m=(t%3600)/60|0,s=t%60;
+    cd.textContent=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); },1000);
+})();
+
+/* ============ 04 · dose vial ============ */
+(function(){
+  const CAP=1800, PEG=5/1000;
+  const liq=document.getElementById('vialliq'), amt=document.getElementById('vialamt'),
+        usdt=document.getElementById('vialusdt'), goal=document.getElementById('vialgoal'),
+        btn=document.getElementById('vialbtn'), flash=document.getElementById('vialflash'),
+        vial=document.getElementById('vial');
+  let pk=1250, draining=false;
+  function render(){
+    liq.style.height=Math.min(97,pk/CAP*100)+'%';
+    amt.textContent=fmt(pk);
+    usdt.innerHTML='≈ '+(pk*PEG).toFixed(2)+' <small>USDT</small>';
+    goal.style.width=Math.min(100,pk/1000*100)+'%';
+    btn.disabled=pk<1000||draining;
+    btn.textContent=pk<1000?fmt(1000-pk)+' PK to unlock':'Convert PK';
+  }
+  window.convertVial=function(){
+    if(pk<1000||draining)return;
+    draining=true; vial.classList.add('drain');
+    const paid=(pk*PEG).toFixed(2);
+    pk=0; render();
+    flash.textContent='+'+paid+' USDT paid'; flash.classList.add('show');
+    setTimeout(()=>{vial.classList.remove('drain');draining=false;render()},1300);
+    setTimeout(()=>flash.classList.remove('show'),3200);
+  };
+  /* refill from relief */
+  setInterval(()=>{ if(!draining){ pk+=Math.random()<0.5?2:3; render(); } },700);
+  render();
+})();
+
+/* ============ 05 · countdown ============ */
+(function(){
+  const d=document.getElementById('cd-d'),h=document.getElementById('cd-h'),m=document.getElementById('cd-m'),s=document.getElementById('cd-s');
+  function nextMonday(){
+    const n=new Date(), t=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()));
+    let add=(8-t.getUTCDay())%7; if(add===0)add=7;
+    t.setUTCDate(t.getUTCDate()+add);
+    return t;
+  }
+  const target=nextMonday();
+  function tick(){
+    let ms=target-Date.now(); if(ms<0)ms=0;
+    const sec=ms/1000|0;
+    const vals=[sec/86400|0, String((sec%86400)/3600|0).padStart(2,'0'), String((sec%3600)/60|0).padStart(2,'0'), String(sec%60).padStart(2,'0')];
+    [[d,vals[0]],[h,vals[1]],[m,vals[2]],[s,vals[3]]].forEach(([el,v])=>{
+      if(el.textContent!==String(v)){ el.textContent=v; el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+    });
+  }
+  tick(); setInterval(tick,250);
+})();
+
+/* ============ 06 · blood loss gauge ============ */
+(function(){
+  const MAX=1000, RATE=0.08;
+  const lossEl=document.getElementById('bl-loss'), backEl=document.getElementById('bl-back'),
+        fill=document.getElementById('bl-fill'), ref=document.getElementById('bl-ref');
+  let loss=412;
+  function render(){
+    lossEl.textContent='−'+fmt(Math.round(loss));
+    backEl.textContent=(loss*RATE).toFixed(2);
+    const p=Math.min(100,loss/MAX*100);
+    fill.style.width=p+'%'; ref.style.left=p+'%';
+  }
+  setInterval(()=>{
+    /* net position drifts as mock bets settle; mostly deeper, sometimes a win claws back */
+    loss=Math.max(0,loss+(Math.random()<0.68?Math.random()*22:-Math.random()*30));
+    render();
+  },1300);
+  render();
+})();
+
+/* ============ 07 · payout EKG ============ */
+(function(){
+  const weeks=[
+    {w:'W-8',v:18.40},{w:'W-7',v:41.20},{w:'W-6',v:0},{w:'W-5',v:26.15},
+    {w:'W-4',v:12.80},{w:'W-3',v:0},{w:'W-2',v:59.85},{w:'W-1',v:32.96}
+  ];
+  const svg=document.getElementById('ekgsvg'), tip=document.getElementById('ekgtip'), box=document.getElementById('ekgbox');
+  const W=560,H=150,base=104,maxv=70,ns='http://www.w3.org/2000/svg';
+  const grid=document.createElementNS(ns,'g'); grid.setAttribute('class','grid');
+  for(let x=0;x<=W;x+=28){const l=document.createElementNS(ns,'line');l.setAttribute('x1',x);l.setAttribute('x2',x);l.setAttribute('y1',0);l.setAttribute('y2',H);grid.appendChild(l)}
+  for(let y=0;y<=H;y+=25){const l=document.createElementNS(ns,'line');l.setAttribute('x1',0);l.setAttribute('x2',W);l.setAttribute('y1',y);l.setAttribute('y2',y);grid.appendChild(l)}
+  svg.appendChild(grid);
+  const slot=W/weeks.length;
+  let dpath='M0 '+base, centers=[];
+  weeks.forEach((wk,i)=>{
+    const cx=slot*i+slot/2; centers.push(cx);
+    if(wk.v===0){ dpath+=' H'+(slot*(i+1)); }
+    else{
+      const peak=base-(wk.v/maxv)*86;
+      dpath+=` H${cx-16} L${cx-9} ${base+7} L${cx-3} ${peak} L${cx+4} ${base+16} L${cx+9} ${base} H${slot*(i+1)}`;
+    }
+    const t=document.createElementNS(ns,'text');
+    t.setAttribute('class','wklbl'); t.setAttribute('x',cx); t.setAttribute('y',H-6); t.textContent=wk.w;
+    svg.appendChild(t);
+  });
+  const p=document.createElementNS(ns,'path');
+  p.setAttribute('class','trace'); p.setAttribute('d',dpath);
+  svg.appendChild(p);
+  /* self-drawing trace with tracer head, loops forever */
+  const len=p.getTotalLength(), head=document.createElement('div'); head.className='head'; box.appendChild(head);
+  p.style.strokeDasharray=len;
+  const DUR=6000;
+  function frame(ts){
+    const k=(ts%DUR)/DUR;
+    p.style.strokeDashoffset=len*(1-k);
+    const pt=p.getPointAtLength(len*k), r=svg.getBoundingClientRect();
+    head.style.left=(pt.x/W*r.width+ (r.left-box.getBoundingClientRect().left) -4)+'px';
+    head.style.top=(pt.y/H*r.height+ (r.top-box.getBoundingClientRect().top) -4)+'px';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  /* hover zones */
+  weeks.forEach((wk,i)=>{
+    const r=document.createElementNS(ns,'rect');
+    r.setAttribute('class','hit');
+    r.setAttribute('x',slot*i); r.setAttribute('y',0); r.setAttribute('width',slot); r.setAttribute('height',H);
+    r.addEventListener('mouseenter',e=>{
+      tip.innerHTML=wk.v===0?`${wk.w} · <span class="fl">winning week · no dose</span>`:`${wk.w} · <b class="mono">${wk.v.toFixed(2)} USDT</b> paid`;
+      tip.style.opacity=1;
+      const bw=box.clientWidth, x=Math.min(bw-160, Math.max(8, centers[i]/W*bw-70));
+      tip.style.left=x+'px'; tip.style.top='10px';
+    });
+    r.addEventListener('mouseleave',()=>tip.style.opacity=0);
+    svg.appendChild(r);
+  });
+})();
+
+/* ============ 08 · what-if ============ */
+(function(){
+  const TIERS=[['Numb',0],['Sting',2],['Ache',4],['Burn',6],['Agony',8],['Threshold',10]];
+  const loss=document.getElementById('wi-loss'), tier=document.getElementById('wi-tier'),
+        out=document.getElementById('wi-out'), lossv=document.getElementById('wi-lossv'),
+        ratev=document.getElementById('wi-ratev'), steps=document.getElementById('wi-steps').children;
+  let shown=32.96;
+  function render(){
+    const L=+loss.value, [name,rate]=TIERS[+tier.value];
+    lossv.textContent=fmt(L)+' USDT';
+    ratev.textContent=name+' · '+rate+'%';
+    [...steps].forEach((el,i)=>el.classList.toggle('on',i===+tier.value));
+    const target=L*rate/100;
+    /* animate the big number toward target */
+    const from=shown, start=performance.now();
+    (function step(ts){
+      const k=Math.min(1,(ts-start)/260);
+      shown=from+(target-from)*(1-Math.pow(1-k,3));
+      out.textContent=shown.toFixed(2);
+      if(k<1&&Math.abs(shown-target)>0.005)requestAnimationFrame(step); else {shown=target; out.textContent=target.toFixed(2);}
+    })(performance.now());
+  }
+  loss.addEventListener('input',render);
+  tier.addEventListener('input',render);
+  render();
+})();
+</script>
+</body>
+</html>
