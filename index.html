@@ -227,21 +227,147 @@ section.blk{margin-bottom:34px}
 .relief-body .btn{width:100%;margin-top:14px;text-align:center;border-radius:var(--r-md)}
 
 /* ---------- pain scale tiers ---------- */
-.tiers{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
-.tier{position:relative;background:var(--card);border-radius:var(--r-lg);padding:18px 16px 14px;overflow:hidden;box-shadow:var(--shadow);transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
-.tier:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow-lg)}
-.tier .heat{position:absolute;top:0;left:0;right:0;height:4px}
-.t0 .heat{background:#3f4044}.t1 .heat{background:#6e1410}.t2 .heat{background:#8f0400}
-.t3 .heat{background:#b50500}.t4 .heat{background:var(--red);box-shadow:0 1px 10px 1px rgba(225,6,0,.5)}
-.t5 .heat{background:var(--blue);box-shadow:0 1px 10px 1px rgba(127,214,232,.45)}
-.tier .num{font-weight:700;font-size:9.5px;letter-spacing:.14em;color:var(--ink-lo)}
-.tier h3{font-family:var(--disp);font-size:19px;text-transform:uppercase;margin:7px 0 10px;line-height:1;color:#fff}
-.t5 h3{color:var(--blue)}
-.tier ul{list-style:none;font-size:11.5px;color:var(--ink)}
-.tier li{padding:5px 0;border-top:1px solid hsla(0,0%,100%,.05);display:flex;justify-content:space-between;gap:6px}
-.tier li b{color:var(--ink-hi);font-weight:700;font-size:11px}
-.tier.you{box-shadow:0 0 0 2px var(--red),var(--shadow)}
-.tier.you::after{content:'YOU';position:absolute;top:12px;right:12px;font-size:8.5px;font-weight:800;letter-spacing:.14em;background:var(--red);color:#fff;padding:3px 8px;border-radius:var(--r-pill)}
+/* ---- Pain Scale: ring-selector tier dashboard (ps- namespaced to avoid
+   colliding with the rest of the site's CSS) ---- */
+.ps-tier-dash{display:flex;gap:14px;max-width:1180px;width:100%;justify-content:center;flex-wrap:wrap}
+input[name="ps-tier-select"]{display:none}
+
+.ps-tier-card{
+  flex:1 1 168px;max-width:190px;
+  background:linear-gradient(165deg,var(--card) 0%,var(--card-2) 100%);
+  border-radius:var(--r-lg);
+  padding:20px 16px 18px;
+  border:1px solid hsla(0,0%,100%,.05);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  opacity:.5;filter:saturate(.5);
+  transform:translateY(0) scale(.98);
+  transition:opacity .35s var(--ease-out),filter .35s var(--ease-out),transform .35s var(--ease-out),border-color .35s var(--ease-out),box-shadow .35s var(--ease-out);
+}
+.ps-tier-card:hover{opacity:.8;transform:translateY(-2px) scale(.99)}
+.ps-tier-card.ps-locked{cursor:not-allowed}
+.ps-tier-card.ps-locked:hover{opacity:.5;transform:translateY(0) scale(.98)}
+
+.ps-badge-wrap{position:relative;width:92px;height:92px;margin-bottom:16px}
+.ps-ring{display:block;width:100%;height:100%;transform:rotate(-90deg)} /* fill ps-badge-wrap exactly at every breakpoint, so it's always concentric with the ps-badge inside it, instead of relying on the hardcoded width/height attributes on the <svg> tag */
+.ps-badge{z-index:1}
+.ps-state-icon{z-index:2}
+.ps-ring-track{fill:none;stroke:hsla(0,0%,100%,.06);stroke-width:5}
+.ps-ring-fill{fill:none;stroke:var(--tc);stroke-width:5;stroke-linecap:round;stroke-dasharray:276.46;stroke-dashoffset:276.46;transition:stroke-dashoffset .8s var(--ease-out)}
+.ps-badge{position:absolute;inset:8px;background:#101113;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid hsla(0,0%,100%,.05)}
+.ps-badge .ps-lvl{font-family:var(--disp);font-size:20px;color:#fff;letter-spacing:.02em;transition:color .3s,text-shadow .3s}
+
+.ps-state-icon{position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);background:#3a3c40}
+.ps-state-icon svg{width:12px;height:12px}
+
+.ps-tier-name{font-family:var(--disp);font-size:15px;text-transform:uppercase;color:#fff;margin-bottom:4px;letter-spacing:.01em}
+.ps-tier-status{font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:16px}
+
+.ps-perks{display:flex;flex-direction:column;gap:7px;width:100%;border-top:1px solid hsla(0,0%,100%,.06);padding-top:14px}
+.ps-perk{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:600;color:var(--ink);padding:6px 9px;border-radius:8px;background:hsla(0,0%,100%,.02);text-align:left;transition:background .3s,color .3s}
+.ps-perk b{color:var(--ink-hi);font-weight:800;font-size:11px;font-variant-numeric:tabular-nums}
+.ps-perk.ps-headline{background:hsla(4,90%,45%,.09);color:var(--white)}
+.ps-perk.ps-headline b{color:var(--redhi)}
+
+.ps-tc0{--tc:#6a6d72} .ps-tc1{--tc:#b5453f} .ps-tc2{--tc:#d4342a} .ps-tc3{--tc:#E10600}
+.ps-tc4{--tc:#FF3B33} .ps-tc5{--tc:#7FD6E8}
+
+/* ring fill reflects REAL status and stays visible always, whether or not the
+   card is selected: cleared tiers show a complete ring, the current tier
+   shows real progress (612K/720K), the locked tier stays empty */
+.ps-c0 .ps-ring-fill,.ps-c1 .ps-ring-fill,.ps-c2 .ps-ring-fill,.ps-c3 .ps-ring-fill{stroke-dashoffset:0}
+.ps-c4 .ps-ring-fill{stroke-dashoffset:41.5} /* 612K / 720K to level 8 */
+.ps-c5 .ps-ring-fill{stroke-dashoffset:276.46}
+
+/* selected state per tier: only the highlight/lift toggles on click, never the ring */
+#ps-s0:checked ~ .ps-grid .ps-c0,
+#ps-s1:checked ~ .ps-grid .ps-c1,
+#ps-s2:checked ~ .ps-grid .ps-c2,
+#ps-s3:checked ~ .ps-grid .ps-c3,
+#ps-s4:checked ~ .ps-grid .ps-c4,
+#ps-s5:checked ~ .ps-grid .ps-c5{
+  opacity:1;filter:saturate(1);transform:translateY(-6px) scale(1);
+  border-color:var(--tc);
+  box-shadow:0 22px 40px rgba(0,0,0,.5),0 0 0 1px var(--tc) inset,0 0 34px -6px var(--tc);
+}
+
+#ps-s0:checked ~ .ps-grid .ps-c0 .ps-lvl,
+#ps-s1:checked ~ .ps-grid .ps-c1 .ps-lvl,
+#ps-s2:checked ~ .ps-grid .ps-c2 .ps-lvl,
+#ps-s3:checked ~ .ps-grid .ps-c3 .ps-lvl,
+#ps-s4:checked ~ .ps-grid .ps-c4 .ps-lvl{color:var(--tc);text-shadow:0 0 16px var(--tc)}
+#ps-s5:checked ~ .ps-grid .ps-c5 .ps-lvl{color:var(--tc);text-shadow:0 0 16px var(--tc)}
+
+.ps-detail{max-width:1180px;width:100%;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.ps-detail-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid hsla(0,0%,100%,.05);flex-wrap:wrap}
+.ps-detail-head h2{font-family:var(--disp);font-size:17px;text-transform:uppercase;color:#fff}
+.ps-detail-head .ps-rank-tag{font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);background:hsla(0,0%,100%,.06);color:var(--ink-hi)}
+.ps-detail-body{padding:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ps-stat{background:var(--card-2);border-radius:var(--r-md);padding:14px 16px}
+.ps-stat .ps-k{font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:8px}
+.ps-stat .ps-v{font-family:var(--disp);font-size:22px;color:#fff;font-variant-numeric:tabular-nums}
+.ps-stat .ps-v.ps-accent{color:var(--redhi)}
+.ps-stat .ps-v.ps-blue{color:var(--blue)}
+
+/* show the matching detail block for whichever radio is checked */
+#ps-s0:checked ~ .ps-detail .ps-d0,
+#ps-s1:checked ~ .ps-detail .ps-d1,
+#ps-s2:checked ~ .ps-detail .ps-d2,
+#ps-s3:checked ~ .ps-detail .ps-d3,
+#ps-s4:checked ~ .ps-detail .ps-d4,
+#ps-s5:checked ~ .ps-detail .ps-d5{display:grid}
+.ps-detail .ps-dpanel{display:none}
+
+@media (max-width:900px){
+  .ps-tier-dash{gap:10px}
+  .ps-tier-card{flex:1 1 128px}
+  .ps-badge-wrap{width:72px;height:72px}
+  .ps-detail-body{grid-template-columns:repeat(2,1fr)}
+}
+
+/* phone: one tier per row, in tier order, so the ladder reads top-to-bottom
+   instead of zigzagging across a 2-up wrap grid */
+@media (max-width:640px){
+  .ps-tier-dash{flex-direction:column;gap:10px}
+  .ps-tier-card{
+    max-width:100%;
+    display:grid;
+    grid-template-columns:64px 1fr;
+    grid-template-areas:"badge name" "badge status" "perks perks";
+    column-gap:16px;row-gap:2px;
+    padding:14px 16px;
+    text-align:left;
+  }
+  .ps-tier-card:hover{transform:none}
+  .ps-badge-wrap{grid-area:badge;width:64px;height:64px;margin-bottom:0;align-self:start}
+  .ps-badge .ps-lvl{font-size:15px;white-space:nowrap}
+  /* smaller badge = a fixed 24px state-icon would eat into the ring stroke and
+     read as two overlapping circles; shrink + tuck it into the corner */
+  .ps-state-icon{width:17px;height:17px;bottom:-3px;right:-3px;border-width:2px}
+  .ps-state-icon svg{width:9px;height:9px}
+  .ps-tier-name{grid-area:name;align-self:end;margin-bottom:1px;font-size:15px}
+  .ps-tier-status{grid-area:status;margin-bottom:0}
+  .ps-perks{grid-area:perks;border-top:1px solid hsla(0,0%,100%,.06);padding-top:12px;margin-top:12px}
+  .ps-detail-body{grid-template-columns:1fr}
+  .ps-detail-head{padding:14px 16px}
+  .ps-detail-body{padding:16px}
+
+  /* The wide-card lift + blurred outer glow reads fine on a spaced-out desktop
+     grid, but in this tight single-column list its blur bleeds inward into the
+     ring. Simplify to just the thin selected border plus a flat drop shadow,
+     and give the ring real clearance from the card edges so nothing touches it. */
+  .ps-tier-card{padding:18px 16px 16px 22px}
+  #ps-s0:checked ~ .ps-grid .ps-c0,
+  #ps-s1:checked ~ .ps-grid .ps-c1,
+  #ps-s2:checked ~ .ps-grid .ps-c2,
+  #ps-s3:checked ~ .ps-grid .ps-c3,
+  #ps-s4:checked ~ .ps-grid .ps-c4,
+  #ps-s5:checked ~ .ps-grid .ps-c5{
+    transform:none;
+    box-shadow:0 6px 18px rgba(0,0,0,.4);
+  }
+}
 
 /* ---------- rails / chains ---------- */
 .rails{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
@@ -322,14 +448,12 @@ footer{padding:22px}
 /* ---------- responsive ---------- */
 @media(max-width:1100px){
   .rail{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .tiers{grid-template-columns:repeat(3,minmax(0,1fr))}
   .promos,.duo,.glayout{grid-template-columns:1fr}
   .gpanel{order:2}
 }
 
 @media(max-width:600px){
   .rail{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .tiers{grid-template-columns:repeat(2,minmax(0,1fr))}
   .rails{grid-template-columns:repeat(2,minmax(0,1fr))}
   .balance{display:none}
   .chainrow{grid-template-columns:repeat(3,1fr)}
@@ -754,19 +878,161 @@ body.trackeropen .drawer{right:0}
             <h2>The Pain Scale</h2>
             <div class="tag">Wager to climb. Level 9 breaks blue.</div>
           </div>
-          <div class="tiers">
-            <div class="tier t0"><div class="heat"></div><div class="num">LEVEL 0</div><h3>Numb</h3>
-              <ul><li>Rakeback <b>2%</b></li><li>PK / $100 <b>10</b></li><li>Anesthesia <b>0%</b></li></ul></div>
-            <div class="tier t1"><div class="heat"></div><div class="num">LEVEL 1–2</div><h3>Sting</h3>
-              <ul><li>Rakeback <b>4%</b></li><li>PK / $100 <b>14</b></li><li>Anesthesia <b>2%</b></li></ul></div>
-            <div class="tier t2"><div class="heat"></div><div class="num">LEVEL 3–4</div><h3>Ache</h3>
-              <ul><li>Rakeback <b>6%</b></li><li>PK / $100 <b>18</b></li><li>Anesthesia <b>4%</b></li></ul></div>
-            <div class="tier t3"><div class="heat"></div><div class="num">LEVEL 5–6</div><h3>Burn</h3>
-              <ul><li>Rakeback <b>8%</b></li><li>PK / $100 <b>24</b></li><li>Anesthesia <b>6%</b></li></ul></div>
-            <div class="tier t4 you"><div class="heat"></div><div class="num">LEVEL 7–8</div><h3>Agony</h3>
-              <ul><li>Rakeback <b>10%</b></li><li>PK / $100 <b>32</b></li><li>Anesthesia <b>8%</b></li></ul></div>
-            <div class="tier t5"><div class="heat"></div><div class="num">LEVEL 9–10</div><h3>Threshold</h3>
-              <ul><li>Rakeback <b>12%</b></li><li>PK / $100 <b>45</b></li><li>Host <b>Dedicated</b></li></ul></div>
+          <input type="radio" name="ps-tier-select" id="ps-s0">
+          <input type="radio" name="ps-tier-select" id="ps-s1">
+          <input type="radio" name="ps-tier-select" id="ps-s2">
+          <input type="radio" name="ps-tier-select" id="ps-s3">
+          <input type="radio" name="ps-tier-select" id="ps-s4" checked>
+          <input type="radio" name="ps-tier-select" id="ps-s5" disabled>
+
+          <div class="ps-grid ps-tier-dash">
+            <label for="ps-s0" class="ps-tier-card ps-c0 ps-tc0">
+              <div class="ps-badge-wrap">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                  <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <div class="ps-badge"><span class="ps-lvl">0</span></div>
+                <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+              </div>
+              <div class="ps-tier-name">Numb</div>
+              <div class="ps-tier-status">Level 0 · cleared</div>
+              <div class="ps-perks">
+                <div class="ps-perk"><span>Rakeback</span><b>2%</b></div>
+                <div class="ps-perk"><span>PK / $100</span><b>10</b></div>
+                <div class="ps-perk"><span>Anesthesia</span><b>0%</b></div>
+              </div>
+            </label>
+
+            <label for="ps-s1" class="ps-tier-card ps-c1 ps-tc1">
+              <div class="ps-badge-wrap">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                  <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <div class="ps-badge"><span class="ps-lvl">1&ndash;2</span></div>
+                <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+              </div>
+              <div class="ps-tier-name">Sting</div>
+              <div class="ps-tier-status">Level 1&ndash;2 · cleared</div>
+              <div class="ps-perks">
+                <div class="ps-perk"><span>Rakeback</span><b>4%</b></div>
+                <div class="ps-perk"><span>PK / $100</span><b>14</b></div>
+                <div class="ps-perk"><span>Anesthesia</span><b>2%</b></div>
+              </div>
+            </label>
+
+            <label for="ps-s2" class="ps-tier-card ps-c2 ps-tc2">
+              <div class="ps-badge-wrap">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                  <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <div class="ps-badge"><span class="ps-lvl">3&ndash;4</span></div>
+                <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+              </div>
+              <div class="ps-tier-name">Ache</div>
+              <div class="ps-tier-status">Level 3&ndash;4 · cleared</div>
+              <div class="ps-perks">
+                <div class="ps-perk"><span>Rakeback</span><b>6%</b></div>
+                <div class="ps-perk"><span>PK / $100</span><b>18</b></div>
+                <div class="ps-perk"><span>Anesthesia</span><b>4%</b></div>
+              </div>
+            </label>
+
+            <label for="ps-s3" class="ps-tier-card ps-c3 ps-tc3">
+              <div class="ps-badge-wrap">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                  <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <div class="ps-badge"><span class="ps-lvl">5&ndash;6</span></div>
+                <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+              </div>
+              <div class="ps-tier-name">Burn</div>
+              <div class="ps-tier-status">Level 5&ndash;6 · cleared</div>
+              <div class="ps-perks">
+                <div class="ps-perk"><span>Rakeback</span><b>8%</b></div>
+                <div class="ps-perk"><span>PK / $100</span><b>24</b></div>
+                <div class="ps-perk"><span>Anesthesia</span><b>6%</b></div>
+              </div>
+            </label>
+
+            <label for="ps-s4" class="ps-tier-card ps-c4 ps-tc4">
+              <div class="ps-badge-wrap">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                  <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <div class="ps-badge"><span class="ps-lvl">7&ndash;8</span></div>
+                <div class="ps-state-icon" style="background:var(--redhi)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><circle cx="12" cy="12" r="5"/></svg></div>
+              </div>
+              <div class="ps-tier-name">Agony</div>
+              <div class="ps-tier-status" style="color:var(--redhi)">Level 7&ndash;8 · you are here</div>
+              <div class="ps-perks">
+                <div class="ps-perk ps-headline"><span>Rakeback</span><b>10%</b></div>
+                <div class="ps-perk ps-headline"><span>PK / $100</span><b>32</b></div>
+                <div class="ps-perk ps-headline"><span>Anesthesia</span><b>8%</b></div>
+              </div>
+            </label>
+
+            <label for="ps-s5" class="ps-tier-card ps-c5 ps-tc5 ps-locked" aria-disabled="true">
+              <div class="ps-badge-wrap">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                  <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
+                  <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
+                </svg>
+                <div class="ps-badge"><span class="ps-lvl">9&ndash;10</span></div>
+                <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2.4"><rect x="6" y="10.5" width="12" height="9" rx="1.6"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg></div>
+              </div>
+              <div class="ps-tier-name" style="color:var(--blue)">Threshold</div>
+              <div class="ps-tier-status">Level 9&ndash;10 · locked</div>
+              <div class="ps-perks">
+                <div class="ps-perk"><span>Rakeback</span><b>12%</b></div>
+                <div class="ps-perk"><span>PK / $100</span><b>45</b></div>
+                <div class="ps-perk"><span>Host</span><b>Dedicated</b></div>
+              </div>
+            </label>
+          </div>
+        </section>
+
+        <section class="blk">
+          <div class="ps-detail">
+            <div class="ps-detail-head">
+              <h2>Tier detail</h2>
+              <span class="ps-rank-tag">Click a tier above to inspect it</span>
+            </div>
+
+            <div class="ps-dpanel ps-d0 ps-detail-body">
+              <div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">0 &ndash; 50K USDT</div></div>
+              <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div>
+              <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">0%</div></div>
+            </div>
+            <div class="ps-dpanel ps-d1 ps-detail-body">
+              <div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">50K &ndash; 150K</div></div>
+              <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div>
+              <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">2%</div></div>
+            </div>
+            <div class="ps-dpanel ps-d2 ps-detail-body">
+              <div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">150K &ndash; 320K</div></div>
+              <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div>
+              <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">4%</div></div>
+            </div>
+            <div class="ps-dpanel ps-d3 ps-detail-body">
+              <div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">320K &ndash; 480K</div></div>
+              <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div>
+              <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">6%</div></div>
+            </div>
+            <div class="ps-dpanel ps-d4 ps-detail-body">
+              <div class="ps-stat"><div class="ps-k">Progress to Level 8</div><div class="ps-v ps-accent">612K / 720K</div></div>
+              <div class="ps-stat"><div class="ps-k">Remaining</div><div class="ps-v">108K USDT</div></div>
+              <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v ps-blue">8%</div></div>
+            </div>
+            <div class="ps-dpanel ps-d5 ps-detail-body">
+              <div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v" style="color:var(--blue)">720K+</div></div>
+              <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Locked</div></div>
+              <div class="ps-stat"><div class="ps-k">Host</div><div class="ps-v">Dedicated</div></div>
+            </div>
           </div>
         </section>
       </div>
