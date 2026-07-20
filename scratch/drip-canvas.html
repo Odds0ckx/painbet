@@ -42,8 +42,15 @@ const CFG = {
   WOBBLE_AMT   : 0.055,       // fraction of drip length the wobble adds/removes
   PILL_W       : 340,         // button size (the layout scales around these)
   PILL_H       : 86,
+  BOT_R        : 16,          // bottom-corner radius — rounded, just tighter than the top
   PINK         : '#ff2a6d',
   PINK_DEEP    : '#e0175a',   // used at the bottom of the fill gradient for depth
+  GOO_BLUR     : 10,          // px — blur used for the body + drip fingers (where fusing matters)
+  GOO_BLUR_THIN: 3,           // px — lighter blur for the thread + hanging drop: they're thin/small
+                              // enough that GOO_BLUR would wash their peak alpha out entirely (verified:
+                              // a ~4px drop under 10px blur drops to alpha 23/255 — below any sane threshold)
+  GOO_MID      : 130,         // 0-255 alpha midpoint of the fuse threshold
+  GOO_SHARP    : 9,           // threshold slope: higher = crisper post-fuse edge
 };
 
 /* ============================================================================
@@ -132,6 +139,7 @@ function layout(){
   // resolve each drip's x on the flat part of the bottom edge
   const x0 = pill.x + pill.r * 0.9, x1 = pill.x + pill.w - pill.r * 0.9;
   for (const d of DRIPS) d.cx = x0 + (x1 - x0) * d.o;
+  setupGooBuffers();
 }
 
 /* Current length of a drip. Non-emit drips just wobble in place.
@@ -150,39 +158,160 @@ function dripTipY(d, time){
 }
 
 /* ============================================================================
-   THE LIQUID OUTLINE — one continuous path: pill + every static drip.
-   Single path ⇒ single fill ⇒ no seams, and the inner shadow hugs the
-   whole silhouette.
+   THE GOOEY MERGE — a real metaball technique, not a hand-tapered vector path.
+   Every liquid piece (pill body, each drip finger, any hanging thread+drop)
+   is stamped as its own soft, blurred shape into an offscreen buffer. Where
+   two blurred shapes overlap, their alpha adds up; thresholding the alpha
+   channel back to a hard edge afterwards fuses those overlaps into smooth,
+   rounded, organic joins instead of the sharp seams a stitched vector outline
+   would leave. This is the same blur→threshold trick behind the classic
+   SVG "goo" filter, done by hand on raw pixels since canvas has no
+   feColorMatrix.
 
-   Shape: rounded top (the two top corners are quarter-circle arcs, radius
-   `rTop`), FLAT bottom edge with sharp corners — a plaque, not a full pill —
-   so the drips hang off a hard, straight edge the way wax/blood pools do.
+   Shape: rounded top (radius = pill.h/2, same as before) but the two bottom
+   corners are ALSO rounded — just tighter (CFG.BOT_R) — so the button keeps
+   a flat span for the drips to hang from without any sharp corner.
 ============================================================================ */
-function liquidPath(c, time){
-  const {x, y, w, h} = pill;
-  const rTop = h / 2;   // top corner radius only; bottom stays square
-  const yb = y + h;
-  c.moveTo(x, y + rTop);
-  c.arc(x + rTop, y + rTop, rTop, Math.PI, Math.PI * 1.5);           // top-left corner
-  c.lineTo(x + w - rTop, y);
-  c.arc(x + w - rTop, y + rTop, rTop, Math.PI * 1.5, Math.PI * 2);   // top-right corner
-  c.lineTo(x + w, yb);                                                // right edge, straight down
-  // flat bottom edge, right → left, inserting a teardrop finger per drip
-  const sorted = [...DRIPS].sort((a, b) => b.cx - a.cx);
-  for (const d of sorted){
-    const len = dripLen(d, time);
-    const hw  = d.w * (1 + 0.4 * CFG.WOBBLE_AMT * Math.sin(time*CFG.WOBBLE_SPEED*0.8 + d.ph + 2));
-    const tw  = hw * 0.72;                                  // tip half-width (slight taper)
-    c.lineTo(d.cx + hw, yb);
-    // tapered side down…
-    c.quadraticCurveTo(d.cx + hw, yb + len * 0.45, d.cx + tw, yb + len - tw);
-    // …rounded tip…
-    c.arc(d.cx, yb + len - tw, tw, 0, Math.PI);
-    // …tapered side back up
-    c.quadraticCurveTo(d.cx - hw, yb + len * 0.45, d.cx - hw, yb);
+let bufX, bufY, bufW, bufH, gooCanvas, gooCtx, colCanvas, colCtx;
+
+function setupGooBuffers(){
+  bufX = pill.x - 40;
+  bufY = pill.y - 24;
+  bufW = pill.w + 80;
+  bufH = pill.h + 260;   // covers full drip length + snap distance + drop radius, generously
+  gooCanvas = document.createElement('canvas');
+  colCanvas = document.createElement('canvas');
+  gooCanvas.width  = colCanvas.width  = Math.ceil(bufW * DPR);
+  gooCanvas.height = colCanvas.height = Math.ceil(bufH * DPR);
+  gooCtx = gooCanvas.getContext('2d');
+  colCtx = colCanvas.getContext('2d');
+}
+
+/* World-space transform used while STAMPING shapes (lets every helper below
+   just use the same pill.x / d.cx world coordinates as the rest of the file). */
+function worldXform(c){ c.setTransform(DPR, 0, 0, DPR, -bufX * DPR, -bufY * DPR); }
+
+function roundedPillPath(c){
+  const {x, y, w, h} = pill, rt = h / 2, rb = CFG.BOT_R;
+  c.beginPath();
+  c.moveTo(x, y + rt);
+  c.arcTo(x, y, x + rt, y, rt);                 // top-left
+  c.lineTo(x + w - rt, y);
+  c.arcTo(x + w, y, x + w, y + rt, rt);         // top-right
+  c.lineTo(x + w, y + h - rb);
+  c.arcTo(x + w, y + h, x + w - rb, y + h, rb); // bottom-right — rounded, not sharp
+  c.lineTo(x + rb, y + h);
+  c.arcTo(x, y + h, x, y + h - rb, rb);         // bottom-left — rounded, not sharp
+  c.closePath();
+  c.fill();
+}
+
+function drawDripFinger(c, d, time){
+  const len = dripLen(d, time);
+  const hw  = d.w * (1 + 0.4 * CFG.WOBBLE_AMT * Math.sin(time*CFG.WOBBLE_SPEED*0.8 + d.ph + 2));
+  const tw  = hw * 0.72;
+  const yb  = pill.y + pill.h;
+  const yTop = yb - 10;                          // sinks up into the body — the goo pass fuses it, no seam maths needed
+  c.beginPath();
+  c.moveTo(d.cx - hw, yTop);
+  c.lineTo(d.cx + hw, yTop);
+  c.quadraticCurveTo(d.cx + hw, yb + len * 0.45, d.cx + tw, yb + len - tw);
+  c.arc(d.cx, yb + len - tw, tw, 0, Math.PI);
+  c.quadraticCurveTo(d.cx - hw, yb + len * 0.45, d.cx - hw, yTop);
+  c.closePath();
+  c.fill();
+}
+
+function drawThreadAndDrop(c, drop, time){
+  const d = drop.drip, cx = d.cx, tipY = dripTipY(d, time) - 3;
+  const gap   = drop.y - tipY;
+  const waist = CFG.THREAD_NECK * 0.8 + (CFG.THREAD_MIN - CFG.THREAD_NECK * 0.8) * drop.p;
+  const neck  = CFG.THREAD_NECK * (1 - drop.p * 0.35);
+  const dr    = drop.r * Math.min(1, 0.35 + drop.p * 0.85);
+  const wD    = Math.min(dr * 0.55, neck) * (1 - drop.p * 0.55) + 0.6;
+
+  c.beginPath();
+  c.moveTo(cx - neck, tipY);
+  c.bezierCurveTo(cx - waist, tipY + gap * 0.40, cx - wD, drop.y - gap * 0.35, cx - wD, drop.y);
+  c.lineTo(cx + wD, drop.y);
+  c.bezierCurveTo(cx + waist, drop.y - gap * 0.35, cx + waist, tipY + gap * 0.40, cx + neck, tipY);
+  c.closePath();
+  c.fill();
+
+  c.beginPath();
+  c.ellipse(cx, drop.y, dr * 0.92, dr * 1.1, 0, 0, Math.PI * 2);
+  c.fill();
+}
+
+function drawRetractStub(c, drop, time){
+  const d = drop.drip, cx = d.cx, tipY = dripTipY(d, time) - 3;
+  const e = drop.retract * drop.retract;
+  c.beginPath();
+  c.moveTo(cx - CFG.THREAD_NECK * e, tipY);
+  c.quadraticCurveTo(cx, tipY + 26 * e, cx + CFG.THREAD_NECK * e, tipY);
+  c.closePath();
+  c.fill();
+}
+
+/* Stamp every attached liquid piece (blurred), threshold-fuse the alpha,
+   colorize with the pink gradient, add a cheap raster inner-shadow, then
+   blit the finished gooey blob onto the main canvas with a drop shadow. */
+function drawGooBody(time){
+  // 1 · stamp shapes, blurred, into the goo buffer
+  gooCtx.setTransform(1, 0, 0, 1, 0, 0);
+  gooCtx.clearRect(0, 0, gooCanvas.width, gooCanvas.height);
+  worldXform(gooCtx);
+  gooCtx.fillStyle = '#fff';
+  gooCtx.filter = `blur(${CFG.GOO_BLUR}px)`;
+  roundedPillPath(gooCtx);
+  for (const d of DRIPS) drawDripFinger(gooCtx, d, time);
+  // thread + hanging drop use a much lighter blur — they're thin/small enough that
+  // the body's blur radius would erase their alpha before the threshold ever runs
+  gooCtx.filter = `blur(${CFG.GOO_BLUR_THIN}px)`;
+  for (const p of drops){
+    if (p.state === 'stretch') drawThreadAndDrop(gooCtx, p, time);
+    else if (p.state === 'fall' && p.retract > 0) drawRetractStub(gooCtx, p, time);
   }
-  c.lineTo(x, yb);              // sharp bottom-left corner
-  c.closePath();                 // straight left edge back up to the start point
+  gooCtx.filter = 'none';
+
+  // 2 · threshold the alpha channel — this is the "goo" step: blurred overlaps
+  //     fuse into continuous soft joins, then snap back to a clean edge
+  const img = gooCtx.getImageData(0, 0, gooCanvas.width, gooCanvas.height);
+  const a = img.data, mid = CFG.GOO_MID, k = CFG.GOO_SHARP;
+  for (let i = 3; i < a.length; i += 4){
+    a[i] = Math.max(0, Math.min(255, (a[i] - mid) * k + mid));
+  }
+  gooCtx.putImageData(img, 0, 0);
+
+  // 3 · colorize: pink gradient masked by the fused silhouette
+  colCtx.setTransform(1, 0, 0, 1, 0, 0);
+  colCtx.clearRect(0, 0, colCanvas.width, colCanvas.height);
+  worldXform(colCtx);
+  colCtx.fillStyle = pinkFill(colCtx);
+  colCtx.fillRect(bufX, bufY, bufW, bufH);
+  colCtx.setTransform(1, 0, 0, 1, 0, 0);
+  colCtx.globalCompositeOperation = 'destination-in';
+  colCtx.drawImage(gooCanvas, 0, 0);
+  colCtx.globalCompositeOperation = 'source-over';
+
+  // 4 · cheap inner shadow: a dark gradient clipped to the shape via source-atop
+  worldXform(colCtx);
+  colCtx.globalCompositeOperation = 'source-atop';
+  const ish = colCtx.createLinearGradient(0, pill.y, 0, pill.y + pill.h + 90);
+  ish.addColorStop(0, 'rgba(0,0,0,0)');
+  ish.addColorStop(0.55, 'rgba(0,0,0,0.10)');
+  ish.addColorStop(1, 'rgba(0,0,0,0.30)');
+  colCtx.fillStyle = ish;
+  colCtx.fillRect(bufX, bufY, bufW, bufH);
+  colCtx.globalCompositeOperation = 'source-over';
+
+  // 5 · blit onto the main canvas with a soft outer drop shadow
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.30)';
+  ctx.shadowBlur = 22;
+  ctx.shadowOffsetY = 10;
+  ctx.drawImage(colCanvas, 0, 0, colCanvas.width, colCanvas.height, bufX, bufY, bufW, bufH);
+  ctx.restore();
 }
 
 /* ============================================================================
@@ -257,53 +386,6 @@ class Drop {
     if (this.retract > 0) this.retract = Math.max(0, this.retract - dt / CFG.RETRACT_TIME);
   }
 
-  /* Draw thread + drop. Same pink as the button so everything reads as one liquid. */
-  draw(c, time){
-    const d = this.drip, cx = d.cx, tipY = dripTipY(d, time) - 3;
-
-    if (this.state === 'stretch'){
-      const gap   = this.y - tipY;
-      const waist = CFG.THREAD_NECK * 0.8 + (CFG.THREAD_MIN - CFG.THREAD_NECK * 0.8) * this.p;
-      const neck  = CFG.THREAD_NECK * (1 - this.p * 0.35);
-      const dr    = this.r * Math.min(1, 0.35 + this.p * 0.85);   // drop inflates as liquid feeds in
-      const wD    = Math.min(dr * 0.55, neck) * (1 - this.p * 0.55) + 0.6;
-
-      /* the connecting thread: two mirrored cubic Béziers whose control
-         points pull inwards to `waist`, thinning as p → 1 */
-      c.beginPath();
-      c.moveTo(cx - neck, tipY);
-      c.bezierCurveTo(cx - waist, tipY + gap * 0.40,
-                      cx - wD,    this.y - gap * 0.35,
-                      cx - wD,    this.y);
-      c.lineTo(cx + wD, this.y);
-      c.bezierCurveTo(cx + waist, this.y - gap * 0.35,
-                      cx + waist, tipY + gap * 0.40,
-                      cx + neck,  tipY);
-      c.closePath();
-      c.fill();
-
-      /* the hanging drop — slightly stretched vertically while attached */
-      c.beginPath();
-      c.ellipse(cx, this.y, dr * 0.92, dr * 1.1, 0, 0, Math.PI * 2);
-      c.fill();
-
-    } else if (this.state === 'fall'){
-      /* detached: a perfect circle */
-      c.beginPath();
-      c.arc(cx, this.y, this.r, 0, Math.PI * 2);
-      c.fill();
-    }
-
-    /* the snapped thread springing back into the drip tip */
-    if (this.retract > 0){
-      const e = this.retract * this.retract;          // ease-out of the retraction
-      c.beginPath();
-      c.moveTo(cx - CFG.THREAD_NECK * e, tipY);
-      c.quadraticCurveTo(cx, tipY + 26 * e, cx + CFG.THREAD_NECK * e, tipY);
-      c.closePath();
-      c.fill();
-    }
-  }
 }
 
 const drops = [];   // built in start(), one Drop per emit-flagged drip
@@ -312,32 +394,13 @@ const drops = [];   // built in start(), one Drop per emit-flagged drip
    RENDER HELPERS
 ============================================================================ */
 
-/* Vertical pink gradient reused for pill, drips, threads and drops. */
-function pinkFill(){
-  const g = ctx.createLinearGradient(0, pill.y, 0, pill.y + pill.h + 90);
+/* Vertical pink gradient reused for the body and for detached falling drops. */
+function pinkFill(c){
+  const g = c.createLinearGradient(0, pill.y, 0, pill.y + pill.h + 90);
   g.addColorStop(0, '#ff4b84');
   g.addColorStop(0.55, CFG.PINK);
   g.addColorStop(1, CFG.PINK_DEEP);
   return g;
-}
-
-/* Subtle inner shadow using the classic clip + inverse-evenodd-fill trick:
-   fill everything EXCEPT the liquid in black with a blur — the black itself is
-   clipped away, only its shadow bleeds inside the silhouette. */
-function innerShadow(time){
-  ctx.save();
-  ctx.beginPath();
-  liquidPath(ctx, time);
-  ctx.clip();
-  ctx.beginPath();
-  ctx.rect(-80, -80, W + 160, H + 160);
-  liquidPath(ctx, time);
-  ctx.shadowColor = 'rgba(0,0,0,0.38)';
-  ctx.shadowBlur = 16;
-  ctx.shadowOffsetY = 6;
-  ctx.fillStyle = '#000';
-  ctx.fill('evenodd');
-  ctx.restore();
 }
 
 function drawLabel(){
@@ -370,23 +433,23 @@ function frame(ts){
   // physics
   for (const p of drops) p.update(dt, time);
 
-  // liquid body: pill + static drips as ONE filled path
-  ctx.save();
-  ctx.fillStyle = pinkFill();
-  // soft drop shadow under the whole blob
-  ctx.shadowColor = 'rgba(0,0,0,0.30)';
-  ctx.shadowBlur = 22;
-  ctx.shadowOffsetY = 10;
-  ctx.beginPath();
-  liquidPath(ctx, time);
-  ctx.fill();
-  ctx.shadowColor = 'transparent';
+  // gooey body: pill + drips + any attached thread/drop, fused via blur+threshold
+  drawGooBody(time);
 
-  // threads + falling drops share the same fill
-  for (const p of drops) p.draw(ctx, time);
+  // fully detached drops fall independently — no merging needed once they're free
+  ctx.save();
+  ctx.fillStyle = pinkFill(ctx);
+  ctx.shadowColor = 'rgba(0,0,0,0.25)';
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 4;
+  for (const p of drops){
+    if (p.state !== 'fall') continue;
+    ctx.beginPath();
+    ctx.arc(p.drip.cx, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.restore();
 
-  innerShadow(time);
   drawLabel();
 
   requestAnimationFrame(frame);
