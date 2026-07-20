@@ -688,6 +688,93 @@ body.trackeropen .drawer{right:0}
   footer{padding-bottom:88px}
 }
 
+/* ============ PainKillers · live relief feed / IV drip / tolerance dial ============ */
+.pk-live-row{margin-top:16px}
+@media(max-width:960px){.pk-live-row{grid-template-columns:1fr}}
+
+.pk-feedbox{background:var(--card-hi);border-radius:var(--r-md);padding:12px 14px;height:210px;overflow:hidden;position:relative}
+.pk-feedbox::after{content:'';position:absolute;left:0;right:0;bottom:0;height:50px;background:linear-gradient(to bottom,transparent,var(--card));pointer-events:none}
+.pk-feedhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.pk-feedhead .live{display:flex;align-items:center;gap:6px;color:var(--blue)}
+.pk-feedhead .live .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px 2px rgba(127,214,232,.5);animation:pk-blink 1.6s ease-in-out infinite}
+@keyframes pk-blink{0%,100%{opacity:1}50%{opacity:.35}}
+.pk-feedhead .today{color:var(--ink-hi);text-transform:none;letter-spacing:normal;font-weight:600}
+.pk-feedhead .today b{color:var(--blue);font-weight:800}
+.pk-frow{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-sm);font-size:11px;animation:pk-fin .5s var(--ease-out)}
+@keyframes pk-fin{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.pk-frow.fresh{background:rgba(127,214,232,.08);outline:1px solid rgba(127,214,232,.18)}
+.pk-frow .g{color:var(--ink-hi);font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pk-frow .w{color:var(--ink-lo);white-space:nowrap}
+.pk-frow .res{font-size:9px;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:4px}
+.pk-frow .res.loss{color:var(--redhi);background:rgba(225,6,0,.12)}
+.pk-frow .res.win{color:var(--blue);background:rgba(127,214,232,.1)}
+.pk-frow .pkv{font-weight:800;color:var(--blue);white-space:nowrap}
+
+.pk-ivstage{position:relative;height:140px;background:var(--card-hi);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px}
+.pk-ivbag{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:46px;height:58px;border-radius:8px 8px 12px 12px;background:linear-gradient(to bottom,rgba(127,214,232,.06) 22%,rgba(127,214,232,.35) 22%);border:2px solid rgba(127,214,232,.5);box-shadow:0 0 16px rgba(127,214,232,.15)}
+.pk-ivbag::before{content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:12px;height:7px;border:2px solid rgba(127,214,232,.5);border-bottom:none;border-radius:4px 4px 0 0}
+.pk-ivbag .lbl{position:absolute;inset:auto 0 6px;text-align:center;font-family:var(--disp);font-size:9px;color:#fff;text-shadow:0 0 8px rgba(127,214,232,.8)}
+.pk-ivtube{position:absolute;top:68px;bottom:40px;left:50%;width:2px;transform:translateX(-50%);background:rgba(127,214,232,.22)}
+.pk-ivdrop{position:absolute;top:72px;left:50%;width:6px;height:9px;transform:translateX(-50%);border-radius:50%/38% 38% 62% 62%;background:var(--blue);box-shadow:0 0 9px rgba(127,214,232,.9);animation:pk-fall 1.7s cubic-bezier(.5,0,.9,.6) infinite}
+@keyframes pk-fall{0%{top:72px;opacity:0;transform:translateX(-50%) scale(.4)}12%{opacity:1;transform:translateX(-50%) scale(1)}86%{top:112px;opacity:1}100%{top:118px;opacity:0;transform:translateX(-50%) scale(1.5)}}
+.pk-ivpool{position:absolute;left:10px;right:10px;bottom:10px;height:30px;border-radius:8px;background:rgba(127,214,232,.1);border:1px solid rgba(127,214,232,.25);overflow:hidden}
+.pk-ivpool .fill{position:absolute;inset:0;top:auto;height:46%;background:rgba(127,214,232,.35);transition:height .5s var(--ease-out)}
+.pk-ivpool.splash{animation:pk-splash .45s var(--ease-out)}
+@keyframes pk-splash{0%{box-shadow:0 0 0 0 rgba(127,214,232,.5)}100%{box-shadow:0 0 0 10px rgba(127,214,232,0)}}
+.pk-ivbal{font-family:var(--disp);font-size:24px;color:#fff;line-height:1;transition:text-shadow .3s;text-align:center;font-variant-numeric:tabular-nums}
+.pk-ivbal.hit{text-shadow:0 0 18px rgba(127,214,232,.9);color:var(--blue)}
+.pk-ivbal small{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--ink-lo)}
+
+.pk-dial{position:relative;width:120px;height:120px;margin:4px auto 14px}
+.pk-dial svg{width:100%;height:100%;transform:rotate(135deg)}
+.pk-dial .track{fill:none;stroke:hsla(0,0%,100%,.07);stroke-width:10;stroke-linecap:round}
+.pk-dial .arc{fill:none;stroke:var(--red);stroke-width:10;stroke-linecap:round;filter:drop-shadow(0 0 7px rgba(225,6,0,.55));transition:stroke-dashoffset 1.2s var(--ease-out)}
+.pk-dial .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pk-dial .x{font-family:var(--disp);font-size:26px;color:#fff;line-height:1;text-shadow:0 0 14px rgba(225,6,0,.6);animation:pk-dialpulse 2.6s ease-in-out infinite}
+@keyframes pk-dialpulse{0%,100%{text-shadow:0 0 10px rgba(225,6,0,.4)}50%{text-shadow:0 0 22px rgba(225,6,0,.85)}}
+.pk-dial .cap{font-size:8.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-top:4px}
+.pk-warn{font-size:11px;color:var(--redhi);background:rgba(225,6,0,.08);border-radius:var(--r-sm);padding:9px 10px;line-height:1.45;margin-top:10px}
+.pk-warn b{letter-spacing:.02em}
+
+/* ============ Anesthesia · countdown monitor / blood loss gauge ============ */
+.ax-live-row{margin-top:14px}
+@media(max-width:960px){.ax-live-row{grid-template-columns:1fr}}
+.ax-monitor{position:relative;background:#0b0d0e;border-radius:var(--r-lg);padding:20px 18px 16px;overflow:hidden;border:1px solid rgba(127,214,232,.15);box-shadow:var(--shadow)}
+.ax-monitor::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(255,255,255,.012) 2px 4px);pointer-events:none}
+.ax-scan{position:absolute;left:0;right:0;height:46px;top:-46px;background:linear-gradient(to bottom,transparent,rgba(127,214,232,.045),transparent);animation:ax-scan 5s linear infinite;pointer-events:none}
+@keyframes ax-scan{from{top:-46px}to{top:100%}}
+.ax-montop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.ax-montop .id{color:var(--blue)}
+.ax-montop .rec{display:flex;align-items:center;gap:6px;color:var(--ink-lo)}
+.ax-montop .rec .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:pk-blink 1.2s ease-in-out infinite}
+.ax-cd{display:flex;gap:10px;justify-content:center}
+.ax-cd .cell{flex:1;max-width:110px;text-align:center;background:rgba(127,214,232,.05);border:1px solid rgba(127,214,232,.14);border-radius:var(--r-sm);padding:12px 4px 9px}
+.ax-cd .n{font-family:var(--disp);font-size:30px;line-height:1;color:var(--blue);text-shadow:0 0 14px rgba(127,214,232,.5);font-variant-numeric:tabular-nums}
+.ax-cd .n.tick{animation:ax-tick .4s var(--ease-out)}
+@keyframes ax-tick{0%{transform:translateY(-5px);opacity:.4}100%{transform:none;opacity:1}}
+.ax-cd .u{font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-top:6px}
+.ax-ekgline{margin-top:14px;height:28px;overflow:hidden;opacity:.7}
+.ax-ekgline svg{width:200%;height:100%;animation:ax-ekgmove 7s linear infinite}
+@keyframes ax-ekgmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ax-monfoot{display:flex;justify-content:space-between;margin-top:10px;font-size:11px;color:var(--ink)}
+.ax-monfoot b{color:var(--blue)}
+
+.ax-gnums{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+.ax-gnums .n{font-family:var(--disp);font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.ax-gnums .loss .n{color:var(--redhi);text-shadow:0 0 12px rgba(225,6,0,.45)}
+.ax-gnums .back{text-align:right}
+.ax-gnums .back .n{color:var(--blue);text-shadow:0 0 12px rgba(127,214,232,.4)}
+.ax-gnums small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);margin-top:5px}
+.ax-bloodbar{position:relative;height:22px;border-radius:11px;background:#141517;overflow:hidden;box-shadow:inset 0 2px 8px rgba(0,0,0,.6)}
+.ax-bloodbar .fill{position:absolute;inset:0;right:auto;width:41%;border-radius:11px;background:linear-gradient(90deg,var(--red-deep),var(--red-dim) 45%,var(--red) 85%,var(--redhi));box-shadow:0 0 16px rgba(225,6,0,.5);transition:width .8s var(--ease-out)}
+.ax-bloodbar .fill::after{content:'';position:absolute;top:0;bottom:0;right:0;width:20px;background:linear-gradient(90deg,transparent,rgba(255,120,110,.55));animation:ax-bleed 1.4s ease-in-out infinite}
+@keyframes ax-bleed{0%,100%{opacity:.35}50%{opacity:1}}
+.ax-bloodbar .refline{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--blue);box-shadow:0 0 8px rgba(127,214,232,.8)}
+.ax-gscale{position:relative;height:20px;margin-top:6px}
+.ax-gscale i{position:absolute;font-size:9px;font-weight:700;color:var(--ink-lo);transform:translateX(-50%)}
+.ax-gnote{margin-top:8px;font-size:11.5px;color:var(--ink)}
+.ax-gnote b{color:var(--blue)}
+
 /* ---------- mobile nav drawer ---------- */
 .navback{display:none}
 @media(max-width:860px){
@@ -736,7 +823,7 @@ body.trackeropen .drawer{right:0}
       <div class="sb-title">Pain system</div>
       <button class="sb-item" data-view="painscale"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h3v-6H4zM10 18h3V6h-3zM16 18h3v-9h-3z"/></svg><span class="lbl">Pain scale</span></button>
       <button class="sb-item" data-view="synapse"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5M12 12l5-5M12 12l5 5"/></svg><span class="lbl">Threshold Raid</span></button>
-      <button class="sb-item" data-view="pk"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg><span class="lbl">PainKillers</span><span class="tag pk">1,250</span></button>
+      <button class="sb-item" data-view="pk"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg><span class="lbl">PainKillers</span><span class="tag pk js-pk-bal">1,250</span></button>
       <button class="sb-item" data-view="anesthesia"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg><span class="lbl">Anesthesia</span></button>
       <button class="sb-item" onclick="openTracker()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg><span class="lbl">PainTracker</span><span class="badge">2</span></button>
       <button class="sb-item" data-view="race"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M6 3h12v5a6 6 0 0 1-12 0zM6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3"/></svg><span class="lbl">Threshold race</span></button>
@@ -758,7 +845,7 @@ body.trackeropen .drawer{right:0}
       <span class="mob-logo">P<span class="tri"></span>IN</span>
       <div class="search"><span class="ic">⌕</span><input type="text" id="gsearch" placeholder="SEARCH GAMES, PROVIDERS..." aria-label="Search games"></div>
       <div class="spacer"></div>
-      <button class="balance" onclick="openWallet()"><span class="coin">USDT</span> 2,840 <span style="opacity:.25">|</span> <span class="coin">PK</span> 1,250</button>
+      <button class="balance" onclick="openWallet()"><span class="coin">USDT</span> 2,840 <span style="opacity:.25">|</span> <span class="coin">PK</span> <span class="js-pk-bal">1,250</span></button>
       <button class="btn btn-ghost" data-signin-btn onclick="openAuth()">Sign in</button>
       <button class="btn btn-red" onclick="openWallet()">Deposit</button>
     </header>
@@ -1098,7 +1185,7 @@ body.trackeropen .drawer{right:0}
           <div class="promos" style="margin-top:14px">
             <div class="promo blue-promo" style="padding:20px">
               <div class="k">Your PK wallet</div>
-              <h3 style="font-size:26px;margin:4px 0 2px">1,250 PK</h3>
+              <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal">1,250</span> PK</h3>
               <p style="margin:0 0 10px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
               <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
             </div>
@@ -1116,6 +1203,50 @@ body.trackeropen .drawer{right:0}
               </div>
             </div>
           </div>
+
+          <div class="promos pk-live-row">
+            <div class="promo" style="padding:18px">
+              <div class="k">Live relief feed</div>
+              <div class="pk-feedbox">
+                <div class="pk-feedhead">
+                  <div class="live"><span class="dot"></span>Incoming</div>
+                  <div class="today">Today <b id="pk-feed-today">+86 PK</b></div>
+                </div>
+                <div id="pk-feed-rows"></div>
+              </div>
+            </div>
+
+            <div class="promo" style="padding:18px">
+              <div class="k" style="color:var(--blue)">IV drip to wallet</div>
+              <div class="pk-ivstage">
+                <div class="pk-ivbag"><span class="lbl">PK</span></div>
+                <div class="pk-ivtube"></div>
+                <div class="pk-ivdrop"></div>
+                <div class="pk-ivpool" id="pk-ivpool"><div class="fill"></div></div>
+              </div>
+              <div class="pk-ivbal" id="pk-ivbal">1,250 <small>PK</small></div>
+              <div class="relief-body" style="margin-top:8px">
+                <div class="row"><span class="k">Drip rate</span><span class="v blue">≈ 2.1 PK / min</span></div>
+                <div class="row"><span class="k">Session intake</span><span class="v blue" id="pk-ivsess">+0 PK</span></div>
+              </div>
+            </div>
+
+            <div class="promo" style="padding:18px">
+              <div class="k" style="color:var(--redhi)">Tolerance dial</div>
+              <div class="pk-dial">
+                <svg viewBox="0 0 120 120">
+                  <circle class="track" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="56.5"/>
+                  <circle class="arc" id="pk-dialarc" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="226"/>
+                </svg>
+                <div class="center"><div class="x">×1.6</div><div class="cap">Tolerance</div></div>
+              </div>
+              <div class="relief-body">
+                <div class="row"><span class="k">Streak</span><span class="v" style="color:var(--redhi)">Day 11</span></div>
+                <div class="row"><span class="k">Next · ×1.8</span><span class="v">3 days out</span></div>
+              </div>
+              <div class="pk-warn"><b>Dose due in <span id="pk-dial-cd">7:41:22</span>.</b> Check in daily or the dial snaps back to ×1.0 and you lose your streak multiplier.</div>
+            </div>
+          </div>
         </section>
       </div>
     </div>
@@ -1126,6 +1257,33 @@ body.trackeropen .drawer{right:0}
         <div class="gcrumb"><button data-view="home">Lobby</button> / <span style="color:var(--ink-hi)">Anesthesia</span></div>
         <section class="blk">
           <div class="sec-head"><h2>Anesthesia</h2><div class="tag">Weekly cashback · paid Monday 00:00 UTC · no wagering</div></div>
+
+          <div class="promos ax-live-row">
+            <div class="ax-monitor">
+              <div class="ax-scan"></div>
+              <div class="ax-montop"><span class="id">Next dose</span><span class="rec"><span class="dot"></span>Scheduled</span></div>
+              <div class="ax-cd">
+                <div class="cell"><div class="n" id="ax-cd-d">0</div><div class="u">Days</div></div>
+                <div class="cell"><div class="n" id="ax-cd-h">00</div><div class="u">Hours</div></div>
+                <div class="cell"><div class="n" id="ax-cd-m">00</div><div class="u">Min</div></div>
+                <div class="cell"><div class="n" id="ax-cd-s">00</div><div class="u">Sec</div></div>
+              </div>
+              <div class="ax-ekgline"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path d="M0 24 H120 L135 24 145 6 155 36 165 24 H400 L415 24 425 6 435 36 445 24 H600 M600 24 H720 L735 24 745 6 755 36 765 24 H1000 L1015 24 1025 6 1035 36 1045 24 H1200" stroke="#7FD6E8" stroke-width="2" fill="none"/></svg></div>
+              <div class="ax-monfoot"><span>Projected dose <b>32.96 USDT</b></span><span>Straight to balance · no wagering</span></div>
+            </div>
+
+            <div class="promo" style="padding:18px">
+              <div class="k" style="color:var(--blue)">This week · live</div>
+              <div class="ax-gnums">
+                <div class="loss"><div class="n" id="ax-loss">−412</div><small>Net loss · USDT</small></div>
+                <div class="back"><div class="n" id="ax-back">32.96</div><small>Monday dose · 8%</small></div>
+              </div>
+              <div class="ax-bloodbar"><div class="fill" id="ax-fill"></div><div class="refline" id="ax-ref"></div></div>
+              <div class="ax-gscale"><i style="left:0%">0</i><i style="left:25%">250</i><i style="left:50%">500</i><i style="left:75%">750</i><i style="left:100%">1,000</i></div>
+              <div class="ax-gnote">A winning week pays zero and nothing carries over. Every extra 100 lost this week is <b>+8.00 USDT</b> back on Monday.</div>
+            </div>
+          </div>
+
           <div class="promos" style="margin-top:14px">
             <div class="promo blue-promo" style="padding:20px">
               <div class="k">This week</div>
@@ -1391,7 +1549,7 @@ body.trackeropen .drawer{right:0}
       <button data-view="promos" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13"/></svg>Promotions</button>
       <button data-view="painscale" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h3v-6H4zM10 18h3V6h-3zM16 18h3v-9h-3z"/></svg>Pain scale tiers</button>
       <button data-view="synapse" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5M12 12l5-5M12 12l5 5"/></svg>Threshold Raid</button>
-      <button data-view="pk" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg>PainKillers<span class="tag">1,250</span></button>
+      <button data-view="pk" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="8" rx="4"/><path d="M12 8v8"/></svg>PainKillers<span class="tag js-pk-bal">1,250</span></button>
       <button data-view="anesthesia" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg>Anesthesia</button>
       <button onclick="closeSheet('more');openTracker()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>PainTracker</button>
       <button data-view="race" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M6 3h12v5a6 6 0 0 1-12 0zM6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3"/></svg>Threshold race</button>
@@ -1633,7 +1791,7 @@ body.trackeropen .drawer{right:0}
       <div class="relief-body" style="padding:0">
         <div class="row"><span class="k">Wallet</span><span class="v">0x4F2…9A1c</span></div>
         <div class="row"><span class="k">Balance</span><span class="v">2,840 USDT</span></div>
-        <div class="row"><span class="k">PainKillers</span><span class="v blue">1,250 PK</span></div>
+        <div class="row"><span class="k">PainKillers</span><span class="v blue"><span class="js-pk-bal">1,250</span> PK</span></div>
       </div>
       <button class="btn btn-red" style="width:100%;margin-top:16px;border-radius:var(--r-md)" onclick="signOut()">Sign out</button>
     </div>
@@ -1674,12 +1832,12 @@ body.trackeropen .drawer{right:0}
     </div>
     <div class="mbody" id="mb-pk" style="display:none">
       <div class="relief-body" style="padding:0">
-        <div class="row"><span class="k">Available PK</span><span class="v blue">1,250 PK</span></div>
+        <div class="row"><span class="k">Available PK</span><span class="v blue"><span class="js-pk-bal">1,250</span> PK</span></div>
         <div class="row"><span class="k">Conversion rate</span><span class="v">1,000 PK = 5 USDT</span></div>
         <div class="row"><span class="k">You receive</span><span class="v blue">6.25 USDT</span></div>
       </div>
       <div class="mnote">PK converts to withdrawable balance instantly. <b>No wagering attached.</b></div>
-      <button class="btn btn-blue">Convert 1,250 PK</button>
+      <button class="btn btn-blue">Convert <span class="js-pk-bal">1,250</span> PK</button>
     </div>
   </div>
 </div>
@@ -2017,6 +2175,122 @@ function closeSheet(id){const s=document.getElementById('sheet-'+id);if(s)s.clas
   const s=document.getElementById('sheet-'+id);
   if(s)s.addEventListener('click',e=>{if(e.target===s)closeSheet(id)});
 });
+
+// ---------- PainKillers: live relief feed / IV drip / tolerance dial ----------
+// mock data throughout — swap the random generators for real wager/relief events later
+(function(){
+  const pkView = document.getElementById('view-pk');
+  if(!pkView) return;
+  const isOn = () => pkView.classList.contains('on');
+  const GAMES = ['Flatline','Nerve','Bonesaw','Dosage','Spike','Pulse','Blackout','Rigor','Relapse'];
+  const fmt = n => Math.round(n).toLocaleString('en-US');
+
+  // the app-wide PK balance — every existing "1,250" display shares the .js-pk-bal class
+  let pkBalance = 1250;
+  function syncPkBalance(){ document.querySelectorAll('.js-pk-bal').forEach(el => el.textContent = fmt(pkBalance)); }
+
+  // -- live relief feed --
+  const feedRows = document.getElementById('pk-feed-rows'), feedToday = document.getElementById('pk-feed-today');
+  let todayTotal = 86;
+  function addFeedRow(){
+    if(!feedRows) return 0;
+    const g = GAMES[Math.random()*GAMES.length|0];
+    const wager = (Math.random()*180+5).toFixed(2);
+    const pk = Math.max(1, Math.round(wager*0.3*(Math.random()*.4+.8)/10));
+    const win = Math.random() < 0.42;
+    const r = document.createElement('div');
+    r.className = 'pk-frow fresh';
+    r.innerHTML = `<span class="g">${g}</span><span class="w">${wager} USDT</span><span class="res ${win?'win':'loss'}">${win?'WIN':'LOSS'}</span><span class="pkv">+${pk} PK</span>`;
+    feedRows.prepend(r);
+    setTimeout(() => r.classList.remove('fresh'), 900);
+    while(feedRows.children.length > 7) feedRows.lastChild.remove();
+    todayTotal += pk;
+    if(feedToday) feedToday.textContent = '+'+fmt(todayTotal)+' PK';
+    return pk;
+  }
+  (function scheduleFeed(){
+    setTimeout(() => { if(isOn()) addFeedRow(); scheduleFeed(); }, 900+Math.random()*2200);
+  })();
+
+  // -- IV drip to wallet (credits the shared balance on its own steady cadence) --
+  const ivBal = document.getElementById('pk-ivbal'), ivSess = document.getElementById('pk-ivsess'), ivPool = document.getElementById('pk-ivpool');
+  let sessionIntake = 0;
+  setInterval(() => {
+    if(!isOn()) return;
+    const pk = Math.random() < 0.3 ? 2 : 1;
+    pkBalance += pk; sessionIntake += pk;
+    if(ivBal) ivBal.innerHTML = fmt(pkBalance)+' <small>PK</small>';
+    if(ivSess) ivSess.textContent = '+'+sessionIntake+' PK';
+    syncPkBalance();
+    if(ivBal) ivBal.classList.add('hit');
+    if(ivPool) ivPool.classList.add('splash');
+    setTimeout(() => { if(ivBal) ivBal.classList.remove('hit'); if(ivPool) ivPool.classList.remove('splash'); }, 420);
+  }, 1700);
+
+  // -- tolerance dial: ring shows ×1.6 of a ×1.0..×2.2 range, plus the check-in countdown --
+  const dialArc = document.getElementById('pk-dialarc'), dialCd = document.getElementById('pk-dial-cd');
+  if(dialArc){
+    const RING = 226, span = RING*0.75, prog = (1.6-1.0)/(2.2-1.0);
+    requestAnimationFrame(() => { dialArc.style.strokeDashoffset = RING - span*prog; });
+  }
+  let cdSecs = 7*3600 + 41*60 + 22;
+  setInterval(() => {
+    if(!isOn()) return;
+    cdSecs--; if(cdSecs < 0) cdSecs = 7*3600 + 41*60 + 22;   // demo loop — real version resets on daily check-in
+    const h = cdSecs/3600|0, m = (cdSecs%3600)/60|0, s = cdSecs%60;
+    if(dialCd) dialCd.textContent = h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }, 1000);
+
+  for(let i=0; i<5; i++) addFeedRow();   // seed the feed so it isn't empty on first load
+})();
+
+// ---------- Anesthesia: next-dose countdown / blood loss gauge ----------
+(function(){
+  const axView = document.getElementById('view-anesthesia');
+  if(!axView) return;
+  const isOn = () => axView.classList.contains('on');
+  const fmt = n => Math.round(n).toLocaleString('en-US');
+
+  // -- countdown to the real next Monday 00:00 UTC --
+  const cdEls = { d:document.getElementById('ax-cd-d'), h:document.getElementById('ax-cd-h'), m:document.getElementById('ax-cd-m'), s:document.getElementById('ax-cd-s') };
+  function nextMonday(){
+    const n = new Date(), t = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate()));
+    let add = (8 - t.getUTCDay()) % 7; if(add === 0) add = 7;
+    t.setUTCDate(t.getUTCDate() + add);
+    return t;
+  }
+  const target = nextMonday();
+  function tickCountdown(){
+    if(!isOn()) return;
+    const sec = Math.max(0, (target - Date.now())/1000|0);
+    const vals = { d: sec/86400|0, h: String((sec%86400)/3600|0).padStart(2,'0'), m: String((sec%3600)/60|0).padStart(2,'0'), s: String(sec%60).padStart(2,'0') };
+    Object.entries(vals).forEach(([k,v]) => {
+      const el = cdEls[k]; if(!el) return;
+      if(el.textContent !== String(v)){ el.textContent = v; el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+    });
+  }
+  setInterval(tickCountdown, 250);
+  tickCountdown();
+
+  // -- blood loss gauge: net position drifts as mock bets settle --
+  const MAX = 1000, RATE = 0.08;
+  let loss = 412;
+  const lossEl = document.getElementById('ax-loss'), backEl = document.getElementById('ax-back'),
+        fillEl = document.getElementById('ax-fill'), refEl = document.getElementById('ax-ref');
+  function renderGauge(){
+    if(lossEl) lossEl.textContent = '−'+fmt(loss);
+    if(backEl) backEl.textContent = (loss*RATE).toFixed(2);
+    const p = Math.min(100, loss/MAX*100);
+    if(fillEl) fillEl.style.width = p+'%';
+    if(refEl) refEl.style.left = p+'%';
+  }
+  setInterval(() => {
+    if(!isOn()) return;
+    loss = Math.max(0, loss + (Math.random() < 0.68 ? Math.random()*22 : -Math.random()*30));
+    renderGauge();
+  }, 1300);
+  renderGauge();
+})();
 </script>
 
 <script type="module">
