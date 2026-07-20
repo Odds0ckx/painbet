@@ -838,94 +838,6 @@ body.locked .tabs{display:none!important}
   </div>
 </section>
 
-<section id="fairness">
-  <div class="wrap">
-    <div class="sec-tag">02 · PROVABLY FAIR</div>
-    <h2>The commitment</h2>
-    <p class="sec-intro">Every outcome in the arcade derives from a hash stream over a server seed committed before play, your client seed and a per-game nonce. The commitment hash below is fixed until you rotate; rotating reveals the old seed so every logged round can be recomputed in this page. Production runs the same model over HMAC-SHA256 with a pre-committed seed chain.</p>
-    <div class="desk">
-      <div class="stat">Server seed commitment: <b class="mono" id="pf_commit" style="word-break:break-all">…</b></div>
-      <div class="desk-row" style="margin-top:10px">
-        <div class="field" style="flex:2"><div class="fl">Client seed · yours, editable</div><input id="pf_client" type="text" value=""></div>
-        <button class="btn btn-cau" style="flex:1" id="pf_rotate">Rotate &amp; reveal seed</button>
-      </div>
-      <div class="stat" id="pf_revealed" style="word-break:break-all;color:var(--faint)">No revealed seeds yet · play some rounds, then rotate to verify them</div>
-      <div class="tbl" style="margin-top:12px"><table id="pf_table">
-        <thead><tr><th>Game</th><th>Nonce</th><th>Result</th><th>Draws</th><th></th></tr></thead>
-        <tbody id="pf_rows"></tbody>
-      </table></div>
-      <div class="stat" id="pf_msg" style="color:var(--faint)">ROUND LOG · LAST 14</div>
-    </div>
-  </div>
-</section>
-
-<section id="convert">
-  <div class="wrap">
-    <div class="sec-tag">03 · CONVERT</div>
-    <h2>The desk</h2>
-    <p class="sec-intro">PK converts to real balance at the peg, minimum 1,000 PK. Converted funds land locked under a 3× wagering requirement on the converted USDT value, cleared by real-money play on non-Originals games. Cleared funds become withdrawable.</p>
-    <div class="desk">
-      <div class="desk-row">
-        <div class="field"><div class="fl">Convert · PK (min 1,000) <span class="pkhint" data-for="convAmt">≈ 5.00 USDT</span></div><input id="convAmt" type="number" value="1000" min="1000" step="100"></div>
-        <button class="btn btn-conv" style="flex:0 0 180px" id="convBtn">Convert to real</button>
-      </div>
-      <div class="stat">Locked real balance: <b class="blue" id="cv_locked">0.00 USDT</b> <span style="color:var(--faint)">· unlocks when wagering clears</span></div>
-      <div class="stat">Wagering required (3× converted): <b id="cv_wr">0.00 USDT</b> · remaining <b class="red2" id="cv_rem">0.00 USDT</b></div>
-      <div class="wrbar"><i id="wrfill"></i></div>
-      <div class="desk-row" style="margin-top:10px">
-        <button class="btn btn-cau" style="flex:1" id="simWager" data-amt="2.5">Simulate 2.50 USDT bet · slots</button>
-        <button class="btn btn-cau" style="flex:1" id="simWager10" data-amt="10">Simulate 10 USDT bet · blackjack</button>
-      </div>
-      <div class="stat">Withdrawable: <b class="blue" id="cv_wd">0.00 USDT</b></div>
-      <div class="stat" id="cv_msg" style="margin-top:10px;color:var(--faint)">CONVERT PK TO BEGIN · WAGERING CLEARS ON NON-ORIGINALS REAL-MONEY PLAY ONLY</div>
-    </div>
-  </div>
-</section>
-
-<section id="economy">
-  <div class="wrap">
-    <div class="sec-tag">04 · THE RULES</div>
-    <h2>Arcade economy</h2>
-    <div class="cgrid">
-      <div class="cc hl">
-        <div class="tag">The loop</div><h4>Earn, gamble, convert</h4>
-        <p>Doses, Treatment Plans, Trials, Relief and Threshold Races all pay PK. The Arcade lets that PK be played on all nine Originals at the identical certified 99.00% math, denominated in PK. Conversion to real balance happens at the desk under wagering. One currency, one loop, no side economies.</p>
-      </div>
-      <div class="cc">
-        <div class="tag">Conversion · supersession</div><h4>The desk rules</h4>
-        <p>Peg holds at <strong>1,000 PK = 5 USDT</strong>, minimum conversion 1,000 PK, PK never expires. New rule, superseding the previous instant-conversion policy: <strong>converted funds carry a 3× wagering requirement</strong> on the converted USDT value, cleared exclusively by real-money play on non-Originals games, consistent with the locked rule that Originals never contribute to bonus wagering.</p>
-        <span class="pill warn">Supersedes instant conversion</span>
-      </div>
-      <div class="cc">
-        <div class="tag">Cost control</div><h4>The arcade is a PK sink</h4>
-        <p>At a 1% edge the Arcade burns PK at 1% of PK turnover, so every arcade session reduces outstanding PK liability inside the 1.5% of GGR PainTracker budget. Engagement that pays for itself: the more the arcade is played, the cheaper the loyalty program runs.</p>
-      </div>
-      <div class="cc">
-        <div class="tag">Boundaries</div><h4>What does not mix</h4>
-        <p><strong>Tolerance</strong> multiplies PK earn and quest rewards only; arcade results are gambling outcomes and are never multiplied. <strong>Arcade PK turnover does not feed quest progress</strong>; quests count real-money settled bets only, as locked. Paid options priced in real money on the casino (Second Opinion, Anesthetic, Tourniquet) are free-disabled or PK-priced per D2 below.</p>
-      </div>
-      <div class="cc">
-        <div class="tag">Presentation</div><h4>Two-color law</h4>
-        <p>Inside PainTracker, everything coming back to the player renders blue: wins, PK, discharges, recoveries, closes. Red stays pain, risk and action. The arcade tables above run the full game engines with win-states restyled blue; the real-money casino versions keep their own palettes.</p>
-      </div>
-      <div class="cc">
-        <div class="tag">Fairness</div><h4>Same seeds, same verifier</h4>
-        <p>PK denomination changes nothing in the math: same seed chains, same certified tables, same on-page verifier per game. A PK round is as provable as a USDT round.</p>
-      </div>
-    </div>
-
-    <h3>Decisions</h3>
-    <div class="dec">
-      <div class="dec-row"><div class="n">A1</div><div class="b"><strong>Wagering multiple.</strong> 3× on converted USDT value proposed. Levers: 1× feels like no gate, 5× kills conversion appetite. WR clearing counts non-Originals real-money play only.</div></div>
-      <div class="dec-row"><div class="n">A2</div><div class="b"><strong>Paid options in PK.</strong> Second Opinion, Anesthetic and Tourniquet are priced products. Offer them PK-priced in the arcade from the same premium tables, or disable in v1. Recommendation: disable in v1, add PK pricing in the first drop.</div></div>
-      <div class="dec-row"><div class="n">A3</div><div class="b"><strong>Stake caps.</strong> Minimum 10 PK set; maximum per-round PK stake needed to bound variance against the PainTracker budget. Proposal: 2,000 PK per round at launch.</div></div>
-      <div class="dec-row"><div class="n">A4</div><div class="b"><strong>Bonus grants in PK.</strong> Welcome and reload bonuses paid in PK route the entire bonus economy through the arcade loop. Sign off whether casino bonuses migrate to PK grants or stay separate USDT bonus balances.</div></div>
-      <div class="dec-row"><div class="n">A5</div><div class="b"><strong>Conversion cooldown.</strong> Optional anti-cycling rule: one conversion per 24h or a fee-free daily limit, preventing convert-wager-reconvert loops. Recommendation: one conversion per day at launch.</div></div>
-    </div>
-  </div>
-</section>
-
-<footer><div class="wrap">PainTracker Arcade · v1 · Pain.bet · Trustseed FZCO internal · July 2026</div></footer>
 </div></div>
 
 <script>
@@ -1036,11 +948,6 @@ const Wallet={
   render(){
     document.getElementById('pkbal').textContent=Math.floor(this.pk).toLocaleString()+' PK';
     document.getElementById('pkusd').textContent='≈ '+(this.pk*0.005).toFixed(2)+' USDT AT PEG';
-    document.getElementById('cv_locked').textContent=this.lockedUSDT.toFixed(2)+' USDT';
-    document.getElementById('cv_wr').textContent=this.wrTarget.toFixed(2)+' USDT';
-    document.getElementById('cv_rem').textContent=Math.max(0,this.wrTarget-this.wrDone).toFixed(2)+' USDT';
-    document.getElementById('cv_wd').textContent=this.withdrawable.toFixed(2)+' USDT';
-    document.getElementById('wrfill').style.width=(this.wrTarget>0? Math.min(100,this.wrDone/this.wrTarget*100):0)+'%';
   }
 };
 // claims
@@ -1057,76 +964,11 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   setTimeout(()=>{ if(t.dataset.g==='flatline'&&window.__flFit)window.__flFit();
                    if(t.dataset.g==='bonesaw'&&window.__bsFit)window.__bsFit(); },60);
 });
-// convert desk
-const WR_MULT=3;
-document.getElementById('convBtn').onclick=()=>{
-  const amt=Math.floor(parseFloat(document.getElementById('convAmt').value)||0);
-  const msg=document.getElementById('cv_msg');
-  if(amt<1000){ msg.textContent='MINIMUM CONVERSION 1,000 PK'; return; }
-  if(amt>Wallet.pk){ msg.textContent='INSUFFICIENT PK'; return; }
-  Wallet.pk-=amt;
-  const usdt=amt*0.005;
-  Wallet.lockedUSDT+=usdt; Wallet.wrTarget+=usdt*WR_MULT;
-  msg.textContent='CONVERTED '+amt.toLocaleString()+' PK → '+usdt.toFixed(2)+' USDT · LOCKED UNDER '+WR_MULT+'× WAGERING';
-  Wallet.render();
-};
-function simBet(amt){
-  const msg=document.getElementById('cv_msg');
-  if(Wallet.wrTarget<=0){ msg.textContent='NOTHING LOCKED · CONVERT PK FIRST'; return; }
-  Wallet.wrDone=Math.min(Wallet.wrTarget, Wallet.wrDone+amt);
-  const rem=Wallet.wrTarget-Wallet.wrDone;
-  if(rem<=0){
-    Wallet.render(); // show 100% bar first
-    const unlocked=Wallet.lockedUSDT;
-    msg.textContent='WAGERING CLEARED · '+unlocked.toFixed(2)+' USDT UNLOCKED AND WITHDRAWABLE';
-    setTimeout(()=>{
-      Wallet.withdrawable+=unlocked;
-      Wallet.lockedUSDT=0; Wallet.wrTarget=0; Wallet.wrDone=0;
-      Wallet.render();
-    },700);
-  } else {
-    msg.textContent='WAGERED '+amt.toFixed(2)+' USDT · '+rem.toFixed(2)+' USDT REMAINING TO UNLOCK '+Wallet.lockedUSDT.toFixed(2)+' USDT';
-    Wallet.render();
-  }
-}
-document.getElementById('simWager').onclick=()=>simBet(2.5);
-document.getElementById('simWager10').onclick=()=>simBet(10);
 Wallet.render();
 
-// fairness panel
-window.PF_renderPanel=function(){
-  document.getElementById('pf_commit').textContent=PF.commit();
-  document.getElementById('pf_client').value=PF.clientSeed;
-  const revealed=PF.epochs.filter(e=>e.revealed);
-  document.getElementById('pf_revealed').textContent = revealed.length
-    ? 'REVEALED SEED (latest): '+revealed[revealed.length-1].seed
-    : 'No revealed seeds yet · play some rounds, then rotate to verify them';
-  const tb=document.getElementById('pf_rows'); tb.innerHTML='';
-  PF.records.forEach((r,i)=>{
-    const tr=document.createElement('tr');
-    const canV=PF.epochs[r.epoch].revealed;
-    tr.innerHTML='<td>'+r.game.toUpperCase()+'</td><td class="num">'+r.nonce+'</td><td class="num">'+r.summary+
-      '</td><td class="num">'+r.drawCount+'</td><td></td>';
-    const btn=document.createElement('button');
-    btn.className='chipb'; btn.style.width='84px';
-    btn.textContent=canV?'Verify':'Locked';
-    btn.disabled=!canV;
-    btn.onclick=()=>{ const v=PF.verify(r);
-      document.getElementById('pf_msg').textContent='ROUND '+r.game.toUpperCase()+' #'+r.nonce+' · '+v.msg;
-      document.getElementById('pf_msg').style.color=v.ok?'var(--win)':'var(--red)'; };
-    tr.lastChild.appendChild(btn);
-    tb.appendChild(tr);
-  });
-};
-document.getElementById('pf_rotate').onclick=()=>{ PF.rotate(); document.getElementById('pf_msg').textContent='SEED ROTATED · PREVIOUS SEED REVEALED · LOGGED ROUNDS NOW VERIFIABLE'; document.getElementById('pf_msg').style.color='var(--win)'; };
-document.getElementById('pf_client').addEventListener('change',e=>{ PF.clientSeed=e.target.value||PF.clientSeed; PF_renderPanel(); });
-PF_renderPanel();
+// fairness panel removed (internal); no-op keeps game round-logging calls safe
+window.PF_renderPanel=function(){};
 
-document.querySelectorAll('.pkhint').forEach(h=>{
-  const inp=document.getElementById(h.dataset.for);
-  const upd=()=>{ h.textContent='≈ '+((parseFloat(inp.value)||0)*0.005).toFixed(2)+' USDT'; };
-  inp.addEventListener('input',upd); upd();
-});
 
 (() => { // DOSAGE: limbo
   const $=id=>document.getElementById('ds_'+id);
