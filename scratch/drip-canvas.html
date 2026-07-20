@@ -114,14 +114,16 @@ function bakeBackground(){
    `emit:true` marks the drips whose tips feed the falling-drop system.
 ============================================================================ */
 const pill = { x:0, y:0, w:CFG.PILL_W, h:CFG.PILL_H, r:CFG.PILL_H/2 };
+// baseLen: the collapsed stub length right after a drop releases (emit drips only —
+// this is what they "build up" from). Non-emit drips have no baseLen and stay static.
 const DRIPS = [
   { o:0.06, len:26, w:9,  ph:0.0 },
   { o:0.20, len:20, w:7,  ph:1.7 },
-  { o:0.33, len:46, w:10, ph:3.1, emit:true },
+  { o:0.33, len:46, w:10, ph:3.1, emit:true, baseLen:14 },
   { o:0.47, len:22, w:7,  ph:4.4 },
-  { o:0.58, len:72, w:11, ph:0.9, emit:true },   // the long hero drip
+  { o:0.58, len:72, w:11, ph:0.9, emit:true, baseLen:20 },   // the long hero drip
   { o:0.74, len:30, w:8,  ph:2.6 },
-  { o:0.90, len:40, w:9,  ph:5.3, emit:true },
+  { o:0.90, len:40, w:9,  ph:5.3, emit:true, baseLen:12 },
 ];
 
 function layout(){
@@ -132,9 +134,15 @@ function layout(){
   for (const d of DRIPS) d.cx = x0 + (x1 - x0) * d.o;
 }
 
-/* Current wobbled length of a drip (the gentle organic pulse). */
+/* Current length of a drip. Non-emit drips just wobble in place.
+   Emit drips (the ones with a falling-drop particle) build up from their
+   collapsed `baseLen` stub toward the full `len` while idle, hold at full
+   length through the stretch, then collapse back to the stub right after
+   the snap — driven by the linked Drop's `.growLen()`. */
 function dripLen(d, time){
-  return d.len * (1 + CFG.WOBBLE_AMT * Math.sin(time * CFG.WOBBLE_SPEED + d.ph));
+  const wob = 1 + CFG.WOBBLE_AMT * Math.sin(time * CFG.WOBBLE_SPEED + d.ph);
+  if (d.emit && d.drop) return (d.baseLen + (d.len - d.baseLen) * d.drop.growLen()) * wob;
+  return d.len * wob;
 }
 /* Y coordinate of a drip's rounded tip. */
 function dripTipY(d, time){
@@ -145,14 +153,21 @@ function dripTipY(d, time){
    THE LIQUID OUTLINE — one continuous path: pill + every static drip.
    Single path ⇒ single fill ⇒ no seams, and the inner shadow hugs the
    whole silhouette.
+
+   Shape: rounded top (the two top corners are quarter-circle arcs, radius
+   `rTop`), FLAT bottom edge with sharp corners — a plaque, not a full pill —
+   so the drips hang off a hard, straight edge the way wax/blood pools do.
 ============================================================================ */
 function liquidPath(c, time){
-  const {x, y, w, h, r} = pill;
+  const {x, y, w, h} = pill;
+  const rTop = h / 2;   // top corner radius only; bottom stays square
   const yb = y + h;
-  c.moveTo(x + r, y);
-  c.lineTo(x + w - r, y);
-  c.arc(x + w - r, y + r, r, -Math.PI/2, Math.PI/2);       // right cap
-  // bottom edge, right → left, inserting a teardrop finger per drip
+  c.moveTo(x, y + rTop);
+  c.arc(x + rTop, y + rTop, rTop, Math.PI, Math.PI * 1.5);           // top-left corner
+  c.lineTo(x + w - rTop, y);
+  c.arc(x + w - rTop, y + rTop, rTop, Math.PI * 1.5, Math.PI * 2);   // top-right corner
+  c.lineTo(x + w, yb);                                                // right edge, straight down
+  // flat bottom edge, right → left, inserting a teardrop finger per drip
   const sorted = [...DRIPS].sort((a, b) => b.cx - a.cx);
   for (const d of sorted){
     const len = dripLen(d, time);
@@ -166,9 +181,8 @@ function liquidPath(c, time){
     // …tapered side back up
     c.quadraticCurveTo(d.cx - hw, yb + len * 0.45, d.cx - hw, yb);
   }
-  c.lineTo(x + r, yb);
-  c.arc(x + r, y + r, r, Math.PI/2, Math.PI * 1.5);         // left cap
-  c.closePath();
+  c.lineTo(x, yb);              // sharp bottom-left corner
+  c.closePath();                 // straight left edge back up to the start point
 }
 
 /* ============================================================================
@@ -180,35 +194,53 @@ const rand = (a, b) => a + Math.random() * (b - a);
 class Drop {
   constructor(drip){
     this.drip = drip;             // the emitter this drop hangs from
+    drip.drop = this;             // back-reference so dripLen() can read our growth
     this.retract = 0;             // 0..1 — residual thread animation after the snap
     this.recycle(true);
   }
   recycle(first){
-    this.state = 'idle';
-    this.timer = first ? rand(0.3, 1.6) : rand(CFG.SPAWN_DELAY[0], CFG.SPAWN_DELAY[1]);
-    this.p     = 0;                                   // stretch progress 0..1
-    this.r     = rand(CFG.DROP_R[0], CFG.DROP_R[1]);  // target radius this cycle
-    this.y     = 0;
-    this.vy    = 0;
-    this.prevY = 0;
+    this.state  = 'idle';
+    this.timer  = first ? rand(0.3, 1.6) : rand(CFG.SPAWN_DELAY[0], CFG.SPAWN_DELAY[1]);
+    this.idleDur= this.timer;                         // captured so growth can read the ratio
+    this.growth = 0;                                  // 0 = collapsed stub, 1 = fully built up
+    this.p      = 0;                                   // stretch progress 0..1
+    this.r      = rand(CFG.DROP_R[0], CFG.DROP_R[1]);  // target radius this cycle
+    this.y      = 0;
+    this.vy     = 0;
+    this.prevY  = 0;
+  }
+  /* 0..1 factor consumed by dripLen(): builds up while idle, holds full through
+     the stretch, then rides the same decay as the thread retraction so the
+     drip visibly recedes back into a stub right after the snap. */
+  growLen(){
+    return this.state === 'fall' ? this.retract : this.growth;
   }
   update(dt, time){
-    const tipY = dripTipY(this.drip, time);
-
     if (this.state === 'idle'){
+      /* BUILD-UP PHASE — the drip lengthens toward "full" the longer it
+         waits, easing out so it slows as it gets heavy right before it drips. */
       this.timer -= dt;
-      if (this.timer <= 0){ this.state = 'stretch'; this.p = 0; this.prevY = tipY; }
+      const raw = 1 - Math.max(0, this.timer) / this.idleDur;
+      this.growth = 1 - Math.pow(1 - Math.min(1, raw), 2);
+      if (this.timer <= 0){
+        this.state = 'stretch'; this.p = 0; this.growth = 1;
+        this.prevY = dripTipY(this.drip, time);
+      }
 
     } else if (this.state === 'stretch'){
       /* SURFACE-TENSION PHASE — the drop sinks with an ease-in curve
-         (slow, viscous start; accelerating pull right before the break). */
+         (slow, viscous start; accelerating pull right before the break).
+         The drip stays fully built while this happens. */
+      this.growth = 1;
+      const tipY = dripTipY(this.drip, time);
       this.p = Math.min(1, this.p + dt / CFG.STRETCH_TIME);
       const eased = Math.pow(this.p, CFG.STRETCH_EASE);
       this.y = tipY + 4 + CFG.SNAP_DIST * eased;
       this.vy = (this.y - this.prevY) / dt;           // measured, for a seamless handoff
       this.prevY = this.y;
       if (this.p >= 1){
-        /* THE SNAP — thread breaks: drop goes ballistic, thread retracts. */
+        /* THE SNAP — thread breaks: drop goes ballistic, thread retracts,
+           and the drip itself recedes back down to its collapsed stub. */
         this.state = 'fall';
         this.retract = 1;
       }
@@ -220,7 +252,8 @@ class Drop {
       if (this.y - this.r > H) this.recycle(false);   // off-screen → seamless recycle
     }
 
-    /* retracting thread stub (runs independently of the drop itself) */
+    /* retracting thread stub + drip collapse (shared decay, runs independently
+       of the drop itself once triggered by the snap above) */
     if (this.retract > 0) this.retract = Math.max(0, this.retract - dt / CFG.RETRACT_TIME);
   }
 
