@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pain Scale · breakthrough preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== tokens, copied verbatim from index.html so this renders pixel-identical ===== */
+:root{
+  --bg:#232427;
+  --card:#1b1d20;--card-2:#232529;--card-hi:hsla(0,0%,100%,.04);--card-hi2:hsla(0,0%,100%,.07);
+  --ink:hsla(0,0%,100%,.55);--ink-hi:hsla(0,0%,100%,.75);--ink-lo:hsla(0,0%,100%,.25);--white:#fff;
+  --red:#E10600;--redhi:#FF3B33;--red-dim:#8f0400;--red-deep:#520703;
+  --blue:#7FD6E8;--blue-dim:#16333a;
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo',sans-serif;
+  --r-lg:16px;--r-md:12px;--r-sm:8px;--r-pill:999px;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --shadow:0 10px 28px rgba(0,0,0,.35);
+  --shadow-lg:0 18px 44px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:14.5px/1.5 var(--sans);padding:30px 20px 100px}
+.wrap{max-width:1180px;margin:0 auto}
+.gcrumb{font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:14px}
+.gcrumb b{color:var(--redhi)}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.sec-head h2{font-family:var(--disp);font-size:24px;color:#fff;text-transform:uppercase}
+.sec-head .tag{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-lo)}
+.blk{display:flex;flex-direction:column;align-items:center;gap:22px}
+
+/* ===== Pain Scale ring dashboard — verbatim from index.html (ps- namespaced) ===== */
+.ps-tier-dash{display:flex;gap:14px;max-width:1180px;width:100%;justify-content:center;flex-wrap:wrap}
+input[name="ps-tier-select"]{display:none}
+.ps-tier-card{
+  flex:1 1 168px;max-width:190px;
+  background:linear-gradient(165deg,var(--card) 0%,var(--card-2) 100%);
+  border-radius:var(--r-lg);
+  padding:20px 16px 18px;
+  border:1px solid hsla(0,0%,100%,.05);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  opacity:.5;filter:saturate(.5);
+  transform:translateY(0) scale(.98);
+  transition:opacity .35s var(--ease-out),filter .35s var(--ease-out),transform .35s var(--ease-out),border-color .35s var(--ease-out),box-shadow .35s var(--ease-out);
+}
+.ps-tier-card:hover{opacity:.8;transform:translateY(-2px) scale(.99)}
+.ps-tier-card.ps-locked{cursor:not-allowed}
+.ps-tier-card.ps-locked:hover{opacity:.5;transform:translateY(0) scale(.98)}
+.ps-badge-wrap{position:relative;width:92px;height:92px;margin-bottom:16px}
+.ps-ring{display:block;width:100%;height:100%;transform:rotate(-90deg)}
+.ps-badge{z-index:1}
+.ps-state-icon{z-index:2}
+.ps-ring-track{fill:none;stroke:hsla(0,0%,100%,.06);stroke-width:5}
+.ps-ring-fill{fill:none;stroke:var(--tc);stroke-width:5;stroke-linecap:round;stroke-dasharray:276.46;stroke-dashoffset:276.46;transition:stroke-dashoffset .8s var(--ease-out)}
+.ps-badge{position:absolute;inset:8px;background:#101113;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid hsla(0,0%,100%,.05)}
+.ps-badge .ps-lvl{font-family:var(--disp);font-size:20px;color:#fff;letter-spacing:.02em;transition:color .3s,text-shadow .3s}
+.ps-state-icon{position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);background:#3a3c40;transition:background .3s var(--ease-out)}
+.ps-state-icon svg{width:12px;height:12px}
+.ps-tier-name{font-family:var(--disp);font-size:15px;text-transform:uppercase;color:#fff;margin-bottom:4px;letter-spacing:.01em}
+.ps-tier-status{font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:16px;transition:color .3s}
+.ps-perks{display:flex;flex-direction:column;gap:7px;width:100%;border-top:1px solid hsla(0,0%,100%,.06);padding-top:14px}
+.ps-perk{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:600;color:var(--ink);padding:6px 9px;border-radius:8px;background:hsla(0,0%,100%,.02);text-align:left;transition:background .3s,color .3s}
+.ps-perk b{color:var(--ink-hi);font-weight:800;font-size:11px;font-variant-numeric:tabular-nums;transition:color .3s}
+.ps-perk.ps-headline{background:hsla(4,90%,45%,.09);color:var(--white)}
+.ps-perk.ps-headline b{color:var(--redhi)}
+.ps-perk.ps-headline.psx-blue{background:hsla(190,70%,60%,.09)}
+.ps-perk.ps-headline.psx-blue b{color:var(--blue)}
+.ps-tc0{--tc:#6a6d72} .ps-tc1{--tc:#b5453f} .ps-tc2{--tc:#d4342a} .ps-tc3{--tc:#E10600}
+.ps-tc4{--tc:#FF3B33} .ps-tc5{--tc:#7FD6E8}
+.ps-c0 .ps-ring-fill,.ps-c1 .ps-ring-fill,.ps-c2 .ps-ring-fill,.ps-c3 .ps-ring-fill{stroke-dashoffset:0}
+.ps-c4 .ps-ring-fill{stroke-dashoffset:41.5}
+.ps-c5 .ps-ring-fill{stroke-dashoffset:276.46}
+#ps-s0:checked ~ .ps-grid .ps-c0,#ps-s1:checked ~ .ps-grid .ps-c1,#ps-s2:checked ~ .ps-grid .ps-c2,
+#ps-s3:checked ~ .ps-grid .ps-c3,#ps-s4:checked ~ .ps-grid .ps-c4,#ps-s5:checked ~ .ps-grid .ps-c5{
+  opacity:1;filter:saturate(1);transform:translateY(-6px) scale(1);
+  border-color:var(--tc);
+  box-shadow:0 22px 40px rgba(0,0,0,.5),0 0 0 1px var(--tc) inset,0 0 34px -6px var(--tc);
+}
+#ps-s0:checked ~ .ps-grid .ps-c0 .ps-lvl,#ps-s1:checked ~ .ps-grid .ps-c1 .ps-lvl,#ps-s2:checked ~ .ps-grid .ps-c2 .ps-lvl,
+#ps-s3:checked ~ .ps-grid .ps-c3 .ps-lvl,#ps-s4:checked ~ .ps-grid .ps-c4 .ps-lvl{color:var(--tc);text-shadow:0 0 16px var(--tc)}
+#ps-s5:checked ~ .ps-grid .ps-c5 .ps-lvl{color:var(--tc);text-shadow:0 0 16px var(--tc)}
+.ps-detail{max-width:1180px;width:100%;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.ps-detail-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid hsla(0,0%,100%,.05);flex-wrap:wrap}
+.ps-detail-head h2{font-family:var(--disp);font-size:17px;text-transform:uppercase;color:#fff}
+.ps-detail-head .ps-rank-tag{font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);background:hsla(0,0%,100%,.06);color:var(--ink-hi)}
+.ps-detail-body{padding:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ps-stat{background:var(--card-2);border-radius:var(--r-md);padding:14px 16px}
+.ps-stat .ps-k{font-weight:700;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:8px}
+.ps-stat .ps-v{font-family:var(--disp);font-size:22px;color:#fff;font-variant-numeric:tabular-nums;transition:color .3s}
+.ps-stat .ps-v.ps-accent{color:var(--redhi)}
+.ps-stat .ps-v.ps-blue{color:var(--blue)}
+#ps-s0:checked ~ .ps-detail .ps-d0,#ps-s1:checked ~ .ps-detail .ps-d1,#ps-s2:checked ~ .ps-detail .ps-d2,
+#ps-s3:checked ~ .ps-detail .ps-d3,#ps-s4:checked ~ .ps-detail .ps-d4,#ps-s5:checked ~ .ps-detail .ps-d5{display:grid}
+.ps-detail .ps-dpanel{display:none}
+
+/* rumble keyframes: shakes just the current tier card, not the whole scale.
+   The lift (translateY(-6px) scale(1)) is baked in because Agony is always
+   the selected/checked card while this plays, so the shake has to compose
+   with that transform instead of resetting it back to the resting position. */
+@keyframes tierRumble{
+  0%{transform:translateY(-6px) scale(1) translate(.6px,.6px) rotate(0)}
+  20%{transform:translateY(-6px) scale(1) translate(-.6px,-.6px) rotate(.15deg)}
+  40%{transform:translateY(-6px) scale(1) translate(-.6px,.6px) rotate(0)}
+  60%{transform:translateY(-6px) scale(1) translate(.6px,-.6px) rotate(-.15deg)}
+  80%{transform:translateY(-6px) scale(1) translate(-.6px,-.6px) rotate(0)}
+  100%{transform:translateY(-6px) scale(1) translate(.6px,.6px) rotate(0)}
+}
+
+/* ===== preview-only chrome: NOT part of production markup ===== */
+.psx-badge{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);background:var(--blue-dim);padding:4px 10px;border-radius:var(--r-pill);margin-bottom:10px}
+.psx-panel{max-width:1180px;width:100%;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.psx-panel .lbl{font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo)}
+.psx-panel button{font-family:var(--sans);font-weight:800;font-size:11.5px;letter-spacing:.03em;padding:10px 16px;border-radius:var(--r-sm);background:var(--card-hi2);color:#fff;cursor:pointer;transition:background .2s}
+.psx-panel button:hover{background:hsla(0,0%,100%,.12)}
+.psx-panel button.psx-primary{background:var(--red);}
+.psx-panel button.psx-primary:hover{background:var(--redhi)}
+.psx-panel .psx-pct{font-family:var(--disp);font-size:20px;color:#fff;margin-left:auto;font-variant-numeric:tabular-nums}
+.psx-panel .psx-pct small{font-family:var(--sans);font-size:10px;color:var(--ink-lo);font-weight:700}
+.psx-note{max-width:1180px;width:100%;font-size:11.5px;color:var(--ink-lo);line-height:1.6}
+.psx-note b{color:var(--ink-hi)}
+
+.psx-toast{position:fixed;top:22px;right:22px;background:var(--card);border:1px solid rgba(127,214,232,.3);box-shadow:var(--shadow-lg),0 0 30px rgba(127,214,232,.15);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform .4s var(--ease-out);z-index:50}
+.psx-toast.show{transform:translateX(0)}
+.psx-toast .ic{width:34px;height:34px;border-radius:50%;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;flex:none}
+.psx-toast .ic svg{width:16px;height:16px}
+.psx-toast .t b{display:block;font-family:var(--disp);font-size:13px;color:#fff;text-transform:uppercase}
+.psx-toast .t span{font-size:11px;color:var(--ink-lo)}
+</style>
+</head>
+<body>
+<div class="wrap blk">
+  <div style="width:100%">
+    <div class="gcrumb">Lobby / <b>Pain Scale</b> <span style="color:var(--ink-lo)">— breakthrough preview, not yet wired into the live page</span></div>
+    <div class="sec-head"><h2>The Pain Scale</h2><div class="tag">Wager to climb. Level 9 breaks blue.</div></div>
+  </div>
+
+  <!-- demo controls: NOT production markup, this is where a real wager/balance event would call painScale.updateProgress() -->
+  <div class="psx-panel">
+    <span class="lbl">Preview controls</span>
+    <button onclick="window.__psx.bump(0.05)">+5% wagered</button>
+    <button onclick="window.__psx.bump(0.15)">+15% wagered</button>
+    <button class="psx-primary" onclick="window.__psx.jump(0.97)">Jump to 97%</button>
+    <button onclick="window.__psx.reset()">Reset run</button>
+    <div class="psx-pct" id="psx-pct">85<small>%  to level 9</small></div>
+  </div>
+  <div class="psx-note">These buttons stand in for a real event &mdash; in production <b>painScale.updateProgress(p)</b> gets called from wherever wagered volume already updates (settle callback, balance sync, websocket tick), not from a button.</div>
+
+  <section class="blk" id="tiers">
+    <input type="radio" name="ps-tier-select" id="ps-s0">
+    <input type="radio" name="ps-tier-select" id="ps-s1">
+    <input type="radio" name="ps-tier-select" id="ps-s2">
+    <input type="radio" name="ps-tier-select" id="ps-s3">
+    <input type="radio" name="ps-tier-select" id="ps-s4" checked>
+    <input type="radio" name="ps-tier-select" id="ps-s5" disabled>
+
+    <div class="ps-grid ps-tier-dash">
+      <label for="ps-s0" class="ps-tier-card ps-c0 ps-tc0">
+        <div class="ps-badge-wrap">
+          <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100"><circle class="ps-ring-track" cx="50" cy="50" r="44"></circle><circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle></svg>
+          <div class="ps-badge"><span class="ps-lvl">0</span></div>
+          <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+        </div>
+        <div class="ps-tier-name">Numb</div>
+        <div class="ps-tier-status">Level 0 · cleared</div>
+        <div class="ps-perks"><div class="ps-perk"><span>Rakeback</span><b>2%</b></div><div class="ps-perk"><span>PK / $100</span><b>10</b></div><div class="ps-perk"><span>Anesthesia</span><b>0%</b></div></div>
+      </label>
+      <label for="ps-s1" class="ps-tier-card ps-c1 ps-tc1">
+        <div class="ps-badge-wrap">
+          <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100"><circle class="ps-ring-track" cx="50" cy="50" r="44"></circle><circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle></svg>
+          <div class="ps-badge"><span class="ps-lvl">1&ndash;2</span></div>
+          <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+        </div>
+        <div class="ps-tier-name">Sting</div>
+        <div class="ps-tier-status">Level 1&ndash;2 · cleared</div>
+        <div class="ps-perks"><div class="ps-perk"><span>Rakeback</span><b>4%</b></div><div class="ps-perk"><span>PK / $100</span><b>14</b></div><div class="ps-perk"><span>Anesthesia</span><b>2%</b></div></div>
+      </label>
+      <label for="ps-s2" class="ps-tier-card ps-c2 ps-tc2">
+        <div class="ps-badge-wrap">
+          <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100"><circle class="ps-ring-track" cx="50" cy="50" r="44"></circle><circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle></svg>
+          <div class="ps-badge"><span class="ps-lvl">3&ndash;4</span></div>
+          <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+        </div>
+        <div class="ps-tier-name">Ache</div>
+        <div class="ps-tier-status">Level 3&ndash;4 · cleared</div>
+        <div class="ps-perks"><div class="ps-perk"><span>Rakeback</span><b>6%</b></div><div class="ps-perk"><span>PK / $100</span><b>18</b></div><div class="ps-perk"><span>Anesthesia</span><b>4%</b></div></div>
+      </label>
+      <label for="ps-s3" class="ps-tier-card ps-c3 ps-tc3">
+        <div class="ps-badge-wrap">
+          <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100"><circle class="ps-ring-track" cx="50" cy="50" r="44"></circle><circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle></svg>
+          <div class="ps-badge"><span class="ps-lvl">5&ndash;6</span></div>
+          <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
+        </div>
+        <div class="ps-tier-name">Burn</div>
+        <div class="ps-tier-status">Level 5&ndash;6 · cleared</div>
+        <div class="ps-perks"><div class="ps-perk"><span>Rakeback</span><b>8%</b></div><div class="ps-perk"><span>PK / $100</span><b>24</b></div><div class="ps-perk"><span>Anesthesia</span><b>6%</b></div></div>
+      </label>
+      <label for="ps-s4" class="ps-tier-card ps-c4 ps-tc4">
+        <div class="ps-badge-wrap">
+          <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100"><circle class="ps-ring-track" cx="50" cy="50" r="44"></circle><circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle></svg>
+          <div class="ps-badge"><span class="ps-lvl">7&ndash;8</span></div>
+          <div class="ps-state-icon" style="background:var(--redhi)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><circle cx="12" cy="12" r="5"/></svg></div>
+        </div>
+        <div class="ps-tier-name">Agony</div>
+        <div class="ps-tier-status" style="color:var(--redhi)">Level 7&ndash;8 · you are here</div>
+        <div class="ps-perks">
+          <div class="ps-perk ps-headline"><span>Rakeback</span><b>10%</b></div>
+          <div class="ps-perk ps-headline"><span>PK / $100</span><b>32</b></div>
+          <div class="ps-perk ps-headline"><span>Anesthesia</span><b>8%</b></div>
+        </div>
+      </label>
+      <label for="ps-s5" class="ps-tier-card ps-c5 ps-tc5 ps-locked" aria-disabled="true">
+        <div class="ps-badge-wrap">
+          <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100"><circle class="ps-ring-track" cx="50" cy="50" r="44"></circle><circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle></svg>
+          <div class="ps-badge"><span class="ps-lvl">9&ndash;10</span></div>
+          <div class="ps-state-icon" style="background:#3a3c40"><svg viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2.4"><rect x="6" y="10.5" width="12" height="9" rx="1.6"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg></div>
+        </div>
+        <div class="ps-tier-name" style="color:var(--blue)">Threshold</div>
+        <div class="ps-tier-status">Level 9&ndash;10 · locked</div>
+        <div class="ps-perks"><div class="ps-perk"><span>Rakeback</span><b>12%</b></div><div class="ps-perk"><span>PK / $100</span><b>45</b></div><div class="ps-perk"><span>Host</span><b>Dedicated</b></div></div>
+      </label>
+    </div>
+
+    <div class="ps-detail">
+      <div class="ps-detail-head"><h2>Tier detail</h2><span class="ps-rank-tag">Click a tier above to inspect it</span></div>
+      <div class="ps-dpanel ps-d0 ps-detail-body"><div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">0 &ndash; 50K USDT</div></div><div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div><div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">0%</div></div></div>
+      <div class="ps-dpanel ps-d1 ps-detail-body"><div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">50K &ndash; 150K</div></div><div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div><div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">2%</div></div></div>
+      <div class="ps-dpanel ps-d2 ps-detail-body"><div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">150K &ndash; 320K</div></div><div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div><div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">4%</div></div></div>
+      <div class="ps-dpanel ps-d3 ps-detail-body"><div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v">320K &ndash; 480K</div></div><div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Cleared</div></div><div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">6%</div></div></div>
+      <div class="ps-dpanel ps-d4 ps-detail-body">
+        <div class="ps-stat"><div class="ps-k">Progress to Level 8</div><div class="ps-v ps-accent" id="psx-d4-progress">612K / 720K</div></div>
+        <div class="ps-stat"><div class="ps-k">Remaining</div><div class="ps-v" id="psx-d4-remaining">108K USDT</div></div>
+        <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v ps-blue">8%</div></div>
+      </div>
+      <div class="ps-dpanel ps-d5 ps-detail-body">
+        <div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v" style="color:var(--blue)">720K+</div></div>
+        <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v" id="psx-d5-status">Locked</div></div>
+        <div class="ps-stat"><div class="ps-k">Host</div><div class="ps-v">Dedicated</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="psx-toast" id="psx-toast">
+  <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#7FD6E8" stroke-width="2.5"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></div>
+  <div class="t"><b>Threshold unlocked</b><span>Level 9&ndash;10 rakeback now active</span></div>
+</div>
+
+<script>
+/**
+ * Pain Scale breakthrough engine — adapted to the REAL production markup
+ * (#tiers section, .ps-tc4 / .ps-tc5 tier cards, .ps-c4/.ps-c5 ring fills)
+ * instead of the generic placeholder IDs it was drafted with. Also fixed:
+ *  - devicePixelRatio scaling on the particle canvas (was blurry on retina)
+ *  - the "progressCanvas" reference that was wired up but never actually
+ *    drawn to anything — this version drives the REAL ring's stroke-dashoffset
+ *    and the REAL "612K / 720K" detail stat, so progress is visibly true
+ *  - particle colors swapped from generic Tailwind red/blue to this tier's
+ *    own --tc value (Agony #FF3B33, Threshold #7FD6E8 morphine blue)
+ *  - the breakthrough now actually unlocks the Threshold card in the DOM
+ *    (removes ps-locked/disabled/aria-disabled, swaps its lock icon for the
+ *    "current tier" dot, flips Agony over to the "cleared" check icon) —
+ *    the original snippet fired an event but never touched tier state
+ * To wire this into the live page for real: gate startLoop()'s ambient
+ * spawns on `document.getElementById('view-painscale').classList.contains('on')`,
+ * same pattern the Threshold Raid neuron and PainKillers widgets already use,
+ * so it doesn't run while the user is on a different page.
+ */
+class PainScaleEngine {
+  constructor(config = {}){
+    this.chassis = document.getElementById(config.chassisId || 'tiers');
+    this.agonyCard = document.querySelector(config.agonySelector || '.ps-tc4');
+    this.thresholdCard = document.querySelector(config.thresholdSelector || '.ps-tc5');
+    this.ringFill = this.agonyCard ? this.agonyCard.querySelector('.ps-ring-fill') : null;
+    this.ringDash = 276.46; // matches the production .ps-ring-fill stroke-dasharray
+
+    this.particles = [];
+    this.isLevelledUp = false;
+    this.isTransitioning = false;
+    this.fillPercent = config.initialProgress || 0.0;
+    this.isHoveringThreshold = false;
+    this.redRGB = '255,59,51';     // this tier's own --tc (#FF3B33), not a generic red
+    this.blueRGB = '127,214,232';  // morphine blue --tc (#7FD6E8)
+
+    if (this.chassis){
+      this.initCanvas();
+      this.bindListeners();
+      this.updateProgress(this.fillPercent, true);
+      this.startLoop();
+    }
+  }
+
+  initCanvas(){
+    this.auraCanvas = document.createElement('canvas');
+    this.auraCanvas.id = 'painScaleAuraCanvas';
+    this.auraCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+    this.chassis.style.position = 'relative';
+    this.chassis.insertBefore(this.auraCanvas, this.chassis.firstChild);
+    this.aCtx = this.auraCanvas.getContext('2d');
+    this.resizeCanvas();
+  }
+
+  resizeCanvas(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = this.chassis.offsetWidth, h = this.chassis.offsetHeight;
+    this.auraCanvas.width = w * dpr;
+    this.auraCanvas.height = h * dpr;
+    this.auraCanvas.style.width = w + 'px';
+    this.auraCanvas.style.height = h + 'px';
+    this.aCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  bindListeners(){
+    window.addEventListener('resize', () => this.resizeCanvas());
+    if (this.thresholdCard){
+      this.thresholdCard.addEventListener('mouseenter', () => this.isHoveringThreshold = true);
+      this.thresholdCard.addEventListener('mouseleave', () => this.isHoveringThreshold = false);
+    }
+    window.addEventListener('click', (e) => {
+      if (this.isTransitioning || !this.chassis.contains(e.target)) return;
+      this.chassis.style.transform = 'scale(0.99)';
+      setTimeout(() => this.chassis.style.transform = 'none', 80);
+      const bounds = this.auraCanvas.getBoundingClientRect();
+      this.emitBurst(e.clientX - bounds.left, e.clientY - bounds.top, this.isLevelledUp ? 'blue' : 'red', 12, 3);
+    });
+  }
+
+  emitBurst(x, y, color, count, baseSpeed){
+    for (let i = 0; i < count; i++){
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * baseSpeed + 1.5;
+      this.particles.push({
+        x: x + (Math.random()-0.5)*10, y: y + (Math.random()-0.5)*10,
+        radius: Math.random()*3.5+1.5,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+        alpha: 1, decay: Math.random()*0.02+0.015,
+        color: color === 'blue' ? this.blueRGB : this.redRGB
+      });
+    }
+  }
+
+  // real integration point: call this from wherever wagered volume already updates
+  updateProgress(newPercent, silent){
+    if (this.isTransitioning || this.isLevelledUp) return;
+    this.fillPercent = Math.min(1, Math.max(0, newPercent));
+
+    if (this.ringFill) this.ringFill.style.strokeDashoffset = this.ringDash * (1 - this.fillPercent);
+    const base = 720000, cur = Math.round(base * this.fillPercent);
+    const progEl = document.getElementById('psx-d4-progress'), remEl = document.getElementById('psx-d4-remaining');
+    if (progEl) progEl.textContent = Math.round(cur/1000)+'K / 720K';
+    if (remEl) remEl.textContent = Math.max(0, Math.round((base-cur)/1000))+'K USDT';
+    const pctEl = document.getElementById('psx-pct');
+    if (pctEl) pctEl.innerHTML = Math.round(this.fillPercent*100)+'<small>%  to level 9</small>';
+
+    if (this.agonyCard) this.agonyCard.style.animation = (this.fillPercent >= 0.9 && this.fillPercent < 1.0) ? 'tierRumble 0.15s infinite linear' : 'none';
+    if (this.fillPercent >= 1.0 && !silent) this.executeBreakthrough();
+  }
+
+  executeBreakthrough(){
+    this.isTransitioning = true;
+    if (this.agonyCard) this.agonyCard.style.animation = 'tierRumble 0.04s infinite linear';
+
+    setTimeout(() => {
+      if (this.agonyCard) this.agonyCard.style.animation = 'none';
+      this.chassis.style.transition = 'background-color 0.15s ease';
+      this.chassis.style.backgroundColor = '#ffffff';
+
+      const bounds = this.auraCanvas.getBoundingClientRect();
+      this.emitBurst(bounds.width/2, bounds.height/2, 'blue', 60, 6);
+
+      setTimeout(() => {
+        this.isLevelledUp = true;
+        this.isTransitioning = false;
+        this.chassis.style.backgroundColor = '';
+        this.unlockThreshold();
+        window.dispatchEvent(new CustomEvent('painbet:levelup', { detail: { tier: 'Threshold' } }));
+      }, 150);
+    }, 1200);
+  }
+
+  // the part the original snippet was missing: actually flip the tier cards over
+  unlockThreshold(){
+    if (this.ringFill) this.ringFill.style.strokeDashoffset = '0';   // Agony reads fully cleared now
+    const agonyIcon = this.agonyCard.querySelector('.ps-state-icon');
+    agonyIcon.style.background = '#3a3c40';
+    agonyIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
+    const agonyStatus = this.agonyCard.querySelector('.ps-tier-status');
+    agonyStatus.textContent = 'Level 7–8 · cleared';
+    agonyStatus.style.color = '';
+    this.agonyCard.querySelectorAll('.ps-perk').forEach(p => p.classList.remove('ps-headline'));
+
+    const t = this.thresholdCard;
+    t.classList.remove('ps-locked');
+    t.removeAttribute('aria-disabled');
+    const radio = document.getElementById('ps-s5');
+    if (radio) radio.disabled = false;
+    const tRing = t.querySelector('.ps-ring-fill'); if (tRing) tRing.style.strokeDashoffset = '0';
+    const tIcon = t.querySelector('.ps-state-icon');
+    tIcon.style.background = 'var(--blue)';
+    tIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#06181d" stroke-width="3"><circle cx="12" cy="12" r="5"/></svg>';
+    const tStatus = t.querySelector('.ps-tier-status');
+    tStatus.textContent = 'Level 9–10 · you are here';
+    tStatus.style.color = 'var(--blue)';
+    t.querySelectorAll('.ps-perk').forEach(p => { p.classList.add('ps-headline','psx-blue'); });
+    const d5status = document.getElementById('psx-d5-status'); if (d5status) d5status.textContent = 'Unlocked';
+
+    setTimeout(() => { if (radio) radio.checked = true; }, 400);   // flip the detail panel over to show it
+
+    const toast = document.getElementById('psx-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3600);
+  }
+
+  startLoop(){
+    const render = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.aCtx.clearRect(0, 0, this.auraCanvas.width/dpr, this.auraCanvas.height/dpr);
+      const pRect = this.auraCanvas.getBoundingClientRect();
+
+      if (this.agonyCard && !this.isLevelledUp && Math.random() < 0.3){
+        const r = this.agonyCard.getBoundingClientRect();
+        this.particles.push(this.createAmbientParticle((r.left+r.width/2)-pRect.left, (r.top+r.height/2)-pRect.top, 'red'));
+      }
+      if (this.thresholdCard && (this.isHoveringThreshold || this.isLevelledUp) && Math.random() < 0.4){
+        const r = this.thresholdCard.getBoundingClientRect();
+        this.particles.push(this.createAmbientParticle((r.left+r.width/2)-pRect.left, (r.top+r.height/2)-pRect.top, 'blue'));
+      }
+
+      for (let i = this.particles.length-1; i >= 0; i--){
+        const p = this.particles[i];
+        p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+        if (p.alpha <= 0) this.particles.splice(i,1);
+        else{
+          this.aCtx.save();
+          this.aCtx.globalAlpha = p.alpha;
+          this.aCtx.beginPath();
+          this.aCtx.arc(p.x, p.y, Math.max(0.1,p.radius), 0, Math.PI*2);
+          this.aCtx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+          this.aCtx.shadowBlur = 10;
+          this.aCtx.shadowColor = `rgba(${p.color}, 0.6)`;
+          this.aCtx.fill();
+          this.aCtx.restore();
+        }
+      }
+      requestAnimationFrame(render);
+    };
+    requestAnimationFrame(render);
+  }
+
+  createAmbientParticle(x, y, color){
+    return {
+      x: x+(Math.random()-0.5)*120, y: y+(Math.random()-0.5)*180,
+      radius: Math.random()*2.5+0.5,
+      vx: (Math.random()-0.5)*0.4, vy: -(Math.random()*0.6+0.2),
+      alpha: 1, decay: 0.006,
+      color: color === 'blue' ? this.blueRGB : this.redRGB
+    };
+  }
+}
+
+const painScale = new PainScaleEngine({ initialProgress: 0.85 });
+window.addEventListener('painbet:levelup', (e) => console.log('level up:', e.detail.tier));
+
+// preview-only helpers wired to the control buttons above
+window.__psx = {
+  bump: (d) => painScale.updateProgress(painScale.fillPercent + d),
+  jump: (p) => painScale.updateProgress(p),
+  reset: () => {
+    location.reload();
+  }
+};
+</script>
+</body>
+</html>

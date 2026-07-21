@@ -775,6 +775,37 @@ body.trackeropen .drawer{right:0}
 .ax-gnote{margin-top:8px;font-size:11.5px;color:var(--ink)}
 .ax-gnote b{color:var(--blue)}
 
+/* ============ Pain Scale · breakthrough (Agony -> Threshold unlock) ============ */
+/* shake just the current tier card, not the whole scale — the lift
+   (translateY(-6px) scale(1)) is baked in since Agony stays the selected/
+   checked card throughout, so the shake composes with that transform
+   instead of resetting it back to the resting position each frame */
+@keyframes tierRumble{
+  0%{transform:translateY(-6px) scale(1) translate(.6px,.6px) rotate(0)}
+  20%{transform:translateY(-6px) scale(1) translate(-.6px,-.6px) rotate(.15deg)}
+  40%{transform:translateY(-6px) scale(1) translate(-.6px,.6px) rotate(0)}
+  60%{transform:translateY(-6px) scale(1) translate(.6px,-.6px) rotate(-.15deg)}
+  80%{transform:translateY(-6px) scale(1) translate(-.6px,-.6px) rotate(0)}
+  100%{transform:translateY(-6px) scale(1) translate(.6px,.6px) rotate(0)}
+}
+/* soft white-hot glow pulse in place of a hard flat-white fill — routes
+   through arterial red first per brand rule, never a flat white block */
+@keyframes psbFlash{
+  0%{box-shadow:0 22px 40px rgba(0,0,0,.5),0 0 0 1px var(--tc) inset,0 0 34px -6px var(--tc)}
+  45%{box-shadow:0 0 60px 12px rgba(255,255,255,.5),0 0 0 2px #fff inset,0 0 90px 26px rgba(255,255,255,.35)}
+  100%{box-shadow:0 22px 40px rgba(0,0,0,.5),0 0 0 1px var(--tc) inset,0 0 34px -6px var(--tc)}
+}
+.psb-flash{animation:psbFlash .6s var(--ease-out)}
+
+.psb-toast{position:fixed;top:22px;right:22px;background:var(--card);border:1px solid rgba(127,214,232,.3);box-shadow:var(--shadow-lg),0 0 30px rgba(127,214,232,.15);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform .4s var(--ease-out);z-index:140}
+.psb-toast.show{transform:translateX(0)}
+.psb-toast .ic{width:34px;height:34px;border-radius:50%;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;flex:none}
+.psb-toast .ic svg{width:16px;height:16px}
+.psb-toast .t b{display:block;font-family:var(--disp);font-size:13px;color:#fff;text-transform:uppercase}
+.psb-toast .t span{font-size:11px;color:var(--ink-lo)}
+.ps-perk.ps-headline.psb-blue{background:hsla(190,70%,60%,.09)}
+.ps-perk.ps-headline.psb-blue b{color:var(--blue)}
+
 /* ---------- mobile nav drawer ---------- */
 .navback{display:none}
 @media(max-width:860px){
@@ -1109,18 +1140,23 @@ body.trackeropen .drawer{right:0}
               <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v">6%</div></div>
             </div>
             <div class="ps-dpanel ps-d4 ps-detail-body">
-              <div class="ps-stat"><div class="ps-k">Progress to Level 8</div><div class="ps-v ps-accent">612K / 720K</div></div>
-              <div class="ps-stat"><div class="ps-k">Remaining</div><div class="ps-v">108K USDT</div></div>
+              <div class="ps-stat"><div class="ps-k">Progress to Level 8</div><div class="ps-v ps-accent" id="pb-progress-stat">612K / 720K</div></div>
+              <div class="ps-stat"><div class="ps-k">Remaining</div><div class="ps-v" id="pb-remaining-stat">108K USDT</div></div>
               <div class="ps-stat"><div class="ps-k">Anesthesia (Monday)</div><div class="ps-v ps-blue">8%</div></div>
             </div>
             <div class="ps-dpanel ps-d5 ps-detail-body">
               <div class="ps-stat"><div class="ps-k">Wagered range</div><div class="ps-v" style="color:var(--blue)">720K+</div></div>
-              <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v">Locked</div></div>
+              <div class="ps-stat"><div class="ps-k">Status</div><div class="ps-v" id="pb-d5-status">Locked</div></div>
               <div class="ps-stat"><div class="ps-k">Host</div><div class="ps-v">Dedicated</div></div>
             </div>
           </div>
         </section>
       </div>
+    </div>
+
+    <div class="psb-toast" id="psb-toast">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#7FD6E8" stroke-width="2.5"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></div>
+      <div class="t"><b>Threshold unlocked</b><span>Level 9&ndash;10 rakeback now active</span></div>
     </div>
 
     <!-- ============ VIEW: THRESHOLD RACE ============ -->
@@ -2291,6 +2327,214 @@ function closeSheet(id){const s=document.getElementById('sheet-'+id);if(s)s.clas
   }, 1300);
   renderGauge();
 })();
+
+// ---------- Pain Scale: Agony -> Threshold breakthrough ----------
+// Ambient sparks off the current tier, a burst on click, a shake as you close in
+// on 100%, and a soft glow pulse (not a hard white flash) the instant you break
+// through — Threshold unlocks for real: the lock/disabled state comes off, Agony
+// flips to cleared. Gated on the Pain Scale view being active, same as every
+// other live widget here (Threshold Raid neuron, PainKillers feed/drip/dial).
+class PainScaleEngine {
+  constructor(config = {}){
+    this.chassis = document.getElementById(config.chassisId || 'tiers');
+    this.agonyCard = document.querySelector(config.agonySelector || '.ps-tc4');
+    this.thresholdCard = document.querySelector(config.thresholdSelector || '.ps-tc5');
+    this.ringFill = this.agonyCard ? this.agonyCard.querySelector('.ps-ring-fill') : null;
+    this.ringDash = 276.46; // matches .ps-ring-fill's stroke-dasharray
+
+    this.particles = [];
+    this.isLevelledUp = false;
+    this.isTransitioning = false;
+    this.fillPercent = config.initialProgress || 0.0;
+    this.isHoveringThreshold = false;
+    this.redRGB = '255,59,51';     // this tier's own --tc (#FF3B33)
+    this.blueRGB = '127,214,232';  // morphine blue --tc (#7FD6E8)
+    this.isOn = () => document.getElementById('view-painscale').classList.contains('on');
+
+    if (this.chassis){
+      this.initCanvas();
+      this.bindListeners();
+      this.updateProgress(this.fillPercent, true);
+      this.startLoop();
+    }
+  }
+
+  initCanvas(){
+    this.auraCanvas = document.createElement('canvas');
+    this.auraCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+    this.chassis.style.position = 'relative';
+    this.chassis.insertBefore(this.auraCanvas, this.chassis.firstChild);
+    this.aCtx = this.auraCanvas.getContext('2d');
+    this.resizeCanvas();
+  }
+
+  resizeCanvas(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = this.chassis.offsetWidth, h = this.chassis.offsetHeight;
+    this.auraCanvas.width = w * dpr; this.auraCanvas.height = h * dpr;
+    this.auraCanvas.style.width = w+'px'; this.auraCanvas.style.height = h+'px';
+    this.aCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  bindListeners(){
+    window.addEventListener('resize', () => { if(this.isOn()) this.resizeCanvas(); });
+    if (this.thresholdCard){
+      this.thresholdCard.addEventListener('mouseenter', () => this.isHoveringThreshold = true);
+      this.thresholdCard.addEventListener('mouseleave', () => this.isHoveringThreshold = false);
+    }
+    // click feedback + spark burst on just the card you clicked, not the whole grid
+    window.addEventListener('click', (e) => {
+      if (this.isTransitioning || !this.isOn() || !this.chassis.contains(e.target)) return;
+      const card = e.target.closest('.ps-tier-card');
+      if (card){
+        const prev = card.style.transform;
+        card.style.transform = (prev && prev !== 'none' ? prev+' ' : '')+'scale(0.985)';
+        setTimeout(() => { card.style.transform = prev; }, 80);
+      }
+      const bounds = this.auraCanvas.getBoundingClientRect();
+      this.emitBurst(e.clientX-bounds.left, e.clientY-bounds.top, this.isLevelledUp ? 'blue' : 'red', 12, 3);
+    });
+  }
+
+  emitBurst(x, y, color, count, baseSpeed){
+    for (let i = 0; i < count; i++){
+      const angle = Math.random()*Math.PI*2, speed = Math.random()*baseSpeed+1.5;
+      this.particles.push({
+        x: x+(Math.random()-0.5)*10, y: y+(Math.random()-0.5)*10,
+        radius: Math.random()*3.5+1.5,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
+        alpha: 1, decay: Math.random()*0.02+0.015,
+        color: color === 'blue' ? this.blueRGB : this.redRGB
+      });
+    }
+  }
+
+  // real integration point: call this from wherever wagered volume already updates
+  updateProgress(newPercent, silent){
+    if (this.isTransitioning || this.isLevelledUp) return;
+    this.fillPercent = Math.min(1, Math.max(0, newPercent));
+
+    if (this.ringFill) this.ringFill.style.strokeDashoffset = this.ringDash*(1-this.fillPercent);
+    const base = 720000, cur = Math.round(base*this.fillPercent);
+    const progEl = document.getElementById('pb-progress-stat'), remEl = document.getElementById('pb-remaining-stat');
+    if (progEl) progEl.textContent = Math.round(cur/1000)+'K / 720K';
+    if (remEl) remEl.textContent = Math.max(0, Math.round((base-cur)/1000))+'K USDT';
+
+    if (this.agonyCard) this.agonyCard.style.animation = (this.fillPercent >= 0.9 && this.fillPercent < 1.0) ? 'tierRumble 0.15s infinite linear' : 'none';
+    if (this.fillPercent >= 1.0 && !silent) this.executeBreakthrough();
+  }
+
+  executeBreakthrough(){
+    this.isTransitioning = true;
+    if (this.agonyCard) this.agonyCard.style.animation = 'tierRumble 0.04s infinite linear';
+
+    setTimeout(() => {
+      if (this.agonyCard){
+        this.agonyCard.style.animation = 'none';
+        this.agonyCard.classList.add('psb-flash');
+        setTimeout(() => this.agonyCard.classList.remove('psb-flash'), 600);
+      }
+      const bounds = this.auraCanvas.getBoundingClientRect();
+      this.emitBurst(bounds.width/2, bounds.height/2, 'blue', 60, 6);
+
+      setTimeout(() => {
+        this.isLevelledUp = true;
+        this.isTransitioning = false;
+        this.unlockThreshold();
+        window.dispatchEvent(new CustomEvent('painbet:levelup', { detail: { tier: 'Threshold' } }));
+      }, 150);
+    }, 1200);
+  }
+
+  unlockThreshold(){
+    if (this.ringFill) this.ringFill.style.strokeDashoffset = '0';
+    const agonyIcon = this.agonyCard.querySelector('.ps-state-icon');
+    agonyIcon.style.background = '#3a3c40';
+    agonyIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#cfd2d6" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
+    const agonyStatus = this.agonyCard.querySelector('.ps-tier-status');
+    agonyStatus.textContent = 'Level 7–8 · cleared';
+    agonyStatus.style.color = '';
+    this.agonyCard.querySelectorAll('.ps-perk').forEach(p => p.classList.remove('ps-headline'));
+
+    const t = this.thresholdCard;
+    t.classList.remove('ps-locked');
+    t.removeAttribute('aria-disabled');
+    const radio = document.getElementById('ps-s5');
+    if (radio) radio.disabled = false;
+    const tRing = t.querySelector('.ps-ring-fill'); if (tRing) tRing.style.strokeDashoffset = '0';
+    const tIcon = t.querySelector('.ps-state-icon');
+    tIcon.style.background = 'var(--blue)';
+    tIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#06181d" stroke-width="3"><circle cx="12" cy="12" r="5"/></svg>';
+    const tStatus = t.querySelector('.ps-tier-status');
+    tStatus.textContent = 'Level 9–10 · you are here';
+    tStatus.style.color = 'var(--blue)';
+    t.querySelectorAll('.ps-perk').forEach(p => p.classList.add('ps-headline','psb-blue'));
+    const d5status = document.getElementById('pb-d5-status'); if (d5status) d5status.textContent = 'Unlocked';
+
+    setTimeout(() => { if (radio) radio.checked = true; }, 400);
+
+    const toast = document.getElementById('psb-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3600);
+  }
+
+  startLoop(){
+    const render = () => {
+      if (!this.isOn()){ requestAnimationFrame(render); return; }
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.aCtx.clearRect(0, 0, this.auraCanvas.width/dpr, this.auraCanvas.height/dpr);
+      const pRect = this.auraCanvas.getBoundingClientRect();
+
+      if (this.agonyCard && !this.isLevelledUp && Math.random() < 0.3){
+        const r = this.agonyCard.getBoundingClientRect();
+        this.particles.push(this.createAmbientParticle((r.left+r.width/2)-pRect.left, (r.top+r.height/2)-pRect.top, 'red'));
+      }
+      if (this.thresholdCard && (this.isHoveringThreshold || this.isLevelledUp) && Math.random() < 0.4){
+        const r = this.thresholdCard.getBoundingClientRect();
+        this.particles.push(this.createAmbientParticle((r.left+r.width/2)-pRect.left, (r.top+r.height/2)-pRect.top, 'blue'));
+      }
+
+      for (let i = this.particles.length-1; i >= 0; i--){
+        const p = this.particles[i];
+        p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+        if (p.alpha <= 0) this.particles.splice(i,1);
+        else{
+          this.aCtx.save();
+          this.aCtx.globalAlpha = p.alpha;
+          this.aCtx.beginPath();
+          this.aCtx.arc(p.x, p.y, Math.max(0.1,p.radius), 0, Math.PI*2);
+          this.aCtx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+          this.aCtx.shadowBlur = 10;
+          this.aCtx.shadowColor = `rgba(${p.color}, 0.6)`;
+          this.aCtx.fill();
+          this.aCtx.restore();
+        }
+      }
+      requestAnimationFrame(render);
+    };
+    requestAnimationFrame(render);
+  }
+
+  createAmbientParticle(x, y, color){
+    return {
+      x: x+(Math.random()-0.5)*120, y: y+(Math.random()-0.5)*180,
+      radius: Math.random()*2.5+0.5,
+      vx: (Math.random()-0.5)*0.4, vy: -(Math.random()*0.6+0.2),
+      alpha: 1, decay: 0.006,
+      color: color === 'blue' ? this.blueRGB : this.redRGB
+    };
+  }
+}
+
+const painScaleEngine = new PainScaleEngine({ initialProgress: 0.85 });
+// mock driver standing in for real wagered-volume events, same pattern as the
+// PainKillers relief feed and Threshold Raid's stake feed — swap this interval
+// for a real call to painScaleEngine.updateProgress(fraction) when wired up
+setInterval(() => {
+  if (document.getElementById('view-painscale').classList.contains('on')){
+    painScaleEngine.updateProgress(painScaleEngine.fillPercent + Math.random()*0.012);
+  }
+}, 4000);
 </script>
 
 <script type="module">
