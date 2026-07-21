@@ -731,8 +731,14 @@ body.trackeropen .drawer{right:0}
    feColorMatrix), same trick as the drip-canvas exploration — recolored
    from the original's neon cyan to morphine blue (--blue) to match the
    brand's "blue = money coming back" rule instead of a generic neon look */
-.pk-goo-wrap{display:flex;justify-content:center;background:var(--card-hi);border-radius:var(--r-md);padding:10px 0;margin-bottom:14px}
-.pk-goo-svg{height:200px;width:auto;display:block}
+/* drip sits to the LEFT of the balance, mirrored. Its viewBox is cropped to
+   the glass content (x 60..190 of the original 0..250) so the container hugs
+   the drip instead of reserving the empty sides the full-width viewBox had. */
+.pk-wallet-top{display:flex;align-items:center;gap:16px;margin:6px 0 2px}
+.pk-wallet-info{flex:1 1 auto;min-width:0}
+.pk-goo-wrap{flex:none;display:flex;justify-content:center;background:var(--card-hi);border-radius:var(--r-md);padding:8px 4px}
+.pk-goo-svg{height:150px;width:auto;display:block;transform:scaleX(-1)}
+@media(max-width:420px){.pk-goo-svg{height:120px}}
 @keyframes pk-goo-fall{
   0%{transform:translateY(0) scale(1)}
   35%{transform:translateY(15px) scale(1.1,1.3)}
@@ -1285,8 +1291,9 @@ body.trackeropen .drawer{right:0}
 
             <div class="promo blue-promo" style="padding:20px">
               <div class="k">Your PK wallet</div>
-              <div class="pk-goo-wrap">
-                <svg viewBox="0 0 250 500" class="pk-goo-svg">
+              <div class="pk-wallet-top">
+                <div class="pk-goo-wrap">
+                <svg viewBox="60 0 130 500" class="pk-goo-svg">
                   <defs>
                     <linearGradient id="pk-glassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stop-color="rgba(255,255,255,.3)"/>
@@ -1330,10 +1337,13 @@ body.trackeropen .drawer{right:0}
                     <path class="pk-goo-pipe" d="M 125 365 Q 125 420 170 450 T 140 500" fill="none" stroke="url(#pk-gooGrad)" stroke-width="6" stroke-linecap="round" filter="url(#pk-neonGlow)"/>
                   </g>
                 </svg>
+                </div>
+                <div class="pk-wallet-info">
+                  <h3 style="font-size:26px;margin:0 0 2px"><span class="js-pk-bal" id="pk-wallet-num">1,250</span> PK</h3>
+                  <p style="margin:0 0 12px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
+                  <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
+                </div>
               </div>
-              <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal" id="pk-wallet-num">1,250</span> PK</h3>
-              <p style="margin:0 0 10px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
-              <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
 
               <div class="pk-ivsplit">
                 <p class="pk-ivnote">Relief drips into this same wallet continuously as bets settle across the site — it's a live view of the balance above, not a separate pot.</p>
