@@ -98,14 +98,17 @@ input[name="ps-tier-select"]{display:none}
 #ps-s3:checked ~ .ps-detail .ps-d3,#ps-s4:checked ~ .ps-detail .ps-d4,#ps-s5:checked ~ .ps-detail .ps-d5{display:grid}
 .ps-detail .ps-dpanel{display:none}
 
-/* rumble keyframes required by the breakthrough engine */
-@keyframes chassisRumble{
-  0%{transform:translate(.5px,.5px) rotate(0)}
-  20%{transform:translate(-.5px,-.5px) rotate(.1deg)}
-  40%{transform:translate(-.5px,.5px) rotate(0)}
-  60%{transform:translate(.5px,-.5px) rotate(-.1deg)}
-  80%{transform:translate(-.5px,-.5px) rotate(0)}
-  100%{transform:translate(.5px,.5px) rotate(0)}
+/* rumble keyframes: shakes just the current tier card, not the whole scale.
+   The lift (translateY(-6px) scale(1)) is baked in because Agony is always
+   the selected/checked card while this plays, so the shake has to compose
+   with that transform instead of resetting it back to the resting position. */
+@keyframes tierRumble{
+  0%{transform:translateY(-6px) scale(1) translate(.6px,.6px) rotate(0)}
+  20%{transform:translateY(-6px) scale(1) translate(-.6px,-.6px) rotate(.15deg)}
+  40%{transform:translateY(-6px) scale(1) translate(-.6px,.6px) rotate(0)}
+  60%{transform:translateY(-6px) scale(1) translate(.6px,-.6px) rotate(-.15deg)}
+  80%{transform:translateY(-6px) scale(1) translate(-.6px,-.6px) rotate(0)}
+  100%{transform:translateY(-6px) scale(1) translate(.6px,.6px) rotate(0)}
 }
 
 /* ===== preview-only chrome: NOT part of production markup ===== */
@@ -353,16 +356,16 @@ class PainScaleEngine {
     const pctEl = document.getElementById('psx-pct');
     if (pctEl) pctEl.innerHTML = Math.round(this.fillPercent*100)+'<small>%  to level 9</small>';
 
-    if (this.chassis) this.chassis.style.animation = (this.fillPercent >= 0.9 && this.fillPercent < 1.0) ? 'chassisRumble 0.15s infinite linear' : 'none';
+    if (this.agonyCard) this.agonyCard.style.animation = (this.fillPercent >= 0.9 && this.fillPercent < 1.0) ? 'tierRumble 0.15s infinite linear' : 'none';
     if (this.fillPercent >= 1.0 && !silent) this.executeBreakthrough();
   }
 
   executeBreakthrough(){
     this.isTransitioning = true;
-    this.chassis.style.animation = 'chassisRumble 0.04s infinite linear';
+    if (this.agonyCard) this.agonyCard.style.animation = 'tierRumble 0.04s infinite linear';
 
     setTimeout(() => {
-      this.chassis.style.animation = 'none';
+      if (this.agonyCard) this.agonyCard.style.animation = 'none';
       this.chassis.style.transition = 'background-color 0.15s ease';
       this.chassis.style.backgroundColor = '#ffffff';
 
