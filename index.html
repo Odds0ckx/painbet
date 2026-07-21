@@ -688,18 +688,23 @@ body.trackeropen .drawer{right:0}
   footer{padding-bottom:88px}
 }
 
-/* ============ PainKillers · live relief feed / IV drip / tolerance dial ============ */
-/* Two masonry-style columns instead of stacked rows: any row-based layout
-   (grid or flex) sizes the whole row by its tallest card, so a short card
-   next to a tall one always leaves a gap below the short one. Splitting into
-   two independent vertical columns — each its own flex stack — means each
-   column's total height is just the sum of ITS OWN cards, so the two
-   columns end at roughly the same place instead of one stopping short.
-   Grouped by height, not just topic, so the columns land close together:
-   wallet + feed + drip (~880px) vs relief-info + dial (~820px). */
-.pk-hero-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
-.pk-col{display:flex;flex-direction:column;gap:16px;flex:1 1 0;min-width:280px}
-@media(max-width:960px){.pk-col{flex-basis:100%}}
+/* ============ PainKillers · tolerance dial / wallet+drip / live feed / relief info ============ */
+/* Four cards, two per row (dial+wallet, feed+relief-info) — a plain flex
+   row is enough now that each row only ever holds 2 cards of similar
+   weight, no masonry needed. */
+.pk-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.pk-row + .pk-row{margin-top:16px}
+.pk-row > .promo{flex:1 1 0;min-width:280px}
+@media(max-width:960px){.pk-row > .promo{flex-basis:100%}}
+
+.pk-lead{font-size:12px;color:var(--ink);margin:6px 0 14px;line-height:1.5}
+
+/* the drip visual lives inside the wallet card now (it's the same balance,
+   not a second pot) — a divider separates "your balance" from "watch it
+   arrive" so the card doesn't read as two unrelated things mashed together */
+.pk-ivsplit{margin-top:16px;padding-top:16px;border-top:1px solid hsla(0,0%,100%,.06)}
+.pk-ivnote{font-size:11.5px;color:var(--ink-lo);margin-top:10px;line-height:1.5}
+#pk-wallet-num.hit{text-shadow:0 0 18px rgba(127,214,232,.9);color:var(--blue)}
 
 .pk-feedbox{background:var(--card-hi);border-radius:var(--r-md);padding:12px 14px;height:210px;overflow:hidden;position:relative}
 .pk-feedbox::after{content:'';position:absolute;left:0;right:0;bottom:0;height:50px;background:linear-gradient(to bottom,transparent,var(--card));pointer-events:none}
@@ -730,9 +735,6 @@ body.trackeropen .drawer{right:0}
 .pk-ivpool .fill{position:absolute;inset:0;top:auto;height:46%;background:rgba(127,214,232,.35);transition:height .5s var(--ease-out)}
 .pk-ivpool.splash{animation:pk-splash .45s var(--ease-out)}
 @keyframes pk-splash{0%{box-shadow:0 0 0 0 rgba(127,214,232,.5)}100%{box-shadow:0 0 0 10px rgba(127,214,232,0)}}
-.pk-ivbal{font-family:var(--disp);font-size:24px;color:#fff;line-height:1;transition:text-shadow .3s;text-align:center;font-variant-numeric:tabular-nums}
-.pk-ivbal.hit{text-shadow:0 0 18px rgba(127,214,232,.9);color:var(--blue)}
-.pk-ivbal small{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--ink-lo)}
 
 .pk-dial{position:relative;width:120px;height:120px;margin:4px auto 14px}
 .pk-dial svg{width:100%;height:100%;transform:rotate(135deg)}
@@ -1227,71 +1229,69 @@ body.trackeropen .drawer{right:0}
         <div class="gcrumb"><button data-view="home">Lobby</button> / <span style="color:var(--ink-hi)">PainKillers</span></div>
         <section class="blk">
           <div class="sec-head"><h2>PainKillers</h2><div class="tag">The single reward currency · never expires</div></div>
-          <div class="pk-hero-row" style="margin-top:14px">
-            <div class="pk-col">
-              <div class="promo blue-promo" style="padding:20px">
-                <div class="k">Your PK wallet</div>
-                <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal">1,250</span> PK</h3>
-                <p style="margin:0 0 10px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
-                <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
+          <div class="pk-row" style="margin-top:14px">
+            <div class="promo" style="padding:18px">
+              <div class="k" style="color:var(--redhi)">Tolerance dial</div>
+              <p class="pk-lead">Your rakeback multiplier for staying active. It climbs the longer your daily streak runs.</p>
+              <div class="pk-dial">
+                <svg viewBox="0 0 120 120">
+                  <circle class="track" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="56.5"/>
+                  <circle class="arc" id="pk-dialarc" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="226"/>
+                </svg>
+                <div class="center"><div class="x">×1.6</div><div class="cap">Tolerance</div></div>
               </div>
-
-              <div class="promo" style="padding:18px">
-                <div class="k">Live relief feed</div>
-                <div class="pk-feedbox">
-                  <div class="pk-feedhead">
-                    <div class="live"><span class="dot"></span>Incoming</div>
-                    <div class="today">Today <b id="pk-feed-today">+86 PK</b></div>
-                  </div>
-                  <div id="pk-feed-rows"></div>
-                </div>
+              <div class="relief-body">
+                <div class="row"><span class="k">Streak</span><span class="v" style="color:var(--redhi)">Day 11</span></div>
+                <div class="row"><span class="k">Next · ×1.8</span><span class="v">3 days out</span></div>
               </div>
+              <div class="pk-warn"><b>Dose due in <span id="pk-dial-cd">7:41:22</span>.</b> Check in daily to keep it — miss a day and it resets to ×1.0.</div>
+            </div>
 
-              <div class="promo" style="padding:18px">
-                <div class="k" style="color:var(--blue)">IV drip to wallet</div>
+            <div class="promo blue-promo" style="padding:20px">
+              <div class="k">Your PK wallet</div>
+              <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal" id="pk-wallet-num">1,250</span> PK</h3>
+              <p style="margin:0 0 10px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
+              <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
+
+              <div class="pk-ivsplit">
                 <div class="pk-ivstage">
                   <div class="pk-ivbag"><span class="lbl">PK</span></div>
                   <div class="pk-ivtube"></div>
                   <div class="pk-ivdrop"></div>
                   <div class="pk-ivpool" id="pk-ivpool"><div class="fill"></div></div>
                 </div>
-                <div class="pk-ivbal" id="pk-ivbal">1,250 <small>PK</small></div>
+                <p class="pk-ivnote">Relief drips into this same wallet continuously as bets settle across the site — it's a live view of the balance above, not a separate pot.</p>
                 <div class="relief-body" style="margin-top:8px">
                   <div class="row"><span class="k">Drip rate</span><span class="v blue">≈ 2.1 PK / min</span></div>
                   <div class="row"><span class="k">Session intake</span><span class="v blue" id="pk-ivsess">+0 PK</span></div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div class="pk-col">
-              <div class="promo" style="padding:20px">
-                <div class="k" style="color:var(--blue)">Relief · how PK arrives</div>
-                <p style="margin:6px 0 10px">Instant rakeback in PK on every settled bet, win or lose. Wager × theoretical edge × tier rate. PK earn is multiplied by your Tolerance streak.</p>
-                <div class="panel" id="relief">
-                  <h4>Your relief</h4>
-                  <div class="relief-body">
-                    <div class="row"><span class="k">Relief rate · Agony</span><span class="v">7%</span></div>
-                    <div class="row"><span class="k">PK per 100 USDT wagered</span><span class="v">30 × Tolerance ×1.6</span></div>
-                    <div class="row"><span class="k">Relief today</span><span class="v blue">+86 PK</span></div>
-                    <div class="row"><span class="k">Relief this week</span><span class="v blue">+412 PK</span></div>
-                  </div>
+          <div class="pk-row">
+            <div class="promo" style="padding:18px">
+              <div class="k">Live relief feed</div>
+              <p class="pk-lead">Every settled bet credits PK here, win or lose — this is that same relief happening in real time.</p>
+              <div class="pk-feedbox">
+                <div class="pk-feedhead">
+                  <div class="live"><span class="dot"></span>Incoming</div>
+                  <div class="today">Today <b id="pk-feed-today">+86 PK</b></div>
                 </div>
+                <div id="pk-feed-rows"></div>
               </div>
+            </div>
 
-              <div class="promo" style="padding:18px">
-                <div class="k" style="color:var(--redhi)">Tolerance dial</div>
-                <div class="pk-dial">
-                  <svg viewBox="0 0 120 120">
-                    <circle class="track" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="56.5"/>
-                    <circle class="arc" id="pk-dialarc" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="226"/>
-                  </svg>
-                  <div class="center"><div class="x">×1.6</div><div class="cap">Tolerance</div></div>
-                </div>
+            <div class="promo" style="padding:20px">
+              <div class="k" style="color:var(--blue)">Relief · how PK arrives</div>
+              <p style="margin:6px 0 10px">You get PK back automatically on every bet you settle, win or lose. The base rate depends on your Pain Scale tier, and your Tolerance streak multiplies it further.</p>
+              <div class="panel" id="relief">
+                <h4>Your relief</h4>
                 <div class="relief-body">
-                  <div class="row"><span class="k">Streak</span><span class="v" style="color:var(--redhi)">Day 11</span></div>
-                  <div class="row"><span class="k">Next · ×1.8</span><span class="v">3 days out</span></div>
+                  <div class="row"><span class="k">Relief rate · Agony</span><span class="v">7%</span></div>
+                  <div class="row"><span class="k">PK per 100 USDT wagered</span><span class="v">30 × Tolerance ×1.6</span></div>
+                  <div class="row"><span class="k">Relief this week</span><span class="v blue">+412 PK</span></div>
                 </div>
-                <div class="pk-warn"><b>Dose due in <span id="pk-dial-cd">7:41:22</span>.</b> Check in daily or the dial snaps back to ×1.0 and you lose your streak multiplier.</div>
               </div>
             </div>
           </div>
@@ -2261,18 +2261,19 @@ function closeSheet(id){const s=document.getElementById('sheet-'+id);if(s)s.clas
   })();
 
   // -- IV drip to wallet (credits the shared balance on its own steady cadence) --
-  const ivBal = document.getElementById('pk-ivbal'), ivSess = document.getElementById('pk-ivsess'), ivPool = document.getElementById('pk-ivpool');
+  // the drip no longer has its own balance readout — it feeds the SAME wallet
+  // number above, so that's what flashes on credit instead of a second display
+  const walletNum = document.getElementById('pk-wallet-num'), ivSess = document.getElementById('pk-ivsess'), ivPool = document.getElementById('pk-ivpool');
   let sessionIntake = 0;
   setInterval(() => {
     if(!isOn()) return;
     const pk = Math.random() < 0.3 ? 2 : 1;
     pkBalance += pk; sessionIntake += pk;
-    if(ivBal) ivBal.innerHTML = fmt(pkBalance)+' <small>PK</small>';
-    if(ivSess) ivSess.textContent = '+'+sessionIntake+' PK';
     syncPkBalance();
-    if(ivBal) ivBal.classList.add('hit');
+    if(ivSess) ivSess.textContent = '+'+sessionIntake+' PK';
+    if(walletNum) walletNum.classList.add('hit');
     if(ivPool) ivPool.classList.add('splash');
-    setTimeout(() => { if(ivBal) ivBal.classList.remove('hit'); if(ivPool) ivPool.classList.remove('splash'); }, 420);
+    setTimeout(() => { if(walletNum) walletNum.classList.remove('hit'); if(ivPool) ivPool.classList.remove('splash'); }, 420);
   }, 1700);
 
   // -- tolerance dial: ring shows ×1.6 of a ×1.0..×2.2 range, plus the check-in countdown --
