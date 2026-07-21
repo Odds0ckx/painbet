@@ -689,8 +689,18 @@ body.trackeropen .drawer{right:0}
 }
 
 /* ============ PainKillers · live relief feed / IV drip / tolerance dial ============ */
+/* the shared .promos grid defaults to 3 cols at 1.35fr/1fr/1fr (tuned for its
+   other 3-card uses elsewhere), which leaves a dead 3rd column when the hero
+   row only has 2 cards, and looks lopsided for 3 equal-weight live widgets.
+   Grid also sizes every row by its tallest card even with align-items:start
+   (that only stops the shorter card from being STRETCHED — the row track
+   itself still reserves the taller card's height, leaving a blank gap below
+   the shorter one). Flexbox doesn't have that shared-track concept: each
+   card just sizes to its own content, so switch these two rows to flex. */
+.pk-hero-row,.pk-live-row{display:flex;align-items:flex-start;flex-wrap:wrap}
+.pk-hero-row > .promo,.pk-live-row > .promo{flex:1 1 0;min-width:280px}
 .pk-live-row{margin-top:16px}
-@media(max-width:960px){.pk-live-row{grid-template-columns:1fr}}
+@media(max-width:960px){.pk-hero-row > .promo,.pk-live-row > .promo{flex-basis:100%}}
 
 .pk-feedbox{background:var(--card-hi);border-radius:var(--r-md);padding:12px 14px;height:210px;overflow:hidden;position:relative}
 .pk-feedbox::after{content:'';position:absolute;left:0;right:0;bottom:0;height:50px;background:linear-gradient(to bottom,transparent,var(--card));pointer-events:none}
@@ -1218,7 +1228,7 @@ body.trackeropen .drawer{right:0}
         <div class="gcrumb"><button data-view="home">Lobby</button> / <span style="color:var(--ink-hi)">PainKillers</span></div>
         <section class="blk">
           <div class="sec-head"><h2>PainKillers</h2><div class="tag">The single reward currency · never expires</div></div>
-          <div class="promos" style="margin-top:14px">
+          <div class="promos pk-hero-row" style="margin-top:14px">
             <div class="promo blue-promo" style="padding:20px">
               <div class="k">Your PK wallet</div>
               <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal">1,250</span> PK</h3>
