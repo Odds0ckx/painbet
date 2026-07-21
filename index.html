@@ -689,12 +689,15 @@ body.trackeropen .drawer{right:0}
 }
 
 /* ============ PainKillers · tolerance dial / wallet+drip / live feed / relief info ============ */
-/* Four cards, two per row (dial+wallet, feed+relief-info) — a plain flex
-   row is enough now that each row only ever holds 2 cards of similar
-   weight, no masonry needed. */
-.pk-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+/* Four cards, two per row (dial+wallet, feed+relief-info). Cards match
+   height with their row partner (align-items:stretch) — each .promo is
+   itself a flex column so its own content can use the extra height
+   sensibly instead of just leaving it blank: the feed box grows to show
+   more rows, and the dial's warning banner pins to the bottom via
+   margin-top:auto rather than floating mid-card. */
+.pk-row{display:flex;gap:16px;align-items:stretch;flex-wrap:wrap}
 .pk-row + .pk-row{margin-top:16px}
-.pk-row > .promo{flex:1 1 0;min-width:280px}
+.pk-row > .promo{flex:1 1 0;min-width:280px;display:flex;flex-direction:column}
 @media(max-width:960px){.pk-row > .promo{flex-basis:100%}}
 
 .pk-lead{font-size:12px;color:var(--ink);margin:6px 0 14px;line-height:1.5}
@@ -706,7 +709,7 @@ body.trackeropen .drawer{right:0}
 .pk-ivnote{font-size:11.5px;color:var(--ink-lo);margin-top:10px;line-height:1.5}
 #pk-wallet-num.hit{text-shadow:0 0 18px rgba(127,214,232,.9);color:var(--blue)}
 
-.pk-feedbox{background:var(--card-hi);border-radius:var(--r-md);padding:12px 14px;height:210px;overflow:hidden;position:relative}
+.pk-feedbox{background:var(--card-hi);border-radius:var(--r-md);padding:12px 14px;flex:1 1 auto;min-height:210px;overflow:hidden;position:relative}
 .pk-feedbox::after{content:'';position:absolute;left:0;right:0;bottom:0;height:50px;background:linear-gradient(to bottom,transparent,var(--card));pointer-events:none}
 .pk-feedhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 .pk-feedhead .live{display:flex;align-items:center;gap:6px;color:var(--blue)}
@@ -724,17 +727,44 @@ body.trackeropen .drawer{right:0}
 .pk-frow .res.win{color:var(--blue);background:rgba(127,214,232,.1)}
 .pk-frow .pkv{font-weight:800;color:var(--blue);white-space:nowrap}
 
-.pk-ivstage{position:relative;height:140px;background:var(--card-hi);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px}
-.pk-ivbag{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:46px;height:58px;border-radius:8px 8px 12px 12px;background:linear-gradient(to bottom,rgba(127,214,232,.06) 22%,rgba(127,214,232,.35) 22%);border:2px solid rgba(127,214,232,.5);box-shadow:0 0 16px rgba(127,214,232,.15)}
-.pk-ivbag::before{content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:12px;height:7px;border:2px solid rgba(127,214,232,.5);border-bottom:none;border-radius:4px 4px 0 0}
-.pk-ivbag .lbl{position:absolute;inset:auto 0 6px;text-align:center;font-family:var(--disp);font-size:9px;color:#fff;text-shadow:0 0 8px rgba(127,214,232,.8)}
-.pk-ivtube{position:absolute;top:68px;bottom:40px;left:50%;width:2px;transform:translateX(-50%);background:rgba(127,214,232,.22)}
-.pk-ivdrop{position:absolute;top:72px;left:50%;width:6px;height:9px;transform:translateX(-50%);border-radius:50%/38% 38% 62% 62%;background:var(--blue);box-shadow:0 0 9px rgba(127,214,232,.9);animation:pk-fall 1.7s cubic-bezier(.5,0,.9,.6) infinite}
-@keyframes pk-fall{0%{top:72px;opacity:0;transform:translateX(-50%) scale(.4)}12%{opacity:1;transform:translateX(-50%) scale(1)}86%{top:112px;opacity:1}100%{top:118px;opacity:0;transform:translateX(-50%) scale(1.5)}}
-.pk-ivpool{position:absolute;left:10px;right:10px;bottom:10px;height:30px;border-radius:8px;background:rgba(127,214,232,.1);border:1px solid rgba(127,214,232,.25);overflow:hidden}
-.pk-ivpool .fill{position:absolute;inset:0;top:auto;height:46%;background:rgba(127,214,232,.35);transition:height .5s var(--ease-out)}
-.pk-ivpool.splash{animation:pk-splash .45s var(--ease-out)}
-@keyframes pk-splash{0%{box-shadow:0 0 0 0 rgba(127,214,232,.5)}100%{box-shadow:0 0 0 10px rgba(127,214,232,0)}}
+/* gooey IV drip: real metaball technique (blur + alpha threshold via
+   feColorMatrix), same trick as the drip-canvas exploration — recolored
+   from the original's neon cyan to morphine blue (--blue) to match the
+   brand's "blue = money coming back" rule instead of a generic neon look */
+.pk-goo-wrap{display:flex;justify-content:center;background:var(--card-hi);border-radius:var(--r-md);padding:10px 0;margin-bottom:14px}
+.pk-goo-svg{height:200px;width:auto;display:block}
+@keyframes pk-goo-fall{
+  0%{transform:translateY(0) scale(1)}
+  35%{transform:translateY(15px) scale(1.1,1.3)}
+  42%{transform:translateY(35px) scale(.9,1.4)}
+  55%{transform:translateY(165px) scale(1);opacity:1}
+  56%,100%{transform:translateY(165px);opacity:0}
+}
+@keyframes pk-goo-ceiling{
+  0%,100%{transform:scale(1,1)}
+  35%{transform:scale(.9,1.2)}
+  43%{transform:scale(1.1,.8)}
+  55%{transform:scale(1,1)}
+}
+@keyframes pk-goo-swallow{
+  0%,48%{transform:translateY(0) scale(1)}
+  53%{transform:translateY(-6px) scale(1.1,.9)}
+  65%{transform:translateY(2px) scale(.95,1.05)}
+  80%{transform:translateY(0) scale(1)}
+}
+@keyframes pk-goo-pipeflow{0%{stroke-dashoffset:50}100%{stroke-dashoffset:0}}
+@keyframes pk-goo-bubbles{
+  0%{transform:translateY(15px);opacity:0}
+  20%{opacity:.4}
+  80%{opacity:.4}
+  100%{transform:translateY(-30px);opacity:0}
+}
+.pk-goo-drop{transform-origin:125px 120px;animation:pk-goo-fall 2.2s infinite cubic-bezier(.45,0,.75,1)}
+.pk-goo-ceiling{transform-origin:125px 110px;animation:pk-goo-ceiling 2.2s infinite ease-in-out}
+.pk-goo-surface{transform-origin:125px 310px;animation:pk-goo-swallow 2.2s infinite ease-in-out}
+.pk-goo-pipe{stroke-dasharray:25 15;animation:pk-goo-pipeflow 1.5s infinite linear}
+.pk-goo-bubble{animation:pk-goo-bubbles 4s infinite ease-in-out}
+.pk-goo-bubble.sb2{animation-delay:2s}
 
 .pk-dial{position:relative;width:120px;height:120px;margin:4px auto 14px}
 .pk-dial svg{width:100%;height:100%;transform:rotate(135deg)}
@@ -745,6 +775,11 @@ body.trackeropen .drawer{right:0}
 @keyframes pk-dialpulse{0%,100%{text-shadow:0 0 10px rgba(225,6,0,.4)}50%{text-shadow:0 0 22px rgba(225,6,0,.85)}}
 .pk-dial .cap{font-size:8.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-top:4px}
 .pk-warn{font-size:11px;color:var(--redhi);background:rgba(225,6,0,.08);border-radius:var(--r-sm);padding:9px 10px;line-height:1.45;margin-top:10px}
+/* grows to absorb any extra height the row-stretch gives this card, so the
+   warning banner settles at the bottom instead of floating right under the
+   streak rows with a big gap after it — collapses to nothing when the two
+   cards in the row are already close in height */
+.pk-spacer{flex:1 1 auto}
 .pk-warn b{letter-spacing:.02em}
 
 /* ============ Anesthesia · countdown monitor / blood loss gauge ============ */
@@ -1244,22 +1279,63 @@ body.trackeropen .drawer{right:0}
                 <div class="row"><span class="k">Streak</span><span class="v" style="color:var(--redhi)">Day 11</span></div>
                 <div class="row"><span class="k">Next · ×1.8</span><span class="v">3 days out</span></div>
               </div>
+              <div class="pk-spacer"></div>
               <div class="pk-warn"><b>Dose due in <span id="pk-dial-cd">7:41:22</span>.</b> Check in daily to keep it — miss a day and it resets to ×1.0.</div>
             </div>
 
             <div class="promo blue-promo" style="padding:20px">
               <div class="k">Your PK wallet</div>
+              <div class="pk-goo-wrap">
+                <svg viewBox="0 0 250 500" class="pk-goo-svg">
+                  <defs>
+                    <linearGradient id="pk-glassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="rgba(255,255,255,.3)"/>
+                      <stop offset="25%" stop-color="rgba(255,255,255,.1)"/>
+                      <stop offset="75%" stop-color="rgba(255,255,255,.05)"/>
+                      <stop offset="100%" stop-color="rgba(255,255,255,.25)"/>
+                    </linearGradient>
+                    <linearGradient id="pk-gooGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#cdf3fb"/>
+                      <stop offset="100%" stop-color="#7FD6E8"/>
+                    </linearGradient>
+                    <filter id="pk-neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="4" result="blur"/>
+                      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                    </filter>
+                    <filter id="pk-gooeyFilter">
+                      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+                      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"/>
+                      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+                    </filter>
+                  </defs>
+
+                  <rect x="75" y="100" width="100" height="240" rx="50" fill="url(#pk-glassGrad)" stroke="rgba(255,255,255,.15)" stroke-width="2"/>
+                  <path d="M 85 140 Q 80 220 85 300" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3" stroke-linecap="round"/>
+
+                  <g filter="url(#pk-gooeyFilter)">
+                    <rect x="117" y="80" width="16" height="45" fill="url(#pk-gooGrad)"/>
+                    <circle class="pk-goo-ceiling" cx="125" cy="120" r="14" fill="url(#pk-gooGrad)"/>
+                    <circle class="pk-goo-drop" cx="125" cy="120" r="11" fill="url(#pk-gooGrad)" filter="url(#pk-neonGlow)"/>
+                    <path d="M 76 290 Q 125 315 174 290 L 174 340 L 76 340 Z" fill="url(#pk-gooGrad)"/>
+                    <circle class="pk-goo-surface" cx="125" cy="295" r="18" fill="url(#pk-gooGrad)"/>
+                  </g>
+
+                  <circle class="pk-goo-bubble sb1" cx="100" cy="315" r="3" fill="rgba(255,255,255,.4)"/>
+                  <circle class="pk-goo-bubble sb2" cx="150" cy="325" r="2" fill="rgba(255,255,255,.3)"/>
+
+                  <rect x="117" y="340" width="16" height="25" fill="url(#pk-glassGrad)" stroke="rgba(255,255,255,.1)"/>
+
+                  <g>
+                    <path d="M 125 365 Q 125 420 170 450 T 140 500" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="10" stroke-linecap="round"/>
+                    <path class="pk-goo-pipe" d="M 125 365 Q 125 420 170 450 T 140 500" fill="none" stroke="url(#pk-gooGrad)" stroke-width="6" stroke-linecap="round" filter="url(#pk-neonGlow)"/>
+                  </g>
+                </svg>
+              </div>
               <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal" id="pk-wallet-num">1,250</span> PK</h3>
               <p style="margin:0 0 10px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
               <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
 
               <div class="pk-ivsplit">
-                <div class="pk-ivstage">
-                  <div class="pk-ivbag"><span class="lbl">PK</span></div>
-                  <div class="pk-ivtube"></div>
-                  <div class="pk-ivdrop"></div>
-                  <div class="pk-ivpool" id="pk-ivpool"><div class="fill"></div></div>
-                </div>
                 <p class="pk-ivnote">Relief drips into this same wallet continuously as bets settle across the site — it's a live view of the balance above, not a separate pot.</p>
                 <div class="relief-body" style="margin-top:8px">
                   <div class="row"><span class="k">Drip rate</span><span class="v blue">≈ 2.1 PK / min</span></div>
@@ -2262,8 +2338,10 @@ function closeSheet(id){const s=document.getElementById('sheet-'+id);if(s)s.clas
 
   // -- IV drip to wallet (credits the shared balance on its own steady cadence) --
   // the drip no longer has its own balance readout — it feeds the SAME wallet
-  // number above, so that's what flashes on credit instead of a second display
-  const walletNum = document.getElementById('pk-wallet-num'), ivSess = document.getElementById('pk-ivsess'), ivPool = document.getElementById('pk-ivpool');
+  // number above, so that's what flashes on credit instead of a second display.
+  // The drip visual itself (the gooey SVG) is a continuous CSS animation, not
+  // JS-driven — nothing to trigger here beyond the wallet number flash.
+  const walletNum = document.getElementById('pk-wallet-num'), ivSess = document.getElementById('pk-ivsess');
   let sessionIntake = 0;
   setInterval(() => {
     if(!isOn()) return;
@@ -2272,8 +2350,7 @@ function closeSheet(id){const s=document.getElementById('sheet-'+id);if(s)s.clas
     syncPkBalance();
     if(ivSess) ivSess.textContent = '+'+sessionIntake+' PK';
     if(walletNum) walletNum.classList.add('hit');
-    if(ivPool) ivPool.classList.add('splash');
-    setTimeout(() => { if(walletNum) walletNum.classList.remove('hit'); if(ivPool) ivPool.classList.remove('splash'); }, 420);
+    setTimeout(() => { if(walletNum) walletNum.classList.remove('hit'); }, 420);
   }, 1700);
 
   // -- tolerance dial: ring shows ×1.6 of a ×1.0..×2.2 range, plus the check-in countdown --
