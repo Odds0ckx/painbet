@@ -689,18 +689,17 @@ body.trackeropen .drawer{right:0}
 }
 
 /* ============ PainKillers · live relief feed / IV drip / tolerance dial ============ */
-/* the shared .promos grid defaults to 3 cols at 1.35fr/1fr/1fr (tuned for its
-   other 3-card uses elsewhere), which leaves a dead 3rd column when the hero
-   row only has 2 cards, and looks lopsided for 3 equal-weight live widgets.
-   Grid also sizes every row by its tallest card even with align-items:start
-   (that only stops the shorter card from being STRETCHED — the row track
-   itself still reserves the taller card's height, leaving a blank gap below
-   the shorter one). Flexbox doesn't have that shared-track concept: each
-   card just sizes to its own content, so switch these two rows to flex. */
-.pk-hero-row,.pk-live-row{display:flex;align-items:flex-start;flex-wrap:wrap}
-.pk-hero-row > .promo,.pk-live-row > .promo{flex:1 1 0;min-width:280px}
-.pk-live-row{margin-top:16px}
-@media(max-width:960px){.pk-hero-row > .promo,.pk-live-row > .promo{flex-basis:100%}}
+/* Two masonry-style columns instead of stacked rows: any row-based layout
+   (grid or flex) sizes the whole row by its tallest card, so a short card
+   next to a tall one always leaves a gap below the short one. Splitting into
+   two independent vertical columns — each its own flex stack — means each
+   column's total height is just the sum of ITS OWN cards, so the two
+   columns end at roughly the same place instead of one stopping short.
+   Grouped by height, not just topic, so the columns land close together:
+   wallet + feed + drip (~880px) vs relief-info + dial (~820px). */
+.pk-hero-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.pk-col{display:flex;flex-direction:column;gap:16px;flex:1 1 0;min-width:280px}
+@media(max-width:960px){.pk-col{flex-basis:100%}}
 
 .pk-feedbox{background:var(--card-hi);border-radius:var(--r-md);padding:12px 14px;height:210px;overflow:hidden;position:relative}
 .pk-feedbox::after{content:'';position:absolute;left:0;right:0;bottom:0;height:50px;background:linear-gradient(to bottom,transparent,var(--card));pointer-events:none}
@@ -1228,69 +1227,72 @@ body.trackeropen .drawer{right:0}
         <div class="gcrumb"><button data-view="home">Lobby</button> / <span style="color:var(--ink-hi)">PainKillers</span></div>
         <section class="blk">
           <div class="sec-head"><h2>PainKillers</h2><div class="tag">The single reward currency · never expires</div></div>
-          <div class="promos pk-hero-row" style="margin-top:14px">
-            <div class="promo blue-promo" style="padding:20px">
-              <div class="k">Your PK wallet</div>
-              <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal">1,250</span> PK</h3>
-              <p style="margin:0 0 10px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
-              <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
+          <div class="pk-hero-row" style="margin-top:14px">
+            <div class="pk-col">
+              <div class="promo blue-promo" style="padding:20px">
+                <div class="k">Your PK wallet</div>
+                <h3 style="font-size:26px;margin:4px 0 2px"><span class="js-pk-bal">1,250</span> PK</h3>
+                <p style="margin:0 0 10px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
+                <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
+              </div>
+
+              <div class="promo" style="padding:18px">
+                <div class="k">Live relief feed</div>
+                <div class="pk-feedbox">
+                  <div class="pk-feedhead">
+                    <div class="live"><span class="dot"></span>Incoming</div>
+                    <div class="today">Today <b id="pk-feed-today">+86 PK</b></div>
+                  </div>
+                  <div id="pk-feed-rows"></div>
+                </div>
+              </div>
+
+              <div class="promo" style="padding:18px">
+                <div class="k" style="color:var(--blue)">IV drip to wallet</div>
+                <div class="pk-ivstage">
+                  <div class="pk-ivbag"><span class="lbl">PK</span></div>
+                  <div class="pk-ivtube"></div>
+                  <div class="pk-ivdrop"></div>
+                  <div class="pk-ivpool" id="pk-ivpool"><div class="fill"></div></div>
+                </div>
+                <div class="pk-ivbal" id="pk-ivbal">1,250 <small>PK</small></div>
+                <div class="relief-body" style="margin-top:8px">
+                  <div class="row"><span class="k">Drip rate</span><span class="v blue">≈ 2.1 PK / min</span></div>
+                  <div class="row"><span class="k">Session intake</span><span class="v blue" id="pk-ivsess">+0 PK</span></div>
+                </div>
+              </div>
             </div>
-            <div class="promo" style="padding:20px">
-              <div class="k" style="color:var(--blue)">Relief · how PK arrives</div>
-              <p style="margin:6px 0 10px">Instant rakeback in PK on every settled bet, win or lose. Wager × theoretical edge × tier rate. PK earn is multiplied by your Tolerance streak.</p>
-              <div class="panel" id="relief">
-                <h4>Your relief</h4>
+
+            <div class="pk-col">
+              <div class="promo" style="padding:20px">
+                <div class="k" style="color:var(--blue)">Relief · how PK arrives</div>
+                <p style="margin:6px 0 10px">Instant rakeback in PK on every settled bet, win or lose. Wager × theoretical edge × tier rate. PK earn is multiplied by your Tolerance streak.</p>
+                <div class="panel" id="relief">
+                  <h4>Your relief</h4>
+                  <div class="relief-body">
+                    <div class="row"><span class="k">Relief rate · Agony</span><span class="v">7%</span></div>
+                    <div class="row"><span class="k">PK per 100 USDT wagered</span><span class="v">30 × Tolerance ×1.6</span></div>
+                    <div class="row"><span class="k">Relief today</span><span class="v blue">+86 PK</span></div>
+                    <div class="row"><span class="k">Relief this week</span><span class="v blue">+412 PK</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="promo" style="padding:18px">
+                <div class="k" style="color:var(--redhi)">Tolerance dial</div>
+                <div class="pk-dial">
+                  <svg viewBox="0 0 120 120">
+                    <circle class="track" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="56.5"/>
+                    <circle class="arc" id="pk-dialarc" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="226"/>
+                  </svg>
+                  <div class="center"><div class="x">×1.6</div><div class="cap">Tolerance</div></div>
+                </div>
                 <div class="relief-body">
-                  <div class="row"><span class="k">Relief rate · Agony</span><span class="v">7%</span></div>
-                  <div class="row"><span class="k">PK per 100 USDT wagered</span><span class="v">30 × Tolerance ×1.6</span></div>
-                  <div class="row"><span class="k">Relief today</span><span class="v blue">+86 PK</span></div>
-                  <div class="row"><span class="k">Relief this week</span><span class="v blue">+412 PK</span></div>
+                  <div class="row"><span class="k">Streak</span><span class="v" style="color:var(--redhi)">Day 11</span></div>
+                  <div class="row"><span class="k">Next · ×1.8</span><span class="v">3 days out</span></div>
                 </div>
+                <div class="pk-warn"><b>Dose due in <span id="pk-dial-cd">7:41:22</span>.</b> Check in daily or the dial snaps back to ×1.0 and you lose your streak multiplier.</div>
               </div>
-            </div>
-          </div>
-
-          <div class="promos pk-live-row">
-            <div class="promo" style="padding:18px">
-              <div class="k">Live relief feed</div>
-              <div class="pk-feedbox">
-                <div class="pk-feedhead">
-                  <div class="live"><span class="dot"></span>Incoming</div>
-                  <div class="today">Today <b id="pk-feed-today">+86 PK</b></div>
-                </div>
-                <div id="pk-feed-rows"></div>
-              </div>
-            </div>
-
-            <div class="promo" style="padding:18px">
-              <div class="k" style="color:var(--blue)">IV drip to wallet</div>
-              <div class="pk-ivstage">
-                <div class="pk-ivbag"><span class="lbl">PK</span></div>
-                <div class="pk-ivtube"></div>
-                <div class="pk-ivdrop"></div>
-                <div class="pk-ivpool" id="pk-ivpool"><div class="fill"></div></div>
-              </div>
-              <div class="pk-ivbal" id="pk-ivbal">1,250 <small>PK</small></div>
-              <div class="relief-body" style="margin-top:8px">
-                <div class="row"><span class="k">Drip rate</span><span class="v blue">≈ 2.1 PK / min</span></div>
-                <div class="row"><span class="k">Session intake</span><span class="v blue" id="pk-ivsess">+0 PK</span></div>
-              </div>
-            </div>
-
-            <div class="promo" style="padding:18px">
-              <div class="k" style="color:var(--redhi)">Tolerance dial</div>
-              <div class="pk-dial">
-                <svg viewBox="0 0 120 120">
-                  <circle class="track" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="56.5"/>
-                  <circle class="arc" id="pk-dialarc" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="226"/>
-                </svg>
-                <div class="center"><div class="x">×1.6</div><div class="cap">Tolerance</div></div>
-              </div>
-              <div class="relief-body">
-                <div class="row"><span class="k">Streak</span><span class="v" style="color:var(--redhi)">Day 11</span></div>
-                <div class="row"><span class="k">Next · ×1.8</span><span class="v">3 days out</span></div>
-              </div>
-              <div class="pk-warn"><b>Dose due in <span id="pk-dial-cd">7:41:22</span>.</b> Check in daily or the dial snaps back to ×1.0 and you lose your streak multiplier.</div>
             </div>
           </div>
         </section>
