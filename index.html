@@ -2350,6 +2350,10 @@ class PainScaleEngine {
     this.redRGB = '255,59,51';     // this tier's own --tc (#FF3B33)
     this.blueRGB = '127,214,232';  // morphine blue --tc (#7FD6E8)
     this.isOn = () => document.getElementById('view-painscale').classList.contains('on');
+    this.sized = false;   // #tiers is display:none behind an inactive view at construction time,
+                           // so the canvas starts 0x0 — resizeCanvas() is a no-op until the view
+                           // actually shows, then the render loop below retries it lazily (same
+                           // pattern the Threshold Raid neuron uses for the same reason)
 
     if (this.chassis){
       this.initCanvas();
@@ -2369,11 +2373,13 @@ class PainScaleEngine {
   }
 
   resizeCanvas(){
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = this.chassis.offsetWidth, h = this.chassis.offsetHeight;
+    if (w < 2 || h < 2) return;   // still hidden behind an inactive view — nothing to size yet
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     this.auraCanvas.width = w * dpr; this.auraCanvas.height = h * dpr;
     this.auraCanvas.style.width = w+'px'; this.auraCanvas.style.height = h+'px';
     this.aCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.sized = true;
   }
 
   bindListeners(){
@@ -2481,6 +2487,7 @@ class PainScaleEngine {
   startLoop(){
     const render = () => {
       if (!this.isOn()){ requestAnimationFrame(render); return; }
+      if (!this.sized) this.resizeCanvas();   // first frame the view is actually visible
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       this.aCtx.clearRect(0, 0, this.auraCanvas.width/dpr, this.auraCanvas.height/dpr);
       const pRect = this.auraCanvas.getBoundingClientRect();
