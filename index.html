@@ -672,6 +672,9 @@ body.trackeropen .drawer{right:0}
 .mbar-item .ic{width:19px;height:19px}
 .mbar-item.sel{color:var(--redhi)}
 .mbar-item:active{transform:translateY(1px)}
+.mbar-more{color:var(--redhi)}
+.mbar-icwrap{position:relative;display:flex}
+.mbar-icwrap .dot{position:absolute;top:-2px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--card)}
 .mbar-center{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;position:relative}
 .mbar-center .bubble.mini{width:52px;height:52px;border-width:3px;margin-top:-26px;box-shadow:0 0 0 5px var(--bg),0 4px 16px rgba(0,0,0,.5),0 0 18px rgba(225,6,0,.5),inset 0 0 10px rgba(225,6,0,.3)}
 .mbar-center .bubble.mini .percent .n{font-size:12px}
@@ -875,21 +878,15 @@ body.trackeropen .drawer{right:0}
 .ps-perk.ps-headline.psb-blue{background:hsla(190,70%,60%,.09)}
 .ps-perk.ps-headline.psb-blue b{color:var(--blue)}
 
-/* ---------- mobile nav drawer ---------- */
-.navback{display:none}
+/* ---------- mobile: sidebar replaced by the bottom bar + More sheet ---------- */
 @media(max-width:860px){
-  .sidebar{position:fixed;left:-290px;top:0;bottom:0;width:270px;height:100vh;display:flex;transition:left .28s var(--ease-out);z-index:95;box-shadow:0 0 60px rgba(0,0,0,.6)}
-  body.navopen .sidebar{left:0}
-  .navback{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:90}
-  body.navopen .navback{opacity:1;pointer-events:auto}
-  body.navopen{overflow:hidden}
+  .sidebar,.navtoggle{display:none}
 }
 </style>
 </head>
 <body>
 
 <div class="app">
-<div class="navback" onclick="closeNav()"></div>
 
   <!-- ============ SIDEBAR ============ -->
   <aside class="sidebar">
@@ -1640,7 +1637,7 @@ body.trackeropen .drawer{right:0}
     <span class="mbar-label">Pain</span>
   </button>
   <button class="mbar-item" onclick="openWallet()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 10h5a2 2 0 1 1 0 4H9V9"/></svg><span>Wallet</span></button>
-  <button class="mbar-item" onclick="openSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>More</span></button>
+  <button class="mbar-item mbar-more" onclick="openSheet('more')"><span class="mbar-icwrap"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="dot"></span></span><span>More</span></button>
 </nav>
 
 <!-- ============ MOBILE: MORE SHEET ============ -->
@@ -1991,16 +1988,11 @@ body.trackeropen .drawer{right:0}
 </div>
 
 <script>
-// ---------- collapsible sidebar ----------
+// ---------- collapsible sidebar (desktop only; mobile uses the bottom bar) ----------
 function toggleNav(){
-  if(window.matchMedia('(max-width:860px)').matches){
-    document.body.classList.toggle('navopen');
-    return;
-  }
   document.body.classList.toggle('navmin');
   try{localStorage.setItem('pb-navmin',document.body.classList.contains('navmin')?'1':'0')}catch(e){}
 }
-function closeNav(){document.body.classList.remove('navopen')}
 try{if(localStorage.getItem('pb-navmin')==='1')document.body.classList.add('navmin')}catch(e){}
 
 // ---------- view switching ----------
@@ -2015,7 +2007,7 @@ function show(v){
   if(v==='arcade'){ const f=document.getElementById('arcade-frame'); if(f && f.src.indexOf('painbet-arcade')<0) f.src='painbet-arcade.html?embed=1'; }
 }
 // open the arcade as an in-app view inside the lobby shell (keeps the sidebar)
-function openArcadeView(){ closeNav(); try{closeSheet('more')}catch(e){} show('arcade'); }
+function openArcadeView(){ try{closeSheet('more')}catch(e){} show('arcade'); }
 // hash router: painbet-arcade.html links back into specific views (#pk, #synapse, ...)
 (function(){
   const h=location.hash.replace('#','');
@@ -2023,7 +2015,6 @@ function openArcadeView(){ closeNav(); try{closeSheet('more')}catch(e){} show('a
 })();
 document.querySelectorAll('[data-view]').forEach(el=>{
   el.addEventListener('click',()=>{
-    closeNav();
     show(el.dataset.view);
     if(el.dataset.scroll){
       const t=document.getElementById(el.dataset.scroll);
