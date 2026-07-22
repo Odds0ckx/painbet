@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pain.bet · Sign up (Figma import)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#232427;
+  --card:#1b1d20;--card-2:#232529;--card-hi:hsla(0,0%,100%,.04);--card-hi2:hsla(0,0%,100%,.07);
+  --ink:hsla(0,0%,100%,.55);--ink-hi:hsla(0,0%,100%,.75);--ink-lo:hsla(0,0%,100%,.25);--white:#fff;
+  --red:#E10600;--redhi:#FF3B33;--red-dim:#8f0400;
+  --blue:#7FD6E8;--blue-dim:#16333a;
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo',sans-serif;
+  --r-lg:16px;--r-md:12px;--r-sm:8px;--r-pill:999px;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --shadow-lg:0 18px 44px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color-scheme:dark}
+/* IMPORT-FRIENDLY: no 100vh, no flex centering. Cards sit in normal flow so
+   the importer keeps every subtree instead of dropping a floated child. */
+body{background:var(--bg);color:var(--ink);font:14.5px/1.5 var(--sans);padding:40px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit}
+
+/* lay the three states out side by side; block flow, no hidden panels */
+.frames{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.state-label{font-family:var(--disp);color:var(--ink-lo);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
+
+.modal{width:420px;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);overflow:hidden}
+.mhead{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid hsla(0,0%,100%,.05)}
+.mhead h3{font-family:var(--disp);color:#fff;font-size:18px;text-transform:uppercase}
+.mhead .x{color:var(--ink-lo);font-size:16px}
+
+.mtabs{display:flex;padding:0 14px;gap:4px;border-bottom:1px solid hsla(0,0%,100%,.05)}
+.mtabs button{font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:13px 16px;color:var(--ink-lo);border-bottom:2px solid transparent}
+.mtabs button.active{color:#fff;border-bottom-color:var(--red)}
+
+.mbody{padding:20px}
+
+.pb-subtabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid hsla(0,0%,100%,.05)}
+.pb-subtabs button{flex:1;font-weight:800;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:11px 0;color:var(--ink-lo);border-bottom:2px solid transparent}
+.pb-subtabs button.active{color:#fff;border-bottom-color:var(--red)}
+
+.fld label{display:block;font-weight:700;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:7px}
+.fld .inp{display:flex;background:var(--bg);border-radius:var(--r-md);overflow:hidden;box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.04)}
+.fld input{flex:1;background:none;border:none;color:var(--white);font-family:var(--sans);font-weight:700;font-size:14px;padding:11px 13px;outline:none;min-width:0}
+
+.pb-pwwrap{position:relative}
+.pb-eye{flex:none;display:flex;align-items:center;padding:0 13px;color:var(--ink-lo)}
+.pb-eye svg{width:18px;height:18px}
+.pb-forgot{display:block;text-align:right;font-size:11px;color:var(--ink-lo);margin-top:10px}
+.pb-forgot a{color:var(--ink-hi);text-decoration:underline;text-underline-offset:2px}
+
+.pb-check{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--ink);line-height:1.45;margin-top:12px}
+.pb-check .pb-box{flex:none;width:18px;height:18px;margin-top:1px;border-radius:5px;border:1.5px solid hsla(0,0%,100%,.22);background:var(--bg);position:relative}
+.pb-check .pb-box::after{content:'';position:absolute;left:5px;top:2px;width:5px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(40deg);opacity:0}
+.pb-check a{color:var(--redhi)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;font-weight:800;font-size:12.5px;letter-spacing:.04em}
+.btn-red{background:var(--red);color:#fff}
+
+.pb-or{display:flex;align-items:center;gap:10px;margin:18px 0 14px;font-size:9.5px;font-weight:800;letter-spacing:.14em;color:var(--ink-lo)}
+.pb-or span{flex:1;height:1px;background:hsla(0,0%,100%,.08)}
+.pb-social{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pb-social button{display:flex;align-items:center;justify-content:center;padding:13px 0;border:1px solid hsla(0,0%,100%,.12);border-radius:var(--r-md);background:transparent}
+.pb-social svg{width:20px;height:20px}
+.pb-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.authchains{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.authchains button{font-weight:800;font-size:11px;letter-spacing:.06em;padding:14px 0;background:var(--bg);color:var(--ink);border-radius:var(--r-md)}
+.mnote{font-weight:500;font-size:11px;color:var(--ink-lo);margin-top:14px;line-height:1.7}
+.mnote b{color:var(--ink-hi)}
+</style>
+</head>
+<body>
+<div class="frames">
+
+  <!-- STATE 1: Email / Register -->
+  <div>
+    <div class="state-label">Email · Register</div>
+    <div class="modal">
+      <div class="mhead"><h3>Sign in</h3><button class="x">✕</button></div>
+      <div class="mtabs">
+        <button>Wallet</button>
+        <button class="active">Email</button>
+      </div>
+      <div class="mbody">
+        <div class="pb-subtabs">
+          <button class="active">Register</button>
+          <button>Login</button>
+        </div>
+        <div class="fld" style="margin-bottom:14px">
+          <label>Username</label>
+          <div class="inp"><input type="text" placeholder="Enter your username"></div>
+        </div>
+        <div class="fld" style="margin-bottom:14px">
+          <label>Password</label>
+          <div class="inp pb-pwwrap">
+            <input type="password" placeholder="Enter your password">
+            <button type="button" class="pb-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="fld" style="margin-bottom:14px">
+          <label>Email</label>
+          <div class="inp"><input type="text" placeholder="Enter your email"></div>
+        </div>
+        <div class="fld">
+          <label>Promo code (optional)</label>
+          <div class="inp"><input type="text" placeholder="Enter your promo code"></div>
+        </div>
+        <label class="pb-check"><span class="pb-box"></span><span>I accept the <a href="javascript:void(0)">Terms and Conditions</a></span></label>
+        <label class="pb-check"><span class="pb-box"></span><span>I agree to receive marketing offers regarding promotions, bonuses, and new game releases.</span></label>
+        <button class="btn btn-red" style="width:100%;margin-top:18px;border-radius:var(--r-md)">Sign up</button>
+        <div class="pb-or"><span></span>OR<span></span></div>
+        <div class="pb-social">
+          <button aria-label="Continue with Google"><span class="pb-sr">Google</span><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></button>
+          <button aria-label="Continue with Telegram"><span class="pb-sr">Telegram</span><svg viewBox="0 0 24 24" fill="#29A9EA"><path d="M21.94 3.36 2.7 10.99c-1.27.5-1.27 1.72 0 2.22l4.9 1.66 1.9 6.03c.24.75 1.1.96 1.68.42l2.66-2.5 4.9 3.63c.9.63 1.94.15 2.24-.9l3.6-16.6c.28-1.3-.7-2-1.64-1.59Z"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 2: Email / Login -->
+  <div>
+    <div class="state-label">Email · Login</div>
+    <div class="modal">
+      <div class="mhead"><h3>Sign in</h3><button class="x">✕</button></div>
+      <div class="mtabs">
+        <button>Wallet</button>
+        <button class="active">Email</button>
+      </div>
+      <div class="mbody">
+        <div class="pb-subtabs">
+          <button>Register</button>
+          <button class="active">Login</button>
+        </div>
+        <div class="fld" style="margin-bottom:14px">
+          <label>Username</label>
+          <div class="inp"><input type="text" placeholder="Enter your username"></div>
+        </div>
+        <div class="fld">
+          <label>Password</label>
+          <div class="inp pb-pwwrap">
+            <input type="password" placeholder="Enter your password">
+            <button type="button" class="pb-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="pb-forgot">Forgot <a href="javascript:void(0)">username</a> or <a href="javascript:void(0)">password</a>?</div>
+        <button class="btn btn-red" style="width:100%;margin-top:16px;border-radius:var(--r-md)">Sign in</button>
+        <div class="pb-or"><span></span>OR<span></span></div>
+        <div class="pb-social">
+          <button aria-label="Continue with Google"><span class="pb-sr">Google</span><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></button>
+          <button aria-label="Continue with Telegram"><span class="pb-sr">Telegram</span><svg viewBox="0 0 24 24" fill="#29A9EA"><path d="M21.94 3.36 2.7 10.99c-1.27.5-1.27 1.72 0 2.22l4.9 1.66 1.9 6.03c.24.75 1.1.96 1.68.42l2.66-2.5 4.9 3.63c.9.63 1.94.15 2.24-.9l3.6-16.6c.28-1.3-.7-2-1.64-1.59Z"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 3: Wallet -->
+  <div>
+    <div class="state-label">Wallet</div>
+    <div class="modal">
+      <div class="mhead"><h3>Sign in</h3><button class="x">✕</button></div>
+      <div class="mtabs">
+        <button class="active">Wallet</button>
+        <button>Email</button>
+      </div>
+      <div class="mbody">
+        <div class="authchains">
+          <button>MetaMask</button><button>WalletConnect</button><button>Phantom</button>
+          <button>Trust</button><button>Ledger</button><button>Rabby</button>
+        </div>
+        <div class="mnote">Sign a message to prove ownership. <b>No gas, no transaction.</b> Your wallet is your account.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
