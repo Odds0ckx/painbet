@@ -591,12 +591,16 @@ footer{padding:22px}
   background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:#1c0605;
 }
 #view-home .promo.hero-promo .bigtri,#view-home .promo.hero-promo .ekg,#view-promos .promo.hero-promo .bigtri,#view-promos .promo.hero-promo .ekg{display:none}
-#view-home>.content>section:first-child .promo.blue-promo,#view-promos .promos:first-of-type .promo.blue-promo{
+#view-home>.content>section:first-child .promo.blue-promo,#view-promos .promos-hero .promo.blue-promo{
   background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/anesthesia-bg.png');
   background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:var(--card);
 }
-#view-home>.content>section:first-child .promo.blue-promo .bigtri,#view-promos .promos:first-of-type .promo.blue-promo .bigtri{display:none}
-#view-home>.content>section:first-child .promos,#view-promos .promos:first-of-type{grid-template-columns:1.35fr 1fr}
+#view-home>.content>section:first-child .promo.blue-promo .bigtri,#view-promos .promos-hero .promo.blue-promo .bigtri{display:none}
+#view-home>.content>section:first-child .promo:last-child,#view-promos .promos-hero .promo:last-child{
+  background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/threshold-raid-bg.png');
+  background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:var(--card);
+}
+#view-home>.content>section:first-child .promo:last-child .bigtri,#view-promos .promos-hero .promo:last-child .bigtri{display:none}
 
 .sb-item .badge{margin-left:auto;font-size:10px;font-weight:800;background:var(--red);color:#fff;padding:2px 8px;border-radius:var(--r-pill)}
 .a-blackout{background:linear-gradient(160deg,#232529 0%,#131416 60%,#0b0c0d 100%);color:#cfd3d9}
@@ -975,6 +979,13 @@ body.trackeropen .drawer{right:0}
               <h3>Anesthesia payout</h3>
               <p>Up to 8% of net losses back. No wagering attached.</p>
               <button class="btn btn-blue" data-view="anesthesia">See your relief</button>
+            </div>
+            <div class="promo">
+              <div class="bigtri"></div>
+              <div class="k">Live · community event</div>
+              <h3>50,000 USDT boss bounty</h3>
+              <p>Stake into the shared raid. Your cut scales with your contribution.</p>
+              <button class="btn btn-ghost" data-view="synapse">Join the raid</button>
             </div>
           </div>
         </section>
@@ -1558,7 +1569,7 @@ body.trackeropen .drawer{right:0}
         <div class="gcrumb"><button data-view="home">Lobby</button> / <span style="color:var(--ink-hi)">Promotions</span></div>
         <section class="blk">
           <div class="sec-head"><h2>Promotions</h2><div class="tag">Everything the house gives back</div></div>
-          <div class="promos" style="margin-top:14px">
+          <div class="promos promos-hero" style="margin-top:14px">
             <div class="promo hero-promo">
               <div class="k">Welcome dose · new patients</div>
               <h3>100% first deposit up to 1,000 USDT</h3>
@@ -1571,6 +1582,13 @@ body.trackeropen .drawer{right:0}
               <h3>Anesthesia payout</h3>
               <p>Up to 10% of net losses back, rate set by your Pain Scale tier. No wagering attached.</p>
               <button class="btn btn-blue" data-view="anesthesia">See your relief</button>
+            </div>
+            <div class="promo">
+              <div class="bigtri"></div>
+              <div class="k">Live · community event</div>
+              <h3>50,000 USDT boss bounty</h3>
+              <p>Stake into the shared raid. Your cut scales with your contribution.</p>
+              <button class="btn btn-ghost" data-view="synapse">Join the raid</button>
             </div>
           </div>
           <div class="promos" style="margin-top:16px">
