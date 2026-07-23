@@ -203,8 +203,11 @@ section.blk{margin-bottom:34px}
 .provcard .word{font-family:var(--disp);font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-hi)}
 .provcard-more .mark{color:var(--ink-lo);font-size:11px}
 .provcard-more .word{color:var(--ink-lo)}
+.provcard-logo{max-width:82%;max-height:44px;object-fit:contain}
 .prov-head{display:flex;align-items:center;gap:16px}
 .mark.lg{width:56px;height:56px;border-radius:50%;background:var(--card-hi);color:var(--ink-hi);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:16px;flex:none}
+.mark.lg.has-logo{background:transparent}
+.mark.lg.has-logo img{max-width:100%;max-height:100%;object-fit:contain}
 
 /* ---------- two-col: race + relief ---------- */
 .duo{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
@@ -1077,9 +1080,9 @@ body.trackeropen .drawer{right:0}
             </div>
           </div>
           <div class="rail rx provrail">
-            <button class="provcard" onclick="openProvider('Pragmatic Play','PP')"><span class="mark">PP</span><span class="word">Pragmatic Play</span></button>
+            <button class="provcard" onclick="openProvider('Pragmatic Play','PP','assets/providers/pragmatic-play.png')"><img class="provcard-logo" src="assets/providers/pragmatic-play.png" alt="Pragmatic Play"></button>
             <button class="provcard" onclick="openProvider('Evolution','EV')"><span class="mark">EV</span><span class="word">Evolution</span></button>
-            <button class="provcard" onclick="openProvider('Hacksaw','HG')"><span class="mark">HG</span><span class="word">Hacksaw</span></button>
+            <button class="provcard" onclick="openProvider('Hacksaw','HG','assets/providers/hacksaw.svg')"><img class="provcard-logo" src="assets/providers/hacksaw.svg" alt="Hacksaw"></button>
             <button class="provcard" onclick="openProvider('Nolimit City','NC')"><span class="mark">NC</span><span class="word">Nolimit City</span></button>
             <button class="provcard" onclick="openProvider('Push Gaming','PG')"><span class="mark">PG</span><span class="word">Push Gaming</span></button>
             <button class="provcard" onclick="openProvider('BGaming','BG')"><span class="mark">BG</span><span class="word">BGaming</span></button>
@@ -2289,11 +2292,20 @@ function openGames(cat){
 
 // ---------- v5: provider pages, cloned from the poison rail by matching the
 // game's own provider label rather than maintaining a second games list ----------
-function openProvider(name,mark){
+function openProvider(name,mark,logoSrc){
   show('provider');
   document.getElementById('prov-crumb').textContent=name;
   document.getElementById('prov-title').textContent=name;
-  document.getElementById('prov-mark-lg').textContent=mark||name.slice(0,2).toUpperCase();
+  const markEl=document.getElementById('prov-mark-lg');
+  markEl.classList.toggle('has-logo',!!logoSrc);
+  if(logoSrc){
+    markEl.innerHTML='';
+    const img=document.createElement('img');
+    img.src=logoSrc; img.alt=name;
+    markEl.appendChild(img);
+  } else {
+    markEl.textContent=mark||name.slice(0,2).toUpperCase();
+  }
   const target=document.getElementById('prov-games');
   target.innerHTML='';
   document.querySelectorAll('#poison-rail .gcard').forEach(g=>{
