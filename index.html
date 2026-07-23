@@ -912,6 +912,119 @@ body.trackeropen .drawer{right:0}
 @media(max-width:860px){
   .sidebar,.navtoggle{display:none}
 }
+
+/* ---------- sportsbook: mode toggle ---------- */
+.mode-toggle{display:flex;gap:4px;background:var(--card-hi);border-radius:var(--r-pill);padding:4px;margin:0 10px 12px}
+.mode-seg{flex:1;padding:9px 0;border-radius:var(--r-pill);font:800 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);transition:background .2s,color .2s}
+.mode-seg:hover{color:var(--ink)}
+body[data-mode="casino"] .mode-seg[data-mode="casino"],
+body[data-mode="sports"] .mode-seg[data-mode="sports"]{background:var(--red);color:#fff}
+body[data-mode="sports"] .sb-casino{display:none}
+body:not([data-mode="sports"]) .sb-sports{display:none}
+body.navmin .mode-toggle{display:none}
+
+/* ---------- sportsbook: live dot ---------- */
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px 2px rgba(225,6,0,.5);animation:pk-blink 1.4s ease-in-out infinite;display:inline-block;flex:none}
+
+/* ---------- sportsbook: tabs + icon rail ---------- */
+.sp-tabs{display:flex;gap:8px;margin-bottom:22px}
+.sp-tab{font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:10px 18px;border-radius:var(--r-pill);background:var(--card);color:var(--ink);transition:background .2s,color .2s}
+.sp-tab.active{background:var(--red);color:#fff}
+.sb-iconrail{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:24px;scrollbar-width:none}
+.sb-iconrail::-webkit-scrollbar{display:none}
+.sp-chip{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--r-pill);background:var(--card);color:var(--ink);box-shadow:var(--shadow);font-weight:700;font-size:12px;transition:background .2s,color .2s}
+.sp-chip .ic{width:16px;height:16px}
+.sp-chip .c{background:var(--card-hi);color:var(--ink-lo);font-size:10px;font-weight:800;padding:1px 7px;border-radius:var(--r-pill)}
+.sp-chip.active{background:var(--red);color:#fff}
+.sp-chip.active .c{background:hsla(0,100%,100%,.2);color:#fff}
+
+/* ---------- sportsbook: match cards ---------- */
+.sp-mcard{background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:16px;flex:0 0 calc((100% - 32px)/3);min-width:230px;scroll-snap-align:start}
+@media(max-width:1100px){.sp-mcard{flex-basis:calc((100% - 16px)/2)}}
+@media(max-width:600px){.sp-mcard{flex-basis:88%}}
+.sp-mcard .lg{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sp-mcard .lg .liv{display:flex;align-items:center;gap:5px;color:var(--red);font-weight:800}
+.sp-mcard .tm{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;color:#fff;margin-bottom:4px}
+.sp-mcard .tm .sc{font-family:var(--disp);color:var(--red)}
+.sp-mcard .when{font-size:11px;color:var(--ink);margin:8px 0 12px}
+.sp-mcard .oddsrow{display:flex;gap:8px}
+.sp-empty{color:var(--ink-lo);font-size:13px;padding:20px 4px}
+
+/* ---------- sportsbook: live-now grouped rows ---------- */
+.sp-league{margin-bottom:14px}
+.sp-league .lname{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-lo);padding:6px 4px;border-bottom:1px solid hsla(0,0%,100%,.05);margin-bottom:6px}
+.sp-match{display:flex;align-items:center;gap:14px;padding:12px 10px;border-radius:var(--r-md);transition:background .2s;flex-wrap:wrap}
+.sp-match:hover{background:var(--card-hi)}
+.sp-match .teams{flex:1;min-width:140px}
+.sp-match .t1,.sp-match .t2{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-match .meta{width:70px;flex:none;font-size:11px;color:var(--ink-lo);text-align:center}
+.sp-match .meta .liv{color:var(--red);font-weight:800;display:flex;align-items:center;gap:5px;justify-content:center}
+.sp-match .oddsrow{display:flex;gap:8px;flex:none}
+
+/* ---------- sportsbook: big bets ---------- */
+.sp-bb-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--card);border-radius:var(--r-md);margin-bottom:8px}
+.sp-bb-row .who{font-weight:700;font-size:12.5px;color:#fff}
+.sp-bb-row .what{font-size:11px;color:var(--ink)}
+.sp-bb-row .amt{font-family:var(--disp);color:var(--red);font-size:15px}
+
+/* ---------- sportsbook: odds button ---------- */
+.odds{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:64px;
+  padding:10px 12px;background:var(--card-hi);border-radius:var(--r-sm);
+  font:700 13px var(--sans);color:var(--white);transition:background .2s,box-shadow .2s;flex:1}
+.odds .ol{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-lo)}
+.odds:hover{background:var(--card-hi2)}
+.odds.sel{background:var(--red);box-shadow:0 0 0 1px var(--redhi) inset}
+.odds.sel .ol{color:hsla(0,100%,100%,.7)}
+@keyframes oddsUp{0%{box-shadow:0 0 0 2px var(--red)}100%{box-shadow:0 0 0 2px transparent}}
+@keyframes oddsDn{0%{box-shadow:0 0 0 2px var(--ink-lo)}100%{box-shadow:0 0 0 2px transparent}}
+.odds.up{animation:oddsUp .6s var(--ease-out)}
+.odds.dn{animation:oddsDn .6s var(--ease-out)}
+
+/* ---------- sportsbook: betslip ---------- */
+.betslip-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:80;
+  background:var(--red);color:#fff;border-radius:var(--r-md) 0 0 var(--r-md);
+  padding:14px 10px;writing-mode:vertical-rl;font:800 11px var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.bt-count{display:block;margin-top:6px;background:#fff;color:var(--red);border-radius:var(--r-pill);
+  font-size:10px;padding:1px 6px;writing-mode:horizontal-tb}
+.betslip{position:fixed;right:-360px;top:0;bottom:0;width:340px;background:var(--card);z-index:95;
+  display:flex;flex-direction:column;box-shadow:var(--shadow-lg);transition:right .3s var(--ease-out)}
+body.betslip-open .betslip{right:0}
+body.betslip-open .betslip-tab{display:none}
+.bs-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid hsla(0,0%,100%,.05)}
+.bs-head h3{font-family:var(--disp);font-size:19px;text-transform:uppercase;color:#fff}
+.bs-head .x{color:var(--ink);font-size:15px;padding:4px 8px;border-radius:var(--r-sm)}
+.bs-head .x:hover{color:#fff;background:var(--card-hi)}
+.bs-tabs{display:flex;gap:6px;padding:12px 20px 0}
+.bs-tab{flex:1;padding:9px 0;border-radius:var(--r-pill);font:800 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-lo);background:var(--card-hi);transition:background .2s,color .2s}
+.bs-tab.active{background:var(--red);color:#fff}
+.bs-body{flex:1;overflow-y:auto;padding:16px 20px}
+.bs-empty{color:var(--ink-lo);font-size:13px;padding:30px 4px;text-align:center}
+.bs-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--card-hi);border-radius:var(--r-md);margin-bottom:8px}
+.bs-info{flex:1;min-width:0}
+.bs-m{font-size:12.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bs-p{font-size:11px;color:var(--ink-lo);margin-top:2px}
+.bs-o{font-weight:800;color:var(--redhi);font-size:13px;flex:none}
+.bs-o.pending{color:var(--ink-lo);font-size:10px;letter-spacing:.08em}
+.bs-rm{color:var(--ink-lo);font-size:13px;padding:2px 6px;flex:none}
+.bs-rm:hover{color:#fff}
+.bs-foot{padding:16px 20px calc(16px + env(safe-area-inset-bottom));border-top:1px solid hsla(0,0%,100%,.05)}
+.bs-stakerow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.bs-stakerow label{font-size:11px;color:var(--ink-lo);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.bs-stakerow input{width:110px;background:var(--card-hi);border-radius:var(--r-sm);padding:8px 10px;color:#fff;font-weight:700;text-align:right;border:none}
+.bs-sumrow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink);margin-bottom:6px}
+.bs-sumrow b{color:#fff}
+.bs-sumrow b.blue{color:var(--blue)}
+@media(max-width:860px){
+  .betslip{right:0;left:0;top:auto;width:auto;height:70vh;bottom:-100%;
+    border-radius:var(--r-lg) var(--r-lg) 0 0;transition:bottom .3s var(--ease-out)}
+  body.betslip-open .betslip{bottom:0}
+}
+
+/* ---------- sportsbook: bet toast ---------- */
+.sp-toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);background:var(--red);color:#fff;
+  font-weight:700;font-size:13px;padding:12px 22px;border-radius:var(--r-pill);box-shadow:var(--shadow-lg);
+  opacity:0;transition:opacity .3s,transform .3s;z-index:200;pointer-events:none}
+.sp-toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -936,13 +1049,32 @@ body.trackeropen .drawer{right:0}
       <div class="sub">612K / 720K USDT to level 8</div>
     </div>
 
-    <nav class="sb-group" aria-label="Casino">
+    <div class="mode-toggle" role="tablist" aria-label="Casino or Sports">
+      <button class="mode-seg" data-mode="casino" onclick="setMode('casino')">Casino</button>
+      <button class="mode-seg" data-mode="sports" onclick="setMode('sports')">Sports</button>
+    </div>
+
+    <nav class="sb-group sb-casino" aria-label="Casino">
       <div class="sb-title">Casino</div>
       <button class="sb-item sel" data-view="home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg><span class="lbl">Lobby</span></button>
       <button class="sb-item" data-view="home" data-scroll="lobby"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg><span class="lbl">Originals</span></button>
       <button class="sb-item" onclick="openGames('slots')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14"/></svg><span class="lbl">Slots</span></button>
       <button class="sb-item" onclick="openGames('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span class="lbl">Live casino</span></button>
       <button class="sb-item" data-view="promos"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13M12 7s-1.5-4-4.5-4C5 3 4 4.5 4 5.5 4 7 5.5 7 7 7h5zm0 0s1.5-4 4.5-4C19 3 20 4.5 20 5.5 20 7 18.5 7 17 7h-5z"/></svg><span class="lbl">Promotions</span></button>
+    </nav>
+
+    <nav class="sb-group sb-sports" aria-label="Sports">
+      <div class="sb-title">Sports</div>
+      <button class="sb-item" data-view="sports" onclick="setSport('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span class="lbl">Live</span><span class="live-dot" style="margin-left:auto"></span></button>
+      <button class="sb-item" data-view="sports" onclick="setSport('soon')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg><span class="lbl">Starting soon</span></button>
+      <button class="sb-item" onclick="openBetslip('mybets')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span class="lbl">My bets</span></button>
+      <div class="sb-title" style="margin-top:6px">Sports</div>
+      <button class="sb-item" data-view="sports" onclick="setSport('soccer')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7l3.5 2.5-1.3 4h-4.4l-1.3-4z"/></svg><span class="lbl">Soccer</span></button>
+      <button class="sb-item" data-view="sports" onclick="setSport('basketball')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c2.9 2.9 2.9 9.9 0 12.8M18.4 5.6c-2.9 2.9-2.9 9.9 0 12.8"/></svg><span class="lbl">Basketball</span></button>
+      <button class="sb-item" data-view="sports" onclick="setSport('tennis')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M4.6 7.6c3.9 1.2 10.9 1.2 14.8 0M4.6 16.4c3.9-1.2 10.9-1.2 14.8 0"/></svg><span class="lbl">Tennis</span></button>
+      <button class="sb-item" data-view="sports" onclick="setSport('mma')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a2 2 0 0 1 4 0v4M11 11V6a2 2 0 0 1 4 0v5M15 11V8a2 2 0 0 1 4 0v5a6 6 0 0 1-12 0v-2"/></svg><span class="lbl">MMA</span></button>
+      <button class="sb-item" data-view="sports" onclick="setSport('esports')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="11" rx="3"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".8" fill="currentColor" stroke="none"/><circle cx="18.5" cy="14" r=".8" fill="currentColor" stroke="none"/></svg><span class="lbl">eSports</span></button>
+      <button class="sb-item" data-view="sports" onclick="setSport('nfl')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><path d="M5.5 12h13M9 9.5l1 1M9 14.5l1-1M15 9.5l-1 1M15 14.5l-1-1"/></svg><span class="lbl">American Football</span></button>
     </nav>
 
     <nav class="sb-group" aria-label="Pain system">
@@ -1751,6 +1883,36 @@ body.trackeropen .drawer{right:0}
       </div>
     </div>
 
+    <!-- ============ VIEW: SPORTS ============ -->
+    <div class="view" id="view-sports">
+      <div class="content" id="sports-mount">
+        <!-- PROVIDER SWAP POINT: replace the mock markup below with the provider's
+             iframe/JS mount when the account is live. Everything else (sidebar toggle,
+             view routing, betslip shell, theme tokens) stays. -->
+
+        <div class="sb-iconrail" id="sports-iconrail"></div>
+
+        <div class="sp-tabs">
+          <button class="sp-tab active" data-sptab="live" onclick="setSpTab('live')">Live</button>
+          <button class="sp-tab" data-sptab="prematch" onclick="setSpTab('prematch')">Prematch</button>
+          <button class="sp-tab" data-sptab="mybets" onclick="openBetslip('mybets')">My bets</button>
+        </div>
+
+        <section class="blk"><div class="sec-head"><h2>Top matches</h2>
+          <span class="railnav"><button class="rbtn" aria-label="Scroll back" onclick="railScroll(this,-1)">‹</button><button class="rbtn" aria-label="Scroll forward" onclick="railScroll(this,1)">›</button></span></div>
+          <div class="rail rx" id="sp-topmatches"></div>
+        </section>
+
+        <section class="blk"><div class="sec-head"><h2>Live now</h2></div>
+          <div id="sp-live"></div>
+        </section>
+
+        <section class="blk"><div class="sec-head"><h2>Big bets</h2></div>
+          <div id="sp-bigbets"></div>
+        </section>
+      </div>
+    </div>
+
     <footer>
   <div class="foot-rails">One confirmation in. One signature out. BTC · ETH · USDT · BNB · TRON · <button data-view="rails" style="color:var(--blue);font-weight:700">Rails →</button></div>
       <div class="foot-inner">
@@ -1786,11 +1948,26 @@ body.trackeropen .drawer{right:0}
   <button class="mbar-item mbar-more" onclick="openSheet('more')"><span class="mbar-icwrap"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="dot"></span></span><span>More</span></button>
 </nav>
 
+<!-- ============ SPORTSBOOK: BETSLIP ============ -->
+<button class="betslip-tab" id="betslip-tab" onclick="openBetslip()">
+  <span class="bt-label">Betslip</span><span class="bt-count" id="bt-count">0</span>
+</button>
+<aside class="betslip" id="betslip" aria-label="Betslip">
+  <div class="bs-head"><h3>Betslip</h3><button class="x" onclick="closeBetslip()">✕</button></div>
+  <div class="bs-tabs">
+    <button class="bs-tab active" data-bstab="slip" onclick="setBsTab('slip')">Slip <span id="bs-slip-n">0</span></button>
+    <button class="bs-tab" data-bstab="mybets" onclick="setBsTab('mybets')">My bets</button>
+  </div>
+  <div class="bs-body" id="bs-body"></div>
+  <div class="bs-foot" id="bs-foot"></div>
+</aside>
+
 <!-- ============ MOBILE: MORE SHEET ============ -->
 <div class="sheet-bg" id="sheet-more">
   <div class="sheet" role="dialog" aria-label="More">
     <div class="shead2"><h3>More</h3><button class="x" onclick="closeSheet('more')">✕</button></div>
     <div class="sheet-list">
+      <button onclick="closeSheet('more');setMode('sports')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7l3.5 2.5-1.3 4h-4.4l-1.3-4z"/></svg>Sports</button>
       <button onclick="closeSheet('more');openGames('slots')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14"/></svg>Slots</button>
       <button onclick="closeSheet('more');openGames('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Live casino</button>
       <button data-view="promos" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13"/></svg>Promotions</button>
@@ -2141,6 +2318,65 @@ function toggleNav(){
 }
 try{if(localStorage.getItem('pb-navmin')==='1')document.body.classList.add('navmin')}catch(e){}
 
+// ---------- sportsbook: state (declared early, since the hash router below can call
+// show('sports') -> buildSports() synchronously during initial parse) ----------
+const SPORT_META = {
+  soccer:{label:'Soccer', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7l3.5 2.5-1.3 4h-4.4l-1.3-4z"/>'},
+  basketball:{label:'Basketball', icon:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c2.9 2.9 2.9 9.9 0 12.8M18.4 5.6c-2.9 2.9-2.9 9.9 0 12.8"/>'},
+  tennis:{label:'Tennis', icon:'<circle cx="12" cy="12" r="9"/><path d="M4.6 7.6c3.9 1.2 10.9 1.2 14.8 0M4.6 16.4c3.9-1.2 10.9-1.2 14.8 0"/>'},
+  mma:{label:'MMA', icon:'<path d="M7 11V7a2 2 0 0 1 4 0v4M11 11V6a2 2 0 0 1 4 0v5M15 11V8a2 2 0 0 1 4 0v5a6 6 0 0 1-12 0v-2"/>'},
+  esports:{label:'eSports', icon:'<rect x="2" y="7" width="20" height="11" rx="3"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".8" fill="currentColor" stroke="none"/><circle cx="18.5" cy="14" r=".8" fill="currentColor" stroke="none"/>'},
+  nfl:{label:'American Football', icon:'<ellipse cx="12" cy="12" rx="9" ry="5.5"/><path d="M5.5 12h13M9 9.5l1 1M9 14.5l1-1M15 9.5l-1 1M15 14.5l-1-1"/>'}
+};
+
+const SPORT_FIXTURES = [
+  {id:'m1', sport:'soccer', league:'Premier League', home:'Arsenal', away:'Chelsea', start:'Today 20:00', live:false, score:null, odds:{h:2.10, d:3.40, a:3.05}},
+  {id:'m2', sport:'soccer', league:'La Liga', home:'Sevilla', away:'Valencia', live:true, score:'1 - 0', minute:"63'", odds:{h:1.72, d:3.60, a:4.80}},
+  {id:'m3', sport:'soccer', league:'Serie A', home:'Juventus', away:'Roma', live:true, score:'0 - 0', minute:"28'", odds:{h:2.05, d:3.20, a:3.55}},
+  {id:'m4', sport:'soccer', league:'Bundesliga', home:'Dortmund', away:'Leipzig', start:'Tomorrow 18:30', live:false, score:null, odds:{h:2.40, d:3.50, a:2.75}},
+  {id:'m5', sport:'soccer', league:'Ligue 1', home:'PSG', away:'Marseille', start:'Today 21:00', live:false, score:null, odds:{h:1.45, d:4.50, a:6.20}},
+  {id:'m6', sport:'basketball', league:'NBA', home:'Lakers', away:'Celtics', live:true, score:'88 - 84', minute:'Q4 6:12', odds:{h:1.90, a:1.90}},
+  {id:'m7', sport:'basketball', league:'NBA', home:'Warriors', away:'Nuggets', start:'Today 22:30', live:false, score:null, odds:{h:2.20, a:1.65}},
+  {id:'m8', sport:'basketball', league:'EuroLeague', home:'Real Madrid', away:'Barcelona', live:true, score:'71 - 69', minute:'Q3 4:40', odds:{h:1.80, a:2.00}},
+  {id:'m9', sport:'basketball', league:'EuroLeague', home:'Olympiacos', away:'Fenerbahce', start:'Tomorrow 19:00', live:false, score:null, odds:{h:1.95, a:1.85}},
+  {id:'m10', sport:'tennis', league:'ATP Masters', home:'Djokovic', away:'Alcaraz', live:true, score:'6-4, 3-3', minute:'Set 2', odds:{h:1.55, a:2.45}},
+  {id:'m11', sport:'tennis', league:'WTA 1000', home:'Swiatek', away:'Sabalenka', start:'Today 17:00', live:false, score:null, odds:{h:1.70, a:2.10}},
+  {id:'m12', sport:'tennis', league:'ATP 500', home:'Medvedev', away:'Sinner', live:true, score:'7-6, 1-2', minute:'Set 2', odds:{h:2.30, a:1.60}},
+  {id:'m13', sport:'mma', league:'UFC Fight Night', home:'McGregor', away:'Poirier', start:'Sat 04:00', live:false, score:null, odds:{h:1.95, a:1.85}},
+  {id:'m14', sport:'mma', league:'UFC Main Card', home:'Adesanya', away:'Pereira', live:true, score:'Round 3', minute:'R3', odds:{h:2.60, a:1.48}},
+  {id:'m15', sport:'esports', league:'CS2 Major', home:'NAVI', away:'FaZe', live:true, score:'1 - 1', minute:'Map 3', odds:{h:1.75, a:2.05}},
+  {id:'m16', sport:'esports', league:'LoL Worlds', home:'T1', away:'G2 Esports', start:'Today 19:30', live:false, score:null, odds:{h:1.40, a:2.90}},
+  {id:'m17', sport:'esports', league:'Dota 2 International', home:'Team Spirit', away:'OG', live:true, score:'0 - 0', minute:'Game 1', odds:{h:1.85, a:1.95}},
+  {id:'m18', sport:'nfl', league:'NFL', home:'Chiefs', away:'Bills', start:'Sun 18:00', live:false, score:null, odds:{h:1.65, a:2.25}},
+  {id:'m19', sport:'nfl', league:'NFL', home:'Eagles', away:'Cowboys', live:true, score:'17 - 14', minute:'Q3', odds:{h:1.72, a:2.15}},
+  {id:'m20', sport:'nfl', league:'NFL', home:'49ers', away:'Packers', start:'Sun 21:25', live:false, score:null, odds:{h:1.50, a:2.60}},
+  {id:'m21', sport:'soccer', league:'Eredivisie', home:'Ajax', away:'PSV', live:true, score:'2 - 2', minute:"77'", odds:{h:2.90, d:3.30, a:2.40}},
+  {id:'m22', sport:'basketball', league:'NBA', home:'Bucks', away:'Heat', start:'Today 23:00', live:false, score:null, odds:{h:1.60, a:2.35}}
+];
+
+const BIG_BETS = [
+  {who:'Anonymous', what:'Arsenal to win + BTTS', amt:'4,200'},
+  {who:'Anonymous', what:'Djokovic in 3 sets', amt:'1,850'},
+  {who:'Anonymous', what:'Lakers -4.5', amt:'6,900'},
+  {who:'Anonymous', what:'Sevilla vs Valencia over 2.5', amt:'980'},
+  {who:'Anonymous', what:'McGregor by KO', amt:'3,300'},
+  {who:'Anonymous', what:'NAVI vs FaZe map handicap', amt:'1,120'}
+];
+
+let spSport = 'all';       // 'all' | 'live' | 'soon' | a sport key
+let spTab = 'live';        // live | prematch | mybets
+let betslip = [];          // [{key,match,pick,odds,label,pickLabel}]
+let myBets = [];
+let sportsBuilt = false;
+
+// ---------- sportsbook: casino/sports mode ----------
+function setMode(m){
+  document.body.dataset.mode = m;
+  try{ localStorage.setItem('pb-mode', m); }catch(e){}
+  show(m === 'sports' ? 'sports' : 'home');
+}
+try{ document.body.dataset.mode = localStorage.getItem('pb-mode')==='sports' ? 'sports':'casino'; }catch(e){ document.body.dataset.mode='casino'; }
+
 // ---------- view switching ----------
 function show(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('on'));
@@ -2150,8 +2386,10 @@ function show(v){
   });
   window.scrollTo(0,0);
   if(v==='games') buildGames();
+  if(v==='sports') buildSports();
   if(v==='arcade'){ const f=document.getElementById('arcade-frame'); if(f && f.src.indexOf('painbet-arcade')<0) f.src='painbet-arcade.html?embed=1'; }
 }
+if(document.body.dataset.mode==='sports' && !location.hash) show('sports');
 // open the arcade as an in-app view inside the lobby shell (keeps the sidebar)
 function openArcadeView(){ try{closeSheet('more')}catch(e){} show('arcade'); }
 // hash router: painbet-arcade.html links back into specific views (#pk, #synapse, ...)
@@ -2840,6 +3078,230 @@ setInterval(() => {
     painScaleEngine.updateProgress(painScaleEngine.fillPercent + Math.random()*0.012);
   }
 }, 4000);
+
+// ==================== SPORTSBOOK ====================
+// mock engine standing in for the third-party sportsbook provider widget
+// (see PROVIDER SWAP POINT comment in #sports-mount)
+
+function buildSports(){
+  if(sportsBuilt) return; sportsBuilt = true;
+  buildIconRail();
+  renderSports();
+  renderBetslip();
+  startOddsDrift();
+}
+
+function buildIconRail(){
+  const rail = document.getElementById('sports-iconrail');
+  const counts = {};
+  SPORT_FIXTURES.forEach(m=>{ counts[m.sport] = (counts[m.sport]||0)+1; });
+  rail.innerHTML = Object.keys(SPORT_META).map(s=>{
+    const meta = SPORT_META[s];
+    return `<button class="sp-chip${spSport===s?' active':''}" data-sportchip="${s}" onclick="setSport('${s}')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${meta.icon}</svg><span class="n">${meta.label}</span><span class="c">${counts[s]||0}</span></button>`;
+  }).join('');
+}
+
+function setSport(s){
+  spSport = s;
+  if(document.body.dataset.mode!=='sports') setMode('sports');
+  document.querySelectorAll('.sp-chip').forEach(c=>c.classList.toggle('active', c.dataset.sportchip===s));
+  renderSports();
+}
+
+function setSpTab(t){
+  spTab = t;
+  document.querySelectorAll('.sp-tab').forEach(b=>b.classList.toggle('active', b.dataset.sptab===t));
+  renderSports();
+}
+
+function oddsBtn(m,pick,label){
+  const val = m.odds[pick];
+  if(val==null) return '';
+  const key = m.id+'-'+pick;
+  const sel = betslip.some(s=>s.key===key) ? ' sel' : '';
+  return `<button class="odds${sel}" data-match="${m.id}" data-pick="${pick}" data-odds="${val}" onclick="togglePick(this)"><span class="ol">${label}</span><span class="ov">${val.toFixed(2)}</span></button>`;
+}
+function oddsRow(m){
+  const picks = m.odds.d!=null ? [['h','1'],['d','X'],['a','2']] : [['h','1'],['a','2']];
+  return `<div class="oddsrow">${picks.map(p=>oddsBtn(m,p[0],p[1])).join('')}</div>`;
+}
+function mcardHTML(m){
+  return `<div class="sp-mcard">
+    <div class="lg"><span>${m.league}</span>${m.live?`<span class="liv"><span class="live-dot"></span>LIVE</span>`:''}</div>
+    <div class="tm"><span>${m.home}</span>${m.score?`<span class="sc">${m.score.split(' - ')[0]||''}</span>`:''}</div>
+    <div class="tm"><span>${m.away}</span>${m.score?`<span class="sc">${m.score.split(' - ')[1]||''}</span>`:''}</div>
+    <div class="when">${m.live?(m.minute||'Live'):m.start}</div>
+    ${oddsRow(m)}
+  </div>`;
+}
+function groupedRowsHTML(list){
+  if(!list.length) return '';
+  const byLeague = {};
+  list.forEach(m=>{ (byLeague[m.league] = byLeague[m.league]||[]).push(m); });
+  return Object.keys(byLeague).map(lg=>{
+    const rows = byLeague[lg].map(m=>`
+      <div class="sp-match">
+        <div class="teams"><div class="t1">${m.home}</div><div class="t2">${m.away}</div></div>
+        <div class="meta">${m.live?`<span class="liv"><span class="live-dot"></span>${m.minute||''}</span>`:m.start}${m.live&&m.score?`<div>${m.score}</div>`:''}</div>
+        ${oddsRow(m)}
+      </div>`).join('');
+    return `<div class="sp-league"><div class="lname">${lg}</div>${rows}</div>`;
+  }).join('');
+}
+function bigBetRowHTML(b){
+  return `<div class="sp-bb-row"><div><div class="who">${b.who}</div><div class="what">${b.what}</div></div><div class="amt">${b.amt} USDT</div></div>`;
+}
+function emptyMsg(t){ return `<div class="sp-empty">${t}</div>`; }
+
+function currentSportFilter(){
+  return (spSport==='live'||spSport==='soon'||spSport==='all') ? null : spSport;
+}
+function renderSports(){
+  const sf = currentSportFilter();
+  const base = SPORT_FIXTURES.filter(m=> !sf || m.sport===sf);
+
+  const top = [...base].sort((a,b)=>(b.live?1:0)-(a.live?1:0)).slice(0,4);
+  document.getElementById('sp-topmatches').innerHTML = top.map(mcardHTML).join('') || emptyMsg('No matches for this filter.');
+
+  let liveList;
+  if(spSport==='soon') liveList = base.filter(m=>!m.live);
+  else if(spTab==='prematch') liveList = base.filter(m=>!m.live);
+  else liveList = base.filter(m=>m.live);
+  document.getElementById('sp-live').innerHTML = groupedRowsHTML(liveList) || emptyMsg('No matches right now.');
+
+  document.getElementById('sp-bigbets').innerHTML = BIG_BETS.map(bigBetRowHTML).join('');
+}
+
+// odds drift (view-gated: only ticks while #view-sports is on)
+function startOddsDrift(){
+  const view = document.getElementById('view-sports');
+  setInterval(()=>{
+    if(!view.classList.contains('on')) return;
+    const m = SPORT_FIXTURES[Math.floor(Math.random()*SPORT_FIXTURES.length)];
+    const picks = Object.keys(m.odds);
+    const pick = picks[Math.floor(Math.random()*picks.length)];
+    const delta = (Math.random()*0.03+0.02) * (Math.random()<0.5?-1:1);
+    let nv = +(m.odds[pick]+delta).toFixed(2);
+    if(nv<1.01) nv=1.01;
+    const dir = nv>m.odds[pick] ? 'up' : 'dn';
+    m.odds[pick] = nv;
+    document.querySelectorAll(`.odds[data-match="${m.id}"][data-pick="${pick}"]`).forEach(btn=>{
+      btn.dataset.odds = nv;
+      const ov = btn.querySelector('.ov'); if(ov) ov.textContent = nv.toFixed(2);
+      btn.classList.remove('up','dn'); void btn.offsetWidth; btn.classList.add(dir);
+    });
+    let touchedSlip = false;
+    betslip.forEach(s=>{ if(s.match===m.id && s.pick===pick){ s.odds=nv; touchedSlip=true; } });
+    if(touchedSlip) renderBetslip();
+  }, 2500);
+}
+
+// ---------- betslip ----------
+function togglePick(btn){
+  const key = btn.dataset.match+'-'+btn.dataset.pick;
+  const i = betslip.findIndex(s=>s.key===key);
+  if(i>=0){
+    betslip.splice(i,1);
+    btn.classList.remove('sel');
+  } else {
+    betslip = betslip.filter(s=>s.match!==btn.dataset.match);
+    document.querySelectorAll(`.odds[data-match="${btn.dataset.match}"]`).forEach(o=>o.classList.remove('sel'));
+    const fixture = SPORT_FIXTURES.find(f=>f.id===btn.dataset.match);
+    const pickLabel = btn.dataset.pick==='h' ? fixture.home : btn.dataset.pick==='a' ? fixture.away : 'Draw';
+    betslip.push({key, match:btn.dataset.match, pick:btn.dataset.pick, odds:+btn.dataset.odds,
+      label:`${fixture.home} vs ${fixture.away}`, pickLabel});
+    btn.classList.add('sel');
+    document.body.classList.add('betslip-open');
+    document.querySelectorAll('.bs-tab').forEach(b=>b.classList.toggle('active', b.dataset.bstab==='slip'));
+  }
+  renderBetslip();
+}
+function removePick(key){
+  const s = betslip.find(x=>x.key===key);
+  if(s) document.querySelectorAll(`.odds[data-match="${s.match}"][data-pick="${s.pick}"]`).forEach(o=>o.classList.remove('sel'));
+  betslip = betslip.filter(x=>x.key!==key);
+  renderBetslip();
+}
+function renderBetslip(){
+  const body = document.getElementById('bs-body');
+  const foot = document.getElementById('bs-foot');
+  if(!body || !foot) return;
+  document.getElementById('bt-count').textContent = betslip.length;
+  document.getElementById('bs-slip-n').textContent = betslip.length;
+  const activeTab = document.querySelector('.bs-tab.active');
+  if(activeTab && activeTab.dataset.bstab==='mybets') return; // don't clobber my-bets view
+  if(!betslip.length){
+    body.innerHTML = '<div class="bs-empty">Tap any odds to start a bet slip.</div>';
+    foot.innerHTML = '';
+    return;
+  }
+  body.innerHTML = betslip.map(s=>`
+    <div class="bs-row">
+      <div class="bs-info"><div class="bs-m">${s.label}</div><div class="bs-p">${s.pickLabel}</div></div>
+      <div class="bs-o">${s.odds.toFixed(2)}</div>
+      <button class="bs-rm" onclick="removePick('${s.key}')" aria-label="Remove">✕</button>
+    </div>`).join('');
+  const combined = betslip.reduce((p,s)=>p*s.odds,1);
+  const stake = +(document.getElementById('bs-stake')?document.getElementById('bs-stake').value:10) || 10;
+  foot.innerHTML = `
+    <div class="bs-stakerow"><label>Stake</label><input type="number" id="bs-stake" value="${stake}" min="1" oninput="renderPayout()"></div>
+    <div class="bs-sumrow"><span>Combined odds</span><b id="bs-combined">${combined.toFixed(2)}</b></div>
+    <div class="bs-sumrow"><span>Payout</span><b id="bs-payout" class="blue">${(combined*stake).toFixed(2)} USDT</b></div>
+    <button class="btn btn-red" style="width:100%;border-radius:var(--r-md)" onclick="placeBet()">Place bet</button>`;
+}
+function renderPayout(){
+  const stake = +document.getElementById('bs-stake').value || 0;
+  const combined = betslip.reduce((p,s)=>p*s.odds,1);
+  document.getElementById('bs-payout').textContent = (stake*combined).toFixed(2)+' USDT';
+}
+function renderMyBets(){
+  const body = document.getElementById('bs-body');
+  const foot = document.getElementById('bs-foot');
+  foot.innerHTML = '';
+  if(!myBets.length){ body.innerHTML = '<div class="bs-empty">No bets placed yet.</div>'; return; }
+  body.innerHTML = myBets.map(b=>`
+    <div class="bs-row">
+      <div class="bs-info"><div class="bs-m">${b.picks.map(p=>p.label+' &middot; '+p.pickLabel).join('<br>')}</div><div class="bs-p">Stake ${b.stake} USDT &middot; Odds ${b.combined.toFixed(2)}</div></div>
+      <div class="bs-o pending">PENDING</div>
+    </div>`).join('');
+}
+function openBetslip(tab){
+  document.body.classList.add('betslip-open');
+  setBsTab(tab||'slip');
+}
+function closeBetslip(){ document.body.classList.remove('betslip-open'); }
+function setBsTab(t){
+  document.querySelectorAll('.bs-tab').forEach(b=>b.classList.toggle('active', b.dataset.bstab===t));
+  if(t==='mybets') renderMyBets(); else renderBetslip();
+}
+function placeBet(){
+  if(!betslip.length) return;
+  const stake = +(document.getElementById('bs-stake')?document.getElementById('bs-stake').value:0) || 0;
+  if(stake<=0) return;
+  const combined = betslip.reduce((p,s)=>p*s.odds,1);
+  myBets.unshift({picks:betslip.slice(), stake, combined});
+  const balBtn = document.querySelector('.balance');
+  if(balBtn){
+    const m = balBtn.innerHTML.match(/(USDT<\/span>\s*)([\d,]+)/);
+    if(m){
+      const cur = parseInt(m[2].replace(/,/g,''),10);
+      const next = Math.max(0, cur-stake);
+      balBtn.innerHTML = balBtn.innerHTML.replace(/(USDT<\/span>\s*)([\d,]+)/, `$1${next.toLocaleString()}`);
+    }
+  }
+  betslip.forEach(s=>document.querySelectorAll(`.odds[data-match="${s.match}"][data-pick="${s.pick}"]`).forEach(o=>o.classList.remove('sel')));
+  betslip = [];
+  renderBetslip();
+  toastBet();
+}
+function toastBet(){
+  const t = document.createElement('div');
+  t.className = 'sp-toast';
+  t.textContent = 'Bet placed';
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),300); }, 1800);
+}
 </script>
 
 <script type="module">
