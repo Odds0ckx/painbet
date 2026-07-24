@@ -216,12 +216,17 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
    form : `form` names the capture station builder below.
    ========================================================================== */
 const SCENES = [
-  { id:'admissions', type:'scrub', dir:null, count:120, ext:'webp', tint:'#E10600', vh:3.0,
+  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:3.4,
     kicker:'ROOM <b>07</b> · ADMISSIONS', title:'The ward is taking patients.',
     body:'A gurney rolls you deeper. Five questions, then we tell you what you get for being early.',
-    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.12,.30,.80,.94] },
+    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.10,.24,.60,.80] },
 
-  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.8 },
+  { id:'intake', type:'scrub', dir:'assets/seq/intake', count:169, ext:'webp', tint:'#7FD6E8', vh:2.6,
+    kicker:'ROOM 02 · EXAMINATION', title:'Step inside.',
+    body:'The doctor will work out exactly what is wrong with you.', reveal:[.14,.30,.66,.86] },
+
+  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.8,
+    still:'assets/seq/intake/frame_0169.webp' },
 
   { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.8 },
 
@@ -702,7 +707,9 @@ SCENES.forEach(s=>{
   el.appendChild(card);stageLayer.appendChild(el);
   const sp=document.createElement('div');sp.className='spacer';
   sp.style.height=((s.vh||3)*100)+'vh';stages.appendChild(sp);
-  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,src:new FrameSource(s),sized:false});
+  let stillImg=null;
+  if(s.still){ stillImg=new Image(); stillImg.decoding='async'; stillImg.src=s.still; }
+  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,src:new FrameSource(s),sized:false,stillImg});
 });
 
 function sizeCanvas(sc){const dpr=Math.min(window.devicePixelRatio||1,2),w=innerWidth,h=innerHeight;
@@ -732,8 +739,14 @@ function render(){
     if(vis<=0)return;
     if(!sc.sized&&!sizeCanvas(sc))return;
     const fp=Math.max(0,Math.min(1,p));
-    // form scenes hold a static dim frame; scrub scenes scrub
-    sc.src.draw(sc.ctx,isForm?0.5:fp,sc.cv.width/(sc.ctx.getTransform().a||1),sc.cv.height/(sc.ctx.getTransform().d||1));
+    const W=sc.cv.width/(sc.ctx.getTransform().a||1), H=sc.cv.height/(sc.ctx.getTransform().d||1);
+    // form scenes hold a static dim backdrop (a still if provided, else placeholder); scrub scenes scrub
+    if(isForm){
+      if(sc.stillImg&&sc.stillImg.complete&&sc.stillImg.naturalWidth) coverDraw(sc.ctx,sc.stillImg,W,H);
+      else sc.src.draw(sc.ctx,0.5,W,H);
+    } else {
+      sc.src.draw(sc.ctx,fp,W,H);
+    }
     if(isForm){
       // card visible across the whole dwell (fade only at the very edges)
       const o=Math.min(1,vis, cardOpacity(fp,[.04,.14,.90,.99])+0.0);
