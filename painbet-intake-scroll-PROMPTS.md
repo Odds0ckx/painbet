@@ -18,7 +18,8 @@ CHARACTER LOCK: one nurse, woman in her 30s, pale blue vintage nurse uniform,
 white collar and starched cap, small ID badge, dark hair pulled back, pale
 tired face. Always standing on the corridor centerline.
 NEGATIVE: text overlay, watermark, subtitles, extra limbs, warped face, cartoon,
-daylight, modern hospital, doors or signs in different positions, floating signs.
+daylight, modern hospital, doors or signs in different positions, floating signs,
+nurse walking backwards, nurse moonwalking, figure facing camera while moving away.
 ```
 
 ---
@@ -61,7 +62,8 @@ recede straight ahead down the center; the WARDS 01-08 hanging sign spans the
 corridor overhead at 4 m. LEFT wall: Room 03 door ahead at 3 m, Room 05 door
 faint at 7 m. RIGHT wall: Room 04 door at 5 m, red fire-hose cabinet at 6 m,
 Room 06 door at 9 m. Paired chrome gurneys line both walls. The nurse stands on
-the centerline at 8 m, small, facing camera. Walls clean and intact, cold light.
+the centerline at 8 m, small, with her BACK to camera, beginning to walk away
+down the corridor, leading the viewer in. Walls clean and intact, cold light.
 ```
 
 ### 1B MID (optional) — camera at 6 m (advanced 6 m)
@@ -72,7 +74,8 @@ The WARDS 01-08 hanging sign has just passed overhead (top edge of frame). LEFT
 wall: Room 03 door now behind camera; Room 05 door beside the camera on the left
 at 7 m, its red number plate level with the lens. RIGHT wall: fire-hose cabinet
 passing on the right at 6 m; Room 06 door ahead on the right at 9 m. Nurse now
-~4 m ahead, closer, turning to lead. Walls beginning to rust and streak.
+~4 m ahead on the centerline, back to camera, walking away, leading. Walls
+beginning to rust and streak.
 ```
 
 ### 1C END — camera at 10 m (advanced 4 m) — SHARED with Clip 2 start
@@ -80,8 +83,9 @@ passing on the right at 6 m; Room 06 door ahead on the right at 9 m. Nurse now
 [LOCK] Camera advanced to 10 m, now 2 m from the doors. STRAIGHT AHEAD filling
 the center: the red double doors with a stenciled 07 on the left leaf and the
 red EXIT sign directly above them. LEFT wall: Room 05 door now behind camera.
-RIGHT wall: Room 06 door beside the camera on the right at 9 m. Nurse standing
-just left of the doors, close, watching. Walls heavily decayed, torn and
+RIGHT wall: Room 06 door beside the camera on the right at 9 m. Nurse just LEFT
+of center at the doors, seen from BEHIND, back to camera, pausing at the
+threshold (so the camera passes on her right). Walls heavily decayed, torn and
 bleeding, red light seeping around the door seams.
 ```
 
@@ -130,14 +134,60 @@ over the near lip, a single glowing red object rests centered on the steel tray.
 ```
 [LOCK] Camera at 10 m looking back DOWN the corridor toward the red EXIT sign at
 the far end (straight ahead, center, visible), gurneys receding, walls decayed
-and bloodied, the nurse standing on the centerline at ~6 m facing camera.
+and bloodied, the nurse standing STILL on the centerline at 6 m, facing camera,
+watching, not moving.
 ```
 ### 4B END — camera at 0 m (retreated 10 m), corridor healed
 ```
 [LOCK] Camera retreated to 0 m at the mouth of the ward. STRAIGHT AHEAD center:
 the red EXIT sign small and distant at the far end (12 m), still visible. The
 corridor is now clean and healed, walls pale and intact, calm light, the nurse
-small on the centerline near the EXIT. Same landmark layout, undamaged.
+standing STILL on the centerline at the SAME spot (6 m), facing camera, now
+smaller as the camera has pulled back, watching. Same landmark layout, undamaged.
+```
+
+---
+
+## Motion prompts (feed into DoP with each still pair)
+Portrait 9:16, 24fps, ~5s, same seed, smooth linear motion only (no whip pans /
+crash zooms - they don't scrub cleanly).
+
+**Clip 1 — ADMISSIONS (1A -> 1C), Dolly In:**
+```
+Slow steadicam dolly-in pushing forward down the derelict ward corridor along
+the centerline, past two rows of chrome gurneys toward the glowing red EXIT sign
+and red double doors at the far end. The nurse walks away from camera down the
+centerline, her back to us, leading the viewer deeper - she never turns to face
+camera and never walks toward camera. Walls progressively tear, rust and bleed
+as the camera advances. Continuous slow forward motion, no cuts, no shake.
+Teal-shadow and arterial-red grade, heavy 35mm film grain, soft bloom, haze.
+```
+
+**Clip 2 — INTAKE (1C -> 2B), Dolly In through doors:**
+```
+Continuing forward, the red double doors swing open and the camera pushes
+through them (passing the nurse on the right) into a small examination bay,
+gliding to settle looking down at a blank patient chart on a steel gurney under
+a swinging overhead lamp. Slow continuous dolly, ending static, no cuts.
+Teal-shadow and arterial-red grade, heavy 35mm film grain, soft bloom, haze.
+```
+
+**Clip 3 — LOCKER 07 (3A -> 3B), Robo Arm push:**
+```
+Slow robotic push-in toward a stainless steel morgue specimen drawer, square-on.
+The latch releases and the drawer slides slowly out toward camera, arterial-red
+light spilling from inside, cold vapor pouring over the lip. Slow continuous
+push, no cuts, no shake. Teal-shadow and arterial-red grade, wet metal
+reflections, volumetric fog, soft bloom, heavy 35mm film grain.
+```
+
+**Clip 4 — DISCHARGE (4A -> 4B), reverse Dolly Out:**
+```
+Slow steadicam retreat backing away down the ward corridor, the nurse standing
+still on the centerline facing camera and watching (she does not move), gurneys
+receding, the corridor slowly healing from decayed to clean as the camera pulls
+out. Continuous slow backward dolly, no cuts. Teal-shadow and arterial-red
+grade, heavy 35mm film grain, soft bloom, volumetric haze.
 ```
 
 ---
