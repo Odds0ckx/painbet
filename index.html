@@ -698,6 +698,10 @@ body.trackeropen .drawer{right:0}
 .ok-note.on{display:block}
 /* ---------- mobile bottom bar (replaces sidebar under 860px) ---------- */
 .mobilebar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:70;height:60px;padding:0 4px calc(env(safe-area-inset-bottom));background:var(--card);box-shadow:0 -8px 26px rgba(0,0,0,.45);grid-template-columns:1fr 1fr 78px 1fr 1fr;align-items:center}
+/* slots 1 and 2 swap content by mode; both variants share a grid-column so hiding
+   one via display:none leaves the slot empty instead of collapsing the layout */
+body[data-mode="sports"] .mbar-casino{display:none}
+body:not([data-mode="sports"]) .mbar-sports{display:none}
 .mbar-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:60px;color:var(--ink-lo);font-size:8.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;transition:color .2s var(--ease-out)}
 .mbar-item .ic{width:19px;height:19px}
 .mbar-item.sel{color:var(--redhi)}
@@ -1934,9 +1938,11 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     
 <!-- ============ MOBILE BOTTOM BAR ============ -->
 <nav class="mobilebar" aria-label="Primary mobile navigation">
-  <button class="mbar-item sel" data-view="home" data-mbar="home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg><span>Lobby</span></button>
-  <button class="mbar-item" onclick="openArcadeView()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span>Arcade</span></button>
-  <button class="mbar-center" onclick="openSheet('scale')" aria-label="Pain scale, level 7 of 10">
+  <button class="mbar-item mbar-casino sel" data-view="home" data-mbar="home" style="grid-column:1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg><span>Lobby</span></button>
+  <button class="mbar-item mbar-sports" onclick="setMode('sports')" style="grid-column:1"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7l3.5 2.5-1.3 4h-4.4l-1.3-4z"/></svg><span>Sports</span></button>
+  <button class="mbar-item mbar-casino" onclick="openArcadeView()" style="grid-column:2"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg><span>Arcade</span></button>
+  <button class="mbar-item mbar-sports" onclick="openBetslip('mybets')" style="grid-column:2"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>My bets</span></button>
+  <button class="mbar-center" onclick="openSheet('scale')" aria-label="Pain scale, level 7 of 10" style="grid-column:3">
     <div class="bubble mini">
       <div class="inner">
         <div class="water"></div>
@@ -1948,8 +1954,8 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     </div>
     <span class="mbar-label">Pain</span>
   </button>
-  <button class="mbar-item" onclick="openWallet()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 10h5a2 2 0 1 1 0 4H9V9"/></svg><span>Wallet</span></button>
-  <button class="mbar-item mbar-more" onclick="openSheet('more')"><span class="mbar-icwrap"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="dot"></span></span><span>More</span></button>
+  <button class="mbar-item" onclick="openWallet()" style="grid-column:4"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 10h5a2 2 0 1 1 0 4H9V9"/></svg><span>Wallet</span></button>
+  <button class="mbar-item mbar-more" onclick="openSheet('more')" style="grid-column:5"><span class="mbar-icwrap"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="dot"></span></span><span>More</span></button>
 </nav>
 
 <!-- ============ SPORTSBOOK: BETSLIP ============ -->
