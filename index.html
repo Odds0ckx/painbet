@@ -188,6 +188,18 @@ section.blk{margin-bottom:34px}
 .gcard.placeholder:hover{transform:none;box-shadow:var(--shadow)}
 .gcard.placeholder .ph-ic{font-family:var(--disp);font-size:22px;color:hsla(0,0%,100%,.15)}
 .gcard.placeholder .ph-label{font-weight:700;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:hsla(0,0%,100%,.15)}
+/* Pain Originals: cursor-follow glow on hover (adapted from a CodePen "glowing corner
+   hover effect" — https://codepen.io/SamiTadros/pen/QwGQgbX). --gx/--gy are set by JS
+   on pointermove; z-index:1 puts the glow above the card art but under .meta/.badge
+   (both already explicit z-index) so the label and gradient scrim stay legible. */
+.gcard[data-cats~="originals"]::before{
+  content:'';position:absolute;z-index:1;pointer-events:none;
+  top:var(--gy,50%);left:var(--gx,50%);translate:-50% -50%;
+  width:260px;height:260px;
+  background:radial-gradient(var(--red),transparent 65%);
+  opacity:0;transition:opacity .4s var(--ease-out);
+}
+.gcard[data-cats~="originals"]:hover::before{opacity:.55}
 .a-flatline{background-image:url('assets/originals/flatline-bg.png');background-size:cover;background-position:center;color:transparent}
 .a-nerve{background-image:url('assets/originals/nerve-bg.png');background-size:cover;background-position:center;color:transparent}
 .a-bonesaw{background-image:url('assets/originals/bonesaw-bg.png');background-size:cover;background-position:center;color:transparent}
@@ -2562,6 +2574,17 @@ function wireCards(scope){
   });
 }
 wireCards(document.getElementById('view-home'));
+
+// ---------- Pain Originals: cursor-follow glow ----------
+// delegated on document (not per-card) so it works on every clone of an originals
+// card too — home's curated rows and the games view both clone from #originals-rail
+document.addEventListener('pointermove', e=>{
+  const card = e.target.closest('.gcard[data-cats~="originals"]');
+  if(!card) return;
+  const r = card.getBoundingClientRect();
+  card.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+  card.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+});
 
 // ---------- v5: curated home rows, cloned from the poison rail so each game's
 // markup (and its base64 art) only has to live in the page once. Padded out
