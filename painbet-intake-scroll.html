@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PAIN.BET · THE INTAKE</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Archivo+Black&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* =============================================================================
+   PAIN.BET — THE INTAKE  ·  scroll-scrub cinematic front
+   -----------------------------------------------------------------------------
+   ARCHITECTURE (read this before editing):
+   - Each "scene" is one scroll-scrubbed video, painted frame-by-frame to a
+     <canvas>. Scenes are FIXED and stacked; the page's scroll length comes from
+     invisible .spacer blocks (one per scene). JS maps scroll position -> frame.
+   - Everything is driven by the SCENES config array in the <script>. To add /
+     reorder / recopy a scene you edit that array ONLY. DOM is generated from it.
+   - Placeholder frames are drawn procedurally right now so the whole mechanic
+     works with zero assets. Swap in real Higgsfield frames by setting `dir`,
+     `count`, `ext` on a scene (see REPLACE markers in the script).
+   ========================================================================== */
+:root{
+  color-scheme:dark;
+  --ground:#232427; --card:#1B1D20; --sunk:#131517;
+  --line:#454A50;   --line-soft:#383C41;
+  --red:#E10600;    --red-hot:#FF4A42; --blue:#7FD6E8; --cash:#5FE3A1; --gold:#F2C14E;
+  --ink:#F7F8F8;    --ink-2:#D4D9DC;   --ink-3:#AEB4B9;
+  --display:'Archivo Black','Arial Black',Impact,system-ui,sans-serif;
+  --body:'Archivo','Helvetica Neue',Arial,system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#000;color:var(--ink);font-family:var(--body)}
+body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ---- Fixed stage: all scene canvases stack here, full-bleed ---------------- */
+#stages{position:fixed;inset:0;z-index:1;background:#000;overflow:hidden}
+.scene{position:absolute;inset:0;opacity:0;will-change:opacity;pointer-events:none}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;
+  object-fit:cover}
+
+/* ---- Specimen card (the translucent text box) ----------------------------- */
+.card{
+  position:absolute;left:50%;bottom:14vh;transform:translate(-50%,24px);
+  width:min(520px,86vw);padding:22px 24px 24px;
+  background:rgba(19,21,23,.55);backdrop-filter:blur(18px) saturate(1.05);
+  -webkit-backdrop-filter:blur(18px) saturate(1.05);
+  border:1px solid rgba(69,74,80,.5);border-top:1px solid var(--red);
+  border-radius:14px;
+  box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 24px rgba(225,6,0,.18),
+             inset 0 1px 0 rgba(255,255,255,.04);
+  opacity:0;will-change:opacity,transform;pointer-events:none;
+}
+.card .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.card .kicker b{color:var(--red-hot);font-weight:700}
+.card h2{font-family:var(--display);font-size:clamp(26px,6.4vw,40px);line-height:1.02;
+  margin:0 0 10px;letter-spacing:-.01em}
+.card p{font-size:15px;line-height:1.5;color:var(--ink-2);margin:0}
+.card .metric{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap}
+.card .metric b{font-family:var(--display);color:var(--cash);font-size:22px}
+.card .metric span{font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  letter-spacing:.1em;display:block;text-transform:uppercase}
+/* grain inside the card so it sits *in* the footage */
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}
+
+/* ---- Shared grade + grain + vignette overlay (glues all clips together) ---- */
+#grade{position:fixed;inset:0;z-index:5;pointer-events:none;mix-blend-mode:soft-light;
+  background:linear-gradient(180deg,rgba(127,214,232,.10),transparent 30%,
+    transparent 70%,rgba(225,6,0,.14))}
+#vignette{position:fixed;inset:0;z-index:6;pointer-events:none;
+  background:radial-gradient(120% 100% at 50% 45%,transparent 45%,rgba(0,0,0,.72) 100%)}
+#grain{position:fixed;inset:-50%;z-index:7;pointer-events:none;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(3) infinite}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-4%,3%)}
+  66%{transform:translate(3%,-2%)}100%{transform:translate(0,0)}}
+
+/* ---- Chrome: top vitals bar + scroll hint --------------------------------- */
+#chrome{position:fixed;inset:0;z-index:20;pointer-events:none}
+#vitals{position:absolute;top:0;left:0;height:3px;width:0;background:var(--red);
+  box-shadow:0 0 12px var(--red)}
+#tag{position:absolute;top:16px;left:16px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.2em;color:var(--ink-3)}
+#tag b{color:var(--red-hot)}
+#hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ink-3);
+  text-transform:uppercase;transition:opacity .4s;animation:bob 1.8s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,6px)}}
+
+/* ---- Spacers: give the page its scroll length (one per scene) -------------- */
+#track{position:relative;z-index:2}
+.spacer{width:100%}
+
+/* ---- Handoff to the existing app ------------------------------------------ */
+#handoff{position:relative;z-index:3;min-height:100vh;display:flex;align-items:center;
+  justify-content:center;text-align:center;padding:8vh 6vw;
+  background:linear-gradient(180deg,transparent,#000 22%,var(--ground))}
+#handoff .inner{max-width:520px}
+#handoff h2{font-family:var(--display);font-size:clamp(30px,8vw,52px);margin:0 0 12px}
+#handoff p{color:var(--ink-2);margin:0 0 26px;line-height:1.5}
+.btn{font-family:var(--display);font-size:16px;letter-spacing:.02em;color:#fff;
+  background:var(--red);border:none;border-radius:10px;padding:16px 30px;cursor:pointer;
+  box-shadow:0 10px 30px rgba(225,6,0,.35);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(225,6,0,.5)}
+</style>
+</head>
+<body>
+
+<!-- Fixed stacked scene canvases (built by JS from SCENES) -->
+<div id="stages"></div>
+
+<!-- Global look overlays -->
+<div id="grade"></div><div id="vignette"></div><div id="grain"></div>
+
+<!-- HUD chrome -->
+<div id="chrome">
+  <div id="vitals"></div>
+  <div id="tag">PAIN.BET <b>//</b> ADMISSIONS</div>
+  <div id="hint">Scroll to descend</div>
+</div>
+
+<!-- Scroll track: spacers injected here -->
+<div id="track"></div>
+
+<!-- ===== HANDOFF: existing intake_7 app mounts after the cinematic ===== -->
+<section id="handoff">
+  <div class="inner">
+    <h2>The ward is ready for you.</h2>
+    <p>Five questions. We work out what is wrong with you, then tell you what
+       you get for being early.</p>
+    <!-- REPLACE(handoff): link or mount the existing intake_7 app here.
+         e.g. window.location.href='index.html#admissions' or reveal the app. -->
+    <button class="btn" onclick="alert('HANDOFF: mount intake_7 app here')">Check in</button>
+  </div>
+</section>
+
+<script>
+/* ============================================================================
+   CONFIG — the only thing a follow-up editor should normally touch.
+   Each scene = one scroll-scrubbed clip.
+     id        unique key / used for the tag + placeholder label
+     kicker    mono label in the card (use <b>07</b> for red room number)
+     title     Archivo Black headline
+     body      supporting line
+     metric    optional [{v:'$400', k:'Cash, every Sunday'}] money row
+     scrub     'in' (default, scroll down = play forward) | 'both'
+     tint      placeholder accent (ignored once real frames are used)
+   REAL FOOTAGE: set dir/count/ext and the loader uses
+     `${dir}/frame_${i padded to 4}.${ext}`  (i = 1..count)
+     Leave dir null to use procedural placeholders.
+   ========================================================================== */
+const SCENES = [
+  { id:'admissions', dir:null, count:120, ext:'webp', tint:'#E10600', scrub:'in',
+    kicker:'ROOM <b>07</b> · ADMISSIONS',
+    title:'The ward is taking patients.',
+    body:'A gurney rolls you deeper. The further you go, the worse it gets.',
+    reveal:[.12,.30,.80,.94] },
+  { id:'intake', dir:null, count:120, ext:'webp', tint:'#7FD6E8', scrub:'in',
+    kicker:'ROOM 02 · EXAMINATION',
+    title:'Prove you play.',
+    body:'Show one wallet or transaction from any crypto casino and you are in the draw.',
+    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
+    reveal:[.15,.34,.80,.95] },
+  { id:'locker07', dir:null, count:120, ext:'webp', tint:'#F2C14E', scrub:'both',
+    kicker:'LOCKER <b>07</b> · DISCHARGE',
+    title:'Pry it open.',
+    body:'Everyone gets one. 1 in 200 takes the full $1,000.',
+    reveal:[.18,.40,.78,.96] },
+];
+
+/* ---- Frame source: real image sequence OR procedural placeholder ---------- */
+class FrameSource {
+  constructor(scene){
+    this.s = scene;
+    this.count = scene.count;
+    this.real = !!scene.dir;
+    this.imgs = new Array(this.count);
+    this.loaded = 0;
+    this._cache = new Map();          // placeholder frame cache
+  }
+  pad(i){ return String(i).padStart(4,'0'); }
+  // Load real frames (lazy-called when scene nears viewport)
+  preload(){
+    if(!this.real || this._started) return;
+    this._started = true;
+    for(let i=0;i<this.count;i++){
+      const img = new Image();
+      img.decoding='async';
+      img.onload = ()=>{ this.loaded++; };
+      img.src = `${this.s.dir}/frame_${this.pad(i+1)}.${this.s.ext}`;
+      this.imgs[i]=img;
+    }
+  }
+  // Draw frame at progress p∈[0,1] into ctx (cover-fit)
+  draw(ctx,p,w,h){
+    let f = Math.round(p*(this.count-1));
+    f = Math.max(0,Math.min(this.count-1,f));
+    if(this.real){
+      const img=this.imgs[f];
+      if(img&&img.complete&&img.naturalWidth){ coverDraw(ctx,img,w,h); }
+      else { drawPlaceholder(ctx,p,w,h,this.s,f,this.count); } // graceful until loaded
+    } else {
+      drawPlaceholder(ctx,p,w,h,this.s,f,this.count);
+    }
+  }
+}
+
+/* cover-fit blit for real frames */
+function coverDraw(ctx,img,w,h){
+  const ir=img.naturalWidth/img.naturalHeight, cr=w/h;
+  let dw,dh,dx,dy;
+  if(ir>cr){ dh=h; dw=h*ir; dx=(w-dw)/2; dy=0; }
+  else     { dw=w; dh=w/ir; dx=0; dy=(h-dh)/2; }
+  ctx.drawImage(img,dx,dy,dw,dh);
+}
+
+/* ---- Procedural placeholder: fake ward corridor so the scrub is legible ---- */
+function drawPlaceholder(ctx,p,w,h,scene,f,count){
+  ctx.clearRect(0,0,w,h);
+  // base
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,'#0c0d0f'); g.addColorStop(1,'#17181b');
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  // vanishing point drifts + red glow grows with progress (sense of travel)
+  const cx=w*0.5, cy=h*(0.44+0.04*Math.sin(p*3.14));
+  const glow=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.max(w,h)*(0.12+p*0.55));
+  glow.addColorStop(0, hexA(scene.tint,0.9));
+  glow.addColorStop(0.4, hexA(scene.tint,0.28));
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle=glow; ctx.fillRect(0,0,w,h);
+  // perspective corridor lines converging to vanishing point (parallax by p)
+  ctx.strokeStyle='rgba(160,180,190,'+(0.18+0.12*(1-p))+')';
+  ctx.lineWidth=1;
+  const rings=10;
+  for(let i=1;i<=rings;i++){
+    const t=((i/rings)+p*0.6)%1;                 // rings sweep toward camera
+    const s=t*t;                                  // ease -> depth
+    const rw=w*(0.06+s*0.98), rh=h*(0.06+s*0.98);
+    ctx.strokeRect(cx-rw/2, cy-rh/2, rw, rh);
+  }
+  // corner braces
+  ctx.beginPath();
+  ctx.moveTo(0,0); ctx.lineTo(cx,cy); ctx.moveTo(w,0); ctx.lineTo(cx,cy);
+  ctx.moveTo(0,h); ctx.lineTo(cx,cy); ctx.moveTo(w,h); ctx.lineTo(cx,cy);
+  ctx.stroke();
+  // scanline grain
+  for(let y=0;y<h;y+=3){ ctx.fillStyle='rgba(0,0,0,.06)'; ctx.fillRect(0,y,w,1); }
+  // debug label so it's obviously a placeholder
+  ctx.fillStyle='rgba(174,180,185,.85)'; ctx.font='700 12px monospace';
+  ctx.fillText('PLACEHOLDER · '+scene.id.toUpperCase(),16,h-40);
+  ctx.fillStyle=scene.tint; ctx.font='700 12px monospace';
+  ctx.fillText('FRAME '+String(f+1).padStart(4,'0')+' / '+count,16,h-22);
+}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);
+  return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+
+/* ---- Scene runtime ---------------------------------------------------------
+   Layout: every scene is fixed & full-screen (stacked). Scroll length is given
+   by a matching .spacer. Global scroll maps into per-scene [start,end] windows.
+   Boundary band crossfades adjacent scenes so joins are seamless.
+   -------------------------------------------------------------------------- */
+const SCRUB_VH = 3.2;                 // scroll length per scene, in viewport-heights
+const FADE = 0.06;                    // crossfade band (fraction of a scene window)
+const stages = document.getElementById('stages');
+const track  = document.getElementById('track');
+const scenes = [];
+
+SCENES.forEach((s,i)=>{
+  // DOM: canvas stage
+  const el=document.createElement('div'); el.className='scene'; el.dataset.id=s.id;
+  const cv=document.createElement('canvas'); el.appendChild(cv);
+  // DOM: card
+  const card=document.createElement('div'); card.className='card';
+  card.innerHTML =
+    `<p class="kicker">${s.kicker}</p><h2>${s.title}</h2><p>${s.body}</p>`+
+    (s.metric?`<div class="metric">${s.metric.map(m=>
+      `<div><b>${m.v}</b><span>${m.k}</span></div>`).join('')}</div>`:``);
+  el.appendChild(card); stages.appendChild(el);
+  // DOM: spacer that owns this scene's scroll length
+  const sp=document.createElement('div'); sp.className='spacer';
+  sp.style.height=(SCRUB_VH*100)+'vh'; track.appendChild(sp);
+
+  scenes.push({ cfg:s, el, cv, ctx:cv.getContext('2d'), card,
+                src:new FrameSource(s), sized:false });
+});
+
+/* Canvas sizing (guards the 0×0 bug: only size when actually measurable) */
+function sizeCanvas(sc){
+  const dpr=Math.min(window.devicePixelRatio||1, 2);
+  const w=window.innerWidth, h=window.innerHeight;
+  if(w<2||h<2) return false;
+  sc.cv.width=Math.round(w*dpr); sc.cv.height=Math.round(h*dpr);
+  sc.ctx.setTransform(dpr,0,0,dpr,0,0);
+  sc.sized=true; return true;
+}
+function sizeAll(){ scenes.forEach(sizeCanvas); render(); }
+window.addEventListener('resize', sizeAll);
+
+/* Reveal helper: card opacity from progress via [inStart,inEnd,outStart,outEnd] */
+function cardOpacity(p, r){
+  const [a,b,c,d]=r||[.15,.32,.80,.95];
+  if(p<a||p>d) return 0;
+  if(p<b) return (p-a)/(b-a);
+  if(p>c) return 1-(p-c)/(d-c);
+  return 1;
+}
+
+const vitals=document.getElementById('vitals');
+const tag=document.getElementById('tag');
+const hint=document.getElementById('hint');
+
+function render(){
+  const vh=window.innerHeight;
+  const y=window.scrollY||window.pageYOffset;
+  const winH=vh*SCRUB_VH;                      // px length of one scene window
+  const total=winH*scenes.length;
+  vitals.style.width=Math.max(0,Math.min(1,y/(total)))*100+'%';
+  if(y>vh*0.4) hint.style.opacity=0;
+
+  scenes.forEach((sc,i)=>{
+    const start=i*winH, end=start+winH;
+    let p=(y-start)/(end-start);               // progress within this scene
+    // lazy preload when the scene is the current or next one
+    if(p>-1.1 && p<1.1) sc.src.preload();
+    // visibility / crossfade
+    let vis=0;
+    if(p>=0 && p<=1) vis=1;
+    if(p<0 && p>-FADE) vis=1+(p/FADE);         // fading in from previous
+    if(p>1 && p<1+FADE) vis=1-((p-1)/FADE);    // fading out to next
+    vis=Math.max(0,Math.min(1,vis));
+    sc.el.style.opacity=vis;
+    if(vis<=0){ return; }                       // skip drawing hidden scenes
+    if(!sc.sized && !sizeCanvas(sc)) return;
+    // frame progress (respect 'both' = still forward map; reverse handled by scroll dir)
+    const fp=Math.max(0,Math.min(1,p));
+    sc.src.draw(sc.ctx, fp, sc.cv.width/ (sc.ctx.getTransform().a||1),
+                            sc.cv.height/(sc.ctx.getTransform().d||1));
+    sc.card.style.opacity=cardOpacity(fp, sc.cfg.reveal);
+    sc.card.style.transform='translate(-50%,'+(24-24*cardOpacity(fp,sc.cfg.reveal))+'px)';
+    // update HUD tag to the active room
+    if(vis>0.5){ tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase(); }
+  });
+}
+
+/* rAF-throttled scroll (smooth, avoids layout thrash) */
+let ticking=false;
+function onScroll(){ if(!ticking){ requestAnimationFrame(()=>{render();ticking=false;}); ticking=true; } }
+window.addEventListener('scroll', onScroll, {passive:true});
+
+/* boot: size once canvases are measurable, retry until they are */
+(function boot(){
+  if(!sizeCanvas(scenes[0])){ return requestAnimationFrame(boot); }
+  sizeAll();
+})();
+</script>
+</body>
+</html>
