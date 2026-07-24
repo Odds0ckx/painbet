@@ -201,15 +201,25 @@ section.blk{margin-bottom:34px}
    handled instead by .ogc-tilt's own clip-path, a rounded region padded past the
    card's actual box, so shards can spill beyond the card edge during hover (the
    rail's negative-margin buffer, .rail.rx, exists to absorb exactly this) while the
-   outer silhouette still reads as soft/rounded instead of a hard square cutoff. At
-   rest nothing extends past the card's own 0-100% bounds anyway (no motion), so this
-   looser clip has no effect until hovered. */
+   outer silhouette still reads as soft/rounded instead of a hard square cutoff.
+   clip-path on .ogc-tilt does the actual rounding, in two states: at rest it's
+   pulled in tight to the card's own bounds (inset(0 round 24px) — matches the
+   card's border-radius exactly, so the reassembled image has clean rounded
+   corners), and on :hover it eases out to a padded, still-rounded region so shards
+   can spill past the card edge without cutting off square. Fragments' crack-edge
+   shadow (.ogc-frag::after) is opacity:0 until hover too, so a card that isn't
+   being interacted with reads as a completely whole, uncracked image — no
+   permanent hairline texture left over from the effect. */
 .gcard[data-cats~="originals"]{perspective:2800px;overflow:visible;border-radius:24px}
 .gcard[data-cats~="originals"]:hover{box-shadow:var(--shadow-lg)}
 .gcard[data-cats~="originals"] .art{visibility:hidden}
-.ogc-tilt{position:absolute;inset:0;z-index:1;transform-style:preserve-3d;transition:transform .15s ease-out;clip-path:inset(-24px round 30px)}
-.ogc-frag{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.ogc-frag::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 8px rgba(0,0,0,.35)}
+.ogc-tilt{position:absolute;inset:0;z-index:1;transform-style:preserve-3d;
+  transition:transform .15s ease-out,clip-path .6s var(--ease-out);
+  clip-path:inset(0 round 24px)}
+.gcard[data-cats~="originals"]:hover .ogc-tilt{clip-path:inset(-24px round 30px)}
+.ogc-frag{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.ogc-frag::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 8px rgba(0,0,0,.35);opacity:0;transition:opacity .6s var(--ease-out)}
+.gcard[data-cats~="originals"]:hover .ogc-frag::after{opacity:1}
 .ogc-glow{position:absolute;inset:0;border-radius:24px;opacity:0;pointer-events:none;mix-blend-mode:overlay;transition:opacity .3s var(--ease-out)}
 .gcard[data-cats~="originals"]:hover .ogc-glow{opacity:1}
 .a-flatline{background-image:url('assets/originals/flatline-bg.png');background-size:cover;background-position:center;color:transparent}
@@ -2692,7 +2702,7 @@ document.addEventListener('pointermove', e=>{
   const tilt = card.querySelector('.ogc-tilt');
   if(tilt) tilt.style.transform = `rotateX(${-ny*12}deg) rotateY(${nx*12}deg)`;
   const glow = card.querySelector('.ogc-glow');
-  if(glow) glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 55%)`;
+  if(glow) glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(225,6,0,.45) 0%, rgba(225,6,0,0) 55%)`;
 });
 document.addEventListener('mouseleave', ()=> ogcActivate(null));
 window.addEventListener('blur', ()=> ogcActivate(null));
