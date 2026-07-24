@@ -197,26 +197,22 @@ section.blk{margin-bottom:34px}
    view, provider pages) — see script below. .ogc-tilt sits in a child wrapper rather
    than on .gcard itself, so the existing lift :hover effect on .gcard keeps working
    unchanged alongside it (the red ring is dropped below, per feedback).
-   .gcard's own overflow stays visible permanently for these cards — containment is
-   handled instead by .ogc-tilt's own clip-path, a rounded region padded past the
-   card's actual box, so shards can spill beyond the card edge during hover (the
-   rail's negative-margin buffer, .rail.rx, exists to absorb exactly this) while the
-   outer silhouette still reads as soft/rounded instead of a hard square cutoff.
-   clip-path on .ogc-tilt does the actual rounding, in two states: at rest it's
-   pulled in tight to the card's own bounds (inset(0 round 24px) — matches the
-   card's border-radius exactly, so the reassembled image has clean rounded
-   corners), and on :hover it eases out to a padded, still-rounded region so shards
-   can spill past the card edge without cutting off square. Fragments' crack-edge
-   shadow (.ogc-frag::after) is opacity:0 until hover too, so a card that isn't
-   being interacted with reads as a completely whole, uncracked image — no
-   permanent hairline texture left over from the effect. */
-.gcard[data-cats~="originals"]{perspective:2800px;overflow:visible;border-radius:24px}
+   .ogc-tilt clips its own children to inset(0 round 24px) — matching the card's own
+   border-radius exactly — at ALL times, rest and hover alike, so the corners stay
+   reliably rounded no matter what the shatter is doing. An earlier version eased
+   this out to a padded region on :hover so shards could spill past the card edge,
+   but since each fragment sways independently, the outer silhouette during motion
+   was jagged rather than a clean curve — inconsistently rounded is worse than
+   consistently contained, so containment wins here. Fragments' crack-edge shadow
+   (.ogc-frag::after) is opacity:0 until hover, so a card that isn't being
+   interacted with reads as a completely whole, uncracked image — no permanent
+   hairline texture left over from the effect. */
+.gcard[data-cats~="originals"]{perspective:2800px;border-radius:24px}
 .gcard[data-cats~="originals"]:hover{box-shadow:var(--shadow-lg)}
 .gcard[data-cats~="originals"] .art{visibility:hidden}
 .ogc-tilt{position:absolute;inset:0;z-index:1;transform-style:preserve-3d;
-  transition:transform .15s ease-out,clip-path .6s var(--ease-out);
+  transition:transform .15s ease-out;
   clip-path:inset(0 round 24px)}
-.gcard[data-cats~="originals"]:hover .ogc-tilt{clip-path:inset(-24px round 30px)}
 .ogc-frag{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
 .ogc-frag::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 8px rgba(0,0,0,.35);opacity:0;transition:opacity .6s var(--ease-out)}
 .gcard[data-cats~="originals"]:hover .ogc-frag::after{opacity:1}
@@ -2616,17 +2612,30 @@ wireCards(document.getElementById('view-home'));
 function ogcBuildMesh(){
   const rings = 3, counts = [5, 9, 13], maxRadius = 78, cx = 50, cy = 50;
   const frags = [];
-  let prevR = 0;
+  // IMPORTANT: every corner point in this mesh is shared with a neighboring
+  // fragment (same-ring neighbor, or the ring on the other side of a boundary).
+  // Jittering each corner independently (as an earlier version of this did) means
+  // two fragments that are supposed to meet at the same point get two different
+  // random offsets for it — a permanent gap baked into the geometry, visible even
+  // at rest with zero transform. So: ring boundary radii get exactly ONE random
+  // jitter value each (shared by every point on that ring, both the ring inside it
+  // and the ring outside it), and angles are never jittered at all — every fragment
+  // computes its corners from the same shared radius array and clean s/count
+  // angles, so adjacent edges always meet exactly.
+  const radii = [0];
   for(let r=0; r<rings; r++){
-    const curR = Math.pow((r+1)/rings, 1.6) * maxRadius;
+    const base = Math.pow((r+1)/rings, 1.6) * maxRadius;
+    radii.push(base + (Math.random()-0.5)*6);
+  }
+  for(let r=0; r<rings; r++){
+    const prevR = radii[r], curR = radii[r+1];
     const count = counts[r];
-    const jitter = () => (Math.random()-0.5) * (r===0 ? 2 : 5);
     for(let s=0; s<count; s++){
       const a0 = (s/count)*Math.PI*2, a1 = ((s+1)/count)*Math.PI*2;
-      const x1=cx+Math.cos(a0)*prevR+jitter(), y1=cy+Math.sin(a0)*prevR+jitter();
-      const x2=cx+Math.cos(a1)*prevR+jitter(), y2=cy+Math.sin(a1)*prevR+jitter();
-      const x3=cx+Math.cos(a1)*curR+jitter(),  y3=cy+Math.sin(a1)*curR+jitter();
-      const x4=cx+Math.cos(a0)*curR+jitter(),  y4=cy+Math.sin(a0)*curR+jitter();
+      const x1=cx+Math.cos(a0)*prevR, y1=cy+Math.sin(a0)*prevR;
+      const x2=cx+Math.cos(a1)*prevR, y2=cy+Math.sin(a1)*prevR;
+      const x3=cx+Math.cos(a1)*curR,  y3=cy+Math.sin(a1)*curR;
+      const x4=cx+Math.cos(a0)*curR,  y4=cy+Math.sin(a0)*curR;
       const clip = `polygon(${x1}% ${y1}%, ${x2}% ${y2}%, ${x3}% ${y3}%, ${x4}% ${y4}%)`;
       // all fragments rotate/translate around the SAME pivot (the card's center, since
       // .ogc-frag is inset:0 with default transform-origin), so a ring's actual visual
@@ -2643,7 +2652,6 @@ function ogcBuildMesh(){
         speed: 0.02 + Math.random()*0.03
       });
     }
-    prevR = curR;
   }
   return frags;
 }
