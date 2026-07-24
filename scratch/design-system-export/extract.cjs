@@ -72,6 +72,35 @@ async function captureClean(page, sel) {
     frames.push({ id:'chrome-ticker', label:'Live relief ticker', kind:'chrome-horizontal',
       html: await captureClean(page, '.ticker') });
 
+    // rasterize an element to a PNG and swap it for a plain <img> in the live DOM —
+    // used for the two gauge SVGs (pain scale ring, PainKillers tolerance dial), which
+    // rely on CSS percentage sizing + transform:rotate() that html-to-figma plugins
+    // reliably mis-render. An <img> has no CSS sizing/transform math left to get wrong.
+    //
+    // wrapperSel must point at the UNROTATED ancestor (e.g. .pk-dial, not the svg
+    // itself) — getBoundingClientRect() on a rotated element returns the rotated axis-
+    // aligned bounding box (a 250x250 box at 135deg measures ~354x354), which would
+    // both mis-size the swapped-in <img> and screenshot a wrong region. The wrapper's
+    // box is unrotated and correctly sized; the rotated content still paints at the
+    // same screen position, so clipping to the wrapper's box captures it correctly.
+    async function rasterizeToImg(page, sel, wrapperSel) {
+      const handles = await page.$$(sel);
+      const wrappers = await page.$$(wrapperSel);
+      for (let i = 0; i < handles.length; i++) {
+        const h = handles[i];
+        const refBox = await wrappers[i].boundingBox();
+        const b64 = await page.screenshot({ clip: refBox, omitBackground: true, type: 'png' });
+        await h.evaluate((el, args) => {
+          const img = document.createElement('img');
+          img.src = 'data:image/png;base64,' + args.b64;
+          img.width = Math.round(args.w);
+          img.height = Math.round(args.h);
+          img.style.cssText = 'display:block;width:' + Math.round(args.w) + 'px;height:' + Math.round(args.h) + 'px';
+          el.replaceWith(img);
+        }, { b64: b64.toString('base64'), w: refBox.width, h: refBox.height });
+      }
+    }
+
     // views
     const views = ['home','painscale','rails','pk','anesthesia','affiliate','support','games','provider','promos','arcade','synapse','sports'];
     for (const v of views) {
@@ -80,6 +109,8 @@ async function captureClean(page, sel) {
         await page.evaluate(() => openProvider('Pragmatic Play','PP',null));
       }
       await page.waitForTimeout(350);
+      if (v === 'painscale') await rasterizeToImg(page, '#view-painscale .ps-ring', '#view-painscale .ps-badge-wrap');
+      if (v === 'pk') await rasterizeToImg(page, '#view-pk .pk-dial svg', '#view-pk .pk-dial');
       const html = await captureClean(page, '#view-'+v);
       frames.push({ id:'view-'+v, label:'View — '+v, kind:'view', html });
     }
