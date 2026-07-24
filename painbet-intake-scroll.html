@@ -124,6 +124,29 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 /* reveal */
 .reveal-val{font-family:var(--display);font-size:clamp(30px,9vw,52px);color:var(--gold);text-align:center;margin:6px 0 4px}
 .reveal-sub{font-size:14px;color:var(--ink-2);text-align:center}
+/* dispensary + dashboard */
+.wheelbox{margin-top:14px;text-align:center;padding:16px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:12px}
+.wmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.1em}
+.wres{font-family:var(--display);font-size:26px;margin:6px 0 2px}
+.wres.win{color:var(--cash)} .wres.jack{color:var(--gold)}
+.wsub{font-size:13px;color:var(--ink-3);min-height:16px;margin-bottom:6px}
+.sub-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+  margin:20px 0 8px;border-top:1px solid var(--line-soft);padding-top:14px}
+.orow{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--line-soft)}
+.orow.cashrow .oo{color:var(--cash)} .on2{color:var(--ink-2)} .oo{font-family:var(--mono);color:var(--ink-3)}
+.row2{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
+.row2 .rt{color:var(--ink);font-weight:600;font-size:13.5px} .row2 .rm{color:var(--ink-3);font-size:12px}
+.row2 .rr{font-family:var(--mono);color:var(--ink-3);font-size:12px;white-space:nowrap;align-self:center}
+.gpool{font-family:var(--display);color:var(--cash);font-size:16px}
+.pstate{font-family:var(--mono);font-size:10px;letter-spacing:.1em;align-self:center}
+.pstate.live{color:var(--cash)} .pstate.soon{color:var(--gold)} .pstate.inn{color:var(--blue)} .pstate.done{color:var(--cash)}
+.gbtn{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-2);background:var(--sunk);
+  border:1px solid var(--line-soft);border-radius:8px;padding:8px 12px;cursor:pointer;align-self:center;white-space:nowrap}
+.gbtn:disabled{opacity:.5;cursor:default} .gbtn.done{color:var(--cash);border-color:var(--cash)}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.dcell{background:var(--sunk);border:1px solid var(--line-soft);border-radius:10px;padding:13px}
+.dcell .dv{font-family:var(--display);font-size:20px;line-height:1.1}
+.dcell .dl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase;margin-top:6px}
 
 /* ---- Shared grade + grain + vignette overlay ------------------------------ */
 #grade{position:fixed;inset:0;z-index:5;pointer-events:none;mix-blend-mode:soft-light;
@@ -175,13 +198,14 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 <!-- ===== HANDOFF: dispensary / dashboard / login continue after capture ===== -->
 <section id="handoff">
   <div class="inner">
-    <h2>Chart open.</h2>
-    <p>Your entries, your diagnosis and your locker are logged. The dispensary
-       (daily wheel, drop codes, giveaways) and your dashboard live in the app.</p>
-    <!-- REPLACE(handoff): route to the dispensary/dashboard. The remaining
-         intake_7 stations (wheel s10, dashboard s9, login s8, staff s7) follow
-         the SAME form-scene pattern used above; port them here or link out. -->
-    <a class="btn" href="index.html">Enter the dispensary</a>
+    <h2>Discharged.</h2>
+    <p>Your chart, entries, diagnosis, locker and daily wheel are all logged.
+       The Ward runs on Telegram, Discord and X. Draw results posted publicly
+       every Sunday, 15:00 CET.</p>
+    <!-- REPLACE(handoff): point at the real channels / full app.
+         The staff-entrance station (intake_7 s7) is the one remaining flow; it
+         follows the same form-scene pattern (add buildStaff to FORMS). -->
+    <a class="btn" href="index.html">Enter the Ward</a>
   </div>
 </section>
 
@@ -208,6 +232,12 @@ const SCENES = [
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.18,.40,.78,.96] },
 
   { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.6 },
+
+  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2 },
+
+  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0 },
+
+  { id:'login', type:'form', form:'login', tint:'#E10600', vh:1.8 },
 ];
 
 /* ============================================================================
@@ -216,7 +246,8 @@ const SCENES = [
 const ST = { chain:'BTC', entries:0, hashes:{}, ENTRY_CAP:100,
   i:0, score:0, picks:[], dx:null, pno:6412,
   chan:'Telegram', vip:false, pw:null, handle:null, sent:false,
-  pried:false, pkWon:null };
+  pried:false, pkWon:null,
+  spun:false, usd:0, entered:{}, codes:{} };
 
 const Q=[
  {q:'It is 2am and you are down. What happens next?',a:[['Deposit again',3],['Close everything',0],['Watch someone else lose',2],['Set an alarm and sleep',1]]},
@@ -241,6 +272,40 @@ const PK=[
  {pk:200000,usd:1000,w:0.005,n:'1 in 200. The full drop. Screenshot it.'}
 ];
 function addEntries(n){var room=Math.max(0,ST.ENTRY_CAP-ST.entries),g=Math.min(room,n);ST.entries+=g;return g;}
+
+/* dispensary / dashboard data — from intake_7 */
+const WHEEL=[
+ {t:'500 USDT',s:'The whole jackpot. Paid on verification.',p:1/50000,kind:'jack',usd:500},
+ {t:'+2 entries',s:"Straight into Sunday's draw.",p:0.15,kind:'ent',ent:2},
+ {t:'50 USDT',s:'Paid to your wallet on verification.',p:1/10000,kind:'cash',usd:50},
+ {t:'+1 entry',s:"Straight into Sunday's draw.",p:0.30,kind:'ent',ent:1},
+ {t:'1,000 PK',s:'Lands in your account in October.',p:0.01,kind:'pk',pk:1000},
+ {t:'Nothing',s:'Back tomorrow. The wheel resets at midnight UTC.',p:null,kind:'none'},
+ {t:'10 USDT',s:'Paid to your wallet on verification.',p:1/2000,kind:'cash',usd:10},
+ {t:'+5 entries',s:"Straight into Sunday's draw.",p:0.08,kind:'ent',ent:5},
+ {t:'5,000 PK',s:'Lands in your account in October.',p:1/500,kind:'pk',pk:5000},
+ {t:'Pain Scale +1',s:'You open one tier higher on day one.',p:0.02,kind:'perk'}
+];
+(function(){var used=0;WHEEL.forEach(w=>{if(w.p!==null)used+=w.p;});WHEEL.forEach(w=>{if(w.p===null)w.p=Math.max(0,1-used);});})();
+const GIVE=[
+ {id:'sun',n:'Sunday draw',pool:'$400',meta:'14 winners. 1 x $150, 3 x $50, 10 x $10. Drawn 15:00 CET.',open:true,wallet:true},
+ {id:'splash',n:'Build the Flatline splash',pool:'$400',meta:'Design the loading screen for our first Original. Winner is credited in the game.',open:true},
+ {id:'clip',n:'Clip war',pool:'$400',meta:'Best clip of the month. Ten shortlisted, drawn at random.',open:false,when:'Opens 1 September'},
+ {id:'name',n:'Name the next three',pool:'$400',meta:'Three unnamed Originals. Community votes on the shortlist.',open:false,when:'Opens 1 October'}
+];
+let FEED=[['@saline','$35','2h ago'],['@coldturkey','$10','5h ago'],['@bagholder99','$50','9h ago'],
+  ['@nurse_ratchet','$15','14h ago'],['@flatlined','$25','1d ago']];
+const PROMOS=[
+ ['Sunday giveaway','$400 drawn every week, 14 winners','live'],
+ ['Build the Flatline splash','$400 design pool, closes 31 August','live'],
+ ['Clip war','$400 pool, opens 1 September','soon'],
+ ['October doors','First group in, ahead of everyone','inn']
+];
+let wPot=48210;
+function p2(n){return (n<10?'0':'')+n;}
+function nextSunday(){var now=new Date();var d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),13,0,0));
+  d.setUTCDate(d.getUTCDate()+((7-d.getUTCDay())%7));if(d<=now)d.setUTCDate(d.getUTCDate()+7);return d;}
+function rollWheel(){var r=Math.random(),c=0;for(var i=0;i<WHEEL.length;i++){c+=WHEEL[i].p;if(r<=c)return i;}return WHEEL.length-1;}
 
 let toastT; function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('up');
   clearTimeout(toastT);toastT=setTimeout(function(){e.classList.remove('up');},2600);}
@@ -449,7 +514,142 @@ function buildReveal(card){
   });
 }
 
-const FORMS={wallet:buildWallet,quiz:buildQuiz,discharge:buildDischarge,reveal:buildReveal};
+/* ---- dispensary (wheel + odds + drop codes + giveaways + feed) ---- */
+function renderOdds(card){const el=$('w_odds',card);el.innerHTML='';
+  WHEEL.slice().sort((a,b)=>a.p-b.p).forEach(w=>{const d=document.createElement('div');
+    d.className='orow'+((w.kind==='jack'||w.kind==='cash')?' cashrow':'');
+    const odds=w.p<0.02?'1 in '+Math.round(1/w.p).toLocaleString('en-US'):(w.p*100).toFixed(1)+'%';
+    d.innerHTML=`<span class="on2">${w.t}</span><span class="oo">${odds}</span>`;el.appendChild(d);});}
+function renderFeed(card){const el=$('f_feed',card);el.innerHTML='';
+  FEED.forEach(f=>{const r=document.createElement('div');r.className='row2';
+    r.innerHTML=`<span class="rt">${f[0]}</span><span class="rr">${f[1]} · ${f[2]}</span>`;el.appendChild(r);});}
+function renderGive(card){const el=$('g_list',card);el.innerHTML='';
+  GIVE.forEach(g=>{const d=document.createElement('div');d.className='row2';
+    const mine=g.id==='sun'?`${ST.entries} ${ST.entries===1?'entry':'entries'}`:(ST.entered[g.id]?'Entry received':'Free');
+    const btn=!g.open?`<button class="gbtn" disabled>${g.when||'Closed'}</button>`
+      :(ST.entered[g.id]?`<button class="gbtn done" disabled>You are in</button>`
+        :`<button class="gbtn" data-g="${g.id}">${g.wallet?'Add a wallet':'Enter'}</button>`);
+    d.innerHTML=`<div><div class="rt">${g.n} <span class="gpool">${g.pool}</span></div><div class="rm">${g.meta}</div><div class="rm">${mine}</div></div>${btn}`;
+    el.appendChild(d);});
+  el.querySelectorAll('button[data-g]').forEach(b=>b.addEventListener('click',()=>{
+    const id=b.dataset.g;
+    if(id==='sun'){toast('Scroll back up to the wallet room to add an entry.');return;}
+    ST.entered[id]=true;renderGive(card);toast('Entry received. Watch the Ward for the result.');}));}
+let wTurning=false;
+function buildDispensary(card){
+  card.innerHTML=`
+    <p class="kicker">ROOM <b>08</b> · DISPENSARY</p>
+    <h2>Collect your meds.</h2>
+    <p>One spin a day, top prize $500. Everything here adds entries to Sunday's draw.</p>
+    <div class="wheelbox">
+      <div class="wmeta">DAILY PAIN WHEEL · $500 TOP PRIZE</div>
+      <div class="wres" id="w_res">Ready</div>
+      <div class="wsub" id="w_sub">Ten outcomes. Three pay cash.</div>
+      <button class="btn" id="w_spin">Spin</button>
+      <div class="wmeta" id="w_next">Next spin: Ready</div>
+    </div>
+    <div class="sub-h">Published odds</div><div id="w_odds"></div>
+    <div class="sub-h">Redeem a drop code</div>
+    <input class="in" id="f_code" placeholder="PAIN-0001">
+    <div class="note" id="f_note">Try PAIN-0001. Each code works once, amount revealed on redeem.</div>
+    <button class="btn ghost" id="f_go">Redeem</button>
+    <div class="sub-h">Giveaways running</div><div id="g_list"></div>
+    <div class="sub-h">Paid out recently</div><div id="f_feed"></div>`;
+  renderOdds(card);renderGive(card);renderFeed(card);
+  const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card);
+  btn.addEventListener('click',()=>{
+    if(wTurning||ST.spun)return;
+    if(!ST.sent){toast('Check in first. The wheel needs an account to pay into.');return;}
+    wTurning=true;const w=WHEEL[rollWheel()];
+    btn.disabled=true;btn.textContent='Spinning';res.className='wres';res.textContent='Spinning';sub.textContent='Hold on.';
+    setTimeout(()=>{
+      wTurning=false;ST.spun=true;wPot++;
+      res.className='wres'+(w.kind==='jack'?' jack':(w.kind==='none'?'':' win'));
+      res.textContent=w.kind==='none'?'Nothing today':w.t;sub.textContent=w.s;
+      if(w.ent)addEntries(w.ent);if(w.usd)ST.usd+=w.usd;
+      btn.textContent='Come back tomorrow';
+      toast(w.kind==='none'?'No luck. Resets at midnight UTC.':(w.t+' logged to your chart.'));
+    },1200);
+  });
+  function redeem(){const c=$('f_code',card).value.trim().toUpperCase(),n=$('f_note',card);
+    if(!/^PAIN-\d{4}$/.test(c)){n.className='note warn';n.textContent='Codes look like PAIN-0001. Check the channel post.';return;}
+    if(ST.codes[c]){n.className='note warn';n.textContent='That code is already spent.';return;}
+    ST.codes[c]=true;const amt=[5,10,15,25,35,50][Math.floor(Math.random()*6)];
+    FEED.unshift(['Patient #'+String(ST.pno).padStart(5,'0'),'$'+amt,'just now']);FEED.pop();renderFeed(card);
+    n.className='note ok';n.textContent='Code accepted. $'+amt+' sent to your wallet on verification.';
+    $('f_code',card).value='';toast('Drop redeemed. $'+amt+'.');}
+  $('f_go',card).addEventListener('click',redeem);
+  $('f_code',card).addEventListener('keydown',e=>{if(e.key==='Enter')redeem();});
+}
+
+/* ---- dashboard (chart summary) ---- */
+function renderPromos(card){const el=$('d_promos',card);el.innerHTML='';
+  PROMOS.forEach(p=>{const state=p[2]==='live'?'OPEN':(p[2]==='soon'?'SOON':'YOU ARE IN');
+    const d=document.createElement('div');d.className='row2';
+    d.innerHTML=`<div><div class="rt">${p[0]}</div><div class="rm">${p[1]}</div></div><span class="pstate ${p[2]}">${state}</span>`;
+    el.appendChild(d);});}
+function buildDashboard(card){
+  card.innerHTML=`
+    <p class="kicker">RECORDS · YOUR CHART</p>
+    <h2 id="dash_who">Patient #00000</h2>
+    <div class="dash-grid">
+      <div class="dcell"><div class="dv" id="d_dx">--</div><div class="dl" id="d_tier">Diagnosis</div></div>
+      <div class="dcell"><div class="dv" id="d_ent">0</div><div class="dl">Entries in Sunday's draw</div></div>
+      <div class="dcell"><div class="dv" id="d_pk">Not opened</div><div class="dl">October drop</div></div>
+      <div class="dcell"><div class="dv" id="d_cd">--</div><div class="dl">Next Sunday draw</div></div>
+    </div>
+    <div class="sub-h">Promotions</div><div id="d_promos"></div>`;
+  card._enter=()=>{
+    $('dash_who',card).textContent='Patient #'+String(ST.pno).padStart(5,'0');
+    if(ST.dx){$('d_dx',card).textContent=ST.dx.n;$('d_tier',card).textContent='Pain Scale '+ST.dx.t+'/10';}
+    $('d_ent',card).textContent=ST.entries+' '+(ST.entries===1?'entry':'entries');
+    if(ST.pkWon){$('d_pk',card).textContent=ST.pkWon.pk.toLocaleString('en-US')+' PK';}
+    else{$('d_pk',card).textContent='Not opened';}
+    renderPromos(card);
+  };
+}
+
+/* ---- login (return sign-in) ---- */
+function buildLogin(card){
+  card.innerHTML=`
+    <p class="kicker">RECORDS · SIGN IN ANY TIME</p>
+    <h2>Open your chart.</h2>
+    <p>Use your Telegram, email or patient number, plus the password you set. We sent both when you checked in.</p>
+    <div class="field"><label>Telegram / email / patient number</label><input class="in" id="li_id"></div>
+    <div class="field"><label>Password</label>
+      <div class="pwrow"><input class="in" id="li_pw" type="password" placeholder="Your password">
+        <button class="pweye" id="li_eye">SHOW</button></div></div>
+    <div class="note" id="li_note"></div>
+    <button class="btn" id="li_go">Open it</button>`;
+  card._enter=()=>{ if(ST.sent&&!$('li_id',card).value) $('li_id',card).value=ST.handle; };
+  $('li_eye',card).addEventListener('click',function(){const p=$('li_pw',card);
+    p.type=p.type==='password'?'text':'password';this.textContent=p.type==='password'?'SHOW':'HIDE';});
+  const normId=v=>(v||'').trim().toLowerCase().replace(/^@/,'');
+  function doLogin(){const idv=$('li_id',card).value.trim(),pw=$('li_pw',card).value,n=$('li_note',card);
+    if(!ST.sent||!ST.pw){n.className='note warn';n.textContent='No chart on this device yet. Check in above first.';return;}
+    if(!idv||!pw){n.className='note warn';n.textContent='Both fields, please.';return;}
+    const known=[normId(ST.handle),String(ST.pno),String(ST.pno).padStart(5,'0')];
+    if(known.indexOf(normId(idv))===-1){n.className='note warn';n.textContent='Nothing matches that. Try your handle or patient number.';return;}
+    if(pw!==ST.pw){n.className='note warn';n.textContent='Wrong password. Message the Ward and a mod will reset it.';return;}
+    n.className='note ok';n.textContent='Signed in. Welcome back, patient #'+String(ST.pno).padStart(5,'0')+'.';
+    toast('Signed in.');}
+  $('li_go',card).addEventListener('click',doLogin);
+  $('li_pw',card).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+}
+
+const FORMS={wallet:buildWallet,quiz:buildQuiz,discharge:buildDischarge,reveal:buildReveal,
+  dispensary:buildDispensary,dashboard:buildDashboard,login:buildLogin};
+
+/* live countdowns for dispensary + dashboard */
+setInterval(function(){
+  var ms=Math.max(0,nextSunday()-new Date());
+  var e=document.getElementById('d_cd');
+  if(e)e.textContent=Math.floor(ms/864e5)+'d '+p2(Math.floor(ms%864e5/36e5))+':'+p2(Math.floor(ms%36e5/6e4));
+  var wn=document.getElementById('w_next');
+  if(wn){ if(!ST.spun){wn.textContent='Next spin: Ready';}
+    else{var now=new Date();var mid=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1,0,0,0));
+      var m=mid-now;wn.textContent='Next spin: '+p2(Math.floor(m/36e5))+':'+p2(Math.floor(m%36e5/6e4))+':'+p2(Math.floor(m%6e4/1e3));}}
+},1000);
 
 /* ============================================================================
    4. SCRUB ENGINE — frame source, placeholder, scene runtime, scroll render.
