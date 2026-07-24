@@ -7,17 +7,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Archivo+Black&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* =============================================================================
-   PAIN.BET — THE INTAKE  ·  scroll-scrub cinematic front
+   PAIN.BET — THE INTAKE  ·  scroll-scrub cinematic + woven capture forms
    -----------------------------------------------------------------------------
-   ARCHITECTURE (read this before editing):
-   - Each "scene" is one scroll-scrubbed video, painted frame-by-frame to a
-     <canvas>. Scenes are FIXED and stacked; the page's scroll length comes from
-     invisible .spacer blocks (one per scene). JS maps scroll position -> frame.
-   - Everything is driven by the SCENES config array in the <script>. To add /
-     reorder / recopy a scene you edit that array ONLY. DOM is generated from it.
-   - Placeholder frames are drawn procedurally right now so the whole mechanic
-     works with zero assets. Swap in real Higgsfield frames by setting `dir`,
-     `count`, `ext` on a scene (see REPLACE markers in the script).
+   ARCHITECTURE (read before editing):
+   - Every "scene" is a full-screen fixed stage stacked in #stages. The page's
+     scroll length comes from one .spacer per scene in #track. JS maps scroll
+     position -> scene progress.
+   - Two scene TYPES:
+       type:'scrub' -> a scroll-scrubbed video painted frame-by-frame to canvas
+                       (placeholder frames until real Higgsfield frames are set).
+       type:'form'  -> the video holds on a dim static frame and an INTERACTIVE
+                       card pins over it. These carry the intake_7 capture logic
+                       verbatim (wallet/tx, quiz->diagnosis, discharge, prize).
+   - Content + order live in the SCENES array. Capture logic lives in the
+     STATE + handlers block (ported from intake_7). REPLACE markers show the
+     only spots a follow-up editor should touch (real frames, copy, handoff).
    ========================================================================== */
 :root{
   color-scheme:dark;
@@ -33,328 +37,519 @@
 html,body{margin:0;padding:0;background:#000;color:var(--ink);font-family:var(--body)}
 body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-/* ---- Fixed stage: all scene canvases stack here, full-bleed ---------------- */
-#stages{position:fixed;inset:0;z-index:1;background:#000;overflow:hidden}
-.scene{position:absolute;inset:0;opacity:0;will-change:opacity;pointer-events:none}
-.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;
-  object-fit:cover}
+/* ---- Fixed stage: all scene canvases + cards stack here -------------------- */
+#stages{position:fixed;inset:0;z-index:1;background:#000;overflow:hidden;pointer-events:none}
+.scene{position:absolute;inset:0;opacity:0;will-change:opacity}
+.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.scene.dim canvas{filter:brightness(.42) saturate(.9)}
 
-/* ---- Specimen card (the translucent text box) ----------------------------- */
+/* ---- Card shell (specimen slide) — text + form share this look ------------- */
 .card{
   position:absolute;left:50%;bottom:14vh;transform:translate(-50%,24px);
-  width:min(520px,86vw);padding:22px 24px 24px;
-  background:rgba(19,21,23,.55);backdrop-filter:blur(18px) saturate(1.05);
+  width:min(520px,88vw);max-height:78vh;overflow:auto;padding:22px 24px 24px;
+  background:rgba(19,21,23,.62);backdrop-filter:blur(18px) saturate(1.05);
   -webkit-backdrop-filter:blur(18px) saturate(1.05);
-  border:1px solid rgba(69,74,80,.5);border-top:1px solid var(--red);
-  border-radius:14px;
-  box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 24px rgba(225,6,0,.18),
-             inset 0 1px 0 rgba(255,255,255,.04);
+  border:1px solid rgba(69,74,80,.5);border-top:1px solid var(--red);border-radius:14px;
+  box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 24px rgba(225,6,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
   opacity:0;will-change:opacity,transform;pointer-events:none;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;
 }
-.card .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
-  text-transform:uppercase;color:var(--ink-3);margin:0 0 10px}
+.scene.form .card{bottom:auto;top:50%;transform:translate(-50%,-46%)}
+.card.live{pointer-events:auto}
+.card .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 10px}
 .card .kicker b{color:var(--red-hot);font-weight:700}
-.card h2{font-family:var(--display);font-size:clamp(26px,6.4vw,40px);line-height:1.02;
-  margin:0 0 10px;letter-spacing:-.01em}
-.card p{font-size:15px;line-height:1.5;color:var(--ink-2);margin:0}
+.card h2{font-family:var(--display);font-size:clamp(24px,5.6vw,36px);line-height:1.03;margin:0 0 10px;letter-spacing:-.01em}
+.card p{font-size:14.5px;line-height:1.5;color:var(--ink-2);margin:0}
 .card .metric{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap}
 .card .metric b{font-family:var(--display);color:var(--cash);font-size:22px}
-.card .metric span{font-family:var(--mono);font-size:11px;color:var(--ink-3);
-  letter-spacing:.1em;display:block;text-transform:uppercase}
-/* grain inside the card so it sits *in* the footage */
-.card::after{content:"";position:absolute;inset:0;border-radius:inherit;
-  pointer-events:none;opacity:.5;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}
+.card .metric span{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.1em;display:block;text-transform:uppercase}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.4;
+  mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}
 
-/* ---- Shared grade + grain + vignette overlay (glues all clips together) ---- */
+/* ---- Form controls -------------------------------------------------------- */
+.field{margin-top:14px}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.in{width:100%;background:var(--sunk);border:1px solid var(--line-soft);border-radius:9px;
+  color:var(--ink);font-family:var(--body);font-size:15px;padding:12px 13px;outline:none;transition:border-color .15s}
+.in:focus{border-color:var(--red)}
+.in::placeholder{color:#6b7076}
+.two{display:flex;gap:10px}.two>.field{flex:1;margin-top:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-2);cursor:pointer;
+  background:var(--sunk);border:1px solid var(--line-soft);border-radius:8px;padding:9px 13px;transition:.15s}
+.chip.on{border-color:var(--red);color:#fff;background:rgba(225,6,0,.14)}
+.note{font-size:13px;line-height:1.45;color:var(--ink-3);margin-top:12px;min-height:18px}
+.note.ok{color:var(--cash)} .note.warn{color:var(--red-hot)}
+.btn{font-family:var(--display);font-size:15px;letter-spacing:.02em;color:#fff;background:var(--red);
+  border:none;border-radius:10px;padding:14px 22px;cursor:pointer;width:100%;margin-top:16px;
+  box-shadow:0 10px 26px rgba(225,6,0,.32);transition:transform .15s,box-shadow .15s,opacity .15s}
+.btn:hover{transform:translateY(-1px)} .btn:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink-2);box-shadow:none;margin-top:10px}
+.tally{display:flex;align-items:baseline;gap:8px;margin-top:16px;font-family:var(--mono);
+  font-size:12px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+.tally b{font-family:var(--display);color:var(--cash);font-size:26px}
+/* quiz */
+.prog{display:flex;gap:6px;margin:2px 0 14px}
+.prog i{flex:1;height:4px;border-radius:2px;background:var(--line-soft)}
+.prog i.on{background:var(--cash)} .prog i.now{background:var(--red)}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin-top:9px;cursor:pointer;
+  background:var(--sunk);border:1px solid var(--line-soft);border-radius:10px;padding:13px;color:var(--ink);
+  font-family:var(--body);font-size:15px;transition:.15s}
+.opt:hover{border-color:var(--line)} .opt.picked{border-color:var(--red);background:rgba(225,6,0,.12)}
+.opt .k{font-family:var(--mono);font-size:12px;color:var(--ink-3);border:1px solid var(--line-soft);
+  border-radius:6px;width:26px;height:26px;display:grid;place-items:center;flex:none}
+/* diagnosis stamp */
+.dxwrap{text-align:center;padding:6px 0 2px}
+.dxwrap .pno{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-3)}
+.dxwrap .scale{font-family:var(--display);font-size:44px;color:var(--red-hot);line-height:1;margin:8px 0 2px}
+.dxwrap .scale span{font-size:16px;color:var(--ink-3)}
+.dxwrap .dx{font-family:var(--display);font-size:30px;margin:10px 0 6px}
+/* password meter + vip */
+.pwrow{position:relative}
+.pweye{position:absolute;right:8px;top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  color:var(--ink-3);background:none;border:none;cursor:pointer;padding:6px}
+.pwbar{height:4px;border-radius:2px;background:var(--line-soft);margin-top:8px;overflow:hidden}
+.pwbar i{display:block;height:100%;width:0;background:var(--red-hot);transition:width .2s,background .2s}
+.pwhint{font-size:12px;color:var(--ink-3);margin-top:6px}
+.vip{display:flex;align-items:center;gap:11px;margin-top:16px;cursor:pointer}
+.vipsw{width:44px;height:26px;border-radius:14px;background:var(--sunk);border:1px solid var(--line-soft);
+  position:relative;flex:none;transition:.2s}
+.vipsw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+  background:var(--ink-3);transition:.2s}
+.vip.on .vipsw{background:rgba(127,214,232,.25);border-color:var(--blue)}
+.vip.on .vipsw::after{left:20px;background:var(--blue)}
+.vip span{font-size:13.5px;color:var(--ink-2)}
+/* reveal */
+.reveal-val{font-family:var(--display);font-size:clamp(30px,9vw,52px);color:var(--gold);text-align:center;margin:6px 0 4px}
+.reveal-sub{font-size:14px;color:var(--ink-2);text-align:center}
+
+/* ---- Shared grade + grain + vignette overlay ------------------------------ */
 #grade{position:fixed;inset:0;z-index:5;pointer-events:none;mix-blend-mode:soft-light;
-  background:linear-gradient(180deg,rgba(127,214,232,.10),transparent 30%,
-    transparent 70%,rgba(225,6,0,.14))}
+  background:linear-gradient(180deg,rgba(127,214,232,.10),transparent 30%,transparent 70%,rgba(225,6,0,.14))}
 #vignette{position:fixed;inset:0;z-index:6;pointer-events:none;
   background:radial-gradient(120% 100% at 50% 45%,transparent 45%,rgba(0,0,0,.72) 100%)}
 #grain{position:fixed;inset:-50%;z-index:7;pointer-events:none;opacity:.06;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   animation:grain 1.2s steps(3) infinite}
-@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-4%,3%)}
-  66%{transform:translate(3%,-2%)}100%{transform:translate(0,0)}}
+@keyframes grain{0%{transform:translate(0,0)}33%{transform:translate(-4%,3%)}66%{transform:translate(3%,-2%)}100%{transform:translate(0,0)}}
 
-/* ---- Chrome: top vitals bar + scroll hint --------------------------------- */
+/* ---- Chrome + toast ------------------------------------------------------- */
 #chrome{position:fixed;inset:0;z-index:20;pointer-events:none}
-#vitals{position:absolute;top:0;left:0;height:3px;width:0;background:var(--red);
-  box-shadow:0 0 12px var(--red)}
-#tag{position:absolute;top:16px;left:16px;font-family:var(--mono);font-size:11px;
-  letter-spacing:.2em;color:var(--ink-3)}
+#vitals{position:absolute;top:0;left:0;height:3px;width:0;background:var(--red);box-shadow:0 0 12px var(--red)}
+#tag{position:absolute;top:16px;left:16px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-3)}
 #tag b{color:var(--red-hot)}
-#hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
-  font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:var(--ink-3);
-  text-transform:uppercase;transition:opacity .4s;animation:bob 1.8s ease-in-out infinite}
+#hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;
+  letter-spacing:.24em;color:var(--ink-3);text-transform:uppercase;transition:opacity .4s;animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{50%{transform:translate(-50%,6px)}}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:30;opacity:0;pointer-events:none;
+  background:var(--card);border:1px solid var(--line);border-left:3px solid var(--cash);border-radius:10px;
+  padding:12px 16px;font-size:13px;color:var(--ink);max-width:86vw;transition:.3s;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+#toast.up{opacity:1;transform:translate(-50%,0)}
 
-/* ---- Spacers: give the page its scroll length (one per scene) -------------- */
-#track{position:relative;z-index:2}
-.spacer{width:100%}
-
-/* ---- Handoff to the existing app ------------------------------------------ */
-#handoff{position:relative;z-index:3;min-height:100vh;display:flex;align-items:center;
-  justify-content:center;text-align:center;padding:8vh 6vw;
-  background:linear-gradient(180deg,transparent,#000 22%,var(--ground))}
+/* ---- Track + handoff ------------------------------------------------------ */
+#track{position:relative;z-index:2;pointer-events:none}.spacer{width:100%}
+#handoff{position:relative;z-index:3;min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:8vh 6vw;background:linear-gradient(180deg,transparent,#000 22%,var(--ground))}
 #handoff .inner{max-width:520px}
-#handoff h2{font-family:var(--display);font-size:clamp(30px,8vw,52px);margin:0 0 12px}
-#handoff p{color:var(--ink-2);margin:0 0 26px;line-height:1.5}
-.btn{font-family:var(--display);font-size:16px;letter-spacing:.02em;color:#fff;
-  background:var(--red);border:none;border-radius:10px;padding:16px 30px;cursor:pointer;
-  box-shadow:0 10px 30px rgba(225,6,0,.35);transition:transform .15s,box-shadow .15s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(225,6,0,.5)}
+#handoff h2{font-family:var(--display);font-size:clamp(28px,7vw,48px);margin:0 0 12px}
+#handoff p{color:var(--ink-2);margin:0 0 24px;line-height:1.5}
+#handoff .btn{display:inline-block;width:auto;padding:16px 30px}
 </style>
 </head>
 <body>
 
-<!-- Fixed stacked scene canvases (built by JS from SCENES) -->
 <div id="stages"></div>
-
-<!-- Global look overlays -->
 <div id="grade"></div><div id="vignette"></div><div id="grain"></div>
 
-<!-- HUD chrome -->
 <div id="chrome">
   <div id="vitals"></div>
   <div id="tag">PAIN.BET <b>//</b> ADMISSIONS</div>
   <div id="hint">Scroll to descend</div>
 </div>
+<div id="toast"></div>
 
-<!-- Scroll track: spacers injected here -->
 <div id="track"></div>
 
-<!-- ===== HANDOFF: existing intake_7 app mounts after the cinematic ===== -->
+<!-- ===== HANDOFF: dispensary / dashboard / login continue after capture ===== -->
 <section id="handoff">
   <div class="inner">
-    <h2>The ward is ready for you.</h2>
-    <p>Five questions. We work out what is wrong with you, then tell you what
-       you get for being early.</p>
-    <!-- REPLACE(handoff): link or mount the existing intake_7 app here.
-         e.g. window.location.href='index.html#admissions' or reveal the app. -->
-    <button class="btn" onclick="alert('HANDOFF: mount intake_7 app here')">Check in</button>
+    <h2>Chart open.</h2>
+    <p>Your entries, your diagnosis and your locker are logged. The dispensary
+       (daily wheel, drop codes, giveaways) and your dashboard live in the app.</p>
+    <!-- REPLACE(handoff): route to the dispensary/dashboard. The remaining
+         intake_7 stations (wheel s10, dashboard s9, login s8, staff s7) follow
+         the SAME form-scene pattern used above; port them here or link out. -->
+    <a class="btn" href="index.html">Enter the dispensary</a>
   </div>
 </section>
 
 <script>
 /* ============================================================================
-   CONFIG — the only thing a follow-up editor should normally touch.
-   Each scene = one scroll-scrubbed clip.
-     id        unique key / used for the tag + placeholder label
-     kicker    mono label in the card (use <b>07</b> for red room number)
-     title     Archivo Black headline
-     body      supporting line
-     metric    optional [{v:'$400', k:'Cash, every Sunday'}] money row
-     scrub     'in' (default, scroll down = play forward) | 'both'
-     tint      placeholder accent (ignored once real frames are used)
-   REAL FOOTAGE: set dir/count/ext and the loader uses
-     `${dir}/frame_${i padded to 4}.${ext}`  (i = 1..count)
-     Leave dir null to use procedural placeholders.
+   1. SCENES — content + order. Mixed scrub (video) and form (capture) scenes.
+   scrub: dir/count/ext -> `${dir}/frame_0001.${ext}` (null = placeholder).
+   form : `form` names the capture station builder below.
    ========================================================================== */
 const SCENES = [
-  { id:'admissions', dir:null, count:120, ext:'webp', tint:'#E10600', scrub:'in',
-    kicker:'ROOM <b>07</b> · ADMISSIONS',
-    title:'The ward is taking patients.',
-    body:'A gurney rolls you deeper. The further you go, the worse it gets.',
-    reveal:[.12,.30,.80,.94] },
-  { id:'intake', dir:null, count:120, ext:'webp', tint:'#7FD6E8', scrub:'in',
-    kicker:'ROOM 02 · EXAMINATION',
-    title:'Prove you play.',
-    body:'Show one wallet or transaction from any crypto casino and you are in the draw.',
-    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
-    reveal:[.15,.34,.80,.95] },
-  { id:'locker07', dir:null, count:120, ext:'webp', tint:'#F2C14E', scrub:'both',
-    kicker:'LOCKER <b>07</b> · DISCHARGE',
-    title:'Pry it open.',
-    body:'Everyone gets one. 1 in 200 takes the full $1,000.',
-    reveal:[.18,.40,.78,.96] },
+  { id:'admissions', type:'scrub', dir:null, count:120, ext:'webp', tint:'#E10600', vh:3.0,
+    kicker:'ROOM <b>07</b> · ADMISSIONS', title:'The ward is taking patients.',
+    body:'A gurney rolls you deeper. Five questions, then we tell you what you get for being early.',
+    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.12,.30,.80,.94] },
+
+  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.8 },
+
+  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.8 },
+
+  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.8 },
+
+  { id:'locker07', type:'scrub', dir:null, count:120, ext:'webp', tint:'#F2C14E', vh:2.6, scrub:'both',
+    kicker:'LOCKER <b>07</b> · DISCHARGE', title:'Pry it open.',
+    body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.18,.40,.78,.96] },
+
+  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.6 },
 ];
 
-/* ---- Frame source: real image sequence OR procedural placeholder ---------- */
-class FrameSource {
-  constructor(scene){
-    this.s = scene;
-    this.count = scene.count;
-    this.real = !!scene.dir;
-    this.imgs = new Array(this.count);
-    this.loaded = 0;
-    this._cache = new Map();          // placeholder frame cache
+/* ============================================================================
+   2. STATE + capture logic — ported from intake_7 (validation kept verbatim).
+   ========================================================================== */
+const ST = { chain:'BTC', entries:0, hashes:{}, ENTRY_CAP:100,
+  i:0, score:0, picks:[], dx:null, pno:6412,
+  chan:'Telegram', vip:false, pw:null, handle:null, sent:false,
+  pried:false, pkWon:null };
+
+const Q=[
+ {q:'It is 2am and you are down. What happens next?',a:[['Deposit again',3],['Close everything',0],['Watch someone else lose',2],['Set an alarm and sleep',1]]},
+ {q:'Your last decent win. Where is it now?',a:[['Withdrawn the same hour',0],['Gone',3],['Still in the account',2],['What win',1]]},
+ {q:'Pick the one that actually hurts',a:[['0.1x off the cashout',2],['Rug on the last spin of the bonus',3],['Wrong game, wrong day',1],['Watching someone hit your seed',3]]},
+ {q:'How do you choose where to play?',a:[['Best bonus',1],['Fastest withdrawal',2],['Wherever the streamer is',3],['Whichever has not banned me',3]]},
+ {q:'Someone asks how you are doing. Honestly.',a:[['Up',0],['Down',2],['Even, allegedly',1],['Not answering that',3]]}
+];
+const DX=[
+ {min:0,n:'THE TOURIST',t:2,l:'You visit. You leave. You sleep fine. We respect it and we do not understand it.'},
+ {min:7,n:'THE SURGEON',t:4,l:'Cold, deliberate, quietly keeping score. You will like that we publish the numbers.'},
+ {min:9,n:'THE INSOMNIAC',t:6,l:'The hours you keep are the diagnosis. Nothing good was ever decided at 3am and you know it.'},
+ {min:10,n:'THE MARTYR',t:8,l:'You take the hit and you take it personally. The scale was built to measure exactly this.'},
+ {min:11,n:'FLATLINE',t:10,l:'There is no tier above you. Set a limit before you set an alarm.'}
+];
+const PK=[
+ {pk:2000,usd:10,w:0.55,n:'Most common. Still yours.'},
+ {pk:5000,usd:25,w:0.25,n:'Better than most got.'},
+ {pk:10000,usd:50,w:0.12,n:'Top quarter of everyone admitted.'},
+ {pk:25000,usd:125,w:0.05,n:'1 in 20. Nice.'},
+ {pk:50000,usd:250,w:0.025,n:'1 in 40. Very few of these.'},
+ {pk:200000,usd:1000,w:0.005,n:'1 in 200. The full drop. Screenshot it.'}
+];
+function addEntries(n){var room=Math.max(0,ST.ENTRY_CAP-ST.entries),g=Math.min(room,n);ST.entries+=g;return g;}
+
+let toastT; function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('up');
+  clearTimeout(toastT);toastT=setTimeout(function(){e.classList.remove('up');},2600);}
+
+/* wallet / transaction parsing — verbatim from intake_7 */
+function parseInput(chain,raw){
+  var v=(raw||'').trim();
+  if(/^https?:\/\//i.test(v)||v.indexOf('/')>-1){
+    var q=v.split(/[?&]/).slice(1).join('&');
+    var fromQ=q.match(/(?:^|&)(?:a|address|hash|tx|txid|txhash)=([^&]+)/i);
+    v=fromQ?fromQ[1]:v.split('#')[0].split('?')[0].replace(/\/+$/,'').split('/').pop();
+    v=decodeURIComponent(v).trim();
   }
-  pad(i){ return String(i).padStart(4,'0'); }
-  // Load real frames (lazy-called when scene nears viewport)
-  preload(){
-    if(!this.real || this._started) return;
-    this._started = true;
-    for(let i=0;i<this.count;i++){
-      const img = new Image();
-      img.decoding='async';
-      img.onload = ()=>{ this.loaded++; };
-      img.src = `${this.s.dir}/frame_${this.pad(i+1)}.${this.s.ext}`;
-      this.imgs[i]=img;
-    }
+  var TX={BTC:/^[0-9a-fA-F]{64}$/,TRON:/^[0-9a-fA-F]{64}$/,ETH:/^0x[0-9a-fA-F]{64}$/,BNB:/^0x[0-9a-fA-F]{64}$/};
+  var WALLET={BTC:/^(bc1[0-9a-z]{25,71}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/,TRON:/^T[a-km-zA-HJ-NP-Z1-9]{33}$/,
+    ETH:/^0x[0-9a-fA-F]{40}$/,BNB:/^0x[0-9a-fA-F]{40}$/};
+  if(TX[chain].test(v))return {ok:true,kind:'tx',val:v};
+  if(WALLET[chain].test(v))return {ok:true,kind:'wallet',val:v};
+  var other=null;['BTC','ETH','BNB','TRON'].forEach(function(c){
+    if(c!==chain&&!other&&(TX[c].test(v)||WALLET[c].test(v)))other=c;});
+  return {ok:false,val:v,other:other};
+}
+function pwScore(v){var n=0;if(v.length>=8)n++;if(v.length>=12)n++;
+  if(/[a-z]/.test(v)&&/[A-Z]/.test(v))n++;if(/\d/.test(v))n++;if(/[^A-Za-z0-9]/.test(v))n++;return Math.min(4,n);}
+function rollPk(){var r=Math.random(),c=0;for(var i=0;i<PK.length;i++){c+=PK[i].w;if(r<=c)return PK[i];}return PK[0];}
+
+/* ============================================================================
+   3. FORM STATION BUILDERS — each returns the card DOM + wires the logic.
+   Presentation is re-skinned; the capture behaviour matches intake_7.
+   ========================================================================== */
+const $=(id,root)=>root?root.querySelector('#'+id):document.getElementById(id);
+
+function buildWallet(card){
+  card.innerHTML=`
+    <p class="kicker">ROOM 02 · EXAMINATION</p>
+    <h2>Prove you play.</h2>
+    <p>Show any crypto casino wallet or transaction and you are in Sunday's draw. One entry each, add as many as you like.</p>
+    <div class="chips" id="w_chains">
+      ${['BTC','ETH','BNB','TRON'].map((c,i)=>`<button class="chip${i===0?' on':''}" data-ch="${c}">${c}</button>`).join('')}
+    </div>
+    <div class="field"><label>Wallet or transaction hash</label>
+      <input class="in" id="w_txh" placeholder="Wallet address or transaction hash"></div>
+    <div class="two">
+      <div class="field"><label>Amount</label><input class="in" id="w_amt" placeholder="e.g. 50" inputmode="decimal"></div>
+      <div class="field"><label>Casino</label><input class="in" id="w_casino" placeholder="Any crypto casino"></div>
+    </div>
+    <div class="note" id="w_note">Explorer links work too. We read the hash on chain, that check is the entry. We never ask for keys.</div>
+    <button class="btn" id="w_go">Log it</button>
+    <div class="tally"><b id="w_ent">0</b> entries in Sunday's draw</div>`;
+  const chains=$('w_chains',card),txh=$('w_txh',card),note=$('w_note',card);
+  chains.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+    [...chains.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');
+    ST.chain=b.dataset.ch;
+    txh.placeholder=ST.chain==='TRON'?'T…  wallet or hash':((ST.chain==='ETH'||ST.chain==='BNB')?'0x…  wallet or hash':'Wallet address or transaction hash');
+    txh.focus();});
+  function submitTx(){
+    const raw=txh.value,a=$('w_amt',card).value.trim(),c=$('w_casino',card).value.trim();
+    const r=parseInput(ST.chain,raw);
+    if(!r.ok){note.className='note warn';
+      note.textContent=r.other?`That looks like ${r.other}. Tap ${r.other} above and log it again.`
+        :(!r.val?'Paste a wallet address or a transaction hash.'
+        :`We do not recognise that as a ${ST.chain} wallet or hash. Paste it straight from your wallet or the explorer.`);
+      txh.focus();return;}
+    const key=ST.chain+':'+r.val.toLowerCase();
+    if(ST.hashes[key]){note.className='note warn';note.textContent='That one is already in. One entry each.';return;}
+    const amt=parseFloat(a.replace(/[^0-9.]/g,''));
+    if(!amt||amt<=0){note.className='note warn';note.textContent='Put the amount in so we can match it against the chain.';$('w_amt',card).focus();return;}
+    if(c.length<2){note.className='note warn';note.textContent='Which casino was it? Any crypto casino counts.';$('w_casino',card).focus();return;}
+    ST.hashes[key]=true;addEntries(1);
+    $('w_ent',card).textContent=ST.entries;
+    txh.value='';$('w_amt',card).value='';$('w_casino',card).value='';
+    note.className='note ok';
+    note.textContent=(r.kind==='wallet'?'Wallet':'Transaction')+' logged. Entry '+ST.entries+'. Add another, or keep scrolling.';
+    toast('Entry added. '+ST.entries+" in Sunday's draw."); txh.focus();
+    document.getElementById('hint').textContent='Keep scrolling to continue';
   }
-  // Draw frame at progress p∈[0,1] into ctx (cover-fit)
-  draw(ctx,p,w,h){
-    let f = Math.round(p*(this.count-1));
-    f = Math.max(0,Math.min(this.count-1,f));
-    if(this.real){
-      const img=this.imgs[f];
-      if(img&&img.complete&&img.naturalWidth){ coverDraw(ctx,img,w,h); }
-      else { drawPlaceholder(ctx,p,w,h,this.s,f,this.count); } // graceful until loaded
-    } else {
-      drawPlaceholder(ctx,p,w,h,this.s,f,this.count);
-    }
+  $('w_go',card).addEventListener('click',submitTx);
+  txh.addEventListener('input',()=>{if(note.className.indexOf('warn')>-1){note.className='note';
+    note.textContent='Your wallet address, or the hash of any casino deposit or withdrawal. Explorer links work too.';}});
+}
+
+function buildQuiz(card){
+  card.innerHTML=`
+    <p class="kicker" id="q_plate">ROOM 02 · EXAMINATION</p>
+    <div class="prog" id="q_prog"></div>
+    <h2 id="q_t" style="font-size:clamp(20px,5vw,28px)"></h2>
+    <div id="q_opts"></div>
+    <div id="q_dx" style="display:none"></div>`;
+  function renderProg(){const el=$('q_prog',card);el.innerHTML='';
+    for(let i=0;i<Q.length;i++){const b=document.createElement('i');
+      b.className=i<ST.i?'on':(i===ST.i?'now':'');el.appendChild(b);}}
+  function renderQ(){
+    $('q_plate',card).textContent='Room '+String(ST.i+1).padStart(2,'0')+' · Examination';
+    renderProg();$('q_t',card).textContent=Q[ST.i].q;
+    const el=$('q_opts',card);el.innerHTML='';
+    Q[ST.i].a.forEach((a,ix)=>{const b=document.createElement('button');b.className='opt';
+      b.innerHTML=`<span class="k">${String.fromCharCode(65+ix)}</span><span>${a[0]}</span>`;
+      b.addEventListener('click',()=>pick(ix,b));el.appendChild(b);});
   }
-}
-
-/* cover-fit blit for real frames */
-function coverDraw(ctx,img,w,h){
-  const ir=img.naturalWidth/img.naturalHeight, cr=w/h;
-  let dw,dh,dx,dy;
-  if(ir>cr){ dh=h; dw=h*ir; dx=(w-dw)/2; dy=0; }
-  else     { dw=w; dh=w/ir; dx=0; dy=(h-dh)/2; }
-  ctx.drawImage(img,dx,dy,dw,dh);
-}
-
-/* ---- Procedural placeholder: fake ward corridor so the scrub is legible ---- */
-function drawPlaceholder(ctx,p,w,h,scene,f,count){
-  ctx.clearRect(0,0,w,h);
-  // base
-  const g=ctx.createLinearGradient(0,0,0,h);
-  g.addColorStop(0,'#0c0d0f'); g.addColorStop(1,'#17181b');
-  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
-  // vanishing point drifts + red glow grows with progress (sense of travel)
-  const cx=w*0.5, cy=h*(0.44+0.04*Math.sin(p*3.14));
-  const glow=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.max(w,h)*(0.12+p*0.55));
-  glow.addColorStop(0, hexA(scene.tint,0.9));
-  glow.addColorStop(0.4, hexA(scene.tint,0.28));
-  glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle=glow; ctx.fillRect(0,0,w,h);
-  // perspective corridor lines converging to vanishing point (parallax by p)
-  ctx.strokeStyle='rgba(160,180,190,'+(0.18+0.12*(1-p))+')';
-  ctx.lineWidth=1;
-  const rings=10;
-  for(let i=1;i<=rings;i++){
-    const t=((i/rings)+p*0.6)%1;                 // rings sweep toward camera
-    const s=t*t;                                  // ease -> depth
-    const rw=w*(0.06+s*0.98), rh=h*(0.06+s*0.98);
-    ctx.strokeRect(cx-rw/2, cy-rh/2, rw, rh);
+  function pick(ix,node){
+    if(node.parentNode.querySelector('.picked'))return;
+    node.classList.add('picked');ST.picks[ST.i]=ix;ST.score+=Q[ST.i].a[ix][1];
+    setTimeout(()=>{ST.i++;if(ST.i<Q.length)renderQ();else diagnose();},260);
   }
-  // corner braces
-  ctx.beginPath();
-  ctx.moveTo(0,0); ctx.lineTo(cx,cy); ctx.moveTo(w,0); ctx.lineTo(cx,cy);
-  ctx.moveTo(0,h); ctx.lineTo(cx,cy); ctx.moveTo(w,h); ctx.lineTo(cx,cy);
-  ctx.stroke();
-  // scanline grain
-  for(let y=0;y<h;y+=3){ ctx.fillStyle='rgba(0,0,0,.06)'; ctx.fillRect(0,y,w,1); }
-  // debug label so it's obviously a placeholder
-  ctx.fillStyle='rgba(174,180,185,.85)'; ctx.font='700 12px monospace';
-  ctx.fillText('PLACEHOLDER · '+scene.id.toUpperCase(),16,h-40);
-  ctx.fillStyle=scene.tint; ctx.font='700 12px monospace';
-  ctx.fillText('FRAME '+String(f+1).padStart(4,'0')+' / '+count,16,h-22);
-}
-function hexA(hex,a){const n=parseInt(hex.slice(1),16);
-  return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
-
-/* ---- Scene runtime ---------------------------------------------------------
-   Layout: every scene is fixed & full-screen (stacked). Scroll length is given
-   by a matching .spacer. Global scroll maps into per-scene [start,end] windows.
-   Boundary band crossfades adjacent scenes so joins are seamless.
-   -------------------------------------------------------------------------- */
-const SCRUB_VH = 3.2;                 // scroll length per scene, in viewport-heights
-const FADE = 0.06;                    // crossfade band (fraction of a scene window)
-const stages = document.getElementById('stages');
-const track  = document.getElementById('track');
-const scenes = [];
-
-SCENES.forEach((s,i)=>{
-  // DOM: canvas stage
-  const el=document.createElement('div'); el.className='scene'; el.dataset.id=s.id;
-  const cv=document.createElement('canvas'); el.appendChild(cv);
-  // DOM: card
-  const card=document.createElement('div'); card.className='card';
-  card.innerHTML =
-    `<p class="kicker">${s.kicker}</p><h2>${s.title}</h2><p>${s.body}</p>`+
-    (s.metric?`<div class="metric">${s.metric.map(m=>
-      `<div><b>${m.v}</b><span>${m.k}</span></div>`).join('')}</div>`:``);
-  el.appendChild(card); stages.appendChild(el);
-  // DOM: spacer that owns this scene's scroll length
-  const sp=document.createElement('div'); sp.className='spacer';
-  sp.style.height=(SCRUB_VH*100)+'vh'; track.appendChild(sp);
-
-  scenes.push({ cfg:s, el, cv, ctx:cv.getContext('2d'), card,
-                src:new FrameSource(s), sized:false });
-});
-
-/* Canvas sizing (guards the 0×0 bug: only size when actually measurable) */
-function sizeCanvas(sc){
-  const dpr=Math.min(window.devicePixelRatio||1, 2);
-  const w=window.innerWidth, h=window.innerHeight;
-  if(w<2||h<2) return false;
-  sc.cv.width=Math.round(w*dpr); sc.cv.height=Math.round(h*dpr);
-  sc.ctx.setTransform(dpr,0,0,dpr,0,0);
-  sc.sized=true; return true;
-}
-function sizeAll(){ scenes.forEach(sizeCanvas); render(); }
-window.addEventListener('resize', sizeAll);
-
-/* Reveal helper: card opacity from progress via [inStart,inEnd,outStart,outEnd] */
-function cardOpacity(p, r){
-  const [a,b,c,d]=r||[.15,.32,.80,.95];
-  if(p<a||p>d) return 0;
-  if(p<b) return (p-a)/(b-a);
-  if(p>c) return 1-(p-c)/(d-c);
-  return 1;
+  function diagnose(){
+    let d=DX[0];for(let i=0;i<DX.length;i++){if(ST.score>=DX[i].min)d=DX[i];}
+    ST.dx=d;ST.pno++;
+    $('q_t',card).style.display='none';$('q_opts',card).style.display='none';$('q_prog',card).style.display='none';
+    $('q_plate',card).textContent='Room 06 · Diagnosis';
+    const dx=$('q_dx',card);dx.style.display='block';
+    dx.innerHTML=`<div class="dxwrap">
+      <div class="pno">PATIENT #${String(ST.pno).padStart(5,'0')}</div>
+      <div class="scale">${d.t}<span>/10</span></div>
+      <div class="dx">${d.n}</div>
+      <p>${d.l}</p></div>
+      <p style="text-align:center;margin-top:10px">Issued once. There is no second opinion. Keep scrolling to claim it.</p>`;
+    toast('Diagnosis: '+d.n+'. Pain Scale '+d.t+'/10.');
+    document.getElementById('hint').textContent='Keep scrolling to continue';
+  }
+  card._enter=()=>{ if(ST.dx) return; if(!$('q_opts',card).children.length) renderQ(); };
+  renderQ();
 }
 
-const vitals=document.getElementById('vitals');
-const tag=document.getElementById('tag');
-const hint=document.getElementById('hint');
+function buildDischarge(card){
+  card.innerHTML=`
+    <p class="kicker">DISCHARGE · WHERE DO WE SEND IT?</p>
+    <h2>Your chart, your drop, your October access.</h2>
+    <p>One message. No list, no spam.</p>
+    <div class="chips" id="d_chan">
+      <button class="chip on" data-c="Telegram">Telegram</button>
+      <button class="chip" data-c="Email">Email</button>
+    </div>
+    <div class="field"><label id="d_hl">Handle</label>
+      <input class="in" id="d_handle" placeholder="@yourhandle"></div>
+    <div class="field"><label>Password</label>
+      <div class="pwrow"><input class="in" id="d_pw" type="password" placeholder="Eight characters minimum">
+        <button class="pweye" id="d_eye">SHOW</button></div>
+      <div class="pwbar"><i id="d_bar"></i></div>
+      <div class="pwhint" id="d_hint">Eight characters minimum. This is how you get back in.</div></div>
+    <div class="vip" id="d_vip" role="checkbox" aria-checked="false" tabindex="0">
+      <span class="vipsw"></span><span>I'm a VIP somewhere else. Have a host call me.</span></div>
+    <div class="note" id="d_note"></div>
+    <button class="btn" id="d_go">Send my chart</button>`;
+  const chan=$('d_chan',card),handle=$('d_handle',card),note=$('d_note',card),pw=$('d_pw',card);
+  chan.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+    [...chan.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');
+    ST.chan=b.dataset.c;
+    $('d_hl',card).textContent=ST.chan==='Email'?'Email':'Handle';
+    handle.placeholder=ST.chan==='Email'?'you@email.com':'@yourhandle';handle.focus();});
+  function paintPw(){const v=pw.value,n=pwScore(v),bar=$('d_bar',card),h=$('d_hint',card);
+    const cols=['#FF4A42','#FF4A42','#F2C14E','#5FE3A1','#5FE3A1'];
+    bar.style.width=(v?Math.max(12,n*25):0)+'%';bar.style.background=cols[n];
+    if(!v){h.style.color='';h.textContent='Eight characters minimum. This is how you get back in.';return;}
+    if(v.length<8){h.style.color='var(--red-hot)';h.textContent='Too short. Eight characters minimum.';return;}
+    h.style.color='';h.textContent=['','Weak. Add a number or a capital.','Getting there.','Solid.','Strong.'][n]||'Solid.';}
+  pw.addEventListener('input',paintPw);
+  $('d_eye',card).addEventListener('click',function(){pw.type=pw.type==='password'?'text':'password';
+    this.textContent=pw.type==='password'?'SHOW':'HIDE';});
+  const vip=$('d_vip',card);
+  function toggleVip(){ST.vip=!ST.vip;vip.classList.toggle('on',ST.vip);vip.setAttribute('aria-checked',ST.vip?'true':'false');
+    note.className='note';note.textContent=ST.vip
+      ?'A host from the VIP desk contacts you personally. Terms agreed before you move anything.'
+      :'';}
+  vip.addEventListener('click',toggleVip);
+  vip.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();toggleVip();}});
+  function send(){
+    const v=handle.value.trim();
+    const ok=ST.chan==='Email'?/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(v):v.replace(/[^0-9a-zA-Z_]/g,'').length>=4;
+    if(!ok){note.className='note warn';
+      note.textContent=ST.chan==='Email'?'That email will not reach you. Check it.':'Give us a real '+ST.chan+' handle so we can actually send this.';
+      handle.focus();return;}
+    if(pw.value.length<8){note.className='note warn';note.textContent='Set a password of at least eight characters.';pw.focus();return;}
+    ST.pw=pw.value;ST.sent=true;ST.handle=v;
+    note.className='note ok';
+    note.textContent='Chart sent on '+ST.chan+'. Patient #'+String(ST.pno).padStart(5,'0')+'. Keep scrolling to your locker.';
+    $('d_go',card).disabled=true;$('d_go',card).textContent='Sent';
+    toast(ST.vip?'A host will reach out on '+ST.chan+' within 24 hours.':'Sent on '+ST.chan+'. Check your messages.');
+    document.getElementById('hint').textContent='Keep scrolling to continue';
+  }
+  $('d_go',card).addEventListener('click',send);
+  handle.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+}
 
-function render(){
-  const vh=window.innerHeight;
-  const y=window.scrollY||window.pageYOffset;
-  const winH=vh*SCRUB_VH;                      // px length of one scene window
-  const total=winH*scenes.length;
-  vitals.style.width=Math.max(0,Math.min(1,y/(total)))*100+'%';
-  if(y>vh*0.4) hint.style.opacity=0;
-
-  scenes.forEach((sc,i)=>{
-    const start=i*winH, end=start+winH;
-    let p=(y-start)/(end-start);               // progress within this scene
-    // lazy preload when the scene is the current or next one
-    if(p>-1.1 && p<1.1) sc.src.preload();
-    // visibility / crossfade
-    let vis=0;
-    if(p>=0 && p<=1) vis=1;
-    if(p<0 && p>-FADE) vis=1+(p/FADE);         // fading in from previous
-    if(p>1 && p<1+FADE) vis=1-((p-1)/FADE);    // fading out to next
-    vis=Math.max(0,Math.min(1,vis));
-    sc.el.style.opacity=vis;
-    if(vis<=0){ return; }                       // skip drawing hidden scenes
-    if(!sc.sized && !sizeCanvas(sc)) return;
-    // frame progress (respect 'both' = still forward map; reverse handled by scroll dir)
-    const fp=Math.max(0,Math.min(1,p));
-    sc.src.draw(sc.ctx, fp, sc.cv.width/ (sc.ctx.getTransform().a||1),
-                            sc.cv.height/(sc.ctx.getTransform().d||1));
-    sc.card.style.opacity=cardOpacity(fp, sc.cfg.reveal);
-    sc.card.style.transform='translate(-50%,'+(24-24*cardOpacity(fp,sc.cfg.reveal))+'px)';
-    // update HUD tag to the active room
-    if(vis>0.5){ tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase(); }
+function buildReveal(card){
+  card.innerHTML=`
+    <p class="kicker">LOCKER <b>07</b> · IT'S YOURS</p>
+    <h2 id="r_h">Pry it open.</h2>
+    <p id="r_p">Everyone gets one. 1 in 200 takes the full $1,000.</p>
+    <div id="r_out" style="display:none">
+      <div class="reveal-val" id="r_val"></div>
+      <div class="reveal-sub" id="r_sub"></div>
+    </div>
+    <button class="btn" id="r_go">Pry it open</button>`;
+  const go=$('r_go',card);
+  go.addEventListener('click',()=>{
+    if(ST.pried){document.getElementById('hint').textContent='Keep scrolling to continue';return;}
+    ST.pried=true;const p=rollPk();ST.pkWon=p;
+    $('r_h',card).textContent='Locker 0'+(ST.pno%9+1)+'. Logged to you.';
+    $('r_p',card).style.display='none';
+    $('r_out',card).style.display='block';
+    $('r_val',card).textContent=p.pk.toLocaleString('en-US')+' PK';
+    $('r_sub',card).textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
+    go.textContent='Continue';
+    toast('Logged to patient #'+String(ST.pno).padStart(5,'0')+'.');
+    document.getElementById('hint').textContent='Keep scrolling to continue';
   });
 }
 
-/* rAF-throttled scroll (smooth, avoids layout thrash) */
-let ticking=false;
-function onScroll(){ if(!ticking){ requestAnimationFrame(()=>{render();ticking=false;}); ticking=true; } }
-window.addEventListener('scroll', onScroll, {passive:true});
+const FORMS={wallet:buildWallet,quiz:buildQuiz,discharge:buildDischarge,reveal:buildReveal};
 
-/* boot: size once canvases are measurable, retry until they are */
-(function boot(){
-  if(!sizeCanvas(scenes[0])){ return requestAnimationFrame(boot); }
-  sizeAll();
-})();
+/* ============================================================================
+   4. SCRUB ENGINE — frame source, placeholder, scene runtime, scroll render.
+   ========================================================================== */
+class FrameSource{
+  constructor(s){this.s=s;this.count=s.count||1;this.real=!!s.dir;this.imgs=[];this._started=false;}
+  pad(i){return String(i).padStart(4,'0');}
+  preload(){if(!this.real||this._started)return;this._started=true;
+    for(let i=0;i<this.count;i++){const im=new Image();im.decoding='async';
+      im.src=`${this.s.dir}/frame_${this.pad(i+1)}.${this.s.ext}`;this.imgs[i]=im;}}
+  draw(ctx,p,w,h){let f=Math.round(p*(this.count-1));f=Math.max(0,Math.min(this.count-1,f));
+    if(this.real){const im=this.imgs[f];
+      if(im&&im.complete&&im.naturalWidth)return coverDraw(ctx,im,w,h);}
+    drawPlaceholder(ctx,p,w,h,this.s,f,this.count);}
+}
+function coverDraw(ctx,img,w,h){const ir=img.naturalWidth/img.naturalHeight,cr=w/h;let dw,dh,dx,dy;
+  if(ir>cr){dh=h;dw=h*ir;dx=(w-dw)/2;dy=0;}else{dw=w;dh=w/ir;dx=0;dy=(h-dh)/2;}ctx.drawImage(img,dx,dy,dw,dh);}
+function drawPlaceholder(ctx,p,w,h,s,f,count){
+  ctx.clearRect(0,0,w,h);
+  const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,'#0c0d0f');g.addColorStop(1,'#17181b');
+  ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  const cx=w*.5,cy=h*(.44+.04*Math.sin(p*3.14));
+  const glow=ctx.createRadialGradient(cx,cy,4,cx,cy,Math.max(w,h)*(.12+p*.55));
+  glow.addColorStop(0,hexA(s.tint,.9));glow.addColorStop(.4,hexA(s.tint,.28));glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='rgba(160,180,190,'+(.18+.12*(1-p))+')';ctx.lineWidth=1;
+  for(let i=1;i<=10;i++){const t=((i/10)+p*.6)%1,ss=t*t,rw=w*(.06+ss*.98),rh=h*(.06+ss*.98);
+    ctx.strokeRect(cx-rw/2,cy-rh/2,rw,rh);}
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(cx,cy);ctx.moveTo(w,0);ctx.lineTo(cx,cy);
+  ctx.moveTo(0,h);ctx.lineTo(cx,cy);ctx.moveTo(w,h);ctx.lineTo(cx,cy);ctx.stroke();
+  for(let y=0;y<h;y+=3){ctx.fillStyle='rgba(0,0,0,.06)';ctx.fillRect(0,y,w,1);}
+  ctx.fillStyle='rgba(174,180,185,.85)';ctx.font='700 12px monospace';
+  ctx.fillText('PLACEHOLDER · '+s.id.toUpperCase(),16,h-40);
+  ctx.fillStyle=s.tint;ctx.fillText('FRAME '+String(f+1).padStart(4,'0')+' / '+count,16,h-22);
+}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+
+const FADE=0.06;
+const stages=document.getElementById('track'),stageLayer=document.getElementById('stages');
+const scenes=[];
+SCENES.forEach(s=>{
+  const el=document.createElement('div');el.className='scene'+(s.type==='form'?' form dim':'');el.dataset.id=s.id;
+  const cv=document.createElement('canvas');el.appendChild(cv);
+  const card=document.createElement('div');card.className='card';
+  if(s.type==='form'){ FORMS[s.form](card); }
+  else{
+    card.innerHTML=`<p class="kicker">${s.kicker}</p><h2>${s.title}</h2><p>${s.body}</p>`+
+      (s.metric?`<div class="metric">${s.metric.map(m=>`<div><b>${m.v}</b><span>${m.k}</span></div>`).join('')}</div>`:``);
+  }
+  el.appendChild(card);stageLayer.appendChild(el);
+  const sp=document.createElement('div');sp.className='spacer';
+  sp.style.height=((s.vh||3)*100)+'vh';stages.appendChild(sp);
+  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,src:new FrameSource(s),sized:false});
+});
+
+function sizeCanvas(sc){const dpr=Math.min(window.devicePixelRatio||1,2),w=innerWidth,h=innerHeight;
+  if(w<2||h<2)return false;sc.cv.width=Math.round(w*dpr);sc.cv.height=Math.round(h*dpr);
+  sc.ctx.setTransform(dpr,0,0,dpr,0,0);sc.sized=true;return true;}
+function sizeAll(){scenes.forEach(sizeCanvas);render();}
+addEventListener('resize',sizeAll);
+
+function cardOpacity(p,r){const[a,b,c,d]=r||[.12,.28,.82,.96];
+  if(p<a||p>d)return 0;if(p<b)return (p-a)/(b-a);if(p>c)return 1-(p-c)/(d-c);return 1;}
+
+const vitals=document.getElementById('vitals'),tag=document.getElementById('tag'),hint=document.getElementById('hint');
+function render(){
+  const vh=innerHeight,y=scrollY||pageYOffset;
+  let top=0,total=0;scenes.forEach(sc=>{sc._top=top;sc._h=(sc.cfg.vh||3)*vh;top+=sc._h;total+=sc._h;});
+  vitals.style.width=Math.max(0,Math.min(1,y/total))*100+'%';
+  if(y>vh*.4)hint.style.opacity=0;
+
+  scenes.forEach(sc=>{
+    const start=sc._top,end=start+sc._h;let p=(y-start)/(end-start);
+    if(p>-1.1&&p<1.1)sc.src.preload();
+    let vis=0;if(p>=0&&p<=1)vis=1;if(p<0&&p>-FADE)vis=1+p/FADE;if(p>1&&p<1+FADE)vis=1-(p-1)/FADE;
+    vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
+    const isForm=sc.cfg.type==='form';
+    // pointer events only on the active form card
+    sc.card.classList.toggle('live',isForm&&vis>0.6);
+    if(vis<=0)return;
+    if(!sc.sized&&!sizeCanvas(sc))return;
+    const fp=Math.max(0,Math.min(1,p));
+    // form scenes hold a static dim frame; scrub scenes scrub
+    sc.src.draw(sc.ctx,isForm?0.5:fp,sc.cv.width/(sc.ctx.getTransform().a||1),sc.cv.height/(sc.ctx.getTransform().d||1));
+    if(isForm){
+      // card visible across the whole dwell (fade only at the very edges)
+      const o=Math.min(1,vis, cardOpacity(fp,[.04,.14,.90,.99])+0.0);
+      sc.card.style.opacity=Math.max(vis>0.6?1:vis,o);
+      if(vis>0.6&&sc.card._enter){sc.card._enter();}
+    }else{
+      const o=cardOpacity(fp,sc.cfg.reveal);
+      sc.card.style.opacity=o;
+      sc.card.style.transform='translate(-50%,'+(24-24*o)+'px)';
+    }
+    if(vis>0.5)tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase();
+  });
+}
+let ticking=false;
+addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{render();ticking=false;});ticking=true;}},{passive:true});
+(function boot(){if(!sizeCanvas(scenes[0]))return requestAnimationFrame(boot);sizeAll();})();
 </script>
 </body>
 </html>
