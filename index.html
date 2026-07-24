@@ -922,6 +922,9 @@ body[data-mode="sports"] .mode-seg[data-mode="sports"]{background:var(--red);col
 body[data-mode="sports"] .sb-casino{display:none}
 body:not([data-mode="sports"]) .sb-sports{display:none}
 body.navmin .mode-toggle{display:none}
+/* same casino/sports split, applied to the mobile More sheet */
+body[data-mode="sports"] .sheet-casino{display:none}
+body:not([data-mode="sports"]) .sheet-sports{display:none}
 
 /* ---------- sportsbook: live dot ---------- */
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px 2px rgba(225,6,0,.5);animation:pk-blink 1.4s ease-in-out infinite;display:inline-block;flex:none}
@@ -1972,8 +1975,18 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       <button class="mode-seg" data-mode="sports" onclick="setMode('sports');closeSheet('more')">Sports</button>
     </div>
     <div class="sheet-list">
-      <button onclick="closeSheet('more');openGames('slots')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14"/></svg>Slots</button>
-      <button onclick="closeSheet('more');openGames('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Live casino</button>
+      <button class="sheet-casino" onclick="closeSheet('more');openGames('slots')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 5v14M16 5v14"/></svg>Slots</button>
+      <button class="sheet-casino" onclick="closeSheet('more');openGames('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Live casino</button>
+      <div class="sb-title sheet-sports">Sports</div>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('live')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Live<span class="live-dot" style="margin-left:auto"></span></button>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('soon')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>Starting soon</button>
+      <button class="sheet-sports" onclick="closeSheet('more');openBetslip('mybets')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>My bets</button>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('soccer')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7l3.5 2.5-1.3 4h-4.4l-1.3-4z"/></svg>Soccer</button>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('basketball')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6c2.9 2.9 2.9 9.9 0 12.8M18.4 5.6c-2.9 2.9-2.9 9.9 0 12.8"/></svg>Basketball</button>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('tennis')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M4.6 7.6c3.9 1.2 10.9 1.2 14.8 0M4.6 16.4c3.9-1.2 10.9-1.2 14.8 0"/></svg>Tennis</button>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('mma')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a2 2 0 0 1 4 0v4M11 11V6a2 2 0 0 1 4 0v5M15 11V8a2 2 0 0 1 4 0v5a6 6 0 0 1-12 0v-2"/></svg>MMA</button>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('esports')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="11" rx="3"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".8" fill="currentColor" stroke="none"/><circle cx="18.5" cy="14" r=".8" fill="currentColor" stroke="none"/></svg>eSports</button>
+      <button class="sheet-sports" onclick="closeSheet('more');setSport('nfl')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9" ry="5.5"/><path d="M5.5 12h13M9 9.5l1 1M9 14.5l1-1M15 9.5l-1 1M15 14.5l-1-1"/></svg>American Football</button>
       <button data-view="promos" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 7v13"/></svg>Promotions</button>
       <button data-view="painscale" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h3v-6H4zM10 18h3V6h-3zM16 18h3v-9h-3z"/></svg>Pain scale tiers</button>
       <button data-view="synapse" onclick="closeSheet('more')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h5M12 12l5-5M12 12l5 5"/></svg>Threshold Raid</button>
