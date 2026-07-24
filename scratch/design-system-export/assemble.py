@@ -41,6 +41,23 @@ def strip_dialog_signals(text):
     text = re.sub(r'\s+aria-modal="[^"]*"', '', text)
     return text
 
+def fix_svg_gauges(text):
+    # .ps-ring and .pk-dial svg are sized via CSS (width:100%/height:100%) so they stay
+    # concentric with their wrapper at every breakpoint on the live site. html-to-figma
+    # plugins are unreliable at resolving percentage sizing on SVGs (pk-dial's svg has no
+    # width/height attributes at all, so a plugin that ignores the CSS falls back to the
+    # browser's odd default SVG intrinsic size) — pin both to fixed pixel attributes AND
+    # an inline style here so there's no percentage math left for the plugin to get wrong.
+    text = re.sub(
+        r'<svg viewBox="0 0 120 120">',
+        '<svg viewBox="0 0 120 120" width="250" height="250" style="width:250px;height:250px">',
+        text)
+    text = re.sub(
+        r'(<svg class="ps-ring"[^>]*viewBox="0 0 100 100")([^>]*>)',
+        r'\1 style="width:92px;height:92px"\2',
+        text)
+    return text
+
 def inputs_to_divs(text):
     # native <input> can abort a subtree in some html-to-figma importers; render as a
     # static styled div showing the placeholder/value instead (not interactive anyway)
@@ -78,6 +95,7 @@ for f in frames:
     body = strip_dialog_signals(body)
     body = strip_event_handlers(body)
     body = inputs_to_divs(body)
+    body = fix_svg_gauges(body)
     body = rename(body)
     width = KIND_WIDTH.get(f['kind'], 1320)
     processed.append({**f, 'html': body, 'width': width})
@@ -106,6 +124,12 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 .figframe .betslip-tab{position:relative!important;right:auto!important;top:auto!important;transform:none!important}
 .figframe .view{display:block!important}
 .figframe .odds.sel{background:var(--red)}
+
+/* pin the two gauge SVGs (pain scale ring, PainKillers tolerance dial) to fixed pixel
+   sizes — see fix_svg_gauges() in assemble.py for why percentage sizing breaks these
+   under an html-to-figma plugin */
+.figframe .ps-ring{width:92px!important;height:92px!important}
+.figframe .pk-dial svg{width:250px!important;height:250px!important}
 
 /* components swatch */
 .swatch-board{display:flex;flex-direction:column;gap:28px;width:100%}

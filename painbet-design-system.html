@@ -1040,6 +1040,12 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 .figframe .view{display:block!important}
 .figframe .odds.sel{background:var(--red)}
 
+/* pin the two gauge SVGs (pain scale ring, PainKillers tolerance dial) to fixed pixel
+   sizes — see fix_svg_gauges() in assemble.py for why percentage sizing breaks these
+   under an html-to-figma plugin */
+.figframe .ps-ring{width:92px!important;height:92px!important}
+.figframe .pk-dial svg{width:250px!important;height:250px!important}
+
 /* components swatch */
 .swatch-board{display:flex;flex-direction:column;gap:28px;width:100%}
 .swatch-row{display:flex;flex-direction:column;gap:10px}
@@ -1409,7 +1415,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
           <div class="ps-grid ps-tier-dash">
             <label for="ps-s0" class="ps-tier-card ps-c0 ps-tc0">
               <div class="ps-badge-wrap">
-                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100" style="width:92px;height:92px">
                   <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
                   <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
                 </svg>
@@ -1427,7 +1433,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 
             <label for="ps-s1" class="ps-tier-card ps-c1 ps-tc1">
               <div class="ps-badge-wrap">
-                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100" style="width:92px;height:92px">
                   <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
                   <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
                 </svg>
@@ -1445,7 +1451,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 
             <label for="ps-s2" class="ps-tier-card ps-c2 ps-tc2">
               <div class="ps-badge-wrap">
-                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100" style="width:92px;height:92px">
                   <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
                   <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
                 </svg>
@@ -1463,7 +1469,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 
             <label for="ps-s3" class="ps-tier-card ps-c3 ps-tc3">
               <div class="ps-badge-wrap">
-                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100" style="width:92px;height:92px">
                   <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
                   <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
                 </svg>
@@ -1481,7 +1487,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 
             <label for="ps-s4" class="ps-tier-card ps-c4 ps-tc4" style="animation: auto ease 0s 1 normal none running none;">
               <div class="ps-badge-wrap">
-                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100" style="width:92px;height:92px">
                   <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
                   <circle class="ps-ring-fill" cx="50" cy="50" r="44" style="stroke-dashoffset: 41.469;"></circle>
                 </svg>
@@ -1499,7 +1505,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 
             <label for="ps-s5" class="ps-tier-card ps-c5 ps-tc5 ps-locked" aria-disabled="true">
               <div class="ps-badge-wrap">
-                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100">
+                <svg class="ps-ring" width="92" height="92" viewBox="0 0 100 100" style="width:92px;height:92px">
                   <circle class="ps-ring-track" cx="50" cy="50" r="44"></circle>
                   <circle class="ps-ring-fill" cx="50" cy="50" r="44"></circle>
                 </svg>
@@ -1595,7 +1601,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
               <div class="k" style="color:var(--redhi)">Tolerance dial</div>
               <p class="pk-lead">Your rakeback multiplier for staying active. It climbs the longer your daily streak runs.</p>
               <div class="pk-dial">
-                <svg viewBox="0 0 120 120">
+                <svg viewBox="0 0 120 120" width="250" height="250" style="width:250px;height:250px">
                   <circle class="track" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="56.5"></circle>
                   <circle class="arc" id="pk-dialarc" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="226" style="stroke-dashoffset: 141.25;"></circle>
                 </svg>
