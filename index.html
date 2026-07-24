@@ -195,19 +195,22 @@ section.blk{margin-bottom:34px}
    (ogcBuildMesh/initShatterCard, hooked into wireCards) rather than hardcoded, since
    the same 9 games get cloned across 3 different rails (home curated rows, games
    view, provider pages) — see script below. .ogc-tilt sits in a child wrapper rather
-   than on .gcard itself, so the existing lift+ring :hover effect on .gcard keeps
-   working unchanged alongside it. overflow stays hidden at rest (so the reassembled
-   image keeps its rounded corners, matching every other card on the site) and only
-   switches to visible on :hover, letting the shatter spill past the card edge during
-   the animation — the rail's negative-margin buffer (see .rail.rx) already exists to
-   absorb exactly this kind of hover overflow. */
-.gcard[data-cats~="originals"]{perspective:2800px}
-.gcard[data-cats~="originals"]:hover{overflow:visible}
+   than on .gcard itself, so the existing lift :hover effect on .gcard keeps working
+   unchanged alongside it (the red ring is dropped below, per feedback).
+   .gcard's own overflow stays visible permanently for these cards — containment is
+   handled instead by .ogc-tilt's own clip-path, a rounded region padded past the
+   card's actual box, so shards can spill beyond the card edge during hover (the
+   rail's negative-margin buffer, .rail.rx, exists to absorb exactly this) while the
+   outer silhouette still reads as soft/rounded instead of a hard square cutoff. At
+   rest nothing extends past the card's own 0-100% bounds anyway (no motion), so this
+   looser clip has no effect until hovered. */
+.gcard[data-cats~="originals"]{perspective:2800px;overflow:visible;border-radius:24px}
+.gcard[data-cats~="originals"]:hover{box-shadow:var(--shadow-lg)}
 .gcard[data-cats~="originals"] .art{visibility:hidden}
-.ogc-tilt{position:absolute;inset:0;z-index:1;transform-style:preserve-3d;transition:transform .15s ease-out}
+.ogc-tilt{position:absolute;inset:0;z-index:1;transform-style:preserve-3d;transition:transform .15s ease-out;clip-path:inset(-24px round 30px)}
 .ogc-frag{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .ogc-frag::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 8px rgba(0,0,0,.35)}
-.ogc-glow{position:absolute;inset:0;border-radius:var(--r-lg);opacity:0;pointer-events:none;mix-blend-mode:overlay;transition:opacity .3s var(--ease-out)}
+.ogc-glow{position:absolute;inset:0;border-radius:24px;opacity:0;pointer-events:none;mix-blend-mode:overlay;transition:opacity .3s var(--ease-out)}
 .gcard[data-cats~="originals"]:hover .ogc-glow{opacity:1}
 .a-flatline{background-image:url('assets/originals/flatline-bg.png');background-size:cover;background-position:center;color:transparent}
 .a-nerve{background-image:url('assets/originals/nerve-bg.png');background-size:cover;background-position:center;color:transparent}
@@ -2687,7 +2690,7 @@ document.addEventListener('pointermove', e=>{
   const x = e.clientX - r.left, y = e.clientY - r.top;
   const nx = (x/r.width) - 0.5, ny = (y/r.height) - 0.5;
   const tilt = card.querySelector('.ogc-tilt');
-  if(tilt) tilt.style.transform = `rotateX(${-ny*6}deg) rotateY(${nx*6}deg)`;
+  if(tilt) tilt.style.transform = `rotateX(${-ny*12}deg) rotateY(${nx*12}deg)`;
   const glow = card.querySelector('.ogc-glow');
   if(glow) glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 55%)`;
 });
