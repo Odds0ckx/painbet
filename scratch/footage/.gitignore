@@ -2,3 +2,7 @@
 *.mp4
 *.mov
 *.webm
+
+# ffmpeg concat manifest, regenerated per extraction and pointing at the
+# ignored sources above.
+concat.txt
