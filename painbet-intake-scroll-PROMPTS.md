@@ -4,6 +4,38 @@ Generate keyframe STILLS first (Higgsfield Soul), then feed each pair as
 Start/End frame into DoP with the motion prompt. Where a boundary is shared,
 reuse the same still — do not regenerate.
 
+---
+
+## HOW THE PAGE USES THE FOOTAGE (read first)
+
+The page is **film between stations**, not a scroll-through-a-form. Each clip
+plays/scrubs; when it reaches a capture point the form rises as a **modal** (the
+clipboard), scroll locks while it is open, and submitting **auto-pushes** the
+film forward ~2.4s into the next room. Scroll still scrubs freely between
+stations.
+
+| Clip (scene id) | Ends on | Station that then rises |
+|---|---|---|
+| `admissions` | nurse at the 07 doors | **Quiz** -> diagnosis |
+| `intake` | exam room, chart on the gurney | **Wallet** (skippable) |
+| — (held frame) | exam room | **Discharge** |
+| `locker07` | locker open, PK glow | **Cooler pry-open** (3D crate modal) |
+| `discharge` *(not shot yet)* | retreat to EXIT | free browsing: channels, dispensary, chart |
+
+**Ideal future upgrade (optional):** end each travel clip with the nurse
+**raising a clipboard to camera** — that is the natural cue for the modal. Until
+those exist the page freezes the clip's last frame and floats the modal over it,
+which needs no new renders. To shoot them, append to the relevant clip's motion
+prompt:
+
+```
+...and at the end the nurse turns to face camera and raises a steel clipboard up
+toward the lens, holding it steady, filling the lower centre of frame.
+```
+
+Because clips are short and each ends on a hold, prefer **several short clips**
+(3-4s) over one long one: less drift, cheaper reshoots.
+
 **Orientation:** portrait **9:16, 1080x1920**. Keep all key action (EXIT sign,
 nurse, doors, drawer) in the **center third** so cover-crop survives desktop.
 
