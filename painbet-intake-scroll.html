@@ -52,8 +52,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   border:1px solid rgba(69,74,80,.5);border-top:1px solid var(--red);border-radius:14px;
   box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 24px rgba(225,6,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
   opacity:0;will-change:opacity,transform;pointer-events:none;
-  scrollbar-width:thin;scrollbar-color:var(--line) transparent;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;overscroll-behavior:contain;
 }
+/* keep the way out of a form permanently in reach */
+.card .btn.sticky-go{position:sticky;bottom:-2px;margin-bottom:0;z-index:4;
+  background:rgba(19,21,23,.94);backdrop-filter:blur(8px);border-color:var(--line)}
 .scene.form .card{bottom:auto;top:50%;transform:translate(-50%,-46%)}
 .card.live{pointer-events:auto}
 .card .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
@@ -106,6 +109,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .dxwrap .scale{font-family:var(--display);font-size:44px;color:var(--red-hot);line-height:1;margin:8px 0 2px}
 .dxwrap .scale span{font-size:16px;color:var(--ink-3)}
 .dxwrap .dx{font-family:var(--display);font-size:30px;margin:10px 0 6px}
+/* hero title card */
+.card.hero{text-align:center;bottom:5vh;max-height:58vh}
+.card.hero h2{font-size:clamp(38px,12vw,72px);letter-spacing:-.03em;line-height:.92;margin:4px 0 12px}
+.card.hero .kicker{color:var(--red-hot);letter-spacing:.34em}
+.card.hero .metric{justify-content:center}
 /* password meter + vip */
 .pwrow{position:relative}
 .pweye{position:absolute;right:8px;top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
@@ -169,6 +177,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 #vitals{position:absolute;top:0;left:0;height:3px;width:0;background:var(--red);box-shadow:0 0 12px var(--red)}
 #tag{position:absolute;top:16px;left:16px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-3)}
 #tag b{color:var(--red-hot)}
+#resume{position:fixed;bottom:26px;left:50%;transform:translate(-50%,10px);z-index:65;pointer-events:none;
+  opacity:0;transition:opacity .3s,transform .3s;font-family:var(--display);font-size:14px;color:#fff;
+  background:var(--red);border:none;border-radius:999px;padding:13px 26px;cursor:pointer;
+  box-shadow:0 10px 26px rgba(225,6,0,.45)}
+#resume.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 #hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;
   letter-spacing:.24em;color:var(--ink-3);text-transform:uppercase;transition:opacity .4s;animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{50%{transform:translate(-50%,6px)}}
@@ -217,6 +230,23 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   border-bottom:1px solid var(--line-soft)}
 .chan-row .cn{font-family:var(--display);font-size:15px}
 .chan-row .cm{font-size:12px;color:var(--ink-3);margin-top:3px}
+
+/* ---- Station modal: the clipboard the nurse hands you --------------------- */
+/* a bottom sheet, so the room and whoever is standing in it stay on screen */
+#station{position:fixed;inset:0;z-index:75;display:none;align-items:flex-end;justify-content:center;
+  padding:0 0 2.5vh;opacity:0;transition:opacity .3s;
+  background:linear-gradient(180deg,transparent 0 34%,rgba(8,9,10,.55) 58%,rgba(8,9,10,.8) 100%)}
+#station.on{display:flex;opacity:1}
+#station .card{position:relative;left:auto;bottom:auto;top:auto;opacity:1;pointer-events:auto;
+  transform:translateY(18px);transition:transform .38s cubic-bezier(.22,1,.36,1);
+  max-height:62vh;width:min(520px,94vw)}
+/* lift the frame so the subject clears the sheet */
+#stages{transition:transform .5s cubic-bezier(.22,1,.36,1)}
+#stages.lifted{transform:translateY(-13%) scale(1.05)}
+#station.on .card{transform:translateY(0)}
+.clipclip{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:64px;height:16px;
+  background:linear-gradient(180deg,#c7ccd1,#8d949b);border-radius:4px;z-index:3;
+  box-shadow:0 3px 8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.6)}
 
 /* ---- Pry-open cooler modal (3D CSS, adapted from the crate concept) -------- */
 #pry{position:fixed;inset:0;z-index:80;display:none;place-items:center;
@@ -305,9 +335,12 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 <div id="chrome">
   <div id="vitals"></div>
   <div id="tag">PAIN.BET <b>//</b> ADMISSIONS</div>
-  <div id="hint">Scroll to descend</div>
+  <div id="hint">Or scroll to look around</div>
 </div>
 <div id="toast"></div>
+
+<!-- Station modal: capture forms rise over the held frame -->
+<div id="station"></div>
 
 <!-- Pry-open cooler: 3D crate that ratchets open on repeated taps -->
 <div id="pry">
@@ -339,6 +372,7 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   </div>
 </div>
 
+<button id="resume">Continue</button>
 <button id="menub">MENU</button>
 <div id="menu">
   <div class="menu-top"><span>DIRECTORY</span><button class="menu-x" id="menuClose">CLOSE</button></div>
@@ -369,44 +403,45 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
    form : `form` names the capture station builder below.
    ========================================================================== */
 const SCENES = [
-  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:3.4,
-    kicker:'ROOM <b>07</b> · ADMISSIONS', title:'The ward is taking patients.',
-    body:'A gurney rolls you deeper. Five questions, then we tell you what you get for being early.',
-    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.10,.24,.60,.80] },
+  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:3.0,
+    hero:true, kicker:'ADMISSIONS OPEN', title:'PAIN.BET',
+    body:'The ward is taking patients. Five questions, then we tell you what is wrong with you and what you get for being early.',
+    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
+    cta:'Check in', pushMs:11000 },
 
-  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz',
+  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz', pushMs:10000,
     still:'assets/seq/admissions/frame_0169.webp' },
 
   { id:'intake', type:'scrub', dir:'assets/seq/intake', count:169, ext:'webp', tint:'#7FD6E8', vh:2.6,
     kicker:'ROOM 02 · EXAMINATION', title:'Step inside.',
     body:'The doctor will work out exactly what is wrong with you.', reveal:[.14,.30,.66,.86] },
 
-  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.9, gate:'wallet',
+  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.9, gate:'wallet', pushMs:3400,
     still:'assets/seq/intake/frame_0169.webp' },
 
-  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.9, gate:'discharge',
+  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.9, gate:'discharge', pushMs:7500,
     still:'assets/seq/locker07/frame_0001.webp' },
 
   { id:'locker07', type:'scrub', dir:'assets/seq/locker07', count:145, ext:'webp', tint:'#F2C14E', vh:3.0, scrub:'both',
     kicker:'LOCKER <b>07</b> · DISCHARGE', title:'Pry it open.',
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.16,.32,.62,.82] },
 
-  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.7, gate:'reveal',
+  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.7, gate:'reveal', pushMs:4500,
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'],
+  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'], nextLabel:'Collect your meds', pushMs:4200,
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'],
+  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'], nextLabel:'Open my chart', pushMs:4200,
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'],
+  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'], nextLabel:'The private ward', pushMs:4200,
     still:'assets/seq/locker07/frame_0001.webp' },
 
-  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'],
+  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'], nextLabel:'Staff entrance', pushMs:4200,
     still:'assets/seq/intake/frame_0169.webp' },
 
-  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'],
+  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'], nextLabel:'Records', pushMs:4200,
     still:'assets/seq/admissions/frame_0090.webp' },
 
   { id:'login', type:'form', form:'login', tint:'#E10600', vh:1.8,
@@ -542,7 +577,7 @@ function buildWallet(card){
     </div>
     <div class="note" id="w_note">Explorer links work too. We read the hash on chain, that check is the entry. We never ask for keys.</div>
     <button class="btn" id="w_go">Log it</button>
-    <button class="btn ghost" id="w_skip">Skip the giveaway, just send my chart</button>
+    <button class="btn ghost sticky-go" id="w_skip">Skip the giveaway, just send my chart</button>
     <div class="tally"><b id="w_ent">0</b> entries in Sunday's draw</div>`;
   const chains=$('w_chains',card),txh=$('w_txh',card),note=$('w_note',card);
   chains.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
@@ -567,17 +602,21 @@ function buildWallet(card){
     $('w_ent',card).textContent=ST.entries;
     txh.value='';$('w_amt',card).value='';$('w_casino',card).value='';
     note.className='note ok';
-    note.textContent=(r.kind==='wallet'?'Wallet':'Transaction')+' logged. Entry '+ST.entries+'. Add another, or keep scrolling.';
+    note.textContent=(r.kind==='wallet'?'Wallet':'Transaction')+' logged. Entry '+ST.entries+'. Add another, or move on.';
     toast('Entry added. '+ST.entries+" in Sunday's draw."); txh.focus();
-    passHint();
+    // entries are unlimited, so the room stays open until they choose to leave
+    const skip=$('w_skip',card);
+    skip.textContent='Done, send my chart';skip.classList.remove('ghost');
   }
   $('w_go',card).addEventListener('click',submitTx);
   $('w_skip',card).addEventListener('click',()=>{
     ST.walletSkipped=true;
-    note.className='note';
-    note.textContent='Skipped. No entries in Sunday’s draw, but your chart still comes. Keep scrolling.';
-    toast('Skipped the giveaway. Your chart is still coming.');
-    passHint();
+    if(ST.entries===0){
+      note.className='note';
+      note.textContent='Skipped. No entries in Sunday’s draw, but your chart still comes.';
+      toast('Skipped the giveaway. Your chart is still coming.');
+    }
+    stationDone();
   });
   txh.addEventListener('input',()=>{if(note.className.indexOf('warn')>-1){note.className='note';
     note.textContent='Your wallet address, or the hash of any casino deposit or withdrawal. Explorer links work too.';}});
@@ -585,11 +624,23 @@ function buildWallet(card){
 
 function buildQuiz(card){
   card.innerHTML=`
-    <p class="kicker" id="q_plate">ROOM 02 · EXAMINATION</p>
-    <div class="prog" id="q_prog"></div>
-    <h2 id="q_t" style="font-size:clamp(20px,5vw,28px)"></h2>
-    <div id="q_opts"></div>
-    <div id="q_dx" style="display:none"></div>`;
+    <div id="q_intro">
+      <p class="kicker">ROOM <b>07</b> · CHECKING IN</p>
+      <h2>She is waiting at the door.</h2>
+      <p>Five questions. Answer them honestly, there is nobody here to impress.
+         We work out what is wrong with you, put it on a chart, and tell you what
+         you get for being early.</p>
+      <div class="metric"><div><b>$400</b><span>Cash, every Sunday</span></div>
+        <div><b>14</b><span>Winners a week</span></div></div>
+      <button class="btn" id="q_begin">Begin the examination</button>
+    </div>
+    <div id="q_body" style="display:none">
+      <p class="kicker" id="q_plate">ROOM 02 · EXAMINATION</p>
+      <div class="prog" id="q_prog"></div>
+      <h2 id="q_t" style="font-size:clamp(20px,5vw,28px)"></h2>
+      <div id="q_opts"></div>
+      <div id="q_dx" style="display:none"></div>
+    </div>`;
   function renderProg(){const el=$('q_prog',card);el.innerHTML='';
     for(let i=0;i<Q.length;i++){const b=document.createElement('i');
       b.className=i<ST.i?'on':(i===ST.i?'now':'');el.appendChild(b);}}
@@ -617,10 +668,15 @@ function buildQuiz(card){
       <div class="scale">${d.t}<span>/10</span></div>
       <div class="dx">${d.n}</div>
       <p>${d.l}</p></div>
-      <p style="text-align:center;margin-top:10px">Issued once. There is no second opinion. Keep scrolling to claim it.</p>`;
+      <p style="text-align:center;margin-top:10px">Issued once. There is no second opinion.</p>
+      <button class="btn" id="q_claim">Claim this chart</button>`;
     toast('Diagnosis: '+d.n+'. Pain Scale '+d.t+'/10.');
-    passHint();
+    $('q_claim',card).addEventListener('click',stationDone);
   }
+  $('q_begin',card).addEventListener('click',()=>{
+    $('q_intro',card).style.display='none';
+    $('q_body',card).style.display='block';
+  });
   card._enter=()=>{ if(ST.dx) return; if(!$('q_opts',card).children.length) renderQ(); };
   renderQ();
 }
@@ -679,7 +735,7 @@ function buildDischarge(card){
     note.textContent='Chart sent on '+ST.chan+'. Patient #'+String(ST.pno).padStart(5,'0')+'. Keep scrolling to your locker.';
     $('d_go',card).disabled=true;$('d_go',card).textContent='Sent';
     toast(ST.vip?'A host will reach out on '+ST.chan+' within 24 hours.':'Sent on '+ST.chan+'. Check your messages.');
-    passHint();
+    stationDone();
   }
   $('d_go',card).addEventListener('click',send);
   handle.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
@@ -755,7 +811,7 @@ function buildReveal(card){
     <button class="btn" id="r_go">Pry it open</button>`;
   const go=$('r_go',card);
   go.addEventListener('click',()=>{
-    if(ST.pried){passHint();return;}
+    if(ST.pried){stationDone();return;}
     Pry.show(p=>{                                   // the crate does the opening
       if(!p) return;
       $('r_h',card).textContent='Locker 0'+(ST.pno%9+1)+'. Logged to you.';
@@ -764,7 +820,7 @@ function buildReveal(card){
       $('r_val',card).textContent=p.pk.toLocaleString('en-US')+' PK';
       $('r_sub',card).textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
       go.textContent='Continue';
-      passHint();
+      stationDone();
     });
   });
 }
@@ -1126,10 +1182,26 @@ SCENES.forEach(s=>{
   const el=document.createElement('div');el.className='scene'+(s.type==='form'?' form dim':'');el.dataset.id=s.id;
   const cv=document.createElement('canvas');el.appendChild(cv);
   const card=document.createElement('div');card.className='card';
-  if(s.type==='form'){ FORMS[s.form](card); }
+  if(s.type==='form'){
+    FORMS[s.form](card);
+    // browsing rooms get an explicit way on, so progress is always a button press
+    if(!s.gate&&s.next!==false&&s.id!=='login'){
+      const go=document.createElement('button');
+      go.className='btn ghost';go.textContent=s.nextLabel||'Continue';
+      go.addEventListener('click',()=>Station.advance(scenes.find(x=>x.cfg.id===s.id)));
+      card.appendChild(go);
+    }
+  }
   else{
     card.innerHTML=`<p class="kicker">${s.kicker}</p><h2>${s.title}</h2><p>${s.body}</p>`+
       (s.metric?`<div class="metric">${s.metric.map(m=>`<div><b>${m.v}</b><span>${m.k}</span></div>`).join('')}</div>`:``);
+    if(s.hero) card.classList.add('hero');
+    if(s.cta){                       // a film scene can carry its own way in
+      const go=document.createElement('button');
+      go.className='btn';go.textContent=s.cta;
+      go.addEventListener('click',()=>Station.advance(scenes.find(x=>x.cfg.id===s.id)));
+      card.appendChild(go);
+    }
   }
   el.appendChild(card);stageLayer.appendChild(el);
   const sp=document.createElement('div');sp.className='spacer';
@@ -1149,25 +1221,25 @@ function cardOpacity(p,r){const[a,b,c,d]=r||[.12,.28,.82,.96];
   if(p<a||p>d)return 0;if(p<b)return (p-a)/(b-a);if(p>c)return 1-(p-c)/(d-c);return 1;}
 
 const vitals=document.getElementById('vitals'),tag=document.getElementById('tag'),hint=document.getElementById('hint');
+const resumeBtn=document.getElementById('resume');
+let current=null;
+resumeBtn.addEventListener('click',()=>{ if(current) Station.advance(current); });
 function render(){
   const vh=innerHeight;let y=scrollY||pageYOffset;
   let top=0,total=0;scenes.forEach(sc=>{sc._top=top;sc._h=(sc.cfg.vh||3)*vh;top+=sc._h;total+=sc._h;});
 
-  /* GATE: hold the scroll at the first unfinished station so the journey
-     cannot be skipped past a form that still needs filling in. */
-  if(!ST.roam){
-    const g=scenes.find(sc=>sc.cfg.gate&&!gateDone(sc.cfg.gate));
-    if(g){
-      const maxY=g._top+g._h*0.55;           // let the card settle, then stop
-      if(y>maxY){ y=maxY; window.scrollTo(0,maxY);
-        hint.style.opacity='';
-        hint.textContent = g.cfg.gate==='wallet' ? 'Log an entry, or skip it, to continue'
-          : (g.cfg.gate==='reveal' ? 'Open your locker to continue' : 'Finish this to continue');
-      }
+  /* STATION: when the film reaches a capture point, the form rises as a modal
+     (the clipboard). The modal locks the scroll while it is open, so nothing
+     gets skipped, and submitting auto-pushes the film on to the next room. */
+  if(!Station.open){
+    for(const sc of scenes){
+      if(!sc.cfg.gate||gateDone(sc.cfg.gate)) continue;
+      const p=(y-sc._top)/sc._h;
+      if(p>=0.34&&p<=1) { Station.enter(sc); break; }
     }
   }
   vitals.style.width=Math.max(0,Math.min(1,y/total))*100+'%';
-  if(y>vh*.4&&hint.textContent==='Scroll to descend')hint.style.opacity=0;
+  if(y>vh*.4&&hint.textContent==='Or scroll to look around')hint.style.opacity=0;
 
   scenes.forEach(sc=>{
     const start=sc._top,end=start+sc._h;let p=(y-start)/(end-start);
@@ -1175,8 +1247,11 @@ function render(){
     let vis=0;if(p>=0&&p<=1)vis=1;if(p<0&&p>-FADE)vis=1+p/FADE;if(p>1&&p<1+FADE)vis=1-(p-1)/FADE;
     vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
     const isForm=sc.cfg.type==='form';
+    // a card mounted in the station modal is the modal's to style, not ours
+    if(sc.card.parentElement!==sc.el){ if(vis>0.5)current=sc; return; }
     // pointer events only on the active form card
-    sc.card.classList.toggle('live',isForm&&vis>0.6);
+    // NB: coerce — toggle() with undefined flips the class instead of clearing it
+    sc.card.classList.toggle('live',Boolean(isForm||sc.cfg.cta)&&vis>0.6);
     if(vis<=0)return;
     if(!sc.sized&&!sizeCanvas(sc))return;
     const fp=Math.max(0,Math.min(1,p));
@@ -1194,15 +1269,115 @@ function render(){
       sc.card.style.opacity=Math.max(vis>0.6?1:vis,o);
       if(vis>0.6&&sc.card._enter){sc.card._enter();}
     }else{
-      const o=cardOpacity(fp,sc.cfg.reveal);
+      // a call-to-action card holds until it is pressed, then clears out of the
+      // way so the walk it started is not hidden behind it
+      const o=sc.cfg.cta?(Station.playing?0:vis):cardOpacity(fp,sc.cfg.reveal);
       sc.card.style.opacity=o;
       sc.card.style.transform='translate(-50%,'+(24-24*o)+'px)';
     }
-    if(vis>0.5)tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase();
+    if(vis>0.5){ tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase(); current=sc; }
   });
+
+  /* Safety net: if the film is sitting still between stations with nothing to
+     press, offer a way on so nobody is ever stranded mid-corridor. */
+  const stranded = current && !Station.open && !Station.playing
+    && current.cfg.type==='scrub' && !current.cfg.cta
+    && scenes.some(s=>s.cfg.gate&&!gateDone(s.cfg.gate));
+  resumeBtn.classList.toggle('on',Boolean(stranded));
 }
 let ticking=false;
 addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{render();ticking=false;});ticking=true;}},{passive:true});
+/* ============================================================================
+   STATION CONTROLLER — the clipboard moment.
+   The film reaches a capture point -> that scene's form lifts out of the stage
+   and into a modal. Scroll is locked while it is open (the modal IS the gate,
+   so nothing can be skipped). Finishing it closes the modal and auto-pushes the
+   film forward for a couple of seconds, like a gurney being shoved off.
+   ========================================================================== */
+const Station=(function(){
+  const wrap=document.getElementById('station');
+  let cur=null, open=false, playing=false;
+
+  /* Lock the page, but never the card: a long form has to be able to scroll to
+     its own buttons, otherwise the station is a dead end. */
+  const block=e=>{
+    const card=wrap.querySelector('.card');
+    if(card&&card.contains(e.target)&&card.scrollHeight>card.clientHeight+1) return;
+    e.preventDefault();
+  };
+  const blockKeys=e=>{ if([' ','PageDown','PageUp','ArrowDown','ArrowUp','Home','End'].includes(e.key)
+    && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) e.preventDefault(); };
+  function lock(v){
+    const m=v?'addEventListener':'removeEventListener';
+    window[m]('wheel',block,{passive:false});
+    window[m]('touchmove',block,{passive:false});
+    window[m]('keydown',blockKeys);
+  }
+  function enter(sc){
+    if(open||sc===cur&&open) return;
+    cur=sc; open=true;
+    sc.card.classList.add('live');
+    if(!sc.card.querySelector('.clipclip')){
+      const c=document.createElement('span');c.className='clipclip';sc.card.prepend(c);
+    }
+    wrap.appendChild(sc.card);                  // lift the card out of the stage
+    wrap.classList.add('on');
+    document.getElementById('stages').classList.add('lifted');
+    lock(true);
+    if(sc.card._enter) sc.card._enter();
+    // the locker station opens the crate straight away, no button needed
+    if(sc.cfg.gate==='reveal'){ const b=sc.card.querySelector('#r_go'); if(b) setTimeout(()=>b.click(),450); }
+  }
+  function done(){
+    if(!open||!cur) return;
+    const sc=cur; open=false; cur=null;
+    wrap.classList.remove('on'); document.getElementById('stages').classList.remove('lifted'); lock(false);
+    setTimeout(()=>{ sc.el.appendChild(sc.card); sc.card.classList.remove('live'); },320);
+    push(sc);
+  }
+  /* where the film should run to: the next unfinished station, so one confirm
+     plays the whole segment through instead of stopping partway */
+  function nextStop(sc){
+    const i=scenes.indexOf(sc);
+    for(let k=i+1;k<scenes.length;k++){
+      const s=scenes[k];
+      if(s.cfg.gate&&!gateDone(s.cfg.gate)) return s._top+s._h*0.45;
+    }
+    const nxt=scenes[i+1];
+    return nxt ? nxt._top+nxt._h*0.55 : document.body.scrollHeight-innerHeight;
+  }
+  /* auto-play: run the footage forward to the next popup */
+  function push(sc){
+    const from=scrollY||pageYOffset, to=nextStop(sc), dist=Math.abs(to-from);
+    if(dist<20) return;
+    // deliberate pace: the film should feel walked, not skipped through
+    const DUR=sc.cfg.pushMs||Math.max(3200,Math.min(9000,dist*1.35));
+    const t0=performance.now();
+    playing=true; acc=0; since=t0;
+    (function step(t){
+      if(open||!playing) {playing=false;return;}          // a popup arrived, stop here
+      const e=Math.min(1,(t-t0)/DUR), k=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;   // easeInOut
+      window.scrollTo(0, from+(to-from)*k);
+      if(e<1) requestAnimationFrame(step); else playing=false;
+    })(t0);
+  }
+  /* A deliberate scroll cancels the auto-play, but a stray notch or leftover
+     trackpad momentum must not: those would strand the viewer mid-corridor. */
+  let acc=0, since=0;
+  addEventListener('wheel',e=>{
+    if(!playing) return;
+    if(performance.now()-since<500) return;      // ignore momentum right after the press
+    acc+=Math.abs(e.deltaY);
+    if(acc>160) playing=false;
+  },{passive:true});
+  addEventListener('touchmove',()=>{ if(playing&&performance.now()-since>500) playing=false; },{passive:true});
+  const markStart=()=>{acc=0;since=performance.now();};
+  return { enter, done, advance:push, markStart, get open(){return open;},
+           get playing(){return playing;} };
+})();
+/* every capture station reports completion the same way */
+function stationDone(){ passHint(); Station.done(); }
+
 /* ---- Directory menu: jump to any room; browsing unlocks the gates ---------- */
 (function(){
   const btn=document.getElementById('menub'),menu=document.getElementById('menu'),
