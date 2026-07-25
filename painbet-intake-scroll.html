@@ -171,6 +171,47 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   padding:12px 16px;font-size:13px;color:var(--ink);max-width:86vw;transition:.3s;box-shadow:0 12px 30px rgba(0,0,0,.5)}
 #toast.up{opacity:1;transform:translate(-50%,0)}
 
+/* ---- Directory menu ------------------------------------------------------- */
+#menub{position:fixed;top:12px;right:12px;z-index:60;font-family:var(--mono);font-size:11px;
+  letter-spacing:.18em;color:var(--ink-2);background:rgba(19,21,23,.72);backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:8px;padding:10px 13px;cursor:pointer}
+#menub:hover{border-color:var(--red);color:#fff}
+#menu{position:fixed;inset:0;z-index:70;background:rgba(10,11,12,.94);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .25s}
+#menu.on{opacity:1;pointer-events:auto}
+.menu-top{display:flex;align-items:center;justify-content:space-between;padding:20px 18px}
+.menu-top span{font-family:var(--mono);font-size:12px;letter-spacing:.24em;color:var(--ink-2)}
+.menu-x{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--ink-2);background:none;
+  border:1px solid var(--line);border-radius:8px;padding:10px 16px;cursor:pointer}
+.mi{display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;
+  background:var(--card);border:none;border-top:1px solid var(--line-soft);padding:18px;color:var(--ink)}
+.mi:hover{background:#212327}
+.mi.here{box-shadow:inset 3px 0 0 var(--red)}
+.mi .mno{font-family:var(--mono);font-size:12px;color:var(--ink-3);width:34px;flex:none}
+.mi .mt{display:block;font-family:var(--display);font-size:17px;line-height:1.1;text-transform:uppercase}
+.mi .mm{display:block;font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-top:5px}
+.mi .arw{margin-left:auto;color:var(--ink-3)}
+.menu-foot{margin-top:auto;padding:18px;font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  border-top:1px solid var(--line-soft)}
+/* ---- VIP + staff ---------------------------------------------------------- */
+.ucard{border:1px solid var(--line-soft);border-radius:10px;padding:12px;margin-top:9px;background:var(--sunk)}
+.ulab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.uget{font-size:14px;color:var(--ink);margin-top:5px;font-weight:600}
+.uwas{font-size:12px;color:var(--ink-3);margin-top:5px}
+.uwas .k{color:#6b7076;margin-right:6px}
+.trk{display:block;width:100%;text-align:left;cursor:pointer;background:var(--sunk);
+  border:1px solid var(--line-soft);border-radius:10px;padding:13px;margin-top:9px;color:var(--ink)}
+.trk.on{border-color:var(--red);background:rgba(225,6,0,.12)}
+.trk b{font-family:var(--display);font-size:15px;display:block}
+.trk span{font-size:12.5px;color:var(--ink-3);display:block;margin-top:4px}
+.perks{margin:10px 0 0;padding-left:18px}
+.perks li{font-size:13px;color:var(--ink-2);line-height:1.45;margin-bottom:7px}
+.perks li b{color:var(--ink)}
+.chan-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;
+  border-bottom:1px solid var(--line-soft)}
+.chan-row .cn{font-family:var(--display);font-size:15px}
+.chan-row .cm{font-size:12px;color:var(--ink-3);margin-top:3px}
+
 /* ---- Track + handoff ------------------------------------------------------ */
 #track{position:relative;z-index:2;pointer-events:none}.spacer{width:100%}
 #handoff{position:relative;z-index:3;min-height:100vh;display:flex;align-items:center;justify-content:center;
@@ -192,6 +233,13 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   <div id="hint">Scroll to descend</div>
 </div>
 <div id="toast"></div>
+
+<button id="menub">MENU</button>
+<div id="menu">
+  <div class="menu-top"><span>DIRECTORY</span><button class="menu-x" id="menuClose">CLOSE</button></div>
+  <div id="menuList"></div>
+  <div class="menu-foot">18+ · No deposit · No bet · Nothing to buy</div>
+</div>
 
 <div id="track"></div>
 
@@ -221,31 +269,40 @@ const SCENES = [
     body:'A gurney rolls you deeper. Five questions, then we tell you what you get for being early.',
     metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.10,.24,.60,.80] },
 
+  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz',
+    still:'assets/seq/admissions/frame_0169.webp' },
+
   { id:'intake', type:'scrub', dir:'assets/seq/intake', count:169, ext:'webp', tint:'#7FD6E8', vh:2.6,
     kicker:'ROOM 02 · EXAMINATION', title:'Step inside.',
     body:'The doctor will work out exactly what is wrong with you.', reveal:[.14,.30,.66,.86] },
 
-  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.8,
+  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.9, gate:'wallet',
     still:'assets/seq/intake/frame_0169.webp' },
 
-  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.8,
-    still:'assets/seq/locker07/frame_0001.webp' },
-
-  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.8,
+  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.9, gate:'discharge',
     still:'assets/seq/locker07/frame_0001.webp' },
 
   { id:'locker07', type:'scrub', dir:'assets/seq/locker07', count:145, ext:'webp', tint:'#F2C14E', vh:3.0, scrub:'both',
     kicker:'LOCKER <b>07</b> · DISCHARGE', title:'Pry it open.',
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.16,.32,.62,.82] },
 
-  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.6,
+  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.7, gate:'reveal',
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2,
+  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'],
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0,
+  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'],
+    still:'assets/seq/locker07/frame_0145.webp' },
+
+  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'],
     still:'assets/seq/locker07/frame_0001.webp' },
+
+  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'],
+    still:'assets/seq/intake/frame_0169.webp' },
+
+  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'],
+    still:'assets/seq/admissions/frame_0090.webp' },
 
   { id:'login', type:'form', form:'login', tint:'#E10600', vh:1.8,
     still:'assets/seq/admissions/frame_0001.webp' },
@@ -258,7 +315,22 @@ const ST = { chain:'BTC', entries:0, hashes:{}, ENTRY_CAP:100,
   i:0, score:0, picks:[], dx:null, pno:6412,
   chan:'Telegram', vip:false, pw:null, handle:null, sent:false,
   pried:false, pkWon:null,
-  spun:false, usd:0, entered:{}, codes:{} };
+  spun:false, usd:0, entered:{}, codes:{},
+  walletSkipped:false, track:null, excl:'exclusive', roam:false };
+
+/* A gated scene holds the scroll until its station is finished. Mirrors the
+   original flow: the wallet room is the only one that can be skipped. */
+function gateDone(g){
+  switch(g){
+    case 'quiz':      return !!ST.dx;
+    case 'wallet':    return ST.entries>0 || ST.walletSkipped;
+    case 'discharge': return ST.sent;
+    case 'reveal':    return ST.pried;
+    default:          return true;
+  }
+}
+function passHint(){ const h=document.getElementById('hint');
+  h.style.opacity='';h.textContent='Keep scrolling'; setTimeout(()=>{h.style.opacity=0;},2200); }
 
 const Q=[
  {q:'It is 2am and you are down. What happens next?',a:[['Deposit again',3],['Close everything',0],['Watch someone else lose',2],['Set an alarm and sleep',1]]},
@@ -365,6 +437,7 @@ function buildWallet(card){
     </div>
     <div class="note" id="w_note">Explorer links work too. We read the hash on chain, that check is the entry. We never ask for keys.</div>
     <button class="btn" id="w_go">Log it</button>
+    <button class="btn ghost" id="w_skip">Skip the giveaway, just send my chart</button>
     <div class="tally"><b id="w_ent">0</b> entries in Sunday's draw</div>`;
   const chains=$('w_chains',card),txh=$('w_txh',card),note=$('w_note',card);
   chains.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
@@ -391,9 +464,16 @@ function buildWallet(card){
     note.className='note ok';
     note.textContent=(r.kind==='wallet'?'Wallet':'Transaction')+' logged. Entry '+ST.entries+'. Add another, or keep scrolling.';
     toast('Entry added. '+ST.entries+" in Sunday's draw."); txh.focus();
-    document.getElementById('hint').textContent='Keep scrolling to continue';
+    passHint();
   }
   $('w_go',card).addEventListener('click',submitTx);
+  $('w_skip',card).addEventListener('click',()=>{
+    ST.walletSkipped=true;
+    note.className='note';
+    note.textContent='Skipped. No entries in Sunday’s draw, but your chart still comes. Keep scrolling.';
+    toast('Skipped the giveaway. Your chart is still coming.');
+    passHint();
+  });
   txh.addEventListener('input',()=>{if(note.className.indexOf('warn')>-1){note.className='note';
     note.textContent='Your wallet address, or the hash of any casino deposit or withdrawal. Explorer links work too.';}});
 }
@@ -434,7 +514,7 @@ function buildQuiz(card){
       <p>${d.l}</p></div>
       <p style="text-align:center;margin-top:10px">Issued once. There is no second opinion. Keep scrolling to claim it.</p>`;
     toast('Diagnosis: '+d.n+'. Pain Scale '+d.t+'/10.');
-    document.getElementById('hint').textContent='Keep scrolling to continue';
+    passHint();
   }
   card._enter=()=>{ if(ST.dx) return; if(!$('q_opts',card).children.length) renderQ(); };
   renderQ();
@@ -494,7 +574,7 @@ function buildDischarge(card){
     note.textContent='Chart sent on '+ST.chan+'. Patient #'+String(ST.pno).padStart(5,'0')+'. Keep scrolling to your locker.';
     $('d_go',card).disabled=true;$('d_go',card).textContent='Sent';
     toast(ST.vip?'A host will reach out on '+ST.chan+' within 24 hours.':'Sent on '+ST.chan+'. Check your messages.');
-    document.getElementById('hint').textContent='Keep scrolling to continue';
+    passHint();
   }
   $('d_go',card).addEventListener('click',send);
   handle.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
@@ -512,7 +592,7 @@ function buildReveal(card){
     <button class="btn" id="r_go">Pry it open</button>`;
   const go=$('r_go',card);
   go.addEventListener('click',()=>{
-    if(ST.pried){document.getElementById('hint').textContent='Keep scrolling to continue';return;}
+    if(ST.pried){passHint();return;}
     ST.pried=true;const p=rollPk();ST.pkWon=p;
     $('r_h',card).textContent='Locker 0'+(ST.pno%9+1)+'. Logged to you.';
     $('r_p',card).style.display='none';
@@ -521,7 +601,7 @@ function buildReveal(card){
     $('r_sub',card).textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
     go.textContent='Continue';
     toast('Logged to patient #'+String(ST.pno).padStart(5,'0')+'.');
-    document.getElementById('hint').textContent='Keep scrolling to continue';
+    passHint();
   });
 }
 
@@ -648,8 +728,148 @@ function buildLogin(card){
   $('li_pw',card).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 }
 
+/* ---- channels (the Ward) ---- */
+const CHANS=[
+ ['The Ward','Telegram · 8,204 in','JOIN'],
+ ['Discord','Draw results, drops, roast board','JOIN'],
+ ['X','Draw results and clips','FOLLOW'],
+ ['Kick','Streamers and live drops','SOON']
+];
+function buildChannels(card){
+  card.innerHTML=`
+    <p class="kicker">DISCHARGED · NOW GO WHERE IT HAPPENS</p>
+    <h2>The Ward.</h2>
+    <p>Draw results posted publicly every Sunday, 15:00 CET.</p>
+    ${CHANS.map(c=>`<div class="chan-row"><div><div class="cn">${c[0]}</div><div class="cm">${c[1]}</div></div>
+      <button class="gbtn"${c[2]==='SOON'?' disabled':''}>${c[2]}</button></div>`).join('')}
+    <div class="sub-h">October</div>
+    <p>You are in the first group through the doors, ahead of everyone who signs
+       up after launch. The whole month runs on promotions, giveaways and drops,
+       and you are inside it from day one.</p>`;
+}
+
+/* ---- private ward (VIP) ---- */
+const UPGRADES=[
+ ['Tier','Matched on day one, then reviewed upward only','Whatever you happen to hold'],
+ ['Your host','One named person with a direct line','A rota, a shared inbox, a new name each time'],
+ ['Withdrawals','Your host owns the payout end to end','General queue, documents resubmitted'],
+ ['Cashback','Shaped around how you actually play','Fixed rate, same as everyone in your band'],
+ ['Terms','Agreed in writing first, then locked for good','Reviewed whenever it suits them'],
+ ['October','Through the doors before anyone else','Not on offer anywhere']
+];
+function buildVip(card){
+  card.innerHTML=`
+    <p class="kicker">PRIVATE WARD · <b>VIP</b></p>
+    <h2>Bring your tier with you.</h2>
+    <p>Whatever you are on now, we match it. In most cases we can do better.
+       Terms in writing before you move a single coin, then locked to your
+       account for good. No trial period, no review after three months.</p>
+    ${UPGRADES.map(u=>`<div class="ucard"><div class="ulab">${u[0]}</div><div class="uget">${u[1]}</div>
+      <div class="uwas"><span class="k">Elsewhere</span>${u[2]}</div></div>`).join('')}
+    <div class="field"><label>How should we reach you?</label>
+      <input class="in" id="v_handle" placeholder="@yourhandle"></div>
+    <div class="field"><label>Where do you play now?</label>
+      <input class="in" id="v_where" placeholder="Casino name"></div>
+    <div class="field"><label>Roughly how much a month?</label></div>
+    <div class="chips" id="v_vol">
+      ${['Rather not say','Under $5k','$5k to $25k','$25k to $100k','$100k plus']
+        .map((v,i)=>`<button class="chip${i===0?' on':''}" data-v="${v}">${v}</button>`).join('')}
+    </div>
+    <div class="note" id="v_note">One host, one message, no list. Nothing here is shared outside the VIP desk and nothing is published.</div>
+    <button class="btn" id="v_go">Ask a host to reach out</button>`;
+  card._enter=()=>{ if(ST.handle&&!$('v_handle',card).value) $('v_handle',card).value=ST.handle; };
+  const vol=$('v_vol',card);
+  vol.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+    [...vol.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');ST.vipVol=b.dataset.v;});
+  $('v_go',card).addEventListener('click',()=>{
+    const v=$('v_handle',card).value.trim(),n=$('v_note',card);
+    if(v.replace(/[^0-9a-zA-Z_@.+]/g,'').length<4){n.className='note warn';
+      n.textContent='Leave one way to reach you. A Telegram handle is enough.';$('v_handle',card).focus();return;}
+    ST.vip=true;n.className='note ok';
+    n.textContent='Logged. A host reads this within the day and comes back to you on '+v+' with terms, before you move anything.';
+    $('v_go',card).disabled=true;$('v_go',card).textContent='Request sent';
+    toast('VIP desk notified.');
+  });
+}
+
+/* ---- staff entrance (affiliate / hiring) ---- */
+const TRACKS=[
+ ['mod','Moderation','Crypto degens who can hold a room. You know the culture, you can take a joke and land one, and you do not lose your head at 3am.'],
+ ['stream','Streaming','Bring your room. Exclusive or not, the share is the same on the wager.'],
+ ['inf','Influencer','You post, they come. Paid on what they wager, not on impressions.'],
+ ['port','Porter','Bring players over from wherever you run now. Paid weekly on results.']
+];
+const EXCL={
+ exclusive:{lab:'What exclusive gets you',perks:[
+  '<b>A standard share of everything wagered through your link.</b> Paid weekly, on the wager, not on a guess at your value.',
+  '<b>Other deal shapes on the table.</b> Hybrid, upfront against the share, flat retainer.',
+  '<b>A track record moves the number.</b> Bring proof of what you have done elsewhere and the share is negotiated from there.',
+  '<b>Promotions written for your room</b>, not a template. Your name on them, your rules, your schedule.',
+  '<b>Your own giveaways</b>, funded by us, run when it suits your stream.',
+  '<b>Drop codes for your chat</b>, live during the stream. Nobody else hands those out.',
+  '<b>Custom overlays and any graphics you need</b>, made by our designers, yours to keep.'],
+  note:'<b>Exclusive means exclusive.</b> You stream us and nobody else in the category. In return you get the whole toolkit and a say in what we build for you.'},
+ non:{lab:'What non exclusive gets you',perks:[
+  '<b>The same standard share of everything wagered through your link.</b> The rate does not drop because you stream elsewhere.',
+  '<b>Wager races</b> for your community. Beyond that, this is the offer.',
+  'Standard creative from the shared asset pack.',
+  'A tracking link and honest reporting on it.'],
+  note:'Welcome, and no hard feelings. The tailored promotions, funded giveaways, chat drops and custom overlays sit behind exclusivity, because that is what pays for them.'}
+};
+function buildStaff(card){
+  card.innerHTML=`
+    <p class="kicker">STAFF ENTRANCE · WE ARE HIRING</p>
+    <h2>Come and work here.</h2>
+    <p>Paid weekly, on results. Not hours, not vibes. Four ways in. Pick the one
+       that fits and tell us where to find you.</p>
+    <div id="t_list">${TRACKS.map(t=>
+      `<button class="trk" data-t="${t[0]}"><b>${t[1]}</b><span>${t[2]}</span></button>`).join('')}</div>
+    <div id="t_excl" style="display:none">
+      <div class="chips" id="t_ex">
+        <button class="chip on" data-e="exclusive">Exclusive</button>
+        <button class="chip" data-e="non">Non exclusive</button>
+      </div>
+      <div class="sub-h" id="t_lab"></div>
+      <ul class="perks" id="t_perks"></ul>
+      <p id="t_note" style="font-size:13px;color:var(--ink-3)"></p>
+    </div>
+    <div class="field" id="t_cwrap"><label>Where do we reach you?</label>
+      <input class="in" id="t_contact" placeholder="@yourhandle"></div>
+    <div class="note" id="t_note2">Pick a track, and leave us a handle so we can reply.</div>
+    <button class="btn" id="t_go">Send it</button>`;
+  const list=$('t_list',card),ex=$('t_excl',card);
+  function paintExcl(){const e=EXCL[ST.excl];
+    $('t_lab',card).textContent=e.lab;
+    $('t_perks',card).innerHTML=e.perks.map(p=>`<li>${p}</li>`).join('');
+    $('t_note',card).innerHTML=e.note;}
+  list.addEventListener('click',e=>{const b=e.target.closest('.trk');if(!b)return;
+    [...list.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');
+    ST.track=b.dataset.t;
+    ex.style.display=ST.track==='stream'?'block':'none';
+    if(ST.track==='stream')paintExcl();});
+  $('t_ex',card).addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+    [...b.parentNode.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');
+    ST.excl=b.dataset.e;paintExcl();});
+  card._enter=()=>{ $('t_cwrap',card).style.display=ST.sent?'none':'block';
+    if(ST.sent)$('t_note2',card).textContent='Pick a track. We will come back to you on '+ST.chan+'.'; };
+  const TRACKN={mod:'Moderation',stream:'Streaming',inf:'Influencer',port:'Porter'};
+  $('t_go',card).addEventListener('click',()=>{
+    const n=$('t_note2',card);
+    if(!ST.track){n.className='note warn';n.textContent='Pick a track first. Any of the four.';return;}
+    const contact=ST.sent?ST.handle:$('t_contact',card).value.trim();
+    if(!ST.sent&&contact.replace(/[^0-9a-zA-Z_@.+]/g,'').length<4){
+      n.className='note warn';n.textContent='Leave a handle so we can actually reply.';$('t_contact',card).focus();return;}
+    const what=TRACKN[ST.track]+(ST.track==='stream'?(ST.excl==='exclusive'?', exclusive':', non exclusive'):'');
+    n.className='note ok';
+    n.textContent='In. '+what+'. Someone reads this the same week and comes back on '+ST.chan+'.';
+    $('t_go',card).disabled=true;$('t_go',card).textContent='Sent';
+    toast('Application logged.');
+  });
+}
+
 const FORMS={wallet:buildWallet,quiz:buildQuiz,discharge:buildDischarge,reveal:buildReveal,
-  dispensary:buildDispensary,dashboard:buildDashboard,login:buildLogin};
+  dispensary:buildDispensary,dashboard:buildDashboard,login:buildLogin,
+  channels:buildChannels,vip:buildVip,staff:buildStaff};
 
 /* live countdowns for dispensary + dashboard */
 setInterval(function(){
@@ -729,10 +949,24 @@ function cardOpacity(p,r){const[a,b,c,d]=r||[.12,.28,.82,.96];
 
 const vitals=document.getElementById('vitals'),tag=document.getElementById('tag'),hint=document.getElementById('hint');
 function render(){
-  const vh=innerHeight,y=scrollY||pageYOffset;
+  const vh=innerHeight;let y=scrollY||pageYOffset;
   let top=0,total=0;scenes.forEach(sc=>{sc._top=top;sc._h=(sc.cfg.vh||3)*vh;top+=sc._h;total+=sc._h;});
+
+  /* GATE: hold the scroll at the first unfinished station so the journey
+     cannot be skipped past a form that still needs filling in. */
+  if(!ST.roam){
+    const g=scenes.find(sc=>sc.cfg.gate&&!gateDone(sc.cfg.gate));
+    if(g){
+      const maxY=g._top+g._h*0.55;           // let the card settle, then stop
+      if(y>maxY){ y=maxY; window.scrollTo(0,maxY);
+        hint.style.opacity='';
+        hint.textContent = g.cfg.gate==='wallet' ? 'Log an entry, or skip it, to continue'
+          : (g.cfg.gate==='reveal' ? 'Open your locker to continue' : 'Finish this to continue');
+      }
+    }
+  }
   vitals.style.width=Math.max(0,Math.min(1,y/total))*100+'%';
-  if(y>vh*.4)hint.style.opacity=0;
+  if(y>vh*.4&&hint.textContent==='Scroll to descend')hint.style.opacity=0;
 
   scenes.forEach(sc=>{
     const start=sc._top,end=start+sc._h;let p=(y-start)/(end-start);
@@ -768,6 +1002,40 @@ function render(){
 }
 let ticking=false;
 addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{render();ticking=false;});ticking=true;}},{passive:true});
+/* ---- Directory menu: jump to any room; browsing unlocks the gates ---------- */
+(function(){
+  const btn=document.getElementById('menub'),menu=document.getElementById('menu'),
+        list=document.getElementById('menuList');
+  // directory order is deliberate, not scroll order
+  const ORDER=['dashboard','dispensary','vip','staff','channels'];
+  const items=ORDER.map(id=>{const i=scenes.findIndex(s=>s.cfg.id===id);
+    return i<0?null:{sc:scenes[i],i};}).filter(o=>o&&o.sc.cfg.menu);
+  list.innerHTML=items.map(o=>{
+    const [no,label]=o.sc.cfg.menu;
+    const sub={dashboard:'Diagnosis, entries, October drop',
+      dispensary:'Wheel, tasks, giveaways, drop codes',
+      vip:'Bring your tier. We match it, often better.',
+      staff:'We are hiring. Paid weekly on results.',
+      channels:'Telegram, Discord, X'}[o.sc.cfg.id]||'';
+    return `<button class="mi" data-i="${o.i}"><span class="mno">${no}</span>
+      <span><span class="mt">${label}</span><span class="mm">${sub}</span></span>
+      <span class="arw">&rsaquo;</span></button>`;
+  }).join('');
+  function open(v){menu.classList.toggle('on',v);}
+  btn.addEventListener('click',()=>open(true));
+  document.getElementById('menuClose').addEventListener('click',()=>open(false));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')open(false);});
+  list.addEventListener('click',e=>{
+    const b=e.target.closest('.mi');if(!b)return;
+    const sc=scenes[+b.dataset.i];
+    // jumping past an unfinished station means they are just looking around
+    const gated=scenes.some(s=>s.cfg.gate&&!gateDone(s.cfg.gate)&&s._top<sc._top);
+    if(gated&&!ST.roam){ST.roam=true;toast('Have a look around. You need a chart before anything can pay out.');}
+    open(false);
+    window.scrollTo({top:sc._top+sc._h*0.4,behavior:'smooth'});
+  });
+})();
+
 (function boot(){if(!sizeCanvas(scenes[0]))return requestAnimationFrame(boot);sizeAll();})();
 </script>
 </body>
