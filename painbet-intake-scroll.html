@@ -383,10 +383,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
    form : `form` names the capture station builder below.
    ========================================================================== */
 const SCENES = [
-  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:3.4,
+  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:2.6,
     kicker:'ROOM <b>07</b> · ADMISSIONS', title:'The ward is taking patients.',
-    body:'A gurney rolls you deeper. Five questions, then we tell you what you get for being early.',
-    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.10,.24,.60,.80] },
+    body:'Five questions. We work out what is wrong with you, then we tell you what you get for being early.',
+    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.04,.12,.72,.92],
+    cta:'Check in' },
 
   { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz',
     still:'assets/seq/admissions/frame_0169.webp' },
@@ -1158,6 +1159,12 @@ SCENES.forEach(s=>{
   else{
     card.innerHTML=`<p class="kicker">${s.kicker}</p><h2>${s.title}</h2><p>${s.body}</p>`+
       (s.metric?`<div class="metric">${s.metric.map(m=>`<div><b>${m.v}</b><span>${m.k}</span></div>`).join('')}</div>`:``);
+    if(s.cta){                       // a film scene can carry its own way in
+      const go=document.createElement('button');
+      go.className='btn';go.textContent=s.cta;
+      go.addEventListener('click',()=>Station.advance(scenes.find(x=>x.cfg.id===s.id)));
+      card.appendChild(go);
+    }
   }
   el.appendChild(card);stageLayer.appendChild(el);
   const sp=document.createElement('div');sp.className='spacer';
@@ -1201,7 +1208,8 @@ function render(){
     vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
     const isForm=sc.cfg.type==='form';
     // pointer events only on the active form card
-    sc.card.classList.toggle('live',isForm&&vis>0.6);
+    // NB: coerce — toggle() with undefined flips the class instead of clearing it
+    sc.card.classList.toggle('live',Boolean(isForm||sc.cfg.cta)&&vis>0.6);
     if(vis<=0)return;
     if(!sc.sized&&!sizeCanvas(sc))return;
     const fp=Math.max(0,Math.min(1,p));
@@ -1219,7 +1227,9 @@ function render(){
       sc.card.style.opacity=Math.max(vis>0.6?1:vis,o);
       if(vis>0.6&&sc.card._enter){sc.card._enter();}
     }else{
-      const o=cardOpacity(fp,sc.cfg.reveal);
+      // a scene carrying a call to action keeps its card up the whole time,
+      // so there is always something to click rather than a timed fade
+      const o=sc.cfg.cta?vis:cardOpacity(fp,sc.cfg.reveal);
       sc.card.style.opacity=o;
       sc.card.style.transform='translate(-50%,'+(24-24*o)+'px)';
     }
