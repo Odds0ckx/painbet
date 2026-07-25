@@ -52,8 +52,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   border:1px solid rgba(69,74,80,.5);border-top:1px solid var(--red);border-radius:14px;
   box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 24px rgba(225,6,0,.18),inset 0 1px 0 rgba(255,255,255,.04);
   opacity:0;will-change:opacity,transform;pointer-events:none;
-  scrollbar-width:thin;scrollbar-color:var(--line) transparent;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;overscroll-behavior:contain;
 }
+/* keep the way out of a form permanently in reach */
+.card .btn.sticky-go{position:sticky;bottom:-2px;margin-bottom:0;z-index:4;
+  background:rgba(19,21,23,.94);backdrop-filter:blur(8px);border-color:var(--line)}
 .scene.form .card{bottom:auto;top:50%;transform:translate(-50%,-46%)}
 .card.live{pointer-events:auto}
 .card .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
@@ -107,8 +110,8 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .dxwrap .scale span{font-size:16px;color:var(--ink-3)}
 .dxwrap .dx{font-family:var(--display);font-size:30px;margin:10px 0 6px}
 /* hero title card */
-.card.hero{text-align:center;bottom:16vh}
-.card.hero h2{font-size:clamp(44px,15vw,86px);letter-spacing:-.03em;line-height:.92;margin:4px 0 14px}
+.card.hero{text-align:center;bottom:5vh;max-height:58vh}
+.card.hero h2{font-size:clamp(38px,12vw,72px);letter-spacing:-.03em;line-height:.92;margin:4px 0 12px}
 .card.hero .kicker{color:var(--red-hot);letter-spacing:.34em}
 .card.hero .metric{justify-content:center}
 /* password meter + vip */
@@ -174,6 +177,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 #vitals{position:absolute;top:0;left:0;height:3px;width:0;background:var(--red);box-shadow:0 0 12px var(--red)}
 #tag{position:absolute;top:16px;left:16px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-3)}
 #tag b{color:var(--red-hot)}
+#resume{position:fixed;bottom:26px;left:50%;transform:translate(-50%,10px);z-index:65;pointer-events:none;
+  opacity:0;transition:opacity .3s,transform .3s;font-family:var(--display);font-size:14px;color:#fff;
+  background:var(--red);border:none;border-radius:999px;padding:13px 26px;cursor:pointer;
+  box-shadow:0 10px 26px rgba(225,6,0,.45)}
+#resume.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 #hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;
   letter-spacing:.24em;color:var(--ink-3);text-transform:uppercase;transition:opacity .4s;animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{50%{transform:translate(-50%,6px)}}
@@ -364,6 +372,7 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   </div>
 </div>
 
+<button id="resume">Continue</button>
 <button id="menub">MENU</button>
 <div id="menu">
   <div class="menu-top"><span>DIRECTORY</span><button class="menu-x" id="menuClose">CLOSE</button></div>
@@ -568,7 +577,7 @@ function buildWallet(card){
     </div>
     <div class="note" id="w_note">Explorer links work too. We read the hash on chain, that check is the entry. We never ask for keys.</div>
     <button class="btn" id="w_go">Log it</button>
-    <button class="btn ghost" id="w_skip">Skip the giveaway, just send my chart</button>
+    <button class="btn ghost sticky-go" id="w_skip">Skip the giveaway, just send my chart</button>
     <div class="tally"><b id="w_ent">0</b> entries in Sunday's draw</div>`;
   const chains=$('w_chains',card),txh=$('w_txh',card),note=$('w_note',card);
   chains.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
@@ -1212,6 +1221,9 @@ function cardOpacity(p,r){const[a,b,c,d]=r||[.12,.28,.82,.96];
   if(p<a||p>d)return 0;if(p<b)return (p-a)/(b-a);if(p>c)return 1-(p-c)/(d-c);return 1;}
 
 const vitals=document.getElementById('vitals'),tag=document.getElementById('tag'),hint=document.getElementById('hint');
+const resumeBtn=document.getElementById('resume');
+let current=null;
+resumeBtn.addEventListener('click',()=>{ if(current) Station.advance(current); });
 function render(){
   const vh=innerHeight;let y=scrollY||pageYOffset;
   let top=0,total=0;scenes.forEach(sc=>{sc._top=top;sc._h=(sc.cfg.vh||3)*vh;top+=sc._h;total+=sc._h;});
@@ -1235,6 +1247,8 @@ function render(){
     let vis=0;if(p>=0&&p<=1)vis=1;if(p<0&&p>-FADE)vis=1+p/FADE;if(p>1&&p<1+FADE)vis=1-(p-1)/FADE;
     vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
     const isForm=sc.cfg.type==='form';
+    // a card mounted in the station modal is the modal's to style, not ours
+    if(sc.card.parentElement!==sc.el){ if(vis>0.5)current=sc; return; }
     // pointer events only on the active form card
     // NB: coerce — toggle() with undefined flips the class instead of clearing it
     sc.card.classList.toggle('live',Boolean(isForm||sc.cfg.cta)&&vis>0.6);
@@ -1255,14 +1269,21 @@ function render(){
       sc.card.style.opacity=Math.max(vis>0.6?1:vis,o);
       if(vis>0.6&&sc.card._enter){sc.card._enter();}
     }else{
-      // a scene carrying a call to action keeps its card up the whole time,
-      // so there is always something to click rather than a timed fade
-      const o=sc.cfg.cta?vis:cardOpacity(fp,sc.cfg.reveal);
+      // a call-to-action card holds until it is pressed, then clears out of the
+      // way so the walk it started is not hidden behind it
+      const o=sc.cfg.cta?(Station.playing?0:vis):cardOpacity(fp,sc.cfg.reveal);
       sc.card.style.opacity=o;
       sc.card.style.transform='translate(-50%,'+(24-24*o)+'px)';
     }
-    if(vis>0.5)tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase();
+    if(vis>0.5){ tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase(); current=sc; }
   });
+
+  /* Safety net: if the film is sitting still between stations with nothing to
+     press, offer a way on so nobody is ever stranded mid-corridor. */
+  const stranded = current && !Station.open && !Station.playing
+    && current.cfg.type==='scrub' && !current.cfg.cta
+    && scenes.some(s=>s.cfg.gate&&!gateDone(s.cfg.gate));
+  resumeBtn.classList.toggle('on',Boolean(stranded));
 }
 let ticking=false;
 addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{render();ticking=false;});ticking=true;}},{passive:true});
@@ -1277,7 +1298,13 @@ const Station=(function(){
   const wrap=document.getElementById('station');
   let cur=null, open=false, playing=false;
 
-  const block=e=>{e.preventDefault();};
+  /* Lock the page, but never the card: a long form has to be able to scroll to
+     its own buttons, otherwise the station is a dead end. */
+  const block=e=>{
+    const card=wrap.querySelector('.card');
+    if(card&&card.contains(e.target)&&card.scrollHeight>card.clientHeight+1) return;
+    e.preventDefault();
+  };
   const blockKeys=e=>{ if([' ','PageDown','PageUp','ArrowDown','ArrowUp','Home','End'].includes(e.key)
     && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) e.preventDefault(); };
   function lock(v){
@@ -1326,7 +1353,7 @@ const Station=(function(){
     // deliberate pace: the film should feel walked, not skipped through
     const DUR=sc.cfg.pushMs||Math.max(3200,Math.min(9000,dist*1.35));
     const t0=performance.now();
-    playing=true;
+    playing=true; acc=0; since=t0;
     (function step(t){
       if(open||!playing) {playing=false;return;}          // a popup arrived, stop here
       const e=Math.min(1,(t-t0)/DUR), k=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;   // easeInOut
@@ -1334,10 +1361,19 @@ const Station=(function(){
       if(e<1) requestAnimationFrame(step); else playing=false;
     })(t0);
   }
-  // any user scroll cancels the auto-play so they keep control
-  addEventListener('wheel',()=>{playing=false;},{passive:true});
-  addEventListener('touchstart',()=>{playing=false;},{passive:true});
-  return { enter, done, advance:push, get open(){return open;} };
+  /* A deliberate scroll cancels the auto-play, but a stray notch or leftover
+     trackpad momentum must not: those would strand the viewer mid-corridor. */
+  let acc=0, since=0;
+  addEventListener('wheel',e=>{
+    if(!playing) return;
+    if(performance.now()-since<500) return;      // ignore momentum right after the press
+    acc+=Math.abs(e.deltaY);
+    if(acc>160) playing=false;
+  },{passive:true});
+  addEventListener('touchmove',()=>{ if(playing&&performance.now()-since>500) playing=false; },{passive:true});
+  const markStart=()=>{acc=0;since=performance.now();};
+  return { enter, done, advance:push, markStart, get open(){return open;},
+           get playing(){return playing;} };
 })();
 /* every capture station reports completion the same way */
 function stationDone(){ passHint(); Station.done(); }
