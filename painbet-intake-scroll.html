@@ -408,19 +408,19 @@ const SCENES = [
   { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.7, gate:'reveal',
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'],
+  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'], nextLabel:'Collect your meds',
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'],
+  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'], nextLabel:'Open my chart',
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'],
+  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'], nextLabel:'The private ward',
     still:'assets/seq/locker07/frame_0001.webp' },
 
-  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'],
+  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'], nextLabel:'Staff entrance',
     still:'assets/seq/intake/frame_0169.webp' },
 
-  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'],
+  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'], nextLabel:'Records',
     still:'assets/seq/admissions/frame_0090.webp' },
 
   { id:'login', type:'form', form:'login', tint:'#E10600', vh:1.8,
@@ -1145,7 +1145,16 @@ SCENES.forEach(s=>{
   const el=document.createElement('div');el.className='scene'+(s.type==='form'?' form dim':'');el.dataset.id=s.id;
   const cv=document.createElement('canvas');el.appendChild(cv);
   const card=document.createElement('div');card.className='card';
-  if(s.type==='form'){ FORMS[s.form](card); }
+  if(s.type==='form'){
+    FORMS[s.form](card);
+    // browsing rooms get an explicit way on, so progress is always a button press
+    if(!s.gate&&s.next!==false&&s.id!=='login'){
+      const go=document.createElement('button');
+      go.className='btn ghost';go.textContent=s.nextLabel||'Continue';
+      go.addEventListener('click',()=>Station.advance(scenes.find(x=>x.cfg.id===s.id)));
+      card.appendChild(go);
+    }
+  }
   else{
     card.innerHTML=`<p class="kicker">${s.kicker}</p><h2>${s.title}</h2><p>${s.body}</p>`+
       (s.metric?`<div class="metric">${s.metric.map(m=>`<div><b>${m.v}</b><span>${m.k}</span></div>`).join('')}</div>`:``);
@@ -1228,7 +1237,7 @@ addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{render();
    ========================================================================== */
 const Station=(function(){
   const wrap=document.getElementById('station');
-  let cur=null, open=false;
+  let cur=null, open=false, playing=false;
 
   const block=e=>{e.preventDefault();};
   const blockKeys=e=>{ if([' ','PageDown','PageUp','ArrowDown','ArrowUp','Home','End'].includes(e.key)
@@ -1260,20 +1269,35 @@ const Station=(function(){
     setTimeout(()=>{ sc.el.appendChild(sc.card); sc.card.classList.remove('live'); },320);
     push(sc);
   }
-  /* auto-push: shove the film forward ~2.4s into the next room */
+  /* where the film should run to: the next unfinished station, so one confirm
+     plays the whole segment through instead of stopping partway */
+  function nextStop(sc){
+    const i=scenes.indexOf(sc);
+    for(let k=i+1;k<scenes.length;k++){
+      const s=scenes[k];
+      if(s.cfg.gate&&!gateDone(s.cfg.gate)) return s._top+s._h*0.45;
+    }
+    const nxt=scenes[i+1];
+    return nxt ? nxt._top+nxt._h*0.55 : document.body.scrollHeight-innerHeight;
+  }
+  /* auto-play: run the footage forward to the next popup */
   function push(sc){
-    const from=scrollY||pageYOffset;
-    const i=scenes.indexOf(sc), nxt=scenes[i+1];
-    // land past the next station's trigger point so it opens as the push settles
-    const to = nxt ? nxt._top+nxt._h*(nxt.cfg.gate?0.42:0.62) : from+innerHeight*1.6;
-    const t0=performance.now(), DUR=2400;
+    const from=scrollY||pageYOffset, to=nextStop(sc), dist=Math.abs(to-from);
+    if(dist<20) return;
+    const DUR=Math.max(1600,Math.min(5200,dist*0.62));   // longer runs take longer
+    const t0=performance.now();
+    playing=true;
     (function step(t){
+      if(open||!playing) {playing=false;return;}          // a popup arrived, stop here
       const e=Math.min(1,(t-t0)/DUR), k=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;   // easeInOut
       window.scrollTo(0, from+(to-from)*k);
-      if(e<1) requestAnimationFrame(step);
+      if(e<1) requestAnimationFrame(step); else playing=false;
     })(t0);
   }
-  return { enter, done, get open(){return open;} };
+  // any user scroll cancels the auto-play so they keep control
+  addEventListener('wheel',()=>{playing=false;},{passive:true});
+  addEventListener('touchstart',()=>{playing=false;},{passive:true});
+  return { enter, done, advance:push, get open(){return open;} };
 })();
 /* every capture station reports completion the same way */
 function stationDone(){ passHint(); Station.done(); }
