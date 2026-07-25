@@ -72,15 +72,63 @@ the gates for browsing (matches the original's "have a look around" behaviour).
 
 ## Footage
 
+### The 60s film (shot, extracted, not yet wired in)
+
+`assets/seq/film/` - **1444 frames**, `frame_0001.webp` to `frame_1444.webp`,
+800x1450, 24fps, 60.2s. This is the continuous film the page is meant to move
+to. It is in the repo but **nothing loads it yet**; the page still runs on the
+three clips below.
+
+Built from four 15s segments (1068x1936, 24fps, 361 frames each) concatenated
+losslessly with the ffmpeg concat demuxer, then:
+
+```
+ffmpeg -i intake-master.mp4 -vf "scale=800:-2" \
+  -c:v libwebp -quality 78 -compression_level 5 -vsync 0 \
+  assets/seq/film/frame_%04d.webp
+```
+
+Note `-c:v libwebp` and `-quality`, not `-q:v`. With `-q:v` ffmpeg writes a
+single animated webp instead of a frame sequence.
+
+| Segment | Frames | Beat |
+|---|---|---|
+| S1 | 1-361 | burst in, nurse stares, she turns and leads, the rot begins |
+| S2 | 362-722 | corridor, the lights stutter, silhouettes |
+| S3 | 723-1083 | she opens the doors, you pass through, she shuts you in |
+| S4 | 1084-1444 | the room |
+
+The joins are invisible: measured frame-to-frame motion at each of the three
+joins is 0.5-0.9 against a film mean of 3.1, so every segment does end on the
+stillness the brief asked for.
+
+**Where the camera holds still** (measured, not taken from the prompt timings -
+the shot order differs from the brief). These are the candidate station markers:
+
+| Frames | Time | What is on screen |
+|---|---|---|
+| 699-722 | 29.1-30.1s | end of the corridor, before the doors |
+| 1063-1177 | 44.3-49.0s | the room wide: gurney, caged bulb, x-ray lightbox |
+| 1289-1315 | 53.7-54.8s | the wall of x-ray lightboxes |
+| 1324-1350 | 55.2-56.2s | the locker, in passing |
+| 1352-1388 | 56.3-57.8s | the desk, patient chart on a clipboard |
+| 1414-1444 | 58.9-60.2s | the locker, held to the end |
+
+Regenerate this table with a frame-difference pass over the sequence; the run
+that produced it is in the session history.
+
+### The three clips currently live in the page
+
 | Scene | Frames | Source |
 |---|---|---|
 | `admissions` | 169 | corridor descent, nurse leads to the 07 doors |
 | `intake` | 169 | through the doors into the exam room |
 | `locker07` | 145 | exam room to the locker, opens on a glowing red triangle |
 
-Extracted from the user's mp4s with ffmpeg (`scale=800:-2`, WebP q78). Form rooms
-without their own film use a **still backdrop** (`still:` in the scene config)
-taken from a nearby frame, so nothing falls back to the procedural placeholder.
+Extracted the same way. Form rooms without their own film use a **still
+backdrop** (`still:` in the scene config) taken from a nearby frame, so nothing
+falls back to the procedural placeholder. **Delete these three sets when the
+engine switches to `film/`**, not before - the page reads them today.
 
 `scratch/refs/` holds full-res stills pulled from the footage, to be uploaded to
 Higgsfield as `@ward_clean`, `@ward_decayed`, `@examroom`, `@locker`. **Upload
