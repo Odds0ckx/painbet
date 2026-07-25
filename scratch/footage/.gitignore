@@ -1,0 +1,4 @@
+# Source video is never committed; only the frames extracted into assets/seq/.
+*.mp4
+*.mov
+*.webm
