@@ -40,8 +40,8 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 /* ---- Fixed stage: all scene canvases + cards stack here -------------------- */
 #stages{position:fixed;inset:0;z-index:1;background:#000;overflow:hidden;pointer-events:none}
 .scene{position:absolute;inset:0;opacity:0;will-change:opacity}
-.scene canvas{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
-.scene.dim canvas{filter:brightness(.42) saturate(.9)}
+.scene > canvas{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.scene.dim > canvas{filter:brightness(.42) saturate(.9)}
 
 /* ---- Card shell (specimen slide) — text + form share this look ------------- */
 .card{
@@ -127,6 +127,12 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 /* dispensary + dashboard */
 .wheelbox{margin-top:14px;text-align:center;padding:16px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:12px}
 .wmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.1em}
+.wheelwrap{position:relative;width:min(280px,72vw);margin:12px auto 6px}
+.wheelwrap canvas{width:100%;height:auto;display:block;pointer-events:none;
+  filter:drop-shadow(0 10px 26px rgba(0,0,0,.6))}
+.wpin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:0;height:0;
+  border-left:11px solid transparent;border-right:11px solid transparent;border-top:20px solid var(--red);
+  filter:drop-shadow(0 2px 6px rgba(225,6,0,.8));z-index:2}
 .wres{font-family:var(--display);font-size:26px;margin:6px 0 2px}
 .wres.win{color:var(--cash)} .wres.jack{color:var(--gold)}
 .wsub{font-size:13px;color:var(--ink-3);min-height:16px;margin-bottom:6px}
@@ -212,6 +218,75 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .chan-row .cn{font-family:var(--display);font-size:15px}
 .chan-row .cm{font-size:12px;color:var(--ink-3);margin-top:3px}
 
+/* ---- Pry-open cooler modal (3D CSS, adapted from the crate concept) -------- */
+#pry{position:fixed;inset:0;z-index:80;display:none;place-items:center;
+  background:radial-gradient(circle at 50% 45%,rgba(35,36,39,.96),rgba(8,9,10,.985));
+  backdrop-filter:blur(6px);user-select:none;cursor:pointer;touch-action:manipulation}
+#pry.on{display:grid}
+.pry-scene{perspective:1200px;display:grid;place-items:center;width:100%;height:100%}
+.cooler{--w:230px;--wh:115px;--hb:120px;--hbh:60px;--hl:42px;--hlh:21px;--d:150px;--dh:75px;
+  position:relative;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateX(-16deg) rotateY(24deg);transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.cooler .fc{position:absolute;top:50%;left:50%;border-radius:3px;
+  background:linear-gradient(160deg,#c7ccd1,#9aa1a8);
+  box-shadow:inset 0 0 24px rgba(0,0,0,.28),inset 0 0 2px rgba(255,255,255,.7);backface-visibility:hidden}
+.cbase{position:absolute;top:0;left:0;transform-style:preserve-3d}
+.cbase .front,.cbase .back,.cbase .left,.cbase .right{
+  background:linear-gradient(to top,var(--red) 0 18%,#c7ccd1 18% 100%)}
+.cbase .front {width:var(--w);height:var(--hb);transform:translate(-50%,-50%) translateZ(var(--dh))}
+.cbase .back  {width:var(--w);height:var(--hb);transform:translate(-50%,-50%) rotateY(180deg) translateZ(var(--dh))}
+.cbase .right {width:var(--d);height:var(--hb);transform:translate(-50%,-50%) rotateY(90deg) translateZ(var(--wh))}
+.cbase .left  {width:var(--d);height:var(--hb);transform:translate(-50%,-50%) rotateY(-90deg) translateZ(var(--wh))}
+.cbase .bottom{width:var(--w);height:var(--d);background:var(--red);
+  transform:translate(-50%,-50%) rotateX(-90deg) translateZ(var(--hbh));box-shadow:0 30px 60px rgba(0,0,0,.85)}
+.cbase .inner {width:calc(var(--w) - 8px);height:calc(var(--d) - 8px);background:#0a0a0b;border:8px solid #aeb4ba;
+  transform:translate(-50%,-50%) rotateX(90deg) translateZ(calc(var(--hbh) - 16px));box-shadow:inset 0 0 50px #000}
+.chinge{position:absolute;top:0;left:0;transform-style:preserve-3d;
+  transform:translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX(0deg);
+  transition:transform .34s cubic-bezier(.34,1.56,.64,1)}
+.clid{position:absolute;top:0;left:0;transform-style:preserve-3d;
+  transform:translateY(calc(var(--hlh) * -1)) translateZ(var(--dh))}
+.clid .front{width:var(--w);height:var(--hl);transform:translate(-50%,-50%) translateZ(var(--dh))}
+.clid .back {width:var(--w);height:var(--hl);transform:translate(-50%,-50%) rotateY(180deg) translateZ(var(--dh))}
+.clid .right{width:var(--d);height:var(--hl);transform:translate(-50%,-50%) rotateY(90deg) translateZ(var(--wh))}
+.clid .left {width:var(--d);height:var(--hl);transform:translate(-50%,-50%) rotateY(-90deg) translateZ(var(--wh))}
+.clid .top  {width:var(--w);height:var(--d);transform:translate(-50%,-50%) rotateX(90deg) translateZ(var(--hlh))}
+.clid .undr {width:calc(var(--w) - 8px);height:calc(var(--d) - 8px);background:#aeb4ba;
+  transform:translate(-50%,-50%) rotateX(-90deg) translateZ(calc(var(--hlh) - 4px))}
+.latch{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);width:88px;height:22px;
+  background:var(--red);border-radius:3px;z-index:15;transition:transform .5s,opacity .5s;
+  box-shadow:0 4px 6px rgba(0,0,0,.4),inset 0 2px 5px rgba(255,255,255,.25)}
+.latch i{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);width:38px;height:4px;
+  background:rgba(0,0,0,.25);border-radius:2px}
+.latch.broke{transform:translateX(-50%) translateY(34px) rotateX(-50deg);opacity:0}
+.biohaz{position:absolute;top:9px;left:50%;transform:translateX(-50%);font-family:var(--mono);
+  font-size:10px;letter-spacing:.18em;color:#3d4247}
+/* glowing core */
+.core{position:absolute;top:50%;left:50%;width:96px;height:70px;border-radius:44% 56% 52% 48%/52% 46% 58% 42%;
+  background:radial-gradient(circle at 32% 30%,#ffb4b0,var(--red),#6d0300);
+  transform:translate(-50%,-50%) translateZ(18px);opacity:.18;transition:opacity .4s,transform .4s;
+  box-shadow:inset -8px -8px 18px rgba(0,0,0,.8),inset 8px 8px 18px rgba(255,200,200,.3),0 0 40px var(--red)}
+.core.lit{opacity:1;animation:pulseCore 1.5s ease-in-out infinite}
+@keyframes pulseCore{50%{transform:translate(-50%,-50%) translateZ(18px) scale(1.14)}}
+/* pry UI */
+.pry-ui{position:absolute;left:0;right:0;bottom:8vh;text-align:center;padding:0 20px;pointer-events:none}
+.pry-ui .pt{font-family:var(--display);font-size:19px;letter-spacing:.02em;
+  text-shadow:0 4px 12px rgba(0,0,0,.9)}
+.pry-ui .ps{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-3);margin-top:7px}
+.pry-bar{width:min(320px,72vw);height:12px;margin:14px auto 0;border:2px solid #aeb4ba;border-radius:7px;
+  background:rgba(0,0,0,.7);overflow:hidden}
+.pry-bar i{display:block;height:100%;width:0;transition:width .12s ease-out;
+  background:repeating-linear-gradient(-45deg,var(--red) 0 12px,#8f0400 12px 24px);box-shadow:0 0 14px var(--red)}
+.pry-prize{margin-top:16px}
+.pry-prize .v{font-family:var(--display);font-size:clamp(28px,8vw,44px);color:var(--gold)}
+.pry-prize .s{font-size:13.5px;color:var(--ink-2);margin-top:5px}
+.pry-take{pointer-events:auto;margin-top:14px;font-family:var(--display);font-size:15px;color:#fff;
+  background:var(--red);border:none;border-radius:10px;padding:13px 26px;cursor:pointer;
+  box-shadow:0 10px 26px rgba(225,6,0,.35)}
+.shake{animation:shk .3s}
+@keyframes shk{25%{transform:rotateX(-16deg) rotateY(24deg) scale(.975)}
+  60%{transform:rotateX(-16deg) rotateY(24deg) scale(1.012)}}
+
 /* ---- Track + handoff ------------------------------------------------------ */
 #track{position:relative;z-index:2;pointer-events:none}.spacer{width:100%}
 #handoff{position:relative;z-index:3;min-height:100vh;display:flex;align-items:center;justify-content:center;
@@ -233,6 +308,36 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   <div id="hint">Scroll to descend</div>
 </div>
 <div id="toast"></div>
+
+<!-- Pry-open cooler: 3D crate that ratchets open on repeated taps -->
+<div id="pry">
+  <div class="pry-scene">
+    <div class="cooler" id="pryBox">
+      <div class="cbase">
+        <div class="fc front"><span class="biohaz">BIOHAZARD · 07</span></div>
+        <div class="fc back"></div><div class="fc right"></div><div class="fc left"></div>
+        <div class="fc bottom"></div>
+        <div class="fc inner"><div class="core" id="pryCore"></div></div>
+      </div>
+      <div class="chinge" id="pryHinge">
+        <div class="clid">
+          <div class="fc front"><div class="latch" id="pryLatch"><i></i></div></div>
+          <div class="fc back"></div><div class="fc right"></div><div class="fc left"></div>
+          <div class="fc top"></div><div class="fc undr"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pry-ui">
+    <div class="pt" id="pryTitle">BIOMETRIC SEAL ENGAGED</div>
+    <div class="ps" id="prySub">TAP REPEATEDLY TO PRY OPEN</div>
+    <div class="pry-bar"><i id="pryBar"></i></div>
+    <div class="pry-prize" id="pryPrize" hidden>
+      <div class="v" id="pryVal"></div><div class="s" id="prySubv"></div>
+      <button class="pry-take" id="pryTake">Take it</button>
+    </div>
+  </div>
+</div>
 
 <button id="menub">MENU</button>
 <div id="menu">
@@ -580,6 +685,64 @@ function buildDischarge(card){
   handle.addEventListener('keydown',e=>{if(e.key==='Enter')send();});
 }
 
+/* ---- the pry-open cooler: ratchets open on repeated taps, then pays out ---- */
+const Pry=(function(){
+  const el=()=>document.getElementById('pry');
+  let progress=0, open=false, onDone=null;
+  const PER_TAP=7;
+  function tap(e){
+    if(open) return;
+    if(e) e.preventDefault();
+    progress=Math.min(100,progress+PER_TAP);
+    document.getElementById('pryBar').style.width=progress+'%';
+    const ang=(progress/100)*24;                     // the seal gives, little by little
+    const hinge=document.getElementById('pryHinge');
+    hinge.style.transform=`translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX(${ang+5}deg)`;
+    setTimeout(()=>{ if(!open) hinge.style.transform=
+      `translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX(${ang}deg)`; },110);
+    const box=document.getElementById('pryBox');
+    box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+    const core=document.getElementById('pryCore');
+    core.style.opacity=String(0.18+(progress/100)*0.5);
+    if(progress>=100) burst();
+  }
+  function burst(){
+    open=true;
+    document.getElementById('pryLatch').classList.add('broke');
+    const hinge=document.getElementById('pryHinge');
+    hinge.style.transition='transform .9s cubic-bezier(.34,1.4,.5,1)';
+    hinge.style.transform='translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX(104deg)';
+    document.getElementById('pryCore').classList.add('lit');
+    const p=rollPk(); ST.pried=true; ST.pkWon=p;
+    document.getElementById('pryTitle').textContent='CONTAINMENT BREACHED';
+    document.getElementById('prySub').textContent='LOGGED TO PATIENT #'+String(ST.pno).padStart(5,'0');
+    document.getElementById('pryVal').textContent=p.pk.toLocaleString('en-US')+' PK';
+    document.getElementById('prySubv').textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
+    document.getElementById('pryPrize').hidden=false;
+    toast('Logged to patient #'+String(ST.pno).padStart(5,'0')+'.');
+  }
+  function show(cb){
+    onDone=cb; progress=0; open=false;
+    document.getElementById('pryBar').style.width='0%';
+    document.getElementById('pryPrize').hidden=true;
+    document.getElementById('pryLatch').classList.remove('broke');
+    document.getElementById('pryCore').classList.remove('lit');
+    document.getElementById('pryCore').style.opacity='.18';
+    const hinge=document.getElementById('pryHinge');
+    hinge.style.transition='transform .34s cubic-bezier(.34,1.56,.64,1)';
+    hinge.style.transform='translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX(0deg)';
+    document.getElementById('pryTitle').textContent='BIOMETRIC SEAL ENGAGED';
+    document.getElementById('prySub').textContent='TAP REPEATEDLY TO PRY OPEN';
+    el().classList.add('on');
+  }
+  function hide(){ el().classList.remove('on'); if(onDone) onDone(ST.pkWon); }
+  document.addEventListener('DOMContentLoaded',()=>{});
+  el().addEventListener('mousedown',tap);
+  el().addEventListener('touchstart',tap,{passive:false});
+  document.getElementById('pryTake').addEventListener('click',e=>{e.stopPropagation();hide();});
+  return {show};
+})();
+
 function buildReveal(card){
   card.innerHTML=`
     <p class="kicker">LOCKER <b>07</b> · IT'S YOURS</p>
@@ -593,15 +756,16 @@ function buildReveal(card){
   const go=$('r_go',card);
   go.addEventListener('click',()=>{
     if(ST.pried){passHint();return;}
-    ST.pried=true;const p=rollPk();ST.pkWon=p;
-    $('r_h',card).textContent='Locker 0'+(ST.pno%9+1)+'. Logged to you.';
-    $('r_p',card).style.display='none';
-    $('r_out',card).style.display='block';
-    $('r_val',card).textContent=p.pk.toLocaleString('en-US')+' PK';
-    $('r_sub',card).textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
-    go.textContent='Continue';
-    toast('Logged to patient #'+String(ST.pno).padStart(5,'0')+'.');
-    passHint();
+    Pry.show(p=>{                                   // the crate does the opening
+      if(!p) return;
+      $('r_h',card).textContent='Locker 0'+(ST.pno%9+1)+'. Logged to you.';
+      $('r_p',card).style.display='none';
+      $('r_out',card).style.display='block';
+      $('r_val',card).textContent=p.pk.toLocaleString('en-US')+' PK';
+      $('r_sub',card).textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
+      go.textContent='Continue';
+      passHint();
+    });
   });
 }
 
@@ -627,6 +791,41 @@ function renderGive(card){const el=$('g_list',card);el.innerHTML='';
     if(id==='sun'){toast('Scroll back up to the wallet room to add an entry.');return;}
     ST.entered[id]=true;renderGive(card);toast('Entry received. Watch the Ward for the result.');}));}
 let wTurning=false;
+/* ---- the wheel itself: 10 segments, lands on the weighted roll ------------- */
+const SEG_COL={jack:'#F2C14E',cash:'#5FE3A1',ent:'#7FD6E8',pk:'#E10600',perk:'#A46BD8',none:'#2A2D31'};
+function drawWheel(cv,rot){
+  const ctx=cv.getContext('2d'),R=cv.width/2,n=WHEEL.length,step=Math.PI*2/n;
+  ctx.clearRect(0,0,cv.width,cv.width);
+  ctx.save();ctx.translate(R,R);ctx.rotate(rot);
+  for(let i=0;i<n;i++){
+    const a0=i*step,a1=a0+step,w=WHEEL[i];
+    ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R-8,a0,a1);ctx.closePath();
+    ctx.fillStyle=SEG_COL[w.kind]||'#2A2D31';
+    ctx.globalAlpha=w.kind==='none'?1:.88;ctx.fill();ctx.globalAlpha=1;
+    ctx.strokeStyle='rgba(19,21,23,.9)';ctx.lineWidth=3;ctx.stroke();
+    // label
+    ctx.save();ctx.rotate(a0+step/2);ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.fillStyle=w.kind==='none'?'#8b9298':'#0d0e10';
+    ctx.font='700 21px "JetBrains Mono",monospace';
+    ctx.fillText(w.t,R-26,0);ctx.restore();
+  }
+  ctx.beginPath();ctx.arc(0,0,R-8,0,Math.PI*2);ctx.strokeStyle='#454A50';ctx.lineWidth=6;ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,34,0,Math.PI*2);ctx.fillStyle='#131517';ctx.fill();
+  ctx.strokeStyle='#E10600';ctx.lineWidth=3;ctx.stroke();
+  ctx.restore();
+}
+function spinWheelTo(cv,idx,done){
+  const n=WHEEL.length,step=Math.PI*2/n;
+  // pointer sits at 12 o'clock (-90deg); land the middle of segment idx under it
+  const target=(-Math.PI/2)-(idx*step+step/2)+Math.PI*2*6;
+  const start=performance.now(),DUR=4200,from=cv._rot||0;
+  (function frame(t){
+    const e=Math.min(1,(t-start)/DUR),k=1-Math.pow(1-e,3);   // easeOutCubic
+    const rot=from+(target-from)*k;
+    cv._rot=rot;drawWheel(cv,rot);
+    if(e<1)requestAnimationFrame(frame);else done();
+  })(start);
+}
 function buildDispensary(card){
   card.innerHTML=`
     <p class="kicker">ROOM <b>08</b> · DISPENSARY</p>
@@ -634,6 +833,7 @@ function buildDispensary(card){
     <p>One spin a day, top prize $500. Everything here adds entries to Sunday's draw.</p>
     <div class="wheelbox">
       <div class="wmeta">DAILY PAIN WHEEL · $500 TOP PRIZE</div>
+      <div class="wheelwrap"><canvas id="w_wheel" width="560" height="560"></canvas><span class="wpin"></span></div>
       <div class="wres" id="w_res">Ready</div>
       <div class="wsub" id="w_sub">Ten outcomes. Three pay cash.</div>
       <button class="btn" id="w_spin">Spin</button>
@@ -647,20 +847,21 @@ function buildDispensary(card){
     <div class="sub-h">Giveaways running</div><div id="g_list"></div>
     <div class="sub-h">Paid out recently</div><div id="f_feed"></div>`;
   renderOdds(card);renderGive(card);renderFeed(card);
-  const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card);
+  const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card),cv=$('w_wheel',card);
+  cv._rot=0; drawWheel(cv,0);
   btn.addEventListener('click',()=>{
     if(wTurning||ST.spun)return;
     if(!ST.sent){toast('Check in first. The wheel needs an account to pay into.');return;}
-    wTurning=true;const w=WHEEL[rollWheel()];
+    wTurning=true;const idx=rollWheel(),w=WHEEL[idx];
     btn.disabled=true;btn.textContent='Spinning';res.className='wres';res.textContent='Spinning';sub.textContent='Hold on.';
-    setTimeout(()=>{
+    spinWheelTo(cv,idx,()=>{
       wTurning=false;ST.spun=true;wPot++;
       res.className='wres'+(w.kind==='jack'?' jack':(w.kind==='none'?'':' win'));
       res.textContent=w.kind==='none'?'Nothing today':w.t;sub.textContent=w.s;
       if(w.ent)addEntries(w.ent);if(w.usd)ST.usd+=w.usd;
       btn.textContent='Come back tomorrow';
       toast(w.kind==='none'?'No luck. Resets at midnight UTC.':(w.t+' logged to your chart.'));
-    },1200);
+    });
   });
   function redeem(){const c=$('f_code',card).value.trim().toUpperCase(),n=$('f_note',card);
     if(!/^PAIN-\d{4}$/.test(c)){n.className='note warn';n.textContent='Codes look like PAIN-0001. Check the channel post.';return;}
