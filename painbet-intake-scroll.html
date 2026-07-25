@@ -106,6 +106,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .dxwrap .scale{font-family:var(--display);font-size:44px;color:var(--red-hot);line-height:1;margin:8px 0 2px}
 .dxwrap .scale span{font-size:16px;color:var(--ink-3)}
 .dxwrap .dx{font-family:var(--display);font-size:30px;margin:10px 0 6px}
+/* hero title card */
+.card.hero{text-align:center;bottom:16vh}
+.card.hero h2{font-size:clamp(44px,15vw,86px);letter-spacing:-.03em;line-height:.92;margin:4px 0 14px}
+.card.hero .kicker{color:var(--red-hot);letter-spacing:.34em}
+.card.hero .metric{justify-content:center}
 /* password meter + vip */
 .pwrow{position:relative}
 .pweye{position:absolute;right:8px;top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
@@ -316,7 +321,7 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 <div id="chrome">
   <div id="vitals"></div>
   <div id="tag">PAIN.BET <b>//</b> ADMISSIONS</div>
-  <div id="hint">Scroll to descend</div>
+  <div id="hint">Or scroll to look around</div>
 </div>
 <div id="toast"></div>
 
@@ -383,11 +388,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
    form : `form` names the capture station builder below.
    ========================================================================== */
 const SCENES = [
-  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:2.6,
-    kicker:'ROOM <b>07</b> · ADMISSIONS', title:'The ward is taking patients.',
-    body:'Five questions. We work out what is wrong with you, then we tell you what you get for being early.',
-    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}], reveal:[.04,.12,.72,.92],
-    cta:'Check in' },
+  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:3.0,
+    hero:true, kicker:'ADMISSIONS OPEN', title:'PAIN.BET',
+    body:'The ward is taking patients. Five questions, then we tell you what is wrong with you and what you get for being early.',
+    metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
+    cta:'Check in', pushMs:7000 },
 
   { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz',
     still:'assets/seq/admissions/frame_0169.webp' },
@@ -604,11 +609,23 @@ function buildWallet(card){
 
 function buildQuiz(card){
   card.innerHTML=`
-    <p class="kicker" id="q_plate">ROOM 02 · EXAMINATION</p>
-    <div class="prog" id="q_prog"></div>
-    <h2 id="q_t" style="font-size:clamp(20px,5vw,28px)"></h2>
-    <div id="q_opts"></div>
-    <div id="q_dx" style="display:none"></div>`;
+    <div id="q_intro">
+      <p class="kicker">ROOM <b>07</b> · CHECKING IN</p>
+      <h2>She is waiting at the door.</h2>
+      <p>Five questions. Answer them honestly, there is nobody here to impress.
+         We work out what is wrong with you, put it on a chart, and tell you what
+         you get for being early.</p>
+      <div class="metric"><div><b>$400</b><span>Cash, every Sunday</span></div>
+        <div><b>14</b><span>Winners a week</span></div></div>
+      <button class="btn" id="q_begin">Begin the examination</button>
+    </div>
+    <div id="q_body" style="display:none">
+      <p class="kicker" id="q_plate">ROOM 02 · EXAMINATION</p>
+      <div class="prog" id="q_prog"></div>
+      <h2 id="q_t" style="font-size:clamp(20px,5vw,28px)"></h2>
+      <div id="q_opts"></div>
+      <div id="q_dx" style="display:none"></div>
+    </div>`;
   function renderProg(){const el=$('q_prog',card);el.innerHTML='';
     for(let i=0;i<Q.length;i++){const b=document.createElement('i');
       b.className=i<ST.i?'on':(i===ST.i?'now':'');el.appendChild(b);}}
@@ -641,6 +658,10 @@ function buildQuiz(card){
     toast('Diagnosis: '+d.n+'. Pain Scale '+d.t+'/10.');
     $('q_claim',card).addEventListener('click',stationDone);
   }
+  $('q_begin',card).addEventListener('click',()=>{
+    $('q_intro',card).style.display='none';
+    $('q_body',card).style.display='block';
+  });
   card._enter=()=>{ if(ST.dx) return; if(!$('q_opts',card).children.length) renderQ(); };
   renderQ();
 }
@@ -1159,6 +1180,7 @@ SCENES.forEach(s=>{
   else{
     card.innerHTML=`<p class="kicker">${s.kicker}</p><h2>${s.title}</h2><p>${s.body}</p>`+
       (s.metric?`<div class="metric">${s.metric.map(m=>`<div><b>${m.v}</b><span>${m.k}</span></div>`).join('')}</div>`:``);
+    if(s.hero) card.classList.add('hero');
     if(s.cta){                       // a film scene can carry its own way in
       const go=document.createElement('button');
       go.className='btn';go.textContent=s.cta;
@@ -1199,7 +1221,7 @@ function render(){
     }
   }
   vitals.style.width=Math.max(0,Math.min(1,y/total))*100+'%';
-  if(y>vh*.4&&hint.textContent==='Scroll to descend')hint.style.opacity=0;
+  if(y>vh*.4&&hint.textContent==='Or scroll to look around')hint.style.opacity=0;
 
   scenes.forEach(sc=>{
     const start=sc._top,end=start+sc._h;let p=(y-start)/(end-start);
@@ -1294,7 +1316,8 @@ const Station=(function(){
   function push(sc){
     const from=scrollY||pageYOffset, to=nextStop(sc), dist=Math.abs(to-from);
     if(dist<20) return;
-    const DUR=Math.max(1600,Math.min(5200,dist*0.62));   // longer runs take longer
+    // deliberate pace: the film should feel walked, not skipped through
+    const DUR=sc.cfg.pushMs||Math.max(3200,Math.min(9000,dist*1.35));
     const t0=performance.now();
     playing=true;
     (function step(t){
