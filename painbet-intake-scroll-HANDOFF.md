@@ -82,8 +82,13 @@ Extracted from the user's mp4s with ffmpeg (`scale=800:-2`, WebP q78). Form room
 without their own film use a **still backdrop** (`still:` in the scene config)
 taken from a nearby frame, so nothing falls back to the procedural placeholder.
 
-`scratch/refs/` holds full-res stills pulled from the footage, intended to be
-uploaded to Higgsfield as `@ward_clean`, `@ward_decayed`, `@examroom`, `@locker`.
+`scratch/refs/` holds full-res stills pulled from the footage, to be uploaded to
+Higgsfield as `@ward_clean`, `@ward_decayed`, `@examroom`, `@locker`. **Upload
+the `_tri` versions** - same plates with the brand geometry composited in (EXIT
+lettering replaced by a red triangle, stencil triangles above the 07, the
+biohazard trefoil on the locker replaced by a glowing triangle seal). The
+originals are kept beside them, and `scratch/triangle-composite/` regenerates
+the composites.
 
 ## Where it was left off
 
@@ -102,10 +107,15 @@ the current footage.
    sequence rather than separate scenes.
 4. Optional: `discharge.mp4` outro (retreat down the corridor) — never shot.
 
-### Open questions raised but not settled
-- Whether the EXIT sign becomes **triangle-only** or **triangle + the word EXIT**.
-- Whether to composite the triangle onto the existing reference stills rather
-  than regenerate the assets.
+### Questions now settled (see PROMPTS section 0 for the reasoning)
+- The sign is **triangle-only**, no word. The shot footage renders EXIT cleanly,
+  so this was a story call rather than a technical one: a sign that should
+  promise a way out showing the house mark instead is the film in one frame.
+- The triangle is **composited onto the existing stills**, not regenerated, so
+  the grade of the shot footage survives. Done, in `scratch/refs/*_tri.jpg`.
+- Every prompt's negatives used to read `text, lettering, words` while asking
+  for a stencilled 07. They now read `words, letterforms, signage text`.
+  **Numerals are never negative-prompted.**
 
 ## Gotchas worth knowing
 
@@ -123,6 +133,10 @@ the current footage.
   viewer mid-corridor.
 - Higgsfield: **max 3 `@` references per prompt** (extras are silently dropped)
   and an `@` only binds if picked from the dropdown so it becomes a chip.
+- **ffmpeg is not installed** in the web session container, though it was in an
+  earlier one. Step 2 (extracting frames from the master mp4) needs it, so
+  install it before starting that, or extract locally. Pillow is available and
+  is what the compositing tool uses.
 - Testing: Playwright is available globally, not in the repo — import from
   `` `${npm root -g}/playwright/index.mjs` ``, browser at
   `/opt/pw-browsers/chromium`. Reading canvas pixels over `file://` throws a
