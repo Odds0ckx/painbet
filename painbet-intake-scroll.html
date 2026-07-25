@@ -224,11 +224,17 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .chan-row .cm{font-size:12px;color:var(--ink-3);margin-top:3px}
 
 /* ---- Station modal: the clipboard the nurse hands you --------------------- */
-#station{position:fixed;inset:0;z-index:75;display:none;align-items:center;justify-content:center;
-  padding:4vh 0;background:rgba(8,9,10,.62);backdrop-filter:blur(3px);opacity:0;transition:opacity .3s}
+/* a bottom sheet, so the room and whoever is standing in it stay on screen */
+#station{position:fixed;inset:0;z-index:75;display:none;align-items:flex-end;justify-content:center;
+  padding:0 0 2.5vh;opacity:0;transition:opacity .3s;
+  background:linear-gradient(180deg,transparent 0 34%,rgba(8,9,10,.55) 58%,rgba(8,9,10,.8) 100%)}
 #station.on{display:flex;opacity:1}
 #station .card{position:relative;left:auto;bottom:auto;top:auto;opacity:1;pointer-events:auto;
-  transform:translateY(18px);transition:transform .38s cubic-bezier(.22,1,.36,1);max-height:92vh}
+  transform:translateY(18px);transition:transform .38s cubic-bezier(.22,1,.36,1);
+  max-height:62vh;width:min(520px,94vw)}
+/* lift the frame so the subject clears the sheet */
+#stages{transition:transform .5s cubic-bezier(.22,1,.36,1)}
+#stages.lifted{transform:translateY(-13%) scale(1.05)}
 #station.on .card{transform:translateY(0)}
 .clipclip{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:64px;height:16px;
   background:linear-gradient(180deg,#c7ccd1,#8d949b);border-radius:4px;z-index:3;
@@ -394,39 +400,39 @@ const SCENES = [
     metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
     cta:'Check in', pushMs:7000 },
 
-  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz',
+  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz', pushMs:7000,
     still:'assets/seq/admissions/frame_0169.webp' },
 
   { id:'intake', type:'scrub', dir:'assets/seq/intake', count:169, ext:'webp', tint:'#7FD6E8', vh:2.6,
     kicker:'ROOM 02 · EXAMINATION', title:'Step inside.',
     body:'The doctor will work out exactly what is wrong with you.', reveal:[.14,.30,.66,.86] },
 
-  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.9, gate:'wallet',
+  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.9, gate:'wallet', pushMs:3400,
     still:'assets/seq/intake/frame_0169.webp' },
 
-  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.9, gate:'discharge',
+  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.9, gate:'discharge', pushMs:7500,
     still:'assets/seq/locker07/frame_0001.webp' },
 
   { id:'locker07', type:'scrub', dir:'assets/seq/locker07', count:145, ext:'webp', tint:'#F2C14E', vh:3.0, scrub:'both',
     kicker:'LOCKER <b>07</b> · DISCHARGE', title:'Pry it open.',
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.16,.32,.62,.82] },
 
-  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.7, gate:'reveal',
+  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.7, gate:'reveal', pushMs:4500,
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'], nextLabel:'Collect your meds',
+  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'], nextLabel:'Collect your meds', pushMs:4200,
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'], nextLabel:'Open my chart',
+  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'], nextLabel:'Open my chart', pushMs:4200,
     still:'assets/seq/locker07/frame_0145.webp' },
 
-  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'], nextLabel:'The private ward',
+  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'], nextLabel:'The private ward', pushMs:4200,
     still:'assets/seq/locker07/frame_0001.webp' },
 
-  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'], nextLabel:'Staff entrance',
+  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'], nextLabel:'Staff entrance', pushMs:4200,
     still:'assets/seq/intake/frame_0169.webp' },
 
-  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'], nextLabel:'Records',
+  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'], nextLabel:'Records', pushMs:4200,
     still:'assets/seq/admissions/frame_0090.webp' },
 
   { id:'login', type:'form', form:'login', tint:'#E10600', vh:1.8,
@@ -1289,6 +1295,7 @@ const Station=(function(){
     }
     wrap.appendChild(sc.card);                  // lift the card out of the stage
     wrap.classList.add('on');
+    document.getElementById('stages').classList.add('lifted');
     lock(true);
     if(sc.card._enter) sc.card._enter();
     // the locker station opens the crate straight away, no button needed
@@ -1297,7 +1304,7 @@ const Station=(function(){
   function done(){
     if(!open||!cur) return;
     const sc=cur; open=false; cur=null;
-    wrap.classList.remove('on'); lock(false);
+    wrap.classList.remove('on'); document.getElementById('stages').classList.remove('lifted'); lock(false);
     setTimeout(()=>{ sc.el.appendChild(sc.card); sc.card.classList.remove('live'); },320);
     push(sc);
   }
