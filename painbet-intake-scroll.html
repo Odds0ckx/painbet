@@ -1179,15 +1179,17 @@ class FilmSource{
     }
   }
   ready(i){const im=this.imgs[i-1];return im&&im.complete&&im.naturalWidth?im:null;}
+  /* Returns whether it managed to paint, so the caller knows when to fall back
+     to the placeholder. coverDraw returns nothing, so its result must not be
+     passed through here: that reads as a failure and buries the film under the
+     placeholder on every single frame. */
   draw(ctx,f,w,h){
     f=Math.max(1,Math.min(this.count,Math.round(f)));
-    const hit=this.ready(f);
-    if(hit) return coverDraw(ctx,hit,w,h);
-    for(let d=1;d<=48;d++){
-      const a=this.ready(f-d); if(a) return coverDraw(ctx,a,w,h);
-      const b=this.ready(f+d); if(b) return coverDraw(ctx,b,w,h);
-    }
-    return false;
+    let hit=this.ready(f);
+    for(let d=1;!hit&&d<=48;d++) hit=this.ready(f-d)||this.ready(f+d);
+    if(!hit) return false;
+    coverDraw(ctx,hit,w,h);
+    return true;
   }
 }
 const film=new FilmSource(FILM);
@@ -1288,21 +1290,30 @@ function render(){
     let vis=0;if(p>=0&&p<=1)vis=1;if(p<0&&p>-FADE)vis=1+p/FADE;if(p>1&&p<1+FADE)vis=1-(p-1)/FADE;
     vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
     const isForm=sc.cfg.type==='form';
+    const inStage=sc.card.parentElement===sc.el;
+    /* The canvas backdrop is kept in sync regardless of where the card
+       currently lives. Gating this on the card's location left the backdrop
+       painted with whatever frame happened to be current at the moment the
+       card was lifted into the station modal - usually fine on a slow scroll
+       into the gate, but blank on a hard jump straight past the threshold
+       (a reload with scroll position restored mid-station, for one). */
+    if(vis>0&&(sc.sized||sizeCanvas(sc))){
+      const fp=Math.max(0,Math.min(1,p));
+      const W=sc.cv.width/(sc.ctx.getTransform().a||1), H=sc.cv.height/(sc.ctx.getTransform().d||1);
+      /* One sequence, absolute frames: a stop pins the playhead to the frame
+         where the camera holds still, a run scrubs its range. If the film has
+         not loaded yet the old procedural placeholder still covers. */
+      const frame = isForm ? sc.cfg.at : sc.cfg.from+fp*(sc.cfg.to-sc.cfg.from);
+      if(!film.draw(sc.ctx,frame,W,H))
+        drawPlaceholder(sc.ctx,fp,W,H,sc.cfg,Math.round(frame),FILM.count);
+    }
     // a card mounted in the station modal is the modal's to style, not ours
-    if(sc.card.parentElement!==sc.el){ if(vis>0.5)current=sc; return; }
+    if(!inStage){ if(vis>0.5)current=sc; return; }
     // pointer events only on the active form card
     // NB: coerce — toggle() with undefined flips the class instead of clearing it
     sc.card.classList.toggle('live',Boolean(isForm||sc.cfg.cta)&&vis>0.6);
     if(vis<=0)return;
-    if(!sc.sized&&!sizeCanvas(sc))return;
     const fp=Math.max(0,Math.min(1,p));
-    const W=sc.cv.width/(sc.ctx.getTransform().a||1), H=sc.cv.height/(sc.ctx.getTransform().d||1);
-    /* One sequence, absolute frames: a stop pins the playhead to the frame
-       where the camera holds still, a run scrubs its range. If the film has
-       not loaded yet the old procedural placeholder still covers. */
-    const frame = isForm ? sc.cfg.at : sc.cfg.from+fp*(sc.cfg.to-sc.cfg.from);
-    if(!film.draw(sc.ctx,frame,W,H))
-      drawPlaceholder(sc.ctx,fp,W,H,sc.cfg,Math.round(frame),FILM.count);
     if(isForm){
       // card visible across the whole dwell (fade only at the very edges)
       const o=Math.min(1,vis, cardOpacity(fp,[.04,.14,.90,.99])+0.0);
