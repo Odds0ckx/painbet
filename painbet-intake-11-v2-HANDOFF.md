@@ -56,6 +56,19 @@ rust .45 to .28 (in both the stylesheet and the inline set in `diagnose()`).
 **Two JS colour arrays repointed**, because they were styling: the password meter
 gradient and the hint colour token.
 
+**The locker crate.** A 3D CSS crate now sits in flow above the "PRY IT OPEN" card
+on the discharge screen, closed and idling until the same single tap that already
+rolls the PK amount. It is not new construction: it is the cooler concept from
+`3d_organ_cooler_crate_v2.html`, which had already been reworked once for
+`painbet-intake-scroll.html` (no GSAP, no Tailwind, pure CSS 3D, none of the
+original's blood/organ dressing or "BIOMETRIC SEAL ENGAGED" copy). This build
+reuses that already-approved construction rather than the original upload,
+recoloured amber instead of red so it reads as one object with the locker card
+underneath it, and wired to the existing single-tap `pry()` instead of a separate
+multi-tap ratchet. Lid, latch and glowing core are driven by one `.open` class
+toggle; the front tag ("LOCKER · 0N") stays in sync with the locker number the
+card already assigns.
+
 ## Verified
 
 Full Playwright pass at 420x900 and 1280x900 through every screen: intro, cover,
@@ -81,6 +94,17 @@ resolve normally off the network.
 
 ## Open items
 
+- The creepy-glitch feature (random nurse jumpscares + uploaded voice clips)
+  is still at the planning stage, not built: still need the actual image/voice
+  assets, a decision on trigger frequency (flat timer vs weighted by the
+  corruption score), and whether visual and voice fire together or independently.
+- The exact triangle PNG pasted into chat for "use painbet's logo instead of
+  what's there now" was never saved to disk in this environment (unlike the two
+  HTML uploads, which came in via explicit `@path` references) so it could not
+  be dropped in as a file. The page already renders the same triangle mark as an
+  inline SVG with the brand gradient and glow filters, which is what the pasted
+  image itself was a render of. If a literal raster swap is still wanted, it
+  needs to arrive the same way the HTML files did, or land in `assets/` directly.
 - Nobody has clicked through it on a real phone yet, only Chromium at phone size.
 - The wheel and intro videos are still the base64 blobs from v11. If this page
   ends up on Pages next to `painbet-intake-scroll.html`, those are worth pulling
