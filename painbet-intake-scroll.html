@@ -628,10 +628,15 @@ function buildWallet(card){
   $('w_go',card).addEventListener('click',submitTx);
   $('w_skip',card).addEventListener('click',()=>{
     ST.walletSkipped=true;
+    // the popup is about to close and a ~7s walk follows before the next one
+    // opens; without a toast here, clicking with entries already logged gave
+    // no feedback at all and read as the button doing nothing
     if(ST.entries===0){
       note.className='note';
       note.textContent='Skipped. No entries in Sunday’s draw, but your chart still comes.';
       toast('Skipped the giveaway. Your chart is still coming.');
+    }else{
+      toast(ST.entries+" in Sunday's draw. Sending your chart.");
     }
     stationDone();
   });
