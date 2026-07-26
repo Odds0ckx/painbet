@@ -375,12 +375,19 @@ h1 .r{color:var(--redhi)}
    + hinged lid + latch, all preserve-3d faces, no GSAP), recoloured here to
    amber to tie into the locker card it sits on top of rather than red. Sits
    in normal flow above .locker, closed and idling until pry() opens it. */
-.crate-scene{height:172px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;
+/* extra headroom above the box so the lid has somewhere to swing into that
+   isn't the heading above it; the box sits low in the scene on purpose */
+.crate-scene{height:238px;margin:26px 0 10px;display:flex;align-items:flex-end;justify-content:center;
   perspective:900px}
 .crate{--w:186px;--wh:93px;--hb:98px;--hbh:49px;--hl:34px;--hlh:17px;--d:122px;--dh:61px;
-  position:relative;width:0;height:0;transform-style:preserve-3d;
+  position:relative;width:0;height:0;transform-style:preserve-3d;margin-bottom:14px;
   transform:rotateX(-15deg) rotateY(-24deg);animation:crateIdle 7s ease-in-out infinite}
 @keyframes crateIdle{0%,100%{transform:rotateX(-15deg) rotateY(-24deg)}50%{transform:rotateX(-13deg) rotateY(-18deg)}}
+.crate.shake{animation:crateShake .3s}
+@keyframes crateShake{0%,100%{transform:rotateX(-15deg) rotateY(-24deg)}
+  25%{transform:rotateX(-15deg) rotateY(-24deg) translate(-3px,1px)}
+  60%{transform:rotateX(-15deg) rotateY(-24deg) translate(2px,-1px)}}
+.crate.open.shake{animation:none}
 .crate .cf{position:absolute;top:50%;left:50%;border-radius:3px;
   background:linear-gradient(160deg,#33363b,#1c1e21);
   box-shadow:inset 0 0 22px rgba(0,0,0,.4),inset 0 0 2px rgba(255,255,255,.08);backface-visibility:hidden}
@@ -438,6 +445,9 @@ h1 .r{color:var(--redhi)}
 .locker.pried .lk{color:var(--blue);text-shadow:0 0 28px rgba(127,214,232,.4)}
 @keyframes pry{0%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}
   60%{transform:translateX(-3px)}80%{transform:translateX(3px)}100%{transform:none}}
+/* one small strain per tap while the crate above is still being pried */
+.locker.strain{animation:strain .22s}
+@keyframes strain{0%,100%{transform:translateX(0)}30%{transform:translateX(-4px)}70%{transform:translateX(3px)}}
 
 /* ============ CREDENTIALS ============ */
 .creds{padding:18px 19px;margin-top:16px}

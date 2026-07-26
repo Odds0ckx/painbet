@@ -112,10 +112,57 @@ once(
     CRATE + '<div class="locker" id="locker" role="button" tabindex="0">',
     "crate markup",
 )
+# pry() ran fully on the first tap; the crate reads better as something you
+# have to work at, so this ratchets it across a few taps (the seal straining
+# a little further each time) before the original payout logic fires, once,
+# on the tap that finally clears the threshold. PRY_TAPS lives outside the
+# function so it's one number to tune if the feel needs adjusting.
 once(
-    "$('locker').classList.add('pried');",
-    "$('locker').classList.add('pried');\n  var cr=$('crate'); if(cr) cr.classList.add('open');",
-    "crate open on pry",
+    """function pry(){
+  if(st.pried)return; st.pried=true; Snd.creak();
+  var p=rollPk(); st.pkWon=p;
+  $('locker').classList.add('pried');
+  $('lkText').textContent=p.pk.toLocaleString('en-US')+' PK';
+  $('lkHint').textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
+  $('toExit').style.display='block';
+  if(st.pkWon&&st.pkWon.usd>=100) Snd.jackpot(); else Snd.win();
+  flick();
+  toast('Logged to patient #'+String(st.pno).padStart(5,'0')+'.');
+}""",
+    """var PRY_TAPS=4, pryStep=0;
+function pry(){
+  if(st.pried)return;
+  pryStep++;
+  var hinge=$('crateHinge'), crateEl=$('crate'), core=$('crateCore');
+  if(pryStep<PRY_TAPS){
+    var ang=(pryStep/PRY_TAPS)*26;
+    if(hinge){
+      hinge.style.transition='transform .22s cubic-bezier(.34,1.56,.64,1)';
+      hinge.style.transform='translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX('+(ang+5)+'deg)';
+      setTimeout(function(){ hinge.style.transform=
+        'translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX('+ang+'deg)'; },110);
+    }
+    if(core) core.style.opacity=String(.16+(pryStep/PRY_TAPS)*.4);
+    if(crateEl){ crateEl.classList.remove('shake'); void crateEl.offsetWidth; crateEl.classList.add('shake');
+      setTimeout(function(){ crateEl.classList.remove('shake'); },320); }
+    var lk=$('locker'); if(lk){ lk.classList.remove('strain'); void lk.offsetWidth; lk.classList.add('strain');
+      setTimeout(function(){ lk.classList.remove('strain'); },240); }
+    Snd.creak(); flick();
+    return;
+  }
+  st.pried=true; Snd.creak();
+  var p=rollPk(); st.pkWon=p;
+  $('locker').classList.add('pried');
+  if(hinge){ hinge.style.transition=''; hinge.style.transform=''; }
+  if(crateEl) crateEl.classList.add('open');
+  $('lkText').textContent=p.pk.toLocaleString('en-US')+' PK';
+  $('lkHint').textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
+  $('toExit').style.display='block';
+  if(st.pkWon&&st.pkWon.usd>=100) Snd.jackpot(); else Snd.win();
+  flick();
+  toast('Logged to patient #'+String(st.pno).padStart(5,'0')+'.');
+}""",
+    "ratcheted pry",
 )
 once(
     "$('lkNo').textContent=String(st.pno%9+1);",
