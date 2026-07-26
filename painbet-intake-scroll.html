@@ -414,8 +414,17 @@ const SCENES = [
     kicker:'ROOM 07 · THE WALL', title:'They have already looked.',
     body:'Your chest is on the wall with a triangle where the heart should be.', reveal:[.16,.34,.66,.86] },
 
-  { id:'discharge', type:'form', form:'discharge', at:1370, tint:'#7FD6E8', vh:1.9, gate:'discharge',
-    pushMs:runMs(1388,1414) },
+  /* No pushMs override here on purpose. quiz's and wallet's match the frame
+     span of the scrub scene immediately after them (intake, ward) because
+     that scrub scene is where the walk actually ends. This one isn't: the
+     scene right after discharge is locker07, which has no gate, so the walk
+     doesn't stop there - it continues straight through to reveal. A pushMs
+     sized for "just reach locker07" (~1.1s) was covering three-plus screens
+     of scroll in about a second once that skip is accounted for, which read
+     as the page snapping forward with no ease at all. Leaving pushMs unset
+     falls back to push()'s own distance-based duration, which measures the
+     real distance to wherever the walk actually stops. */
+  { id:'discharge', type:'form', form:'discharge', at:1370, tint:'#7FD6E8', vh:1.9, gate:'discharge' },
 
   { id:'locker07', type:'scrub', from:1388, to:1414, tint:'#F2C14E',
     kicker:'LOCKER <b>07</b> · DISCHARGE', title:'Pry it open.',
