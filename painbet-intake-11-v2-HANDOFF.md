@@ -56,18 +56,26 @@ rust .45 to .28 (in both the stylesheet and the inline set in `diagnose()`).
 **Two JS colour arrays repointed**, because they were styling: the password meter
 gradient and the hint colour token.
 
-**The locker crate.** A 3D CSS crate now sits in flow above the "PRY IT OPEN" card
-on the discharge screen, closed and idling until the same single tap that already
-rolls the PK amount. It is not new construction: it is the cooler concept from
+**The locker crate.** A 3D CSS crate sits in flow above the "PRY IT OPEN" card on
+the discharge screen. It is not new construction: it is the cooler concept from
 `3d_organ_cooler_crate_v2.html`, which had already been reworked once for
 `painbet-intake-scroll.html` (no GSAP, no Tailwind, pure CSS 3D, none of the
 original's blood/organ dressing or "BIOMETRIC SEAL ENGAGED" copy). This build
 reuses that already-approved construction rather than the original upload,
 recoloured amber instead of red so it reads as one object with the locker card
-underneath it, and wired to the existing single-tap `pry()` instead of a separate
-multi-tap ratchet. Lid, latch and glowing core are driven by one `.open` class
-toggle; the front tag ("LOCKER · 0N") stays in sync with the locker number the
-card already assigns.
+underneath it.
+
+It takes four taps to open, not one: `pry()` now ratchets, same as the scroll
+build's own version of this crate does. The first three taps nudge the lid a
+little further each time (a small rotateX increment, a shake on both the crate
+and the card, the core brightening in step) and only the fourth tap runs the
+original payout logic, unchanged, plus swings the lid fully open, breaks the
+latch and lights the core via one `.open` class. `PRY_TAPS` is one number if
+the count needs to change. The scene reserves real headroom above the box and
+anchors it low (`align-items:flex-end`) so the full lid swing lands clear of
+the heading above it rather than overlapping it, which the first pass did not
+account for. The front tag ("LOCKER · 0N") stays in sync with the locker
+number the card already assigns.
 
 ## Verified
 

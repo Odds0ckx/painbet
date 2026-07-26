@@ -64,6 +64,15 @@ fs.mkdirSync(path, { recursive: true });
   await page.waitForTimeout(900);
   await page.screenshot({ path: path + '/09-locker.png', fullPage: true });
   await page.click('#locker');
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path + '/09b-locker-tap1.png', fullPage: true });
+  await page.click('#locker');
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path + '/09c-locker-tap2.png', fullPage: true });
+  await page.click('#locker');
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: path + '/09d-locker-tap3.png', fullPage: true });
+  await page.click('#locker');
   await page.waitForTimeout(1200);
   await page.screenshot({ path: path + '/10-locker-pried.png', fullPage: true });
 
