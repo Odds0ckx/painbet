@@ -402,51 +402,68 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
    scrub: dir/count/ext -> `${dir}/frame_0001.${ext}` (null = placeholder).
    form : `form` names the capture station builder below.
    ========================================================================== */
+/* One film, 1444 frames at 24fps. Scenes no longer own a clip: a `run` scene
+   scrubs an absolute frame range of the film, and a `stop` scene pins the
+   playhead to a frame where the camera measurably holds still, which is where
+   its form opens. Frames per viewport-height is held constant so the dolly
+   speed never changes when the page moves between scenes. */
+const FILM = { dir:'assets/seq/film', count:1444, ext:'webp', fps:24 };
+const FPVH = 56;                       // frames per viewport-height of scroll
+const runVh = (a,b) => Math.max(1.2, (b-a)/FPVH);
+const runMs = (a,b) => Math.round((b-a)/FILM.fps*1000);
+
 const SCENES = [
-  { id:'admissions', type:'scrub', dir:'assets/seq/admissions', count:169, ext:'webp', tint:'#E10600', vh:3.0,
+  { id:'admissions', type:'scrub', from:1, to:699, tint:'#E10600',
     hero:true, kicker:'ADMISSIONS OPEN', title:'PAIN.BET',
     body:'The ward is taking patients. Five questions, then we tell you what is wrong with you and what you get for being early.',
     metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
-    cta:'Check in', pushMs:11000 },
+    cta:'Check in', pushMs:runMs(1,699) },
 
-  { id:'quiz', type:'form', form:'quiz', tint:'#7FD6E8', vh:1.9, gate:'quiz', pushMs:10000,
-    still:'assets/seq/admissions/frame_0169.webp' },
+  { id:'quiz', type:'form', form:'quiz', at:710, tint:'#7FD6E8', vh:1.9, gate:'quiz',
+    pushMs:runMs(722,1063) },
 
-  { id:'intake', type:'scrub', dir:'assets/seq/intake', count:169, ext:'webp', tint:'#7FD6E8', vh:2.6,
+  { id:'intake', type:'scrub', from:722, to:1063, tint:'#7FD6E8',
     kicker:'ROOM 02 · EXAMINATION', title:'Step inside.',
     body:'The doctor will work out exactly what is wrong with you.', reveal:[.14,.30,.66,.86] },
 
-  { id:'wallet', type:'form', form:'wallet', tint:'#E10600', vh:1.9, gate:'wallet', pushMs:3400,
-    still:'assets/seq/intake/frame_0169.webp' },
+  { id:'wallet', type:'form', form:'wallet', at:1120, tint:'#E10600', vh:1.9, gate:'wallet',
+    pushMs:runMs(1177,1352) },
 
-  { id:'discharge', type:'form', form:'discharge', tint:'#7FD6E8', vh:1.9, gate:'discharge', pushMs:7500,
-    still:'assets/seq/locker07/frame_0001.webp' },
+  // the film crosses the room to the desk; the chart is the discharge paperwork
+  { id:'ward', type:'scrub', from:1177, to:1352, tint:'#7FD6E8',
+    kicker:'ROOM 07 · THE WALL', title:'They have already looked.',
+    body:'Your chest is on the wall with a triangle where the heart should be.', reveal:[.16,.34,.66,.86] },
 
-  { id:'locker07', type:'scrub', dir:'assets/seq/locker07', count:145, ext:'webp', tint:'#F2C14E', vh:3.0, scrub:'both',
+  { id:'discharge', type:'form', form:'discharge', at:1370, tint:'#7FD6E8', vh:1.9, gate:'discharge',
+    pushMs:runMs(1388,1414) },
+
+  { id:'locker07', type:'scrub', from:1388, to:1414, tint:'#F2C14E',
     kicker:'LOCKER <b>07</b> · DISCHARGE', title:'Pry it open.',
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.16,.32,.62,.82] },
 
-  { id:'reveal', type:'form', form:'reveal', tint:'#F2C14E', vh:1.7, gate:'reveal', pushMs:4500,
-    still:'assets/seq/locker07/frame_0145.webp' },
+  { id:'reveal', type:'form', form:'reveal', at:1430, tint:'#F2C14E', vh:1.7, gate:'reveal', pushMs:4500 },
 
-  { id:'channels', type:'form', form:'channels', tint:'#7FD6E8', vh:2.2, menu:['--','Channels'], nextLabel:'Collect your meds', pushMs:4200,
-    still:'assets/seq/locker07/frame_0145.webp' },
+  /* Past the locker the film is spent, so the rooms below hold on its last
+     frame. This is what the page already did once the footage ran out. */
+  { id:'channels', type:'form', form:'channels', at:1444, tint:'#7FD6E8', vh:2.2,
+    menu:['--','Channels'], nextLabel:'Collect your meds', pushMs:4200 },
 
-  { id:'dispensary', type:'form', form:'dispensary', tint:'#5FE3A1', vh:3.2, menu:['08','Dispensary'], nextLabel:'Open my chart', pushMs:4200,
-    still:'assets/seq/locker07/frame_0145.webp' },
+  { id:'dispensary', type:'form', form:'dispensary', at:1444, tint:'#5FE3A1', vh:3.2,
+    menu:['08','Dispensary'], nextLabel:'Open my chart', pushMs:4200 },
 
-  { id:'dashboard', type:'form', form:'dashboard', tint:'#7FD6E8', vh:2.0, menu:['07','My chart'], nextLabel:'The private ward', pushMs:4200,
-    still:'assets/seq/locker07/frame_0001.webp' },
+  { id:'dashboard', type:'form', form:'dashboard', at:1370, tint:'#7FD6E8', vh:2.0,
+    menu:['07','My chart'], nextLabel:'The private ward', pushMs:4200 },
 
-  { id:'vip', type:'form', form:'vip', tint:'#7FD6E8', vh:2.6, menu:['VIP','Private ward'], nextLabel:'Staff entrance', pushMs:4200,
-    still:'assets/seq/intake/frame_0169.webp' },
+  { id:'vip', type:'form', form:'vip', at:1300, tint:'#7FD6E8', vh:2.6,
+    menu:['VIP','Private ward'], nextLabel:'Staff entrance', pushMs:4200 },
 
-  { id:'staff', type:'form', form:'staff', tint:'#F2C14E', vh:3.0, menu:['--','Staff entrance'], nextLabel:'Records', pushMs:4200,
-    still:'assets/seq/admissions/frame_0090.webp' },
+  { id:'staff', type:'form', form:'staff', at:900, tint:'#F2C14E', vh:3.0,
+    menu:['--','Staff entrance'], nextLabel:'Records', pushMs:4200 },
 
-  { id:'login', type:'form', form:'login', tint:'#E10600', vh:1.8,
-    still:'assets/seq/admissions/frame_0001.webp' },
+  { id:'login', type:'form', form:'login', at:1, tint:'#E10600', vh:1.8 },
 ];
+SCENES.forEach(s=>{ if(s.type==='scrub') s.vh=runVh(s.from,s.to); });
+
 
 /* ============================================================================
    2. STATE + capture logic — ported from intake_7 (validation kept verbatim).
@@ -1142,17 +1159,39 @@ setInterval(function(){
 /* ============================================================================
    4. SCRUB ENGINE — frame source, placeholder, scene runtime, scroll render.
    ========================================================================== */
-class FrameSource{
-  constructor(s){this.s=s;this.count=s.count||1;this.real=!!s.dir;this.imgs=[];this._started=false;}
-  pad(i){return String(i).padStart(4,'0');}
-  preload(){if(!this.real||this._started)return;this._started=true;
-    for(let i=0;i<this.count;i++){const im=new Image();im.decoding='async';
-      im.src=`${this.s.dir}/frame_${this.pad(i+1)}.${this.s.ext}`;this.imgs[i]=im;}}
-  draw(ctx,p,w,h){let f=Math.round(p*(this.count-1));f=Math.max(0,Math.min(this.count-1,f));
-    if(this.real){const im=this.imgs[f];
-      if(im&&im.complete&&im.naturalWidth)return coverDraw(ctx,im,w,h);}
-    drawPlaceholder(ctx,p,w,h,this.s,f,this.count);}
+/* THE FILM — one 1444-frame sequence shared by every scene.
+
+   The old per-clip loader preloaded a whole sequence up front, which was fine
+   at 169 frames and is not at 1444: that would be 81 MB of images before
+   anything drew. Frames here load in a window around the playhead and stay
+   cached once fetched, and a draw for a frame that has not arrived yet falls
+   back to the nearest decoded neighbour so the canvas never flashes empty
+   mid-scrub. */
+class FilmSource{
+  constructor(cfg){this.cfg=cfg;this.count=cfg.count;this.imgs=new Array(cfg.count);}
+  ensure(from,to){
+    const a=Math.max(1,Math.round(from)), b=Math.min(this.count,Math.round(to));
+    for(let i=a;i<=b;i++){
+      if(this.imgs[i-1]) continue;
+      const im=new Image(); im.decoding='async';
+      im.src=`${this.cfg.dir}/frame_${String(i).padStart(4,'0')}.${this.cfg.ext}`;
+      this.imgs[i-1]=im;
+    }
+  }
+  ready(i){const im=this.imgs[i-1];return im&&im.complete&&im.naturalWidth?im:null;}
+  draw(ctx,f,w,h){
+    f=Math.max(1,Math.min(this.count,Math.round(f)));
+    const hit=this.ready(f);
+    if(hit) return coverDraw(ctx,hit,w,h);
+    for(let d=1;d<=48;d++){
+      const a=this.ready(f-d); if(a) return coverDraw(ctx,a,w,h);
+      const b=this.ready(f+d); if(b) return coverDraw(ctx,b,w,h);
+    }
+    return false;
+  }
 }
+const film=new FilmSource(FILM);
+
 function coverDraw(ctx,img,w,h){const ir=img.naturalWidth/img.naturalHeight,cr=w/h;let dw,dh,dx,dy;
   if(ir>cr){dh=h;dw=h*ir;dx=(w-dw)/2;dy=0;}else{dw=w;dh=w/ir;dx=0;dy=(h-dh)/2;}ctx.drawImage(img,dx,dy,dw,dh);}
 function drawPlaceholder(ctx,p,w,h,s,f,count){
@@ -1206,9 +1245,7 @@ SCENES.forEach(s=>{
   el.appendChild(card);stageLayer.appendChild(el);
   const sp=document.createElement('div');sp.className='spacer';
   sp.style.height=((s.vh||3)*100)+'vh';stages.appendChild(sp);
-  let stillImg=null;
-  if(s.still){ stillImg=new Image(); stillImg.decoding='async'; stillImg.src=s.still; }
-  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,src:new FrameSource(s),sized:false,stillImg});
+  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,sized:false});
 });
 
 function sizeCanvas(sc){const dpr=Math.min(window.devicePixelRatio||1,2),w=innerWidth,h=innerHeight;
@@ -1243,7 +1280,11 @@ function render(){
 
   scenes.forEach(sc=>{
     const start=sc._top,end=start+sc._h;let p=(y-start)/(end-start);
-    if(p>-1.1&&p<1.1)sc.src.preload();
+    // window the film around this scene rather than preloading all 1444
+    if(p>-1.1&&p<1.1){
+      const a=sc.cfg.type==='form'?sc.cfg.at:sc.cfg.from, b=sc.cfg.type==='form'?sc.cfg.at:sc.cfg.to;
+      film.ensure(a-24,b+24);
+    }
     let vis=0;if(p>=0&&p<=1)vis=1;if(p<0&&p>-FADE)vis=1+p/FADE;if(p>1&&p<1+FADE)vis=1-(p-1)/FADE;
     vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
     const isForm=sc.cfg.type==='form';
@@ -1256,13 +1297,12 @@ function render(){
     if(!sc.sized&&!sizeCanvas(sc))return;
     const fp=Math.max(0,Math.min(1,p));
     const W=sc.cv.width/(sc.ctx.getTransform().a||1), H=sc.cv.height/(sc.ctx.getTransform().d||1);
-    // form scenes hold a static dim backdrop (a still if provided, else placeholder); scrub scenes scrub
-    if(isForm){
-      if(sc.stillImg&&sc.stillImg.complete&&sc.stillImg.naturalWidth) coverDraw(sc.ctx,sc.stillImg,W,H);
-      else sc.src.draw(sc.ctx,0.5,W,H);
-    } else {
-      sc.src.draw(sc.ctx,fp,W,H);
-    }
+    /* One sequence, absolute frames: a stop pins the playhead to the frame
+       where the camera holds still, a run scrubs its range. If the film has
+       not loaded yet the old procedural placeholder still covers. */
+    const frame = isForm ? sc.cfg.at : sc.cfg.from+fp*(sc.cfg.to-sc.cfg.from);
+    if(!film.draw(sc.ctx,frame,W,H))
+      drawPlaceholder(sc.ctx,fp,W,H,sc.cfg,Math.round(frame),FILM.count);
     if(isForm){
       // card visible across the whole dwell (fade only at the very edges)
       const o=Math.min(1,vis, cardOpacity(fp,[.04,.14,.90,.99])+0.0);

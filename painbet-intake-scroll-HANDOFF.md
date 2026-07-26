@@ -72,12 +72,11 @@ the gates for browsing (matches the original's "have a look around" behaviour).
 
 ## Footage
 
-### The 60s film (shot, extracted, not yet wired in)
+### The 60s film (live)
 
 `assets/seq/film/` - **1444 frames**, `frame_0001.webp` to `frame_1444.webp`,
-800x1450, 24fps, 60.2s. This is the continuous film the page is meant to move
-to. It is in the repo but **nothing loads it yet**; the page still runs on the
-three clips below.
+800x1450, 24fps, 60.2s. The page runs on this and nothing else; the three
+original clips have been deleted.
 
 Built from four 15s segments (1068x1936, 24fps, 361 frames each) concatenated
 losslessly with the ffmpeg concat demuxer, then:
@@ -117,53 +116,54 @@ the shot order differs from the brief). These are the candidate station markers:
 Regenerate this table with a frame-difference pass over the sequence; the run
 that produced it is in the session history.
 
-### The three clips currently live in the page
+### How the page uses it
 
-| Scene | Frames | Source |
+There are no per-scene clips any more. Every scene draws from one shared
+`FilmSource` using **absolute frame numbers**:
+
+- a **run** (`type:'scrub'`) scrubs a frame range, `from` to `to`
+- a **stop** (`type:'form'`) pins the playhead to `at`, a frame where the
+  camera measurably holds still, and opens its form there
+
+`FPVH` (56 frames per viewport-height) sets every run's scroll length from its
+frame span, so the dolly speed never changes between scenes, and `runMs()`
+sets each auto-play to the real duration of the film it covers.
+
+| Station | Frame | What is on screen |
 |---|---|---|
-| `admissions` | 169 | corridor descent, nurse leads to the 07 doors |
-| `intake` | 169 | through the doors into the exam room |
-| `locker07` | 145 | exam room to the locker, opens on a glowing red triangle |
+| `quiz` | 710 | end of the corridor, before the doors |
+| `wallet` | 1120 | the room, wide |
+| `discharge` | 1370 | the desk and the patient chart |
+| `reveal` | 1430 | the locker |
 
-Extracted the same way. Form rooms without their own film use a **still
-backdrop** (`still:` in the scene config) taken from a nearby frame, so nothing
-falls back to the procedural placeholder. **Delete these three sets when the
-engine switches to `film/`**, not before - the page reads them today.
+Two new runs had to be inserted: `ward` (1177-1352) and a reworked `locker07`
+(1388-1414), because `wallet`, `discharge` and `reveal` used to sit back to
+back with no film between them.
 
-`scratch/refs/` holds full-res stills pulled from the footage, to be uploaded to
-Higgsfield as `@ward_clean`, `@ward_decayed`, `@examroom`, `@locker`. **Upload
-the `_tri` versions** - same plates with the brand geometry composited in (EXIT
-lettering replaced by a red triangle, stencil triangles above the 07, the
-biohazard trefoil on the locker replaced by a glowing triangle seal). The
-originals are kept beside them, and `scratch/triangle-composite/` regenerates
-the composites.
+Everything past `reveal` holds on a still frame of the film, which is what the
+page already did once the old footage ran out.
+
+**Loading:** 1444 frames is 81 MB, far too much to preload. `FilmSource.ensure()`
+loads a window around the playhead and caches what it fetches; a draw for a
+frame that has not arrived falls back to the nearest decoded neighbour, so the
+canvas never flashes empty mid-scrub.
 
 ## Where it was left off
 
-The user wants to **replace the three clips with one continuous ~60s film**,
-shot as 4 x 15s segments (Higgsfield's per-generation limit). The full brief,
-asset prompts, 5 keyframes and 4 motion prompts are in
-`painbet-intake-scroll-PROMPTS.md`. Nothing is blocked on it — the page works on
-the current footage.
+The film is shot, extracted and wired in. The page runs on one continuous
+sequence with the four stations landing on measured holds.
 
 ### Next steps
-1. User generates the assets, 5 keyframes and 4 segments.
-2. Concatenate to one master mp4, extract frames.
-3. **Build the single-sequence engine:** one frame set plus station markers at
-   the four holds in Segment 4, easing to a stop at each. This is a small change
-   — the push already eases; it just needs to target frame numbers within one
-   sequence rather than separate scenes.
-4. Optional: `discharge.mp4` outro (retreat down the corridor) — never shot.
-
-### Questions now settled (see PROMPTS section 0 for the reasoning)
-- The sign is **triangle-only**, no word. The shot footage renders EXIT cleanly,
-  so this was a story call rather than a technical one: a sign that should
-  promise a way out showing the house mark instead is the film in one frame.
-- The triangle is **composited onto the existing stills**, not regenerated, so
-  the grade of the shot footage survives. Done, in `scratch/refs/*_tri.jpg`.
-- Every prompt's negatives used to read `text, lettering, words` while asking
-  for a stencilled 07. They now read `words, letterforms, signage text`.
-  **Numerals are never negative-prompted.**
+1. **Walk it end to end by hand.** Automated checks cover load, paint, the
+   station opening after the run, and no console errors. They do not cover
+   completing every form in sequence, because each gate blocks until it is
+   satisfied. Worth one manual pass.
+2. **The stencil sweep.** The doors were shot without the stencilled 07 and
+   without the triangle above it, so twelve of the fifteen prompts still
+   describe geometry that is not in the footage, and the `_tri` reference
+   plates still have a stencil triangle composited onto the doors. F2, F3 and
+   Segment 2 are already updated.
+3. Optional: an outro run for the tail rooms, which currently hold on a still.
 
 ## Gotchas worth knowing
 
