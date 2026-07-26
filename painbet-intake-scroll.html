@@ -114,6 +114,14 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .card.hero h2{font-size:clamp(38px,12vw,72px);letter-spacing:-.03em;line-height:.92;margin:4px 0 12px}
 .card.hero .kicker{color:var(--red-hot);letter-spacing:.34em}
 .card.hero .metric{justify-content:center}
+/* the pain.bet wordmark, same mark as index.html and the design system:
+   a red triangle stands in for the missing letter of PAIN */
+.card.hero h2 .wordmark{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap}
+.card.hero h2 .wordmark .mk{display:flex;align-items:baseline;text-transform:uppercase}
+.card.hero h2 .wordmark .tri{display:inline-block;width:.8em;height:.72em;background:var(--red);
+  clip-path:polygon(50% 0,100% 100%,0 100%);margin:0 .01em}
+.card.hero h2 .wordmark .tld{font-weight:700;font-size:.2em;color:var(--ink-3);
+  letter-spacing:.1em;align-self:flex-end;padding-bottom:.06em;margin-left:.1em}
 /* password meter + vip */
 .pwrow{position:relative}
 .pweye{position:absolute;right:8px;top:8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
@@ -394,7 +402,8 @@ const runMs = (a,b) => Math.round((b-a)/FILM.fps*1000);
 
 const SCENES = [
   { id:'admissions', type:'scrub', from:1, to:699, tint:'#E10600',
-    hero:true, kicker:'ADMISSIONS OPEN', title:'PAIN.BET',
+    hero:true, kicker:'ADMISSIONS OPEN',
+    title:'<span class="wordmark"><span class="mk">P<span class="tri" aria-hidden="true"></span>IN</span><span class="tld">.BET</span></span>',
     body:'The ward is taking patients. Five questions, then we tell you what is wrong with you and what you get for being early.',
     metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
     cta:'Check in', pushMs:runMs(1,699) },
@@ -1362,8 +1371,6 @@ const Station=(function(){
     cur=sc; open=true;
     lock(true);
     if(sc.card._enter) sc.card._enter();
-    // the locker station opens the crate straight away, no button needed
-    if(sc.cfg.gate==='reveal'){ const b=sc.card.querySelector('#r_go'); if(b) setTimeout(()=>b.click(),450); }
   }
   function done(){
     if(!open||!cur) return;
