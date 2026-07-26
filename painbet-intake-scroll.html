@@ -231,23 +231,6 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .chan-row .cn{font-family:var(--display);font-size:15px}
 .chan-row .cm{font-size:12px;color:var(--ink-3);margin-top:3px}
 
-/* ---- Station modal: the clipboard the nurse hands you --------------------- */
-/* a bottom sheet, so the room and whoever is standing in it stay on screen */
-#station{position:fixed;inset:0;z-index:75;display:none;align-items:flex-end;justify-content:center;
-  padding:0 0 2.5vh;opacity:0;transition:opacity .3s;
-  background:linear-gradient(180deg,transparent 0 34%,rgba(8,9,10,.55) 58%,rgba(8,9,10,.8) 100%)}
-#station.on{display:flex;opacity:1}
-#station .card{position:relative;left:auto;bottom:auto;top:auto;opacity:1;pointer-events:auto;
-  transform:translateY(18px);transition:transform .38s cubic-bezier(.22,1,.36,1);
-  max-height:62vh;width:min(520px,94vw)}
-/* lift the frame so the subject clears the sheet */
-#stages{transition:transform .5s cubic-bezier(.22,1,.36,1)}
-#stages.lifted{transform:translateY(-13%) scale(1.05)}
-#station.on .card{transform:translateY(0)}
-.clipclip{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:64px;height:16px;
-  background:linear-gradient(180deg,#c7ccd1,#8d949b);border-radius:4px;z-index:3;
-  box-shadow:0 3px 8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.6)}
-
 /* ---- Pry-open cooler modal (3D CSS, adapted from the crate concept) -------- */
 #pry{position:fixed;inset:0;z-index:80;display:none;place-items:center;
   background:radial-gradient(circle at 50% 45%,rgba(35,36,39,.96),rgba(8,9,10,.985));
@@ -338,9 +321,6 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   <div id="hint">Or scroll to look around</div>
 </div>
 <div id="toast"></div>
-
-<!-- Station modal: capture forms rise over the held frame -->
-<div id="station"></div>
 
 <!-- Pry-open cooler: 3D crate that ratchets open on repeated taps -->
 <div id="pry">
@@ -1272,9 +1252,16 @@ function render(){
   const vh=innerHeight;let y=scrollY||pageYOffset;
   let top=0,total=0;scenes.forEach(sc=>{sc._top=top;sc._h=(sc.cfg.vh||3)*vh;top+=sc._h;total+=sc._h;});
 
-  /* STATION: when the film reaches a capture point, the form rises as a modal
-     (the clipboard). The modal locks the scroll while it is open, so nothing
-     gets skipped, and submitting auto-pushes the film on to the next room. */
+  /* STATION: when the film reaches a capture point, the form's card - already
+     sitting centred in its own scene, per .scene.form .card - becomes the
+     gate: scroll locks while it's open, and submitting auto-pushes the film
+     on to the next room. The card never moves. An earlier version lifted it
+     into a separate bottom-sheet modal, which meant a discrete jump from
+     wherever it had just faded in (centred) to a different fixed-position
+     layout (bottom-anchored) the instant the gate armed, and another jump
+     back on close - both looked like the page glitching. Leaving it in place
+     means entry and exit are just the same continuous scroll-driven fade
+     already used to bring it on screen, so there is nothing to jump between. */
   if(!Station.open){
     for(const sc of scenes){
       if(!sc.cfg.gate||gateDone(sc.cfg.gate)) continue;
@@ -1295,13 +1282,6 @@ function render(){
     let vis=0;if(p>=0&&p<=1)vis=1;if(p<0&&p>-FADE)vis=1+p/FADE;if(p>1&&p<1+FADE)vis=1-(p-1)/FADE;
     vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
     const isForm=sc.cfg.type==='form';
-    const inStage=sc.card.parentElement===sc.el;
-    /* The canvas backdrop is kept in sync regardless of where the card
-       currently lives. Gating this on the card's location left the backdrop
-       painted with whatever frame happened to be current at the moment the
-       card was lifted into the station modal - usually fine on a slow scroll
-       into the gate, but blank on a hard jump straight past the threshold
-       (a reload with scroll position restored mid-station, for one). */
     if(vis>0&&(sc.sized||sizeCanvas(sc))){
       const fp=Math.max(0,Math.min(1,p));
       const W=sc.cv.width/(sc.ctx.getTransform().a||1), H=sc.cv.height/(sc.ctx.getTransform().d||1);
@@ -1312,8 +1292,6 @@ function render(){
       if(!film.draw(sc.ctx,frame,W,H))
         drawPlaceholder(sc.ctx,fp,W,H,sc.cfg,Math.round(frame),FILM.count);
     }
-    // a card mounted in the station modal is the modal's to style, not ours
-    if(!inStage){ if(vis>0.5)current=sc; return; }
     // pointer events only on the active form card
     // NB: coerce — toggle() with undefined flips the class instead of clearing it
     sc.card.classList.toggle('live',Boolean(isForm||sc.cfg.cta)&&vis>0.6);
@@ -1345,19 +1323,20 @@ let ticking=false;
 addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{render();ticking=false;});ticking=true;}},{passive:true});
 /* ============================================================================
    STATION CONTROLLER — the clipboard moment.
-   The film reaches a capture point -> that scene's form lifts out of the stage
-   and into a modal. Scroll is locked while it is open (the modal IS the gate,
-   so nothing can be skipped). Finishing it closes the modal and auto-pushes the
-   film forward for a couple of seconds, like a gurney being shoved off.
+   The film reaches a capture point -> that scene's card, already sitting
+   centred where .scene.form .card put it, becomes the gate: scroll locks
+   while it is open, so nothing can be skipped. Finishing it unlocks and
+   auto-pushes the film forward for a couple of seconds, like a gurney being
+   shoved off. The card itself never moves - see the comment on this in
+   render() for why that used to be the source of the visible glitches here.
    ========================================================================== */
 const Station=(function(){
-  const wrap=document.getElementById('station');
   let cur=null, open=false, playing=false;
 
   /* Lock the page, but never the card: a long form has to be able to scroll to
      its own buttons, otherwise the station is a dead end. */
   const block=e=>{
-    const card=wrap.querySelector('.card');
+    const card=cur&&cur.card;
     if(card&&card.contains(e.target)&&card.scrollHeight>card.clientHeight+1) return;
     e.preventDefault();
   };
@@ -1370,15 +1349,8 @@ const Station=(function(){
     window[m]('keydown',blockKeys);
   }
   function enter(sc){
-    if(open||sc===cur&&open) return;
+    if(open) return;
     cur=sc; open=true;
-    sc.card.classList.add('live');
-    if(!sc.card.querySelector('.clipclip')){
-      const c=document.createElement('span');c.className='clipclip';sc.card.prepend(c);
-    }
-    wrap.appendChild(sc.card);                  // lift the card out of the stage
-    wrap.classList.add('on');
-    document.getElementById('stages').classList.add('lifted');
     lock(true);
     if(sc.card._enter) sc.card._enter();
     // the locker station opens the crate straight away, no button needed
@@ -1387,8 +1359,7 @@ const Station=(function(){
   function done(){
     if(!open||!cur) return;
     const sc=cur; open=false; cur=null;
-    wrap.classList.remove('on'); document.getElementById('stages').classList.remove('lifted'); lock(false);
-    setTimeout(()=>{ sc.el.appendChild(sc.card); sc.card.classList.remove('live'); },320);
+    lock(false);
     push(sc);
   }
   /* where the film should run to: the next unfinished station, so one confirm
