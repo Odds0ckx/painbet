@@ -379,6 +379,61 @@ h1 .r{color:var(--redhi)}
 .pz-how{margin-top:13px;font-size:14px;color:var(--ink);line-height:1.55}
 .clock{padding:17px 19px;margin-bottom:14px}
 
+/* ============ THE CRATE ============
+   3D CSS locker crate, adapted from the cooler concept already reworked and
+   approved for painbet-intake-scroll.html: same construction (a plastic box
+   + hinged lid + latch, all preserve-3d faces, no GSAP), recoloured here to
+   amber to tie into the locker card it sits on top of rather than red. Sits
+   in normal flow above .locker, closed and idling until pry() opens it. */
+.crate-scene{height:172px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;
+  perspective:900px}
+.crate{--w:186px;--wh:93px;--hb:98px;--hbh:49px;--hl:34px;--hlh:17px;--d:122px;--dh:61px;
+  position:relative;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateX(-15deg) rotateY(-24deg);animation:crateIdle 7s ease-in-out infinite}
+@keyframes crateIdle{0%,100%{transform:rotateX(-15deg) rotateY(-24deg)}50%{transform:rotateX(-13deg) rotateY(-18deg)}}
+.crate .cf{position:absolute;top:50%;left:50%;border-radius:3px;
+  background:linear-gradient(160deg,#33363b,#1c1e21);
+  box-shadow:inset 0 0 22px rgba(0,0,0,.4),inset 0 0 2px rgba(255,255,255,.08);backface-visibility:hidden}
+.crate-base{position:absolute;top:0;left:0;transform-style:preserve-3d}
+.crate-base .front,.crate-base .back,.crate-base .right,.crate-base .left{
+  background:linear-gradient(to top,var(--amber) 0 16%,#33363b 16% 100%)}
+.crate-base .front {width:var(--w);height:var(--hb);transform:translate(-50%,-50%) translateZ(var(--dh))}
+.crate-base .back  {width:var(--w);height:var(--hb);transform:translate(-50%,-50%) rotateY(180deg) translateZ(var(--dh))}
+.crate-base .right {width:var(--d);height:var(--hb);transform:translate(-50%,-50%) rotateY(90deg) translateZ(var(--wh))}
+.crate-base .left  {width:var(--d);height:var(--hb);transform:translate(-50%,-50%) rotateY(-90deg) translateZ(var(--wh))}
+.crate-base .bottom{width:var(--w);height:var(--d);background:var(--amber-dim);
+  transform:translate(-50%,-50%) rotateX(-90deg) translateZ(var(--hbh));box-shadow:0 24px 50px rgba(0,0,0,.7)}
+.crate-base .inner {width:calc(var(--w) - 8px);height:calc(var(--d) - 8px);background:#0a0a0b;border:8px solid #26282c;
+  transform:translate(-50%,-50%) rotateX(90deg) translateZ(calc(var(--hbh) - 16px));box-shadow:inset 0 0 40px #000}
+.crate-hinge{position:absolute;top:0;left:0;transform-style:preserve-3d;
+  transform:translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX(0deg);
+  transition:transform .9s cubic-bezier(.34,1.4,.5,1)}
+.crate.open .crate-hinge{transform:translateY(calc(var(--hbh) * -1)) translateZ(calc(var(--dh) * -1)) rotateX(104deg)}
+.crate.open{animation:none}
+.crate-lid{position:absolute;top:0;left:0;transform-style:preserve-3d;
+  transform:translateY(calc(var(--hlh) * -1)) translateZ(var(--dh))}
+.crate-lid .front{width:var(--w);height:var(--hl);transform:translate(-50%,-50%) translateZ(var(--dh))}
+.crate-lid .back {width:var(--w);height:var(--hl);transform:translate(-50%,-50%) rotateY(180deg) translateZ(var(--dh))}
+.crate-lid .right{width:var(--d);height:var(--hl);transform:translate(-50%,-50%) rotateY(90deg) translateZ(var(--wh))}
+.crate-lid .left {width:var(--d);height:var(--hl);transform:translate(-50%,-50%) rotateY(-90deg) translateZ(var(--wh))}
+.crate-lid .top  {width:var(--w);height:var(--d);transform:translate(-50%,-50%) rotateX(90deg) translateZ(var(--hlh))}
+.crate-lid .undr {width:calc(var(--w) - 8px);height:calc(var(--d) - 8px);background:#26282c;
+  transform:translate(-50%,-50%) rotateX(-90deg) translateZ(calc(var(--hlh) - 4px))}
+.crate-latch{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:70px;height:18px;
+  background:var(--amber);border-radius:3px;z-index:15;transition:transform .5s var(--ease-out),opacity .5s var(--ease-out);
+  box-shadow:0 4px 6px rgba(0,0,0,.4),inset 0 2px 4px rgba(255,255,255,.25)}
+.crate-latch i{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:30px;height:3px;
+  background:rgba(0,0,0,.3);border-radius:2px}
+.crate.open .crate-latch{transform:translateX(-50%) translateY(28px) rotateX(-50deg);opacity:0}
+.crate-tag{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-family:var(--mono);
+  font-size:8.5px;letter-spacing:.16em;color:rgba(255,255,255,.3)}
+.crate-core{position:absolute;top:50%;left:50%;width:78px;height:56px;border-radius:44% 56% 52% 48%/52% 46% 58% 42%;
+  background:radial-gradient(circle at 32% 30%,#ffe6b3,var(--amber),#6d3f03);
+  transform:translate(-50%,-50%) translateZ(15px);opacity:.16;transition:opacity .4s var(--ease-out);
+  box-shadow:inset -6px -6px 14px rgba(0,0,0,.8),inset 6px 6px 14px rgba(255,230,180,.3),0 0 30px var(--amber)}
+.crate.open .crate-core{opacity:1;animation:crateCorePulse 1.4s ease-in-out infinite}
+@keyframes crateCorePulse{50%{transform:translate(-50%,-50%) translateZ(15px) scale(1.12)}}
+
 /* ============ LOCKER ============ */
 .locker{padding:36px 20px;text-align:center;cursor:pointer;overflow:hidden;
   box-shadow:var(--shadow),inset 0 0 0 1px rgba(255,184,77,.3);
@@ -939,6 +994,21 @@ h1 .r{color:var(--redhi)}
     <section class="scr" id="s5">
       <div class="plate"><span class="dot"></span><span id="doneline">Chart sent</span></div>
       <div class="big">Locker 0<span id="lkNo">7</span>. It's yours.</div>
+      <div class="crate-scene"><div class="crate" id="crate">
+        <div class="crate-base">
+          <div class="cf front"><span class="crate-tag">LOCKER &middot; 0<span id="crateLk">7</span></span></div>
+          <div class="cf back"></div><div class="cf right"></div><div class="cf left"></div>
+          <div class="cf bottom"></div>
+          <div class="cf inner"><div class="crate-core" id="crateCore"></div></div>
+        </div>
+        <div class="crate-hinge" id="crateHinge">
+          <div class="crate-lid">
+            <div class="cf front"><div class="crate-latch" id="crateLatch"><i></i></div></div>
+            <div class="cf back"></div><div class="cf right"></div><div class="cf left"></div>
+            <div class="cf top"></div><div class="cf undr"></div>
+          </div>
+        </div>
+      </div></div>
       <div class="locker" id="locker" role="button" tabindex="0">
         <div class="lk" id="lkText">PRY IT OPEN</div>
         <div class="lh" id="lkHint">Everyone gets one. 1 in 200 takes the full $1,000.</div>
@@ -1755,6 +1825,7 @@ function send(){
   st.sent=true; st.handle=v; Snd.open();
   $('doneline').textContent = st.vip ? 'Chart sent · VIP desk notified' : 'Chart sent';
   $('lkNo').textContent=String(st.pno%9+1);
+  var ck=$('crateLk'); if(ck) ck.textContent=$('lkNo').textContent;
   issueCreds();
   show('s5');
   toast(st.vip ? 'A host will reach out on '+st.chan+' within 24 hours.' : 'Sent on '+st.chan+'. Check your messages.');
@@ -1768,6 +1839,7 @@ function pry(){
   if(st.pried)return; st.pried=true; Snd.creak();
   var p=rollPk(); st.pkWon=p;
   $('locker').classList.add('pried');
+  var cr=$('crate'); if(cr) cr.classList.add('open');
   $('lkText').textContent=p.pk.toLocaleString('en-US')+' PK';
   $('lkHint').textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
   $('toExit').style.display='block';

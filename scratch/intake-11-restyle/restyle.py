@@ -84,7 +84,46 @@ once(
     "october triangle",
 )
 
-# ---- 5. liquid pain-scale bubble on the diagnosis card ----
+# ---- 5. the 3D locker crate above "PRY IT OPEN" ----
+# Adapted from the cooler concept already reworked and approved for
+# painbet-intake-scroll.html (assets/../3d_organ_cooler_crate_v2.html origin):
+# same plastic-box-plus-hinged-lid construction, no GSAP/Tailwind, none of the
+# original's blood/organ dressing or instructional copy. Recoloured amber to
+# tie into the locker card it now sits on top of, and driven by the existing
+# single-tap pry() instead of a separate multi-tap ratchet.
+CRATE = """<div class="crate-scene"><div class="crate" id="crate">
+        <div class="crate-base">
+          <div class="cf front"><span class="crate-tag">LOCKER &middot; 0<span id="crateLk">7</span></span></div>
+          <div class="cf back"></div><div class="cf right"></div><div class="cf left"></div>
+          <div class="cf bottom"></div>
+          <div class="cf inner"><div class="crate-core" id="crateCore"></div></div>
+        </div>
+        <div class="crate-hinge" id="crateHinge">
+          <div class="crate-lid">
+            <div class="cf front"><div class="crate-latch" id="crateLatch"><i></i></div></div>
+            <div class="cf back"></div><div class="cf right"></div><div class="cf left"></div>
+            <div class="cf top"></div><div class="cf undr"></div>
+          </div>
+        </div>
+      </div></div>
+      """
+once(
+    '<div class="locker" id="locker" role="button" tabindex="0">',
+    CRATE + '<div class="locker" id="locker" role="button" tabindex="0">',
+    "crate markup",
+)
+once(
+    "$('locker').classList.add('pried');",
+    "$('locker').classList.add('pried');\n  var cr=$('crate'); if(cr) cr.classList.add('open');",
+    "crate open on pry",
+)
+once(
+    "$('lkNo').textContent=String(st.pno%9+1);",
+    "$('lkNo').textContent=String(st.pno%9+1);\n  var ck=$('crateLk'); if(ck) ck.textContent=$('lkNo').textContent;",
+    "crate locker number sync",
+)
+
+# ---- 6. liquid pain-scale bubble on the diagnosis card ----
 BUBBLE = """
         <div class="painscale">
           <div class="bubble" id="psBubble" role="img" aria-label="Pain scale">
@@ -108,7 +147,7 @@ once(
     "pain scale bubble",
 )
 
-# ---- 6. JS: drive the bubble, and repoint the password-meter colours ----
+# ---- 7. JS: drive the bubble, and repoint the password-meter colours ----
 once(
     "function diagnose(){",
     """function painWord(t){
