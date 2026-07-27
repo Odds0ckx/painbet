@@ -57,7 +57,7 @@ body.app{font-family:var(--sans);color:var(--ink);padding:60px 0}
 /* ---- section divider pages ---- */
 .divider .num{position:absolute;right:64px;bottom:120px;font-family:var(--disp);font-size:440px;
   line-height:.8;color:var(--void);opacity:.9}
-.divider.on-card .num{color:var(--card-hi)}
+.divider.on-card .num{color:var(--line)}
 .divider .kicker{position:absolute;left:64px;top:290px;font-family:var(--mono);font-size:16px;
   letter-spacing:.2em;text-transform:uppercase;color:var(--red-hot)}
 .divider .title{position:absolute;left:64px;top:330px;font-family:var(--disp);font-size:96px;
@@ -177,10 +177,8 @@ body.app{font-family:var(--sans);color:var(--ink);padding:60px 0}
 .mu-cell .wordmark .tri{width:.8em;height:.72em}
 .mu-cell .wordmark .tld{font-size:.22em}
 .mu-gold .tri{background:#F2C14E !important}
-.mu-purple .tri{background:#8B5CF6 !important}
-.mu-stretch .wordmark{transform:scaleX(1.6)}
+.wordmark.mu-stretch{transform:scaleX(1.6)}
 .mu-shadow .tri{filter:drop-shadow(0 10px 0 rgba(225,6,0,.5)) drop-shadow(4px 4px 0 var(--blue))}
-.mu-rotate .wordmark{transform:rotate(-14deg)}
 
 /* ---- color palette ---- */
 .swatch-row{position:absolute;left:64px;right:64px;top:280px;bottom:120px;display:flex;gap:28px}
@@ -254,7 +252,7 @@ body.app{font-family:var(--sans);color:var(--ink);padding:60px 0}
 .motif-note{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.05em}
 
 /* ---- applications ---- */
-.app-grid{position:absolute;left:64px;right:64px;top:270px;bottom:120px;display:grid;
+.app-grid{position:absolute;left:64px;right:64px;top:270px;display:grid;align-items:start;
   grid-template-columns:1.1fr 1fr;gap:28px}
 .app-panel{background:var(--card);border:1px solid var(--line-soft);border-radius:16px;padding:30px}
 .app-panel h4{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
