@@ -1458,7 +1458,12 @@ const Station=(function(){
     playing=true; acc=0; since=t0;
     (function step(t){
       if(open||!playing) {playing=false;return;}          // a popup arrived, stop here
-      const e=Math.min(1,(t-t0)/DUR), k=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;   // easeInOut
+      // easeOutCubic, not easeInOut: a slow-start curve left the first ~1.5s
+      // of every long walk (some run 13-29s) showing well under 3% of the
+      // scroll distance, i.e. an imperceptible frame change right after the
+      // button press, reading as the click having done nothing. Full speed
+      // immediately, easing only into the stop, matches spinWheelTo below.
+      const e=Math.min(1,(t-t0)/DUR), k=1-Math.pow(1-e,3);
       window.scrollTo(0, from+(to-from)*k);
       if(e<1) requestAnimationFrame(step); else playing=false;
     })(t0);
