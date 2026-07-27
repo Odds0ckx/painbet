@@ -885,40 +885,21 @@ function renderGive(card){const el=$('g_list',card);el.innerHTML='';
     if(id==='sun'){toast('Scroll back up to the wallet room to add an entry.');return;}
     ST.entered[id]=true;renderGive(card);toast('Entry received. Watch the Ward for the result.');}));}
 let wTurning=false;
-/* ---- the wheel itself: the plate is a photographed 10-tooth-wedge saw
-   blade (assets/wheel/plate.webp); canvas only draws the prize labels and
-   the spin sparks over it. Wedge 0 sits at 12 o'clock at rot=0 and wedges
-   run clockwise from there, matching the plate's own painted order. ------ */
-const WHEEL_PLATE=new Image();WHEEL_PLATE.src='assets/wheel/plate.webp';
-const LABEL_INK={jack:'#F7F8F8',cash:'#F7F8F8',ent:'#0d0e10',pk:'#F7F8F8',perk:'#F7F8F8',none:'#8b9298'};
-/* the painted band on the plate only runs from ~0.41R to ~0.80R (the rest is
-   bare steel hub and bare-steel/teeth), a lot narrower than the old
-   full-disc vector wedges, so labels are auto-shrunk to fit it per string
-   rather than fixed at one size. This is recomputed on every draw rather
-   than cached: the very first draw can land before the JetBrains Mono web
-   font (loaded with display=swap) has actually finished downloading, and a
-   size fitted against the fallback font's metrics is not safe to reuse once
-   the real font swaps in and renders wider. Recomputing is trivial cost for
-   ten short strings, and self-corrects the moment the real font is ready. */
-const LABEL_BAND_INNER=0.44,LABEL_BAND_OUTER=0.78;
-function labelFontPx(ctx,text,maxWidth){
-  let size=17;ctx.font=`700 ${size}px "JetBrains Mono",monospace`;
-  while(size>10&&ctx.measureText(text).width>maxWidth){size--;ctx.font=`700 ${size}px "JetBrains Mono",monospace`;}
-  return size;
-}
+/* ---- the wheel itself: the plate (assets/wheel/plate_labeled.webp) is the
+   photographed 10-tooth-wedge saw blade with all ten prize labels baked
+   directly into the artwork (JetBrains Mono Bold, hand-fit and hand-placed
+   per wedge). Canvas just draws this one image and rotates it; there is no
+   runtime text left to overflow, mis-measure against a not-yet-loaded web
+   font, or need re-fitting. Wedge 0 sits at 12 o'clock at rot=0 and wedges
+   run clockwise from there, matching the plate's own painted order — if the
+   WHEEL array order ever changes, the plate has to be regenerated to match,
+   the labels are pixels now, not data. -------------------------------- */
+const WHEEL_PLATE=new Image();WHEEL_PLATE.src='assets/wheel/plate_labeled.webp';
 function drawWheel(cv,rot){
-  const ctx=cv.getContext('2d'),R=cv.width/2,n=WHEEL.length,step=Math.PI*2/n;
+  const ctx=cv.getContext('2d'),R=cv.width/2;
   ctx.clearRect(0,0,cv.width,cv.width);
   ctx.save();ctx.translate(R,R);ctx.rotate(rot);
   if(WHEEL_PLATE.complete&&WHEEL_PLATE.naturalWidth)ctx.drawImage(WHEEL_PLATE,-R,-R,R*2,R*2);
-  const anchorR=R*LABEL_BAND_OUTER,maxWidth=R*(LABEL_BAND_OUTER-LABEL_BAND_INNER);
-  for(let i=0;i<n;i++){
-    const w=WHEEL[i];
-    ctx.save();ctx.rotate(-Math.PI/2+i*step);ctx.textAlign='right';ctx.textBaseline='middle';
-    ctx.fillStyle=LABEL_INK[w.kind]||'#F7F8F8';
-    ctx.font=`700 ${labelFontPx(ctx,w.t,maxWidth)}px "JetBrains Mono",monospace`;
-    ctx.fillText(w.t,anchorR,0);ctx.restore();
-  }
   ctx.restore();
 }
 /* ---- sparks: spawned off the pointer in proportion to how fast the plate
@@ -983,7 +964,6 @@ function buildDispensary(card){
   const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card),cv=$('w_wheel',card);
   cv._rot=0; drawWheel(cv,0);
   if(!WHEEL_PLATE.complete)WHEEL_PLATE.addEventListener('load',()=>drawWheel(cv,cv._rot||0),{once:true});
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>drawWheel(cv,cv._rot||0));
   btn.addEventListener('click',()=>{
     if(wTurning||ST.spun)return;
     if(!ST.sent){toast('Check in first. The wheel needs an account to pay into.');return;}
