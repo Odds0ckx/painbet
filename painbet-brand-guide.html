@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PAIN.BET · BRAND GUIDELINES</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E10600; --red-hot:#FF3B33; --red-deep:#520703;
+  --blue:#7FD6E8; --blue-dim:#16333a;
+  --cash:#5FE3A1;
+  --ink:#F7F8F8; --ink-2:#C7CDD1; --ink-3:#8A9096;
+  --void:#0B0C0D; --sunk:#131517; --card:#1B1D20; --card-hi:#232529;
+  --line:#454A50; --line-soft:#2C2F33;
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#3a3c40}
+body.app{font-family:var(--sans);color:var(--ink);padding:60px 0}
+
+.tri{display:inline-block;background:var(--red);clip-path:polygon(50% 0,100% 100%,0 100%)}
+
+/* ---- page frame: one per Figma page/frame, fixed 1920x1080, stacked in flow ---- */
+.page{width:1920px;height:1080px;position:relative;overflow:hidden;background:var(--void);
+  margin:0 auto 48px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.page.on-red{background:var(--red)}
+.page.on-ink{background:var(--ink);color:var(--void)}
+.page.on-card{background:var(--card)}
+
+.foot{position:absolute;left:64px;right:64px;bottom:40px;display:flex;justify-content:space-between;
+  align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3)}
+.page.on-red .foot{color:rgba(11,12,13,.6)}
+.page.on-ink .foot{color:rgba(11,12,13,.45)}
+.foot .fmark{display:flex;align-items:center;gap:8px}
+.foot .fmark .tri{width:9px;height:8px}
+
+.corner-mark{position:absolute;top:44px;left:64px;display:flex;align-items:baseline;gap:2px;
+  font-family:var(--disp);font-size:22px;text-transform:uppercase;letter-spacing:-.01em}
+.corner-mark .tri{width:15px;height:13px;margin:0 1px}
+.corner-mark .tld{font-family:var(--sans);font-weight:700;font-size:10px;color:var(--ink-3);
+  letter-spacing:.08em;margin-left:3px;align-self:flex-end;padding-bottom:2px}
+.page.on-red .corner-mark .tri,.page.on-ink .corner-mark .tri{background:var(--void)}
+.page.on-ink .corner-mark{color:var(--void)}
+
+.year-tag{position:absolute;top:44px;right:64px;font-family:var(--mono);font-size:12px;
+  letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase}
+.page.on-red .year-tag,.page.on-ink .year-tag{color:rgba(11,12,13,.55)}
+
+/* ---- wordmark, built the same way as the live site ---- */
+.wordmark{display:inline-flex;align-items:baseline;text-transform:uppercase}
+.wordmark .tri{margin:0 .02em}
+.wordmark .tld{font-weight:700;color:var(--ink-3);letter-spacing:.08em;align-self:flex-end;margin-left:.08em}
+
+/* ---- section divider pages ---- */
+.divider .num{position:absolute;right:64px;bottom:120px;font-family:var(--disp);font-size:440px;
+  line-height:.8;color:var(--void);opacity:.9}
+.divider.on-card .num{color:var(--card-hi)}
+.divider .kicker{position:absolute;left:64px;top:290px;font-family:var(--mono);font-size:16px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--red-hot)}
+.divider .title{position:absolute;left:64px;top:330px;font-family:var(--disp);font-size:96px;
+  line-height:1.02;letter-spacing:-.01em;max-width:1000px}
+
+/* ---- generic content-page furniture ---- */
+.h-kicker{position:absolute;left:64px;top:150px;font-family:var(--mono);font-size:14px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
+.h-title{position:absolute;left:64px;top:180px;font-family:var(--disp);font-size:56px;letter-spacing:-.01em}
+.page.on-red .h-kicker,.page.on-ink .h-kicker{color:rgba(11,12,13,.55)}
+
+/* ---- copy block used on the idea page ---- */
+.idea-block{position:absolute;left:64px;top:290px;max-width:760px}
+.idea-block h3{font-family:var(--mono);font-size:14px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--red-hot);margin-bottom:14px}
+.idea-block p{font-size:22px;line-height:1.6;color:var(--ink-2)}
+.idea-block p+h3{margin-top:36px}
+.page.on-red .idea-block h3{color:var(--void)}
+.page.on-red .idea-block p{color:rgba(11,12,13,.72)}
+
+.pillars{position:absolute;left:64px;top:640px;right:64px;display:flex;gap:28px}
+.pillar{flex:1;background:var(--card);border:1px solid var(--line-soft);border-radius:14px;padding:28px}
+.pillar .pn{font-family:var(--mono);font-size:12px;color:var(--red-hot);letter-spacing:.14em}
+.pillar h4{font-family:var(--disp);font-size:26px;margin:10px 0 10px;letter-spacing:-.01em}
+.pillar p{font-size:15px;line-height:1.55;color:var(--ink-3)}
+
+/* ---- logo pages ---- */
+.logo-stage{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center}
+.logo-big{font-family:var(--disp);font-size:150px}
+.logo-big .tri{width:.8em;height:.72em}
+.logo-big .tld{font-size:.24em}
+.logo-parts{position:absolute;left:64px;right:64px;bottom:200px;display:flex;gap:24px}
+.lp-card{flex:1;background:var(--card);border:1px solid var(--line-soft);border-radius:12px;padding:22px}
+.lp-card .lp-glyph{font-family:var(--disp);font-size:40px;color:var(--ink-3);margin-bottom:10px}
+.lp-card .lp-glyph b{color:var(--red)}
+.lp-card .lp-name{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3)}
+.lp-card p{font-size:13.5px;color:var(--ink-2);margin-top:8px;line-height:1.5}
+
+.lockup-row{position:absolute;left:64px;right:64px;top:300px;bottom:220px;display:flex;gap:32px}
+.lockup-cell{flex:1;background:var(--card);border:1px solid var(--line-soft);border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;position:relative}
+.lockup-cell .lc-label{position:absolute;top:24px;left:28px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.lockup-cell .wordmark{font-family:var(--disp);font-size:64px}
+.lockup-cell .wordmark .tri{width:.8em;height:.72em}
+.lockup-cell .wordmark .tld{font-size:.22em}
+.lockup-cell.stacked .wordmark{flex-direction:column;align-items:center;gap:2px}
+.lockup-cell.stacked .wordmark .tld{margin-left:0;align-self:center}
+.lockup-cell.icon-only .tri{width:70px;height:62px}
+
+.colorway-grid{position:absolute;left:64px;right:64px;top:300px;bottom:120px;display:grid;
+  grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:24px}
+.cw-cell{border-radius:16px;display:flex;align-items:center;justify-content:center;position:relative}
+.cw-cell .cw-label{position:absolute;top:22px;left:26px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+.cw-cell .wordmark{font-family:var(--disp);font-size:56px}
+.cw-cell .wordmark .tri{width:.8em;height:.72em}
+.cw-cell .wordmark .tld{font-size:.22em}
+.cw-1{background:var(--void)}
+.cw-2{background:var(--red)}
+.cw-2 .wordmark,.cw-2 .wordmark .tld,.cw-2 .cw-label{color:var(--void)}
+.cw-2 .tri{background:var(--void)}
+.cw-3{background:var(--ink)}
+.cw-3 .wordmark,.cw-3 .wordmark .tld,.cw-3 .cw-label{color:var(--void)}
+.cw-4{background:var(--sunk);border:1px solid var(--line-soft)}
+
+/* ---- monochrome pair ---- */
+.mono-pair{position:absolute;left:64px;right:64px;top:300px;bottom:220px;display:flex;gap:32px}
+.mono-cell{flex:1;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.mono-cell.dark{background:var(--void)}
+.mono-cell.light{background:var(--ink)}
+.mono-cell .wordmark{font-family:var(--disp);font-size:64px}
+.mono-cell.dark .wordmark,.mono-cell.dark .wordmark .tld{color:var(--ink)}
+.mono-cell.dark .tri{background:var(--ink)}
+.mono-cell.light .wordmark,.mono-cell.light .wordmark .tld{color:var(--void)}
+.mono-cell.light .tri{background:var(--void)}
+.mono-cell .wordmark .tri{width:.8em;height:.72em}
+.mono-cell .wordmark .tld{font-size:.22em}
+
+/* ---- scalability ---- */
+.scale-row{position:absolute;left:64px;right:64px;top:340px;display:flex;align-items:flex-end;gap:60px}
+.scale-item{display:flex;flex-direction:column;align-items:center;gap:14px}
+.scale-item .wordmark{font-family:var(--disp)}
+.scale-item .wordmark .tri{width:.8em;height:.72em}
+.scale-item .wordmark .tld{font-size:.22em}
+.scale-item .sc-tag{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.1em}
+.scale-note{position:absolute;left:64px;bottom:180px;max-width:640px;font-size:16px;color:var(--ink-2);line-height:1.6}
+.scale-note b{color:var(--ink)}
+
+/* ---- safe zone diagram ---- */
+.safezone-stage{position:absolute;left:0;right:0;top:260px;bottom:220px;display:flex;align-items:center;justify-content:center}
+.sz-box{position:relative;padding:90px;border:1px dashed var(--line)}
+.sz-box .wordmark{font-family:var(--disp);font-size:96px}
+.sz-box .wordmark .tri{width:.8em;height:.72em}
+.sz-box .wordmark .tld{font-size:.22em}
+.sz-x{position:absolute;font-family:var(--mono);font-size:13px;color:var(--red-hot);letter-spacing:.1em}
+.sz-x.top{top:34px;left:50%;transform:translateX(-50%)}
+.sz-x.bottom{bottom:34px;left:50%;transform:translateX(-50%)}
+.sz-x.left{left:30px;top:50%;transform:translateY(-50%) rotate(-90deg)}
+.sz-x.right{right:30px;top:50%;transform:translateY(-50%) rotate(90deg)}
+.sz-note{position:absolute;left:64px;bottom:130px;font-family:var(--mono);font-size:14px;color:var(--ink-3);
+  letter-spacing:.05em}
+.sz-note b{color:var(--ink)}
+
+/* ---- misuse grid ---- */
+.misuse-grid{position:absolute;left:64px;right:64px;top:290px;bottom:120px;display:grid;
+  grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:24px}
+.mu-cell{background:var(--card);border:1px solid var(--line-soft);border-radius:16px;position:relative;
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.mu-cell .mu-flag{position:absolute;top:20px;right:22px;width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:800;font-size:16px}
+.mu-cell .mu-flag.no{background:rgba(225,6,0,.16);color:var(--red-hot)}
+.mu-cell .mu-flag.ok{background:rgba(95,227,161,.16);color:var(--cash)}
+.mu-cell .mu-caption{position:absolute;bottom:20px;left:26px;right:26px;font-size:14px;color:var(--ink-2)}
+.mu-cell .wordmark{font-family:var(--disp);font-size:48px}
+.mu-cell .wordmark .tri{width:.8em;height:.72em}
+.mu-cell .wordmark .tld{font-size:.22em}
+.mu-gold .tri{background:#F2C14E !important}
+.mu-purple .tri{background:#8B5CF6 !important}
+.mu-stretch .wordmark{transform:scaleX(1.6)}
+.mu-shadow .tri{filter:drop-shadow(0 10px 0 rgba(225,6,0,.5)) drop-shadow(4px 4px 0 var(--blue))}
+.mu-rotate .wordmark{transform:rotate(-14deg)}
+
+/* ---- color palette ---- */
+.swatch-row{position:absolute;left:64px;right:64px;top:280px;bottom:120px;display:flex;gap:28px}
+.swatch{flex:1;border-radius:18px;position:relative;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:30px;overflow:hidden}
+.swatch .sw-name{font-family:var(--disp);font-size:34px;letter-spacing:-.01em}
+.swatch .sw-hex{font-family:var(--mono);font-size:16px;margin-top:8px;opacity:.85}
+.swatch .sw-role{font-size:14px;margin-top:16px;line-height:1.55;max-width:90%}
+.swatch .sw-never{font-family:var(--mono);font-size:11px;letter-spacing:.06em;margin-top:14px;
+  padding-top:14px;border-top:1px solid rgba(255,255,255,.18);opacity:.8}
+.sw-red{background:var(--red);color:var(--void)}
+.sw-red .sw-never{border-color:rgba(11,12,13,.25)}
+.sw-blue{background:var(--blue);color:var(--void)}
+.sw-blue .sw-never{border-color:rgba(11,12,13,.25)}
+
+.swatch-grid{position:absolute;left:64px;right:64px;top:280px;bottom:120px;display:grid;
+  grid-template-columns:repeat(4,1fr);gap:24px}
+.sw-cell{border-radius:16px;padding:26px;display:flex;flex-direction:column;justify-content:flex-end;
+  position:relative}
+.sw-cell .sw-name{font-family:var(--disp);font-size:24px}
+.sw-cell .sw-hex{font-family:var(--mono);font-size:13px;margin-top:8px}
+.sw-cell .sw-role{font-size:12.5px;margin-top:12px;line-height:1.5;opacity:.85}
+.sw-ink{background:var(--ink);color:var(--void)}
+.sw-void{background:var(--sunk);border:1px solid var(--line-soft);color:var(--ink)}
+.sw-cash{background:var(--cash);color:var(--void)}
+.sw-legacy{background:var(--card);border:1px dashed var(--line);color:var(--ink-3)}
+.sw-legacy .sw-name{color:var(--ink-2);text-decoration:line-through;text-decoration-color:var(--red-hot)}
+
+/* ---- typography ---- */
+.type-row{position:absolute;left:64px;right:64px;top:270px;bottom:120px;display:flex;gap:0}
+.type-cell{flex:1;border-right:1px solid var(--line-soft);padding:0 32px 0 0;margin-right:32px}
+.type-cell:last-child{border-right:none}
+.type-cell .tc-name{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--red-hot);margin-bottom:6px}
+.type-cell .tc-role{font-size:14px;color:var(--ink-3);margin-bottom:22px}
+.type-cell .tc-glyphs{font-size:30px;line-height:1.35;word-break:break-all;color:var(--ink)}
+.type-cell .tc-nums{font-size:22px;color:var(--ink-2);margin-top:10px}
+.type-cell.f-disp .tc-glyphs,.type-cell.f-disp .tc-nums{font-family:var(--disp);font-size:26px}
+.type-cell.f-sans .tc-glyphs,.type-cell.f-sans .tc-nums{font-family:var(--sans);font-weight:600}
+.type-cell.f-mono .tc-glyphs,.type-cell.f-mono .tc-nums{font-family:var(--mono)}
+.type-scale{position:absolute;left:64px;right:64px;bottom:400px}
+.ts-row{display:flex;align-items:baseline;gap:24px;border-bottom:1px solid var(--line-soft);padding:10px 0}
+.ts-row .ts-label{font-family:var(--mono);font-size:11px;color:var(--ink-3);width:150px;flex:none;text-transform:uppercase;letter-spacing:.08em}
+.ts-row .ts-sample{font-family:var(--disp)}
+
+/* ---- voice & tone ---- */
+.voice-cols{position:absolute;left:64px;right:64px;top:290px;bottom:120px;display:flex;gap:48px}
+.voice-col{flex:1}
+.voice-col h4{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--red-hot);margin-bottom:16px}
+.voice-col ul{list-style:none}
+.voice-col li{font-size:17px;color:var(--ink-2);line-height:1.6;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.voice-col li b{color:var(--ink);font-weight:700}
+.example-line{font-family:var(--mono);font-size:15px;color:var(--ink-2);padding:12px 16px;
+  background:var(--card);border-left:3px solid var(--red);border-radius:0 8px 8px 0;margin-bottom:10px}
+.banned-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.banned-tag{font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--red-hot);
+  background:rgba(225,6,0,.1);border:1px solid rgba(225,6,0,.3);border-radius:999px;padding:6px 13px;
+  text-decoration:line-through}
+
+/* ---- motion & iconography ---- */
+.motion-grid{position:absolute;left:64px;right:64px;top:290px;bottom:120px;display:flex;gap:28px}
+.motion-card{flex:1;background:var(--card);border:1px solid var(--line-soft);border-radius:14px;padding:26px}
+.motion-card h4{font-family:var(--disp);font-size:20px;margin-bottom:10px;letter-spacing:-.01em}
+.motion-card p{font-size:14px;color:var(--ink-2);line-height:1.6}
+.motion-card .curve{font-family:var(--mono);font-size:13px;color:var(--blue);margin:12px 0;
+  background:var(--sunk);padding:10px 12px;border-radius:8px}
+.motif-row{position:absolute;left:64px;right:64px;bottom:150px;display:flex;gap:20px;align-items:center}
+.motif-chip{width:64px;height:56px;position:relative}
+.motif-chip .tri{position:absolute;inset:0;width:100%;height:100%}
+.motif-note{font-family:var(--mono);font-size:12px;color:var(--ink-3);letter-spacing:.05em}
+
+/* ---- applications ---- */
+.app-grid{position:absolute;left:64px;right:64px;top:270px;bottom:120px;display:grid;
+  grid-template-columns:1.1fr 1fr;gap:28px}
+.app-panel{background:var(--card);border:1px solid var(--line-soft);border-radius:16px;padding:30px}
+.app-panel h4{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:20px}
+.demo-btn{display:inline-flex;align-items:center;justify-content:center;font-family:var(--disp);
+  font-size:15px;letter-spacing:.02em;border-radius:10px;padding:14px 26px;margin:0 12px 12px 0}
+.demo-btn.primary{background:var(--red);color:#fff;box-shadow:0 10px 26px rgba(225,6,0,.32)}
+.demo-btn.money{background:var(--blue);color:#0e1416;box-shadow:0 10px 26px rgba(127,214,232,.28)}
+.demo-btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink-2)}
+.demo-card{background:var(--sunk);border:1px solid var(--line-soft);border-radius:12px;padding:20px;margin-top:8px}
+.demo-card .dc-kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3)}
+.demo-card .dc-val{font-family:var(--disp);font-size:32px;color:var(--blue);margin:6px 0}
+.demo-card .dc-sub{font-size:13px;color:var(--ink-3)}
+.demo-badge{display:inline-flex;font-family:var(--sans);font-weight:800;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 11px;border-radius:999px;background:rgba(242,193,78,.14);color:#F2C14E}
+.demo-mono-line{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);margin-top:18px}
+
+/* ---- close ---- */
+.close-stage{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:22px}
+.close-stage .wordmark{font-family:var(--disp);font-size:120px}
+.close-stage .wordmark .tri{width:.8em;height:.72em}
+.close-stage .wordmark .tld{font-size:.24em}
+.close-stage .domain{font-family:var(--mono);font-size:16px;letter-spacing:.2em;color:var(--ink-3);text-transform:uppercase}
+</style>
+</head>
+<body class="app">
+
+<!-- 01 · COVER -->
+<div class="page on-red">
+  <div class="year-tag">V1 · 2026</div>
+  <div style="position:absolute;left:64px;top:150px;font-family:var(--mono);font-size:16px;letter-spacing:.2em;color:rgba(11,12,13,.6)">VISUAL IDENTITY</div>
+  <div style="position:absolute;left:64px;top:190px;font-family:var(--disp);font-size:150px;line-height:.94;color:var(--void);letter-spacing:-.01em">Brand<br>Guidelines</div>
+  <div class="logo-stage" style="justify-content:flex-end;align-items:flex-end;padding:0 90px 140px 0">
+    <span class="tri" style="width:280px;height:250px;background:var(--void)"></span>
+  </div>
+  <div class="foot">
+    <span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span>
+    <span>P01</span>
+  </div>
+</div>
+
+<!-- 02 · TABLE OF CONTENTS -->
+<div class="page on-card">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker" style="top:150px">CONTENTS</div>
+  <div class="h-title">What's inside.</div>
+  <div style="position:absolute;left:64px;right:64px;top:340px;bottom:160px;display:flex;flex-direction:column;justify-content:space-between">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-soft)">
+      <span style="font-family:var(--mono);color:var(--red-hot);font-size:18px;width:70px">01</span>
+      <span style="font-family:var(--disp);font-size:28px;flex:1">The Idea</span>
+      <span style="font-family:var(--mono);color:var(--ink-3);font-size:14px">Mission &amp; positioning</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-soft)">
+      <span style="font-family:var(--mono);color:var(--red-hot);font-size:18px;width:70px">02</span>
+      <span style="font-family:var(--disp);font-size:28px;flex:1">Our Logo</span>
+      <span style="font-family:var(--mono);color:var(--ink-3);font-size:14px">Construction, colorways, clear space, misuse</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-soft)">
+      <span style="font-family:var(--mono);color:var(--red-hot);font-size:18px;width:70px">03</span>
+      <span style="font-family:var(--disp);font-size:28px;flex:1">Color Palette</span>
+      <span style="font-family:var(--mono);color:var(--ink-3);font-size:14px">Arterial red, morphine blue</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-soft)">
+      <span style="font-family:var(--mono);color:var(--red-hot);font-size:18px;width:70px">04</span>
+      <span style="font-family:var(--disp);font-size:28px;flex:1">Typography</span>
+      <span style="font-family:var(--mono);color:var(--ink-3);font-size:14px">Archivo Black, Archivo, JetBrains Mono</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-soft)">
+      <span style="font-family:var(--mono);color:var(--red-hot);font-size:18px;width:70px">05</span>
+      <span style="font-family:var(--disp);font-size:28px;flex:1">Voice &amp; Tone</span>
+      <span style="font-family:var(--mono);color:var(--ink-3);font-size:14px">How pain.bet talks</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--line-soft)">
+      <span style="font-family:var(--mono);color:var(--red-hot);font-size:18px;width:70px">06</span>
+      <span style="font-family:var(--disp);font-size:28px;flex:1">Motion &amp; Iconography</span>
+      <span style="font-family:var(--mono);color:var(--ink-3);font-size:14px">Easing rules, the triangle as a mark</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:18px 0">
+      <span style="font-family:var(--mono);color:var(--red-hot);font-size:18px;width:70px">07</span>
+      <span style="font-family:var(--disp);font-size:28px;flex:1">Applications</span>
+      <span style="font-family:var(--mono);color:var(--ink-3);font-size:14px">Buttons, cards, components</span>
+    </div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P02</span></div>
+</div>
+
+<!-- 03 · DIVIDER 01 -->
+<div class="page divider on-card">
+  <div class="corner-mark"><span class="tri"></span>PAIN<span class="tld">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="num">1</div>
+  <div class="kicker">SECTION 01</div>
+  <div class="title">The Idea</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P03</span></div>
+</div>
+
+<!-- 04 · THE IDEA -->
+<div class="page on-red">
+  <div class="corner-mark"><span class="tri" style="background:var(--void)"></span>PAIN<span class="tld" style="color:rgba(11,12,13,.6)">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="idea-block">
+    <h3>The idea</h3>
+    <p>Pain.bet reads as a hospital, not a casino. Admissions, diagnosis, a
+    pain scale, a chart, discharge. Cold, clinical, slightly wrong, and it
+    reads as more expensive for it. Every instinct that says &ldquo;make it
+    fun&rdquo; is the wrong instinct here. Restraint is what reads as money.</p>
+    <h3>Positioning</h3>
+    <p>Where a casino brand performs excitement, pain.bet performs
+    procedure. The player is a patient. A win is a diagnosis, not a
+    celebration. The tone stays flat even when the numbers are big.</p>
+  </div>
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pn">01</div>
+      <h4>Clinical</h4>
+      <p>Hospital intake, not casino floor. Charts, scales, wards, admissions. Instrument, not confetti.</p>
+    </div>
+    <div class="pillar">
+      <div class="pn">02</div>
+      <h4>Deadpan</h4>
+      <p>Facts stated flat. &ldquo;Ready.&rdquo; &ldquo;Nothing today.&rdquo; No exclamation marks, ever.</p>
+    </div>
+    <div class="pillar">
+      <div class="pn">03</div>
+      <h4>Restrained</h4>
+      <p>Four colors, two type families, one motif. Nothing extra fighting for attention.</p>
+    </div>
+  </div>
+  <div class="foot" style="color:rgba(11,12,13,.6)"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P04</span></div>
+</div>
+
+<!-- 05 · DIVIDER 02 -->
+<div class="page divider on-card">
+  <div class="corner-mark"><span class="tri"></span>PAIN<span class="tld">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="num">2</div>
+  <div class="kicker">SECTION 02</div>
+  <div class="title">Our Logo</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P05</span></div>
+</div>
+
+<!-- 06 · PRIMARY LOGO -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">PRIMARY LOGO</div>
+  <div class="h-title">The mark.</div>
+  <div class="logo-stage">
+    <div class="logo-big wordmark">P<span class="tri"></span>IN<span class="tld">.BET</span></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P06</span></div>
+</div>
+
+<!-- 07 · LOGO CONSTRUCTION -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">LOGO CONSTRUCTION</div>
+  <div class="h-title">Built from four parts.</div>
+  <div class="logo-stage" style="align-items:flex-start;padding-top:280px">
+    <div class="logo-big wordmark" style="font-size:110px">P<span class="tri"></span>IN<span class="tld">.BET</span></div>
+  </div>
+  <div class="logo-parts">
+    <div class="lp-card"><div class="lp-glyph"><b>P</b></div><div class="lp-name">Archivo Black</div>
+      <p>The wordmark is set in Archivo Black throughout. Never substitute another weight for the initial letter.</p></div>
+    <div class="lp-card"><div class="lp-glyph"><span class="tri" style="width:.7em;height:.62em;display:inline-block;vertical-align:middle"></span></div><div class="lp-name">The triangle</div>
+      <p>A solid equilateral triangle, point up, stands in for the missing A. It is the one shape allowed to carry the brand alone.</p></div>
+    <div class="lp-card"><div class="lp-glyph"><b>IN</b></div><div class="lp-name">Archivo Black</div>
+      <p>Same weight, same baseline as the P. The triangle sits between them at the same cap height.</p></div>
+    <div class="lp-card"><div class="lp-glyph" style="color:var(--ink-3);font-size:26px">.BET</div><div class="lp-name">Archivo, 700</div>
+      <p>Set smaller than the wordmark and in the muted ink tone, aligned to the baseline, never the same size as PIN.</p></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P07</span></div>
+</div>
+
+<!-- 08 · LOGO LOCKUPS -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">LOGO LOCKUPS</div>
+  <div class="h-title">Horizontal, stacked, icon only.</div>
+  <div class="lockup-row">
+    <div class="lockup-cell"><span class="lc-label">Horizontal</span>
+      <div class="wordmark">P<span class="tri"></span>IN<span class="tld">.BET</span></div></div>
+    <div class="lockup-cell stacked"><span class="lc-label">Stacked</span>
+      <div class="wordmark" style="display:flex;flex-direction:column;align-items:center">
+        <span>P<span class="tri"></span>IN</span><span class="tld" style="margin-left:0">.BET</span></div></div>
+    <div class="lockup-cell icon-only"><span class="lc-label">Icon only</span>
+      <span class="tri"></span></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P08</span></div>
+</div>
+
+<!-- 09 · LOGO COLORWAYS -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">LOGO COLORWAYS</div>
+  <div class="h-title">Approved backgrounds.</div>
+  <div class="colorway-grid">
+    <div class="cw-cell cw-1"><span class="cw-label" style="color:var(--ink-3)">On void (default)</span>
+      <div class="wordmark">P<span class="tri" style="background:var(--red)"></span>IN<span class="tld" style="color:var(--ink-3)">.BET</span></div></div>
+    <div class="cw-cell cw-2"><span class="cw-label">On red</span>
+      <div class="wordmark">P<span class="tri"></span>IN<span class="tld"></span></div></div>
+    <div class="cw-cell cw-3"><span class="cw-label">On ink</span>
+      <div class="wordmark">P<span class="tri"></span>IN<span class="tld"></span></div></div>
+    <div class="cw-cell cw-4"><span class="cw-label" style="color:var(--ink-3)">On sunk card</span>
+      <div class="wordmark">P<span class="tri" style="background:var(--red)"></span>IN<span class="tld" style="color:var(--ink-3)">.BET</span></div></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P09</span></div>
+</div>
+
+<!-- 10 · MONOCHROME -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">MONOCHROME LOGO</div>
+  <div class="h-title">When color isn't available.</div>
+  <div class="mono-pair">
+    <div class="mono-cell dark"><div class="wordmark">P<span class="tri"></span>IN<span class="tld"></span></div></div>
+    <div class="mono-cell light"><div class="wordmark">P<span class="tri"></span>IN<span class="tld"></span></div></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P10</span></div>
+</div>
+
+<!-- 11 · SCALABILITY -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">LOGO SCALABILITY</div>
+  <div class="h-title">Below 120px, drop to the icon.</div>
+  <div class="scale-row">
+    <div class="scale-item"><div class="wordmark" style="font-size:100px">P<span class="tri"></span>IN<span class="tld"></span></div><span class="sc-tag">320px</span></div>
+    <div class="scale-item"><div class="wordmark" style="font-size:64px">P<span class="tri"></span>IN<span class="tld"></span></div><span class="sc-tag">200px</span></div>
+    <div class="scale-item"><div class="wordmark" style="font-size:38px;opacity:.7">P<span class="tri"></span>IN<span class="tld"></span></div><span class="sc-tag">120px · minimum</span></div>
+    <div class="scale-item"><span class="tri" style="width:46px;height:41px;opacity:.9"></span><span class="sc-tag">Icon, 32px+</span></div>
+  </div>
+  <div class="scale-note">Below <b>120px</b> wide, the full wordmark loses the gap between the triangle
+  and the surrounding letters. Switch to the <b>icon-only</b> lockup instead of shrinking the wordmark further.</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P11</span></div>
+</div>
+
+<!-- 12 · SAFE ZONE -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">CLEAR SPACE</div>
+  <div class="h-title">Give it room.</div>
+  <div class="safezone-stage">
+    <div class="sz-box">
+      <span class="sz-x top">X</span><span class="sz-x bottom">X</span>
+      <span class="sz-x left">X</span><span class="sz-x right">X</span>
+      <div class="wordmark">P<span class="tri"></span>IN<span class="tld"></span></div>
+    </div>
+  </div>
+  <div class="sz-note"><b>X</b> = the height of the triangle. No text, edge, or graphic
+  should sit inside that margin on any side of the wordmark.</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P12</span></div>
+</div>
+
+<!-- 13 · MISUSE -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">LOGO RULES</div>
+  <div class="h-title">What not to do.</div>
+  <div class="misuse-grid">
+    <div class="mu-cell"><span class="mu-flag ok">✓</span>
+      <div class="wordmark">P<span class="tri"></span>IN<span class="tld"></span></div>
+      <span class="mu-caption">Correct: standard colorway, untouched proportions.</span></div>
+    <div class="mu-cell"><span class="mu-flag no">✕</span>
+      <div class="wordmark mu-gold">P<span class="tri"></span>IN<span class="tld"></span></div>
+      <span class="mu-caption">Don't recolor the triangle gold, green, or purple. Red only.</span></div>
+    <div class="mu-cell"><span class="mu-flag no">✕</span>
+      <div class="wordmark mu-stretch">P<span class="tri"></span>IN<span class="tld"></span></div>
+      <span class="mu-caption">Don't stretch or squash the lockup off its native proportions.</span></div>
+    <div class="mu-cell"><span class="mu-flag no">✕</span>
+      <div class="wordmark mu-shadow">P<span class="tri"></span>IN<span class="tld"></span></div>
+      <span class="mu-caption">Don't add drop shadows, glows, or outlines to the triangle.</span></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P13</span></div>
+</div>
+
+<!-- 14 · DIVIDER 03 -->
+<div class="page divider on-card">
+  <div class="corner-mark"><span class="tri"></span>PAIN<span class="tld">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="num">3</div>
+  <div class="kicker">SECTION 03</div>
+  <div class="title">Color<br>Palette</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P14</span></div>
+</div>
+
+<!-- 15 · COLOR PRIMARY -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">PRIMARY PALETTE</div>
+  <div class="h-title">Two colors do the work.</div>
+  <div class="swatch-row">
+    <div class="swatch sw-red">
+      <div class="sw-name">Arterial Red</div>
+      <div class="sw-hex">#E10600</div>
+      <div class="sw-role">Pain, risk, the house, and every call to action. This is the color of the site doing something.</div>
+      <div class="sw-never">NEVER ON MONEY OR PAYOUTS</div>
+    </div>
+    <div class="swatch sw-blue">
+      <div class="sw-name">Morphine Blue</div>
+      <div class="sw-hex">#7FD6E8</div>
+      <div class="sw-role">Money, credit, and relief. Exclusively. If it isn't a payout, it isn't blue.</div>
+      <div class="sw-never">NEVER ON RISK OR WARNINGS</div>
+    </div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P15</span></div>
+</div>
+
+<!-- 16 · COLOR SUPPORTING -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">SUPPORTING &amp; SYSTEM COLORS</div>
+  <div class="h-title">Neutrals, and one exception.</div>
+  <div class="swatch-grid">
+    <div class="sw-cell sw-ink"><div class="sw-name">Ink</div><div class="sw-hex">#F7F8F8</div>
+      <div class="sw-role">Neutral. Body text, chart paper, hairlines.</div></div>
+    <div class="sw-cell sw-void"><div class="sw-name">Void</div><div class="sw-hex">#0B0C0D</div>
+      <div class="sw-role">Absence. Page ground, recessed panels, the losing outcome.</div></div>
+    <div class="sw-cell sw-cash"><div class="sw-name">Cash Green</div><div class="sw-hex">#5FE3A1</div>
+      <div class="sw-role">System color only: success states, confirmations. Not a brand accent, never a prize amount.</div></div>
+    <div class="sw-cell sw-legacy"><div class="sw-name">Gold, purple, orange, teal</div><div class="sw-hex">not in palette</div>
+      <div class="sw-role">Legacy from older screens. Being phased out. Do not introduce in new work.</div></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P16</span></div>
+</div>
+
+<!-- 17 · DIVIDER 04 -->
+<div class="page divider on-card">
+  <div class="corner-mark"><span class="tri"></span>PAIN<span class="tld">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="num">4</div>
+  <div class="kicker">SECTION 04</div>
+  <div class="title">Typography</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P17</span></div>
+</div>
+
+<!-- 18 · TYPOGRAPHY -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">TYPE SYSTEM</div>
+  <div class="h-title">Two families, one for numbers.</div>
+  <div class="type-row">
+    <div class="type-cell f-disp">
+      <div class="tc-name">Archivo Black</div><div class="tc-role">Display · headlines · big figures</div>
+      <div class="tc-glyphs">AaBbCcDd</div>
+      <div class="tc-nums">0123456789</div>
+    </div>
+    <div class="type-cell f-sans">
+      <div class="tc-name">Archivo</div><div class="tc-role">Body · UI text · 400&ndash;800</div>
+      <div class="tc-glyphs">AaBbCcDd</div>
+      <div class="tc-nums">0123456789</div>
+    </div>
+    <div class="type-cell f-mono">
+      <div class="tc-name">JetBrains Mono</div><div class="tc-role">Labels · odds · timers · meta</div>
+      <div class="tc-glyphs">AaBbCcDd</div>
+      <div class="tc-nums">0123456789</div>
+    </div>
+  </div>
+  <div class="type-scale">
+    <div class="ts-row"><span class="ts-label">Display / 56</span><span class="ts-sample" style="font-size:56px">Collect your meds.</span></div>
+    <div class="ts-row"><span class="ts-label">Body / 22</span><span class="ts-sample" style="font-family:var(--sans);font-weight:400;font-size:22px">One cut a day, top prize $500.</span></div>
+    <div class="ts-row"><span class="ts-label">Mono label / 13</span><span class="ts-sample" style="font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)">DAILY CUT · $500 TOP PRIZE</span></div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P18</span></div>
+</div>
+
+<!-- 19 · DIVIDER 05 -->
+<div class="page divider on-card">
+  <div class="corner-mark"><span class="tri"></span>PAIN<span class="tld">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="num">5</div>
+  <div class="kicker">SECTION 05</div>
+  <div class="title">Voice<br>&amp; Tone</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P19</span></div>
+</div>
+
+<!-- 20 · VOICE & TONE -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">HOW PAIN.BET TALKS</div>
+  <div class="h-title">Flat, factual, never excited.</div>
+  <div class="voice-cols">
+    <div class="voice-col">
+      <h4>Rules</h4>
+      <ul>
+        <li><b>Short, declarative sentences.</b> State the fact, stop.</li>
+        <li><b>No exclamation marks.</b> Not on a win, not on an error.</li>
+        <li><b>No em dashes, ever.</b> Use a comma, a period, or parentheses.</li>
+        <li><b>No casino language.</b> A win is a result, not an event.</li>
+        <li><b>Never invent a promise.</b> Unclear terms stay unclear, not filled with a placeholder.</li>
+      </ul>
+      <div style="margin-top:18px">
+        <h4 style="margin-top:0">Banned words</h4>
+        <div class="banned-tags">
+          <span class="banned-tag">lucky</span><span class="banned-tag">bonanza</span>
+          <span class="banned-tag">mega</span><span class="banned-tag">fortune</span>
+          <span class="banned-tag">congratulations</span><span class="banned-tag">you won!</span>
+        </div>
+      </div>
+    </div>
+    <div class="voice-col">
+      <h4>Voice in practice</h4>
+      <div class="example-line">"Ready."</div>
+      <div class="example-line">"Nothing today. Back tomorrow. The wheel resets at midnight UTC."</div>
+      <div class="example-line">"Paid to your wallet on verification."</div>
+      <div class="example-line">"The whole jackpot. Paid on verification."</div>
+      <div class="example-line">"Issued once. There is no second opinion."</div>
+    </div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P20</span></div>
+</div>
+
+<!-- 21 · DIVIDER 06 -->
+<div class="page divider on-card">
+  <div class="corner-mark"><span class="tri"></span>PAIN<span class="tld">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="num">6</div>
+  <div class="kicker">SECTION 06</div>
+  <div class="title">Motion &amp;<br>Iconography</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P21</span></div>
+</div>
+
+<!-- 22 · MOTION & ICONOGRAPHY -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">MOTION &amp; MOTIFS</div>
+  <div class="h-title">Restraint over celebration.</div>
+  <div class="motion-grid">
+    <div class="motion-card"><h4>Standard ease</h4>
+      <div class="curve">cubic-bezier(.22, 1, .36, 1)</div>
+      <p>Every UI transition, 300ms. Fast start, gentle settle. Never a linear or bouncy curve.</p></div>
+    <div class="motion-card"><h4>Reveals &amp; spins</h4>
+      <div class="curve">easeOutCubic, full speed at t=0</div>
+      <p>Large reveals start at full speed and ease only into the stop. Never ease in from zero: a slow start reads as the interface doing nothing.</p></div>
+    <div class="motion-card"><h4>On a win</h4>
+      <p>The result changes color and weight. Nothing else. No confetti, no particle bursts, no screen shake, no hard white flashes, ever.</p></div>
+  </div>
+  <div class="motif-row">
+    <div class="motif-chip"><span class="tri" style="width:100%;height:100%"></span></div>
+    <div class="motif-note">The triangle is the one motif allowed to stand alone: hub caps, bezel<br>marks, pointers, corner accents. Grain and noise belong in imagery, never in UI chrome.</div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P22</span></div>
+</div>
+
+<!-- 23 · DIVIDER 07 -->
+<div class="page divider on-card">
+  <div class="corner-mark"><span class="tri"></span>PAIN<span class="tld">.BET</span></div>
+  <div class="year-tag">V1 · 2026</div>
+  <div class="num">7</div>
+  <div class="kicker">SECTION 07</div>
+  <div class="title">Applications</div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P23</span></div>
+</div>
+
+<!-- 24 · APPLICATIONS -->
+<div class="page">
+  <div class="year-tag">V1 · 2026</div>
+  <div class="h-kicker">IN USE</div>
+  <div class="h-title">Buttons, cards, meta labels.</div>
+  <div class="app-grid">
+    <div class="app-panel">
+      <h4>Buttons</h4>
+      <div><span class="demo-btn primary">Check in</span><span class="demo-btn money">Spin</span><span class="demo-btn ghost">Continue</span></div>
+      <div class="demo-mono-line">Red = action &amp; risk · Blue = money · Ghost = secondary</div>
+    </div>
+    <div class="app-panel">
+      <h4>Card + mono meta label</h4>
+      <div class="demo-card">
+        <div class="dc-kicker">DAILY PAIN WHEEL</div>
+        <div class="dc-val">$500</div>
+        <div class="dc-sub">Top prize · one cut a day</div>
+      </div>
+      <div class="demo-mono-line" style="margin-top:16px">Tracked-out uppercase mono is the signature micro-label</div>
+    </div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P24</span></div>
+</div>
+
+<!-- 25 · CLOSE -->
+<div class="page">
+  <div class="close-stage">
+    <div class="wordmark">P<span class="tri"></span>IN<span class="tld"></span></div>
+    <div class="domain">pain.bet</div>
+  </div>
+  <div class="foot"><span class="fmark">PAIN.BET — VISUAL IDENTITY GUIDELINES</span><span>P25</span></div>
+</div>
+
+</body>
+</html>
