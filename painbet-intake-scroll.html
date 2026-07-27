@@ -937,14 +937,14 @@ function buildDispensary(card){
   card.innerHTML=`
     <p class="kicker">ROOM <b>08</b> · DISPENSARY</p>
     <h2>Collect your meds.</h2>
-    <p>One spin a day, top prize $500. Everything here adds entries to Sunday's draw.</p>
+    <p>One cut a day, top prize $500. Every cut adds an entry to Sunday's draw.</p>
     <div class="wheelbox">
-      <div class="wmeta">DAILY PAIN WHEEL · $500 TOP PRIZE</div>
+      <div class="wmeta">DAILY CUT · $500 TOP PRIZE</div>
       <div class="wheelwrap"><canvas id="w_wheel" width="560" height="560"></canvas><span class="wpin"></span></div>
       <div class="wres" id="w_res">Ready</div>
-      <div class="wsub" id="w_sub">Ten outcomes. Three pay cash.</div>
+      <div class="wsub" id="w_sub">Ten wedges. Three pay cash.</div>
       <button class="btn" id="w_spin">Spin</button>
-      <div class="wmeta" id="w_next">Next spin: Ready</div>
+      <div class="wmeta" id="w_next">Next cut: Ready</div>
     </div>
     <div class="sub-h">Published odds</div><div id="w_odds"></div>
     <div class="sub-h">Redeem a drop code</div>
@@ -1186,9 +1186,9 @@ setInterval(function(){
   var e=document.getElementById('d_cd');
   if(e)e.textContent=Math.floor(ms/864e5)+'d '+p2(Math.floor(ms%864e5/36e5))+':'+p2(Math.floor(ms%36e5/6e4));
   var wn=document.getElementById('w_next');
-  if(wn){ if(!ST.spun){wn.textContent='Next spin: Ready';}
+  if(wn){ if(!ST.spun){wn.textContent='Next cut: Ready';}
     else{var now=new Date();var mid=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1,0,0,0));
-      var m=mid-now;wn.textContent='Next spin: '+p2(Math.floor(m/36e5))+':'+p2(Math.floor(m%36e5/6e4))+':'+p2(Math.floor(m%6e4/1e3));}}
+      var m=mid-now;wn.textContent='Next cut: '+p2(Math.floor(m/36e5))+':'+p2(Math.floor(m%36e5/6e4))+':'+p2(Math.floor(m%6e4/1e3));}}
 },1000);
 
 /* ============================================================================
