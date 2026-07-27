@@ -225,6 +225,105 @@ blur, rounded corners, perspective, tilt, wheel, disc, hand, gold, green,
 purple, warm tones.
 ```
 
+### 3E. CUTTING WHEEL, surgical bone saw
+
+The hospital version of a cutting wheel is a bone saw or cast cutter blade,
+which keeps the object in the ward instead of a workshop.
+
+Give it **sixty teeth, six per wedge**. Any tooth count that is not a multiple
+of ten drifts out of phase with the ten segment dividers and the disc reads as
+subtly wrong every time it stops.
+
+```
+A flat top-down photograph of a large circular surgical bone saw blade, shot
+straight on, perfectly centred, filling the frame. The blade is a heavy
+stainless steel disc with exactly sixty sharp cutting teeth cut evenly around
+its entire outer edge, each tooth a small hard triangular point with a curved
+gullet behind it, perfectly regular the whole way round. The flat face of the
+blade inside the toothed edge is divided into exactly ten identical wedge
+segments of thirty six degrees each, in perfect rotational symmetry, separated
+by ten narrow laser-cut expansion slots that run radially outward from the
+centre. Each segment face is painted in thick flat industrial enamel in only
+four colours, arranged in this order clockwise: pale surgical blue, chalk
+white, pale surgical blue, chalk white, arterial red, matte near-black, pale
+surgical blue, chalk white, arterial red, matte near-black with a sprayed red
+border. The enamel is worn and scratched down to bare steel near the teeth
+where the blade has been used, faint chemical staining, sterilised a thousand
+times. The teeth and the outer eighth of the blade are bare polished steel, no
+paint. At the exact centre is a black arbor hub with a thin arterial red ring
+and a small red equilateral triangle stamped on it, point upward. Flat even
+frontal light, completely uniform across the disc, no hotspot, no directional
+shadow, no vignette. Fully transparent background outside the blade and in
+every gap between the teeth. No text, no numbers, no engraving, no pointer, no
+handle, no tool body.
+Avoid: words, letterforms, numerals, engraved markings, watermark, logos,
+handle, motor, grinder, tool body, guard, hand, glove, pointer, arrow, stand,
+blood, gore, drop shadow, cast shadow, specular highlight, gradient background,
+perspective, tilt, angled view, gold, brass, yellow, green, purple, orange,
+brown, teal, warm tones, rust, more than four painted colours, uneven segments,
+irregular teeth, uneven tooth spacing, nine segments, eleven segments, casino
+glitz.
+```
+
+### 3F. CUTTING WHEEL, hard vector
+
+The sharp-edge sibling of 3E. Use this one if the rest of the component went
+with 3D.
+
+```
+A hard-edged flat vector illustration of a circular saw blade, dead centre,
+filling the frame, viewed perfectly straight on with no perspective. Exactly
+sixty identical sharp triangular teeth are spaced evenly around the entire
+outer edge, each with a clean angular gullet behind it, perfectly regular and
+razor sharp with no rounding. Inside the toothed edge the flat face is divided
+into exactly ten identical wedge segments of thirty six degrees each in perfect
+rotational symmetry, separated by ten thin pure white radial slots. Every
+colour boundary is a clean crisp hard edge with no blur, no feathering, no
+gradient and no bevel. The segment faces are solid flat colour fills in only
+four colours, arranged in this order clockwise: pale surgical blue, pure white,
+pale surgical blue, pure white, saturated arterial red, near-black, pale
+surgical blue, pure white, saturated arterial red, near-black with a crisp
+arterial red keyline border. A narrow band of flat mid grey runs around the
+outside carrying the teeth, separated from the segments by one crisp
+concentric white line. At the exact centre is a small solid near-black circular
+hub with a thin crisp red ring and a single sharp red equilateral triangle,
+point upward, with perfectly straight edges and clean corners. Absolutely flat,
+no lighting, no shading, no shadow, no highlight, no texture, no grain, no
+noise. Fully transparent background outside the blade and in every gap between
+the teeth. No text, no numbers, no markings, no pointer, no handle.
+Avoid: words, letterforms, numerals, watermark, logos, handle, motor, grinder,
+tool body, guard, hand, pointer, arrow, stand, blood, texture, grain, noise,
+scratches, wear, rust, photograph, photorealism, metallic reflection, chrome,
+bevel, emboss, gloss, gradient, glow, drop shadow, cast shadow, specular
+highlight, soft edge, blur, rounded teeth, perspective, tilt, angled view,
+gold, yellow, green, purple, orange, teal, warm tones, more than four colours,
+uneven segments, irregular teeth, uneven tooth spacing, casino glitz.
+```
+
+Pointer for either. A blunt triangle resting on a toothed rim looks like a
+mistake, so the tip is chewed:
+
+```
+A single downward pointing pointer for a saw blade, hard-edged flat vector,
+isolated on a transparent background, filling the frame, viewed straight on. A
+narrow vertical arm in solid arterial red ending in a sharp point at the
+bottom, with a thin crisp white keyline around its outline, and the bottom tip
+notched and chipped as though it has been struck repeatedly by passing saw
+teeth. Absolutely flat, no lighting, no shading, no texture, no gradient, no
+shadow. Nothing else in frame.
+Avoid: words, letterforms, numerals, watermark, texture, grain, metal, bevel,
+emboss, gloss, gradient, glow, drop shadow, cast shadow, soft edge, blur,
+rounded corners, perspective, tilt, wheel, blade, disc, hand, gold, green,
+purple, warm tones.
+```
+
+Two spec changes when the plate has teeth. Disc plus teeth fills 97% of the
+frame, so the **painted face is only about 85%** and the canvas labels have to
+move inward: `ctx.fillText(w.t, R-26, 0)` in `drawWheel()` goes to roughly
+`R-70`. And check the alpha **between** the teeth. Generators routinely return
+a clean transparent background while filling the tooth gullets with white,
+which does not show up until the plate is sitting on a dark card.
+
 ---
 
 ## 4. THE POINTER
