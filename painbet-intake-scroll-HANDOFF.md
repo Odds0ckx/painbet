@@ -295,3 +295,20 @@ file is gitignored; the builder script is tracked. Needs ffmpeg + Pillow.
 and hold points in isolation: `python3 scratch/preview-film/build.py` writes
 `scratch/preview-film.html`. Same proxy-frame approach, plus a measured
 motion-trace timeline with the hold table above marked on it.
+
+## Wheel PNG replacement (open)
+
+`painbet-intake-scroll-WHEEL-PROMPTS.md` (v1) holds the image prompts for
+replacing the Room 08 canvas wheel with a generated PNG plate. Nothing in the
+page has changed yet, the prompts are the deliverable.
+
+Key decisions recorded there: palette drops to red / black / white / morphine
+blue only (gold, cash green and purple retire, blue takes over money and red
+takes the house currency), the plate is generated **without** the ten prize
+labels so canvas keeps drawing them, and no lighting is baked in because the
+plate rotates. Wiring notes are in section 8 of that file, geometry spec in
+section 1, export checklist in section 9.
+
+Next step is Nathan generating the plate. Once the PNG lands, `drawWheel()`
+(`painbet-intake-scroll.html:872`) swaps its wedge-fill loop for a single
+`drawImage()` and keeps the label loop.
