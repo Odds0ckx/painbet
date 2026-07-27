@@ -881,17 +881,29 @@ let wTurning=false;
    run clockwise from there, matching the plate's own painted order. ------ */
 const WHEEL_PLATE=new Image();WHEEL_PLATE.src='assets/wheel/plate.webp';
 const LABEL_INK={jack:'#F7F8F8',cash:'#F7F8F8',ent:'#0d0e10',pk:'#F7F8F8',perk:'#F7F8F8',none:'#8b9298'};
+/* the painted band on the plate only runs from ~0.41R to ~0.80R (the rest is
+   bare steel hub and bare-steel/teeth), a lot narrower than the old
+   full-disc vector wedges, so labels are auto-shrunk to fit it per string
+   rather than fixed at one size. */
+const LABEL_BAND_INNER=0.44,LABEL_BAND_OUTER=0.78,LABEL_FONT_PX={};
+function labelFontPx(ctx,text,maxWidth){
+  let size=17;ctx.font=`700 ${size}px "JetBrains Mono",monospace`;
+  while(size>10&&ctx.measureText(text).width>maxWidth){size--;ctx.font=`700 ${size}px "JetBrains Mono",monospace`;}
+  return size;
+}
 function drawWheel(cv,rot){
   const ctx=cv.getContext('2d'),R=cv.width/2,n=WHEEL.length,step=Math.PI*2/n;
   ctx.clearRect(0,0,cv.width,cv.width);
   ctx.save();ctx.translate(R,R);ctx.rotate(rot);
   if(WHEEL_PLATE.complete&&WHEEL_PLATE.naturalWidth)ctx.drawImage(WHEEL_PLATE,-R,-R,R*2,R*2);
+  const anchorR=R*LABEL_BAND_OUTER,maxWidth=R*(LABEL_BAND_OUTER-LABEL_BAND_INNER);
   for(let i=0;i<n;i++){
     const w=WHEEL[i];
     ctx.save();ctx.rotate(-Math.PI/2+i*step);ctx.textAlign='right';ctx.textBaseline='middle';
     ctx.fillStyle=LABEL_INK[w.kind]||'#F7F8F8';
-    ctx.font='700 21px "JetBrains Mono",monospace';
-    ctx.fillText(w.t,R*0.78,0);ctx.restore();
+    if(LABEL_FONT_PX[i]==null)LABEL_FONT_PX[i]=labelFontPx(ctx,w.t,maxWidth);
+    ctx.font=`700 ${LABEL_FONT_PX[i]}px "JetBrains Mono",monospace`;
+    ctx.fillText(w.t,anchorR,0);ctx.restore();
   }
   ctx.restore();
 }
