@@ -143,12 +143,22 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 /* dispensary + dashboard */
 .wheelbox{margin-top:14px;text-align:center;padding:16px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:12px}
 .wmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.1em}
-.wheelwrap{position:relative;width:min(280px,72vw);margin:12px auto 6px}
+.wheelwrap{position:relative;width:min(280px,72vw);margin:24px auto 6px}
 .wheelwrap canvas{width:100%;height:auto;display:block;pointer-events:none;
   filter:drop-shadow(0 10px 26px rgba(0,0,0,.6))}
 .wpin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:0;height:0;
   border-left:11px solid transparent;border-right:11px solid transparent;border-top:20px solid var(--red);
   filter:drop-shadow(0 2px 6px rgba(225,6,0,.8));z-index:2}
+/* kerf: the scored groove the blade has ground into the panel itself, right
+   where the pointer sits, so the pointer reads as the wound rather than a UI
+   arrow bolted on top */
+.wkerf{position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+  width:58px;height:7px;border-radius:4px;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,#0a0b0c,#1c1d1f 60%,#0a0b0c);
+  box-shadow:inset 0 2px 3px rgba(0,0,0,.85),inset 0 -1px 0 rgba(247,248,248,.05)}
+.wkerf::after{content:"";position:absolute;top:50%;left:8%;right:8%;height:2px;
+  transform:translateY(-50%);background:var(--red);border-radius:2px;
+  box-shadow:0 0 3px 1px rgba(225,6,0,.85),0 0 6px 2px rgba(225,6,0,.35)}
 .wres{font-family:var(--display);font-size:26px;margin:6px 0 2px}
 .wres.win{color:var(--cash)} .wres.jack{color:var(--gold)}
 .wsub{font-size:13px;color:var(--ink-3);min-height:16px;margin-bottom:6px}
@@ -952,7 +962,7 @@ function buildDispensary(card){
     <p>One cut a day, top prize $500. Every cut adds an entry to Sunday's draw.</p>
     <div class="wheelbox">
       <div class="wmeta">DAILY CUT · $500 TOP PRIZE</div>
-      <div class="wheelwrap"><canvas id="w_wheel" width="560" height="560"></canvas><span class="wpin"></span></div>
+      <div class="wheelwrap"><span class="wkerf"></span><canvas id="w_wheel" width="560" height="560"></canvas><span class="wpin"></span></div>
       <div class="wres" id="w_res">Ready</div>
       <div class="wsub" id="w_sub">Ten wedges. Three pay cash.</div>
       <button class="btn" id="w_spin">Spin</button>
