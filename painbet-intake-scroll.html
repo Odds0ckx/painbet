@@ -141,7 +141,45 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .reveal-val{font-family:var(--display);font-size:clamp(30px,9vw,52px);color:var(--gold);text-align:center;margin:6px 0 4px}
 .reveal-sub{font-size:14px;color:var(--ink-2);text-align:center}
 /* dispensary + dashboard */
-.wheelbox{margin-top:14px;text-align:center;padding:16px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:12px}
+/* room-section accordion, restyled to match painbet-intake-11-v2's pattern */
+.sect{margin-bottom:11px;background:var(--card);border:1px solid var(--line-soft);border-radius:12px;overflow:hidden}
+.sect>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:14px;padding:16px 18px;transition:background .2s}
+.sect>summary::-webkit-details-marker{display:none}
+.sect>summary:hover{background:rgba(255,255,255,.03)}
+.sect[open]>summary{box-shadow:inset 0 -1px 0 var(--line-soft)}
+.sect .sl{display:flex;flex-direction:column;gap:5px;min-width:0}
+.sect .sname{font-family:var(--display);font-size:15px;text-transform:uppercase;line-height:1.05;color:var(--ink)}
+.sect .sdesc{font-size:12px;color:var(--ink-3);line-height:1.4}
+.sect .sr{display:flex;align-items:center;gap:11px;flex:none}
+.sbody{padding:0 18px 20px}
+.badge{font-family:var(--body);font-weight:800;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;background:var(--sunk);color:var(--ink-3);white-space:nowrap}
+.badge.hot{color:var(--gold);background:rgba(242,193,78,.14)}
+.badge.live{color:var(--cash);background:rgba(95,227,161,.14)}
+.chev{width:9px;height:9px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);
+  transform:rotate(45deg);margin-bottom:2px;transition:transform .2s}
+.sect[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-3px}
+/* the wheel card's own internal layout */
+.wtop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.dlab{font-family:var(--body);font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.wjack{font-family:var(--display);font-size:clamp(28px,7vw,38px);color:var(--blue);letter-spacing:-.02em;margin:3px 0}
+.cv{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em;margin-top:5px}
+.wstage,.wresult{text-align:center}
+.wresult{margin-top:16px}
+.wodds{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.wodds>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--body);font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.wodds>summary::-webkit-details-marker{display:none}
+.wodds>summary:hover{color:var(--ink-2)}
+.wodds>summary::after{content:'+';color:var(--blue);font-size:18px;font-family:var(--mono);line-height:1}
+.wodds[open]>summary::after{content:'\2212'}
+.wodds>div{margin-top:10px}
+.codebox{display:flex;gap:8px}
+.codebox .in{flex:1}
+.codebox .btn{width:auto;margin:0;padding:12px 18px;white-space:nowrap}
+.btn.blue{background:var(--blue);color:#0e1416;box-shadow:0 10px 26px rgba(127,214,232,.28)}
+.wheelbox{padding:16px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:12px}
 .wmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.1em}
 .wheelwrap{position:relative;width:min(280px,72vw);margin:24px auto 6px}
 .wheelwrap canvas{width:100%;height:auto;display:block;pointer-events:none;
@@ -945,39 +983,88 @@ function buildDispensary(card){
     <p class="kicker">ROOM <b>08</b> · DISPENSARY</p>
     <h2>Collect your meds.</h2>
     <p>One cut a day, top prize $500. Every cut adds an entry to Sunday's draw.</p>
-    <div class="wheelbox">
-      <div class="wmeta">DAILY CUT · $500 TOP PRIZE</div>
-      <div class="wheelwrap"><span class="wkerf"></span><canvas id="w_wheel" width="560" height="560"></canvas><span class="wpin"></span></div>
-      <div class="wres" id="w_res">Ready</div>
-      <div class="wsub" id="w_sub">Ten wedges. Three pay cash.</div>
-      <button class="btn" id="w_spin">Spin</button>
-      <div class="wmeta" id="w_next">Next cut: Ready</div>
-    </div>
-    <div class="sub-h">Published odds</div><div id="w_odds"></div>
-    <div class="sub-h">Redeem a drop code</div>
-    <input class="in" id="f_code" placeholder="PAIN-0001">
-    <div class="note" id="f_note">Try PAIN-0001. Each code works once, amount revealed on redeem.</div>
-    <button class="btn ghost" id="f_go">Redeem</button>
-    <div class="sub-h">Giveaways running</div><div id="g_list"></div>
-    <div class="sub-h">Paid out recently</div><div id="f_feed"></div>`;
+
+    <details class="sect" open>
+      <summary>
+        <span class="sl"><span class="sname">Daily wheel</span>
+          <span class="sdesc">One cut a day. Top prize $500.</span></span>
+        <span class="sr"><span class="badge hot" id="w_badge">Ready</span><span class="chev"></span></span>
+      </summary>
+      <div class="sbody">
+        <div class="wheelbox">
+          <div class="wtop">
+            <div><span class="dlab">Daily pain wheel</span><div class="wjack">$500</div>
+              <span class="dlab">top prize · one cut a day</span></div>
+            <div style="text-align:right"><span class="dlab">Next cut</span><div class="cv" id="w_next">Ready</div></div>
+          </div>
+          <div class="wstage">
+            <div class="wheelwrap"><span class="wkerf"></span><canvas id="w_wheel" width="560" height="560"></canvas><span class="wpin"></span></div>
+          </div>
+          <div class="wresult">
+            <div class="wres" id="w_res">Ready</div>
+            <div class="wsub" id="w_sub">Ten wedges. Three pay cash.</div>
+          </div>
+          <button class="btn blue" id="w_spin">Spin</button>
+          <details class="wodds">
+            <summary>Published odds<span></span></summary>
+            <div id="w_odds"></div>
+          </details>
+        </div>
+      </div>
+    </details>
+
+    <details class="sect">
+      <summary>
+        <span class="sl"><span class="sname">Giveaways running</span>
+          <span class="sdesc">Free to enter. Nothing to deposit.</span></span>
+        <span class="sr"><span class="badge live" id="g_badge">0 open</span><span class="chev"></span></span>
+      </summary>
+      <div class="sbody"><div id="g_list"></div></div>
+    </details>
+
+    <details class="sect">
+      <summary>
+        <span class="sl"><span class="sname">Redeem a drop code</span>
+          <span class="sdesc">$5 to $50, random, first come.</span></span>
+        <span class="sr"><span class="badge">Anytime</span><span class="chev"></span></span>
+      </summary>
+      <div class="sbody">
+        <div class="codebox"><input class="in" id="f_code" placeholder="PAIN-0001"><button class="btn ghost" id="f_go">Redeem</button></div>
+        <div class="note" id="f_note">Try PAIN-0001. Each code works once, amount revealed on redeem.</div>
+      </div>
+    </details>
+
+    <details class="sect">
+      <summary>
+        <span class="sl"><span class="sname">Paid out recently</span>
+          <span class="sdesc">Every drop, publicly listed.</span></span>
+        <span class="sr"><span class="badge">Last 5</span><span class="chev"></span></span>
+      </summary>
+      <div class="sbody"><div id="f_feed"></div></div>
+    </details>`;
   renderOdds(card);renderGive(card);renderFeed(card);
-  const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card),cv=$('w_wheel',card);
+  const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card),cv=$('w_wheel',card),badge=$('w_badge',card);
   cv._rot=0; drawWheel(cv,0);
   if(!WHEEL_PLATE.complete)WHEEL_PLATE.addEventListener('load',()=>drawWheel(cv,cv._rot||0),{once:true});
+  if(ST.spun){badge.textContent='Spun';badge.className='badge';}
   btn.addEventListener('click',()=>{
     if(wTurning||ST.spun)return;
     if(!ST.sent){toast('Check in first. The wheel needs an account to pay into.');return;}
     wTurning=true;const idx=rollWheel(),w=WHEEL[idx];
     btn.disabled=true;btn.textContent='Spinning';res.className='wres';res.textContent='Spinning';sub.textContent='Hold on.';
+    badge.textContent='Spinning';badge.className='badge';
     spinWheelTo(cv,idx,()=>{
       wTurning=false;ST.spun=true;wPot++;
       res.className='wres'+(w.kind==='jack'?' jack':(w.kind==='none'?'':' win'));
       res.textContent=w.kind==='none'?'Nothing today':w.t;sub.textContent=w.s;
       if(w.ent)addEntries(w.ent);if(w.usd)ST.usd+=w.usd;
       btn.textContent='Come back tomorrow';
+      badge.textContent='Spun';badge.className='badge';
       toast(w.kind==='none'?'No luck. Resets at midnight UTC.':(w.t+' logged to your chart.'));
     });
   });
+  const gBadge=$('g_badge',card);
+  if(gBadge)gBadge.textContent=GIVE.filter(g=>g.open).length+' open';
   function redeem(){const c=$('f_code',card).value.trim().toUpperCase(),n=$('f_note',card);
     if(!/^PAIN-\d{4}$/.test(c)){n.className='note warn';n.textContent='Codes look like PAIN-0001. Check the channel post.';return;}
     if(ST.codes[c]){n.className='note warn';n.textContent='That code is already spent.';return;}
@@ -1193,9 +1280,9 @@ setInterval(function(){
   var e=document.getElementById('d_cd');
   if(e)e.textContent=Math.floor(ms/864e5)+'d '+p2(Math.floor(ms%864e5/36e5))+':'+p2(Math.floor(ms%36e5/6e4));
   var wn=document.getElementById('w_next');
-  if(wn){ if(!ST.spun){wn.textContent='Next cut: Ready';}
+  if(wn){ if(!ST.spun){wn.textContent='Ready';}
     else{var now=new Date();var mid=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1,0,0,0));
-      var m=mid-now;wn.textContent='Next cut: '+p2(Math.floor(m/36e5))+':'+p2(Math.floor(m%36e5/6e4))+':'+p2(Math.floor(m%6e4/1e3));}}
+      var m=mid-now;wn.textContent=p2(Math.floor(m/36e5))+':'+p2(Math.floor(m%36e5/6e4))+':'+p2(Math.floor(m%6e4/1e3));}}
 },1000);
 
 /* ============================================================================
