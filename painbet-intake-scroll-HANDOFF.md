@@ -296,19 +296,41 @@ and hold points in isolation: `python3 scratch/preview-film/build.py` writes
 `scratch/preview-film.html`. Same proxy-frame approach, plus a measured
 motion-trace timeline with the hold table above marked on it.
 
-## Wheel PNG replacement (open)
+## Wheel PNG replacement (done, live in the page)
 
-`painbet-intake-scroll-WHEEL-PROMPTS.md` (v1) holds the image prompts for
-replacing the Room 08 canvas wheel with a generated PNG plate. Nothing in the
-page has changed yet, the prompts are the deliverable.
+`painbet-intake-scroll-WHEEL-PROMPTS.md` holds the image prompts this came
+from (sections 3E/3F, the cutting-wheel/saw-blade direction). Nathan generated
+a plate from those and it's wired in:
 
-Key decisions recorded there: palette drops to red / black / white / morphine
-blue only (gold, cash green and purple retire, blue takes over money and red
-takes the house currency), the plate is generated **without** the ten prize
-labels so canvas keeps drawing them, and no lighting is baked in because the
-plate rotates. Wiring notes are in section 8 of that file, geometry spec in
-section 1, export checklist in section 9.
+- `assets/wheel/plate.png` and `assets/wheel/plate.webp` (2048x2048, real
+  alpha), added straight to `main` and merged into this branch. The page loads
+  the `.webp`.
+- `drawWheel()` (`painbet-intake-scroll.html:880`) now draws `WHEEL_PLATE`
+  with a single `drawImage()` instead of the old vector wedge-fill loop, then
+  draws the ten prize labels on top exactly as before. `spinWheelTo()`
+  (`:919`) targets `-(idx*step)+2π*6` rather than the old formula, since wedge
+  0 sits at 12 o'clock at `rot=0` on this plate (the vector version started
+  wedge 0 at 3 o'clock).
+- The plate actually came back with 3 white / 3 blue / 2 red / 2 black wedges
+  (one short of the even 3/3/2/2 red/black split the brief asked for). The
+  `WHEEL` array (`:523`) is reordered, not the odds, to fit: money always
+  lands on blue, entries always on white, PK always on red, and "Pain Scale
+  +1" takes the second black wedge alongside "Nothing" since there wasn't a
+  third red to give it. `rollWheel()` sums by probability so this reorder
+  doesn't touch odds, and `renderOdds()`'s sorted list is unaffected.
+- Sparks: `SPARKS`/`spawnSparks()`/`drawSparks()` (`:895-913`) throw a shower
+  off the pointer position, spawn rate tied to actual angular speed each
+  frame so it's heaviest at full spin and tapers to nothing as the plate
+  grinds to a stop, palette-locked white fading to arterial red. This is
+  diegetic (a cutting wheel throwing sparks), not a win celebration, so it
+  doesn't conflict with the "no confetti/particles on a win" rule in section
+  10 of the prompts file — it only ever fires during the spin itself.
+- Verified in a standalone Playwright harness (not part of the repo) pulling
+  the real `WHEEL`/`drawWheel`/`spinWheelTo` code: correct wedge lands under
+  the pointer, label ink is legible against every wedge colour, sparks read
+  clearly against the page's dark background.
 
-Next step is Nathan generating the plate. Once the PNG lands, `drawWheel()`
-(`painbet-intake-scroll.html:872`) swaps its wedge-fill loop for a single
-`drawImage()` and keeps the label loop.
+If the plate ever gets regenerated, re-check the wedge colour order first
+(section "0/2" of the prompts file) — this wiring assumes the specific
+clockwise sequence white/black/red/blue/white/black/blue/red/white/blue that
+this particular plate came back with, not the sequence the brief asked for.
