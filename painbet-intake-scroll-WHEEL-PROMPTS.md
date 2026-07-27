@@ -169,12 +169,69 @@ angled view, green, gold, purple, cyan neon, warm tones, more than four
 colours, uneven segments, skull, face, casino glitz.
 ```
 
+### 3D. SHARP EDGE
+
+Hard vector, zero wear. Same geometry and same clockwise colour order as the
+others, but every boundary is a razor and nothing is photographed. This is the
+direction that stays cleanest at 280 px and the only one that survives being
+scaled up later.
+
+Two changes specific to it. The dividers are **white, not grey**, because grey
+dividers on a black wedge vanish at render size. And the Nothing wedge is
+**near-black, not pure black**, or it dissolves into the `#131517` sunk panel
+behind the wheel and the disc looks like it has a bite out of it.
+
+```
+A hard-edged flat vector illustration of a circular ten-segment dial, dead
+centre, filling the frame, viewed perfectly straight on with no perspective.
+The disc is divided into exactly ten identical wedge segments of thirty six
+degrees each by ten razor-sharp straight radial divider lines of uniform
+weight, in perfect rotational symmetry. Every colour boundary is a clean crisp
+hard edge with no blur, no feathering, no gradient and no bevel. The segments
+are solid flat colour fills in only four colours, arranged in this order
+clockwise: pale surgical blue, pure white, pale surgical blue, pure white,
+saturated arterial red, near-black, pale surgical blue, pure white, saturated
+arterial red, near-black with a crisp arterial red keyline border. The dividers
+between segments are thin pure white lines. A single crisp concentric ring runs
+around the outer edge of the disc, a thin arterial red line inset just inside
+it. At the exact centre is a small solid near-black circular hub with a thin
+crisp red ring, and a single sharp red equilateral triangle at its centre,
+point upward, with perfectly straight edges and clean corners. Absolutely flat,
+no lighting, no shading, no shadow, no highlight, no texture, no grain, no
+noise. Transparent background outside the outer ring. No text, no numbers, no
+letters, no markings inside the segments, no pointer, no arrow, no stand.
+Avoid: words, letterforms, numerals, watermark, logos, pointer, arrow, needle,
+stand, base, hand, texture, grain, noise, chipped paint, scratches, wear,
+distressing, rust, dirt, photograph, photorealism, metal, bevel, emboss, gloss,
+reflection, gradient, glow, drop shadow, cast shadow, specular highlight, soft
+edge, blur, anti-aliased mush, perspective, tilt, angled view, gold, yellow,
+green, purple, orange, brown, teal, warm tones, more than four colours, uneven
+segments, nine segments, eleven segments, decorative flourishes, casino glitz.
+```
+
+Matching pointer, since the enamel one in section 4 clashes with this plate:
+
+```
+A single downward pointing triangular pointer for a prize wheel, hard-edged
+flat vector illustration, isolated on a transparent background, filling the
+frame, viewed perfectly straight on. A narrow isosceles triangle in solid
+saturated arterial red with a razor-sharp point at the bottom, perfectly
+straight edges, clean sharp corners, and a thin crisp white keyline running
+around its outline. Absolutely flat, no lighting, no shading, no texture, no
+gradient, no shadow. Nothing else in frame.
+Avoid: words, letterforms, numerals, watermark, texture, grain, noise, metal,
+bevel, emboss, gloss, gradient, glow, drop shadow, cast shadow, soft edge,
+blur, rounded corners, perspective, tilt, wheel, disc, hand, gold, green,
+purple, warm tones.
+```
+
 ---
 
 ## 4. THE POINTER
 
 The current pointer is a CSS triangle in `.wpin`. Only replace it if the plate
-is heavily textured, otherwise the flat triangle sits fine on top.
+is heavily textured, otherwise the flat triangle sits fine on top. If the plate
+is 3D, use the sharp-edge pointer in that section instead of this one.
 
 ```
 A single downward pointing pointer for a prize wheel, shot flat on, isolated on
