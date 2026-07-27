@@ -894,8 +894,13 @@ const LABEL_INK={jack:'#F7F8F8',cash:'#F7F8F8',ent:'#0d0e10',pk:'#F7F8F8',perk:'
 /* the painted band on the plate only runs from ~0.41R to ~0.80R (the rest is
    bare steel hub and bare-steel/teeth), a lot narrower than the old
    full-disc vector wedges, so labels are auto-shrunk to fit it per string
-   rather than fixed at one size. */
-const LABEL_BAND_INNER=0.44,LABEL_BAND_OUTER=0.78,LABEL_FONT_PX={};
+   rather than fixed at one size. This is recomputed on every draw rather
+   than cached: the very first draw can land before the JetBrains Mono web
+   font (loaded with display=swap) has actually finished downloading, and a
+   size fitted against the fallback font's metrics is not safe to reuse once
+   the real font swaps in and renders wider. Recomputing is trivial cost for
+   ten short strings, and self-corrects the moment the real font is ready. */
+const LABEL_BAND_INNER=0.44,LABEL_BAND_OUTER=0.78;
 function labelFontPx(ctx,text,maxWidth){
   let size=17;ctx.font=`700 ${size}px "JetBrains Mono",monospace`;
   while(size>10&&ctx.measureText(text).width>maxWidth){size--;ctx.font=`700 ${size}px "JetBrains Mono",monospace`;}
@@ -911,8 +916,7 @@ function drawWheel(cv,rot){
     const w=WHEEL[i];
     ctx.save();ctx.rotate(-Math.PI/2+i*step);ctx.textAlign='right';ctx.textBaseline='middle';
     ctx.fillStyle=LABEL_INK[w.kind]||'#F7F8F8';
-    if(LABEL_FONT_PX[i]==null)LABEL_FONT_PX[i]=labelFontPx(ctx,w.t,maxWidth);
-    ctx.font=`700 ${LABEL_FONT_PX[i]}px "JetBrains Mono",monospace`;
+    ctx.font=`700 ${labelFontPx(ctx,w.t,maxWidth)}px "JetBrains Mono",monospace`;
     ctx.fillText(w.t,anchorR,0);ctx.restore();
   }
   ctx.restore();
@@ -979,6 +983,7 @@ function buildDispensary(card){
   const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card),cv=$('w_wheel',card);
   cv._rot=0; drawWheel(cv,0);
   if(!WHEEL_PLATE.complete)WHEEL_PLATE.addEventListener('load',()=>drawWheel(cv,cv._rot||0),{once:true});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>drawWheel(cv,cv._rot||0));
   btn.addEventListener('click',()=>{
     if(wTurning||ST.spun)return;
     if(!ST.sent){toast('Check in first. The wheel needs an account to pay into.');return;}
