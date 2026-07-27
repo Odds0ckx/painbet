@@ -364,17 +364,104 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 #handoff h2{font-family:var(--display);font-size:clamp(28px,7vw,48px);margin:0 0 12px}
 #handoff p{color:var(--ink-2);margin:0 0 24px;line-height:1.5}
 #handoff .btn{display:inline-block;width:auto;padding:16px 30px}
+
+/* ===== cold open, scroll cue, progress rail ============================== */
+/* The film used to be covered by the procedural placeholder for as long as the
+   opening frames took to arrive, so the first thing anyone saw was the
+   fallback rather than the corridor. The page holds on black until frame one
+   has decoded, then reveals with the film already painted. The mark here is
+   the same wordmark the hero card uses, not a plain-text stand-in. */
+#cold{position:fixed;inset:0;z-index:120;background:#000;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  transition:opacity .7s ease}
+#cold.gone{opacity:0;pointer-events:none}
+#cold .wordmark{font-family:var(--display);font-size:clamp(30px,9vw,54px);letter-spacing:-.03em;
+  display:flex;align-items:baseline;justify-content:center;color:#fff;line-height:1}
+#cold .wordmark .mk{display:flex;align-items:baseline;text-transform:uppercase}
+#cold .wordmark .tri{display:inline-block;width:.8em;height:.72em;background:var(--red);
+  clip-path:polygon(50% 0,100% 100%,0 100%);margin:0 .01em}
+#cold .wordmark .tld{font-weight:700;font-size:.2em;color:var(--ink-3);
+  letter-spacing:.1em;align-self:flex-end;padding-bottom:.06em;margin-left:.1em}
+#cold .bar{width:min(260px,58vw);height:2px;background:#1d1f22;overflow:hidden}
+#cold .bar i{display:block;height:100%;width:0;background:var(--red);transition:width .25s linear}
+#cold .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ink-3)}
+body.gated{overflow:hidden}
+
+#cue{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:60;
+  display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none;
+  transition:opacity .45s ease;text-align:center}
+#cue.off{opacity:0}
+#cue .cue-t{font-family:var(--display);font-size:15px;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--ink);text-shadow:0 2px 14px rgba(0,0,0,.9)}
+#cue .cue-s{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:4px}
+#cue .chev{width:15px;height:15px;border-right:2px solid var(--red-hot);
+  border-bottom:2px solid var(--red-hot);transform:rotate(45deg);
+  animation:cuefall 1.5s ease-in-out infinite}
+#cue .chev:nth-of-type(2){animation-delay:.16s;opacity:.4}
+@keyframes cuefall{0%{transform:rotate(45deg) translate(-4px,-4px);opacity:0}
+  40%{opacity:1}100%{transform:rotate(45deg) translate(4px,4px);opacity:0}}
+
+#rail{position:fixed;right:0;top:0;bottom:0;width:2px;z-index:59;background:rgba(255,255,255,.05)}
+#rail i{position:absolute;left:0;top:0;width:100%;background:var(--red);height:0}
+@media (prefers-reduced-motion:reduce){#cue .chev{animation:none}}
+
+/* ---- the way on, and the chart's room-to-room navigation ------------------ */
+.nextroom{display:block;width:100%;text-align:left;cursor:pointer;margin-top:18px;
+  background:var(--sunk);border:1px solid var(--line-soft);border-left:2px solid var(--red);
+  padding:13px 15px;color:var(--ink);min-height:56px;transition:.15s;font-family:var(--body)}
+.nextroom:hover{background:#1d1f23;border-left-color:var(--red-hot)}
+.nr-l{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-3)}
+.nr-t{display:block;font-family:var(--display);font-size:15px;text-transform:uppercase;margin-top:5px}
+.nr-s{display:block;font-size:13px;line-height:1.45;color:var(--ink-3);margin-top:5px}
+.navlist{display:grid;gap:8px;margin-top:18px}
+.navlist .nextroom{margin-top:0}
+.lede{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+
+/* ---- sign in + sound toggle ---------------------------------------------- */
+/* A returning patient should not have to read the hero card to find the way
+   back to their chart. Top bar, always there, gone once they are signed in. */
+#signIn{position:fixed;top:14px;right:148px;z-index:70;font-family:var(--mono);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink);
+  border:1px solid rgba(255,74,66,.55);background:rgba(225,6,0,.16);
+  min-height:44px;padding:0 14px;cursor:pointer;transition:.14s}
+#signIn:hover{background:var(--red);border-color:var(--red)}
+#signIn.done{display:none}
+@media (max-width:520px){
+  #signIn{right:auto;left:14px;top:auto;bottom:14px}
+}
+#sndBtn{position:fixed;top:14px;right:86px;z-index:70;font-family:var(--mono);font-size:11.5px;
+  letter-spacing:.1em;color:var(--ink);border:1px solid rgba(127,214,232,.6);
+  background:rgba(127,214,232,.14);min-height:44px;min-width:46px;padding:0 9px;
+  transition:.14s;cursor:pointer}
+#sndBtn.off{border-color:var(--line);background:var(--sunk);color:var(--ink-3)}
+#sndBtn::after{content:'';position:absolute;left:7px;right:7px;top:50%;height:1px;
+  background:var(--ink-3);transform:scaleX(0);transition:transform .16s}
+#sndBtn.off::after{transform:scaleX(1)}
 </style>
 </head>
 <body>
 
+<div id="cold">
+  <div class="wordmark"><span class="mk">P<span class="tri" aria-hidden="true"></span>IN</span><span class="tld">.BET</span></div>
+  <div class="bar"><i id="coldBar"></i></div>
+  <div class="st" id="coldSt">Preparing the ward</div>
+</div>
+<div id="cut"></div>
+<div id="cue">
+  <span class="cue-t">Scroll to walk in</span>
+  <span class="cue-s">Five questions, sixty seconds</span>
+  <span class="chev"></span><span class="chev"></span>
+</div>
+<div id="rail"><i id="railFill"></i></div>
 <div id="stages"></div>
 <div id="grade"></div><div id="vignette"></div><div id="grain"></div>
 
 <div id="chrome">
   <div id="vitals"></div>
   <div id="tag">PAIN.BET <b>//</b> ADMISSIONS</div>
-  <div id="hint">Or scroll to look around</div>
 </div>
 <div id="toast"></div>
 
@@ -409,6 +496,8 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 </div>
 
 <button id="resume">Continue</button>
+<button id="signIn">Sign in</button>
+<button class="sndb" id="sndBtn" aria-pressed="true" aria-label="Sound on">SND</button>
 <button id="menub">MENU</button>
 <div id="menu">
   <div class="menu-top"><span>DIRECTORY</span><button class="menu-x" id="menuClose">CLOSE</button></div>
@@ -445,8 +534,31 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
    speed never changes when the page moves between scenes. */
 const FILM = { dir:'assets/seq/film', count:1444, ext:'webp', fps:24 };
 const FPVH = 56;                       // frames per viewport-height of scroll
+/* ---------------------------------------------------------------------------
+   TIMING. Everything that moves the page on its own reads from here. One
+   viewport height of scroll advances FPVH frames and the film runs at
+   FILM.fps, so true walking pace is FPVH/fps seconds per viewport height.
+   Autoplay, the station pushes and the directory walk all derive from it, so
+   she moves at the same speed whatever set her moving.
+   ------------------------------------------------------------------------- */
+const PACE = {
+  /* rate 1 is exactly the speed the film was shot at. Everything auto-moving
+     runs at rate x filmed pace, so a single number changes every walk on the
+     page and nothing drifts out of step with anything else. */
+  rate: 1,            // 1 is exactly the speed the film was shot at. Leave it there.
+
+  get pxPerFrame(){ return innerHeight / FPVH; },
+  get pxPerSec(){ return innerHeight * FILM.fps / FPVH * this.rate; },
+  msFor(px){ return Math.abs(px) / this.pxPerSec * 1000; },
+  walkMin: 700,
+  walkMax: 3200,
+  skim: 5,            // form dwells hold one frame, so crossing them is not a walk
+  approachMs: 1500,   // the part of a long jump you actually watch
+  tailMs: 400,        // she settles over the last stride, she does not brake
+  hurry: 3.2
+};
 const runVh = (a,b) => Math.max(1.2, (b-a)/FPVH);
-const runMs = (a,b) => Math.round((b-a)/FILM.fps*1000);
+const runMs = (a,b) => Math.round((b-a)/FILM.fps*1000/PACE.rate);
 
 const SCENES = [
   { id:'admissions', type:'scrub', from:1, to:699, tint:'#E10600',
@@ -454,22 +566,34 @@ const SCENES = [
     title:'<span class="wordmark"><span class="mk">P<span class="tri" aria-hidden="true"></span>IN</span><span class="tld">.BET</span></span>',
     body:'The ward is taking patients. Five questions, then we tell you what is wrong with you and what you get for being early.',
     metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
-    cta:'Check in', pushMs:runMs(1,699) },
+    /* No button, and therefore no push. Walking in is the scroll, which is the
+       one thing this page is for. A Check in button did the walk for you and
+       made the opening pointless. */ },
 
+  /* ONE ROOM. Five questions and the verdict, in the same card, without moving.
+     The scene after this used to be captioned ROOM 02 · EXAMINATION, Step
+     inside, which meant you were diagnosed and then walked into the room you
+     had just been examined in. It is not a second examination room, it is the
+     corridor out of it. */
   { id:'quiz', type:'form', form:'quiz', at:710, tint:'#7FD6E8', vh:1.9, gate:'quiz',
     pushMs:runMs(722,1063) },
 
   { id:'intake', type:'scrub', from:722, to:1063, tint:'#7FD6E8',
-    kicker:'ROOM 02 · EXAMINATION', title:'Step inside.',
-    body:'The doctor will work out exactly what is wrong with you.', reveal:[.14,.30,.66,.86] },
+    kicker:'THE CORRIDOR', title:'She has seen worse.',
+    body:'Admissions is at the end of it, and they will want proof you actually play.',
+    reveal:[.14,.30,.66,.86] },
 
   { id:'wallet', type:'form', form:'wallet', at:1120, tint:'#E10600', vh:1.9, gate:'wallet',
     pushMs:runMs(1177,1352) },
 
   // the film crosses the room to the desk; the chart is the discharge paperwork
   { id:'ward', type:'scrub', from:1177, to:1352, tint:'#7FD6E8',
-    kicker:'ROOM 07 · THE WALL', title:'They have already looked.',
-    body:'Your chest is on the wall with a triangle where the heart should be.', reveal:[.16,.34,.66,.86] },
+    /* Was "They have already looked", which asked the viewer to work out on
+       their own that the lit panels were their chest X-ray. It follows the
+       wallet room, so it now says what that room just did to them. */
+    kicker:'THE WALL', title:'Now you are on it.',
+    body:'One address was all it took. Your chart is up there with everyone who came before you.',
+    reveal:[.16,.34,.66,.86] },
 
   /* No pushMs override here on purpose. quiz's and wallet's match the frame
      span of the scrub scene immediately after them (intake, ward) because
@@ -484,10 +608,11 @@ const SCENES = [
   { id:'discharge', type:'form', form:'discharge', at:1370, tint:'#7FD6E8', vh:1.9, gate:'discharge' },
 
   { id:'locker07', type:'scrub', from:1388, to:1414, tint:'#F2C14E',
-    kicker:'LOCKER <b>07</b> · DISCHARGE', title:'Pry it open.',
+    kicker:'THE LOCKER · DISCHARGE', title:'Pry it open.',
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.16,.32,.62,.82] },
 
-  { id:'reveal', type:'form', form:'reveal', at:1430, tint:'#F2C14E', vh:1.7, gate:'reveal', pushMs:4500 },
+  { id:'reveal', type:'form', form:'reveal', at:1430, tint:'#F2C14E', vh:1.7, gate:'reveal',
+    nextLabel:'Collect your meds', nextNote:'The daily wheel, drop codes, and the tasks that earn giveaway entries.', pushMs:2700 },
 
   /* Past the locker the film is spent, so the rooms below hold on its last
      frame. This is what the page already did once the footage ran out. */
@@ -495,18 +620,25 @@ const SCENES = [
     menu:['--','Channels'], nextLabel:'Collect your meds', pushMs:4200 },
 
   { id:'dispensary', type:'form', form:'dispensary', at:1444, tint:'#5FE3A1', vh:3.2,
-    menu:['08','Dispensary'], nextLabel:'Open my chart', pushMs:4200 },
+    menu:['08','Dispensary'], pushMs:2500,
+    nav:['dashboard','vip'] },
 
   { id:'dashboard', type:'form', form:'dashboard', at:1370, tint:'#7FD6E8', vh:2.0,
-    menu:['07','My chart'], nextLabel:'The private ward', pushMs:4200 },
+    menu:['07','My chart'], pushMs:2500,
+    /* Home, not a stop on a tour. It offers the rooms rather than chaining
+       to whichever one happened to come next in the film. */
+    nav:['dispensary','vip','staff'] },
 
   { id:'vip', type:'form', form:'vip', at:1300, tint:'#7FD6E8', vh:2.6,
-    menu:['VIP','Private ward'], nextLabel:'Staff entrance', pushMs:4200 },
+    menu:['VIP','Private ward'], pushMs:2500,
+    nav:['dashboard','dispensary'] },
 
   { id:'staff', type:'form', form:'staff', at:900, tint:'#F2C14E', vh:3.0,
-    menu:['--','Staff entrance'], nextLabel:'Records', pushMs:4200 },
+    menu:['--','Staff entrance'], pushMs:2500,
+    nav:['dashboard','login'] },
 
-  { id:'login', type:'form', form:'login', at:1, tint:'#E10600', vh:1.8 },
+  { id:'login', type:'form', form:'login', at:1, tint:'#E10600', vh:1.8,
+    menu:['--','Sign in'] },
 ];
 SCENES.forEach(s=>{ if(s.type==='scrub') s.vh=runVh(s.from,s.to); });
 
@@ -532,8 +664,288 @@ function gateDone(g){
     default:          return true;
   }
 }
-function passHint(){ const h=document.getElementById('hint');
-  h.style.opacity='';h.textContent='Keep scrolling'; setTimeout(()=>{h.style.opacity=0;},2200); }
+function passHint(){ const h=document.getElementById('hint'); if(!h) return;
+  h.style.opacity='';h.textContent=RAILS?'':'Keep scrolling'; setTimeout(()=>{h.style.opacity=0;},2200); }
+
+/* ============================================================================
+   RAILS
+   Scrolling is the walk from the front door to the examination room and nothing
+   else. Once the questions are answered the ward moves you: admissions, the
+   wall, the chart. Those are destinations, not corridor, and making somebody
+   drag thirty thousand pixels through them was the wrong instrument.
+
+   A returning patient never sees the corridor at all. Sign in puts the page on
+   rails immediately and lands on the chart.
+   ========================================================================== */
+let RAILS=false;
+/* Rails used to preventDefault every wheel, touchmove and paging key. That made
+   the page a prison. Station's own wheel handler still cancelled the auto walk
+   on the first flick, and with scrolling blocked there was then nothing left
+   that could move the page at all: one trackpad nudge after Claim this chart
+   and you were stuck for good.
+
+   Rails now mean the ward moves you, not that you are held down. The film walks
+   itself between stations and the scroll cue goes away because it is
+   meaningless once it does. Manual scroll stays as the thing that can always
+   get you out. A form still locks the page while it is open, which is
+   Station.lock and has always been the case. */
+function setRails(on){
+  if(RAILS===on) return;
+  RAILS=on;
+  document.body.classList.toggle('onrails',on);
+}
+
+/* ============================================================================
+   SOUND. Ported whole from the room build so both surfaces sound identical:
+   synthesised voices through a generated convolution impulse, so everything
+   sits in the same tiled corridor instead of firing dry, plus a running
+   ambient bed of mains hum, a breathing sub drone and air moving through the
+   building. Nothing is sampled and nothing is fetched.
+   ========================================================================== */
+var Snd=(function(){
+  var ctx=null, bus=null, comp=null, verb=null, verbGain=null;
+  var amb=null, on=true, unlocked=false, tension=0, heart=null;
+
+  function boot(){
+    if(ctx) return true;
+    var AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return false;
+    ctx=new AC();
+
+    comp=ctx.createDynamicsCompressor();
+    comp.threshold.value=-18; comp.knee.value=22; comp.ratio.value=7;
+    comp.attack.value=0.004; comp.release.value=0.22;
+
+    bus=ctx.createGain();
+    bus.gain.value=on?0.8:0;
+    bus.connect(comp); comp.connect(ctx.destination);
+
+    verb=ctx.createConvolver();
+    verb.buffer=impulse(2.6, 3.4);
+    verbGain=ctx.createGain(); verbGain.gain.value=0.34;
+    verb.connect(verbGain); verbGain.connect(bus);
+    return true;
+  }
+
+  /* a tiled corridor: long-ish decay, dark tail, a couple of early slaps */
+  function impulse(sec, decay){
+    var n=Math.floor(ctx.sampleRate*sec), b=ctx.createBuffer(2,n,ctx.sampleRate);
+    for(var c=0;c<2;c++){
+      var d=b.getChannelData(c), last=0;
+      for(var i=0;i<n;i++){
+        var t=i/n;
+        var white=Math.random()*2-1;
+        last=(last*0.72)+(white*0.28);          // one-pole lowpass, darkens the tail
+        d[i]=last*Math.pow(1-t,decay);
+      }
+      [0.021,0.037,0.058].forEach(function(ms,k){
+        var idx=Math.floor(ctx.sampleRate*ms)+(c?90:0);
+        if(idx<n) d[idx]+= (0.5-k*0.13)*(c?-1:1);
+      });
+    }
+    return b;
+  }
+
+  function noiseBuf(sec){
+    var n=Math.max(1,Math.floor(ctx.sampleRate*sec)), b=ctx.createBuffer(1,n,ctx.sampleRate), d=b.getChannelData(0);
+    for(var i=0;i<n;i++) d[i]=Math.random()*2-1;
+    return b;
+  }
+  function rnd(a,b){ return a+Math.random()*(b-a); }
+
+  /* every voice goes through here so dry/wet and stereo placement stay consistent */
+  function voice(node, peak, atk, dec, send, pan){
+    var g=ctx.createGain(), t=ctx.currentTime;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002,peak),t+atk);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+atk+dec);
+    var out=g;
+    if(ctx.createStereoPanner){
+      var p=ctx.createStereoPanner(); p.pan.value=pan||0; g.connect(p); out=p;
+    }
+    node.connect(g);
+    out.connect(bus);
+    if(send>0){ var sg=ctx.createGain(); sg.gain.value=send; out.connect(sg); sg.connect(verb); }
+    return t+atk+dec+0.05;
+  }
+
+  function osc(type,f0,f1,peak,atk,dec,send,pan,detune){
+    if(!on||!boot()) return;
+    var o=ctx.createOscillator(); o.type=type;
+    o.frequency.setValueAtTime(f0,ctx.currentTime);
+    if(f1) o.frequency.exponentialRampToValueAtTime(Math.max(1,f1),ctx.currentTime+atk+dec);
+    if(detune) o.detune.value=detune;
+    var end=voice(o,peak,atk,dec,send,pan);
+    o.start(); o.stop(end);
+  }
+  function noise(peak,atk,dec,type,freq,q,send,pan,sweepTo){
+    if(!on||!boot()) return;
+    var src=ctx.createBufferSource(); src.buffer=noiseBuf(atk+dec+0.06);
+    var f=ctx.createBiquadFilter(); f.type=type||'bandpass';
+    f.frequency.setValueAtTime(freq,ctx.currentTime);
+    if(sweepTo) f.frequency.exponentialRampToValueAtTime(Math.max(40,sweepTo),ctx.currentTime+atk+dec);
+    f.Q.value=q||1;
+    src.connect(f);
+    var end=voice(f,peak,atk,dec,send,pan);
+    src.start(); src.stop(end);
+  }
+
+  /* ---------- the ward ---------- */
+  function ambient(start){
+    if(!boot()) return;
+    if(!start){ if(amb){ amb.stop(); amb=null; } if(heart){ clearInterval(heart); heart=null; } return; }
+    if(amb) return;
+
+    var g=ctx.createGain(); g.gain.value=0.06; g.connect(bus);
+    var sendA=ctx.createGain(); sendA.gain.value=0.5; g.connect(sendA); sendA.connect(verb);
+
+    // mains hum with a slow beat against itself
+    var h1=ctx.createOscillator(); h1.type='sawtooth'; h1.frequency.value=50;
+    var h2=ctx.createOscillator(); h2.type='sawtooth'; h2.frequency.value=50.35;
+    var hf=ctx.createBiquadFilter(); hf.type='lowpass'; hf.frequency.value=150;
+    var hg=ctx.createGain(); hg.gain.value=0.3;
+    h1.connect(hf); h2.connect(hf); hf.connect(hg); hg.connect(g);
+
+    // sub drone, breathing
+    var dr=ctx.createOscillator(); dr.type='sine'; dr.frequency.value=41;
+    var dg=ctx.createGain(); dg.gain.value=0.55;
+    var lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.06;
+    var lg=ctx.createGain(); lg.gain.value=0.22;
+    lfo.connect(lg); lg.connect(dg.gain);
+    dr.connect(dg); dg.connect(g);
+
+    // air moving through the building, filter drifting
+    var air=ctx.createBufferSource(); air.buffer=noiseBuf(6); air.loop=true;
+    var af=ctx.createBiquadFilter(); af.type='bandpass'; af.frequency.value=520; af.Q.value=0.5;
+    var alfo=ctx.createOscillator(); alfo.type='sine'; alfo.frequency.value=0.037;
+    var alg=ctx.createGain(); alg.gain.value=190;
+    alfo.connect(alg); alg.connect(af.frequency);
+    var ag=ctx.createGain(); ag.gain.value=0.07;
+    air.connect(af); af.connect(ag); ag.connect(g);
+
+    h1.start(); h2.start(); dr.start(); lfo.start(); air.start(); alfo.start();
+    amb={ node:g, drone:dr, air:ag,
+          stop:function(){ try{h1.stop();h2.stop();dr.stop();lfo.stop();air.stop();alfo.stop();}catch(e){} } };
+
+    // things happening elsewhere in the building
+    (function far(){
+      if(!amb) return;
+      if(on){
+        var r=Math.random();
+        if(r<0.34)      noise(0.05,0.002,0.05,'bandpass',rnd(2600,4200),4,0.7,rnd(-0.8,0.8));       // tube crackle
+        else if(r<0.62) noise(0.035,0.01,0.5,'lowpass',rnd(150,320),0.7,0.9,rnd(-0.9,0.9));         // distant door
+        else if(r<0.84) osc('sine',rnd(1500,2400),rnd(900,1400),0.02,0.004,0.12,0.85,rnd(-0.9,0.9));// drip
+        else            noise(0.03,0.3,1.1,'bandpass',rnd(90,190),1.2,0.95,rnd(-0.5,0.5));          // machinery
+      }
+      setTimeout(far, 2400+Math.random()*6000);
+    })();
+  }
+
+  /* tension follows the corruption meter: drone sinks, air rises, a pulse starts */
+  function setTension(v){
+    tension=Math.max(0,Math.min(1,v));
+    if(!amb||!ctx) return;
+    var t=ctx.currentTime;
+    amb.drone.frequency.setTargetAtTime(41-tension*9, t, 1.4);
+    amb.air.gain.setTargetAtTime(0.07+tension*0.1, t, 1.4);
+    amb.node.gain.setTargetAtTime(0.06+tension*0.05, t, 1.4);
+    if(tension>=0.55 && !heart){
+      heart=setInterval(function(){
+        if(!on||!amb) return;
+        osc('sine',62,34,0.16+tension*0.1,0.006,0.20,0.25,0);
+        setTimeout(function(){ osc('sine',54,30,0.10+tension*0.07,0.006,0.17,0.25,0); },210);
+      }, 1150);
+    } else if(tension<0.55 && heart){ clearInterval(heart); heart=null; }
+  }
+
+  function unlock(){
+    if(!boot()) return;
+    if(ctx.state==='suspended') ctx.resume();
+    if(!unlocked){ unlocked=true; if(on) ambient(true); }
+  }
+
+  return {
+    /* a switch, not a beep: contact then release */
+    tap: function(){ var p=rnd(-0.25,0.25);
+      noise(0.10,0.001,0.016,'highpass',2600,0.7,0.10,p);
+      osc('triangle',rnd(190,215),90,0.14,0.002,0.045,0.14,p);
+    },
+    select: function(){ var p=rnd(-0.3,0.3);
+      noise(0.13,0.001,0.014,'highpass',3100,0.7,0.10,p);
+      osc('square',rnd(240,265),120,0.13,0.002,0.05,0.16,p);
+      setTimeout(function(){ noise(0.05,0.001,0.012,'highpass',2200,0.7,0.08,p); },62);
+    },
+    /* a door: latch, swing, air */
+    move: function(){
+      noise(0.13,0.002,0.05,'lowpass',420,0.8,0.55,rnd(-0.2,0.2));
+      osc('sine',96,52,0.20,0.004,0.24,0.5,0);
+      noise(0.05,0.05,0.34,'bandpass',900,0.9,0.75,rnd(-0.4,0.4),2200);
+    },
+    /* an electrical arc rather than a plain hiss */
+    flick: function(){ var p=rnd(-0.6,0.6);
+      for(var i=0;i<3;i++)(function(k){ setTimeout(function(){
+        noise(0.09-k*0.02,0.001,0.03,'bandpass',rnd(3200,6200),6,0.4,p);
+      }, k*rnd(14,42)); })(i);
+      osc('square',rnd(3800,5200),rnd(1800,2600),0.03,0.002,0.05,0.3,p);
+    },
+    /* the diagnosis: impact, metal ring, long tail */
+    stamp: function(){
+      osc('sine',72,30,0.5,0.003,0.5,0.55,0);
+      noise(0.22,0.002,0.10,'lowpass',700,0.9,0.5,0);
+      osc('triangle',430,300,0.09,0.004,0.9,0.95,rnd(-0.2,0.2));
+      osc('triangle',611,470,0.06,0.006,1.1,0.95,rnd(-0.2,0.2));
+    },
+    /* metal under load */
+    creak: function(){ if(!on||!boot())return;
+      var o=ctx.createOscillator(); o.type='sawtooth';
+      o.frequency.setValueAtTime(64,ctx.currentTime);
+      o.frequency.linearRampToValueAtTime(210,ctx.currentTime+0.6);
+      var f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=780; f.Q.value=11;
+      o.connect(f);
+      var end=voice(f,0.12,0.05,0.6,0.8,rnd(-0.3,0.3));
+      o.start(); o.stop(end);
+      noise(0.05,0.02,0.55,'bandpass',2100,3,0.7,rnd(-0.3,0.3),700);
+    },
+    tick: function(){ var p=rnd(-0.5,0.5);
+      noise(0.07,0.0008,0.012,'highpass',rnd(3600,5200),0.7,0.18,p);
+      osc('square',rnd(680,860),420,0.04,0.001,0.02,0.15,p);
+    },
+    win: function(){
+      osc('triangle',392,392,0.18,0.008,0.30,0.6,-0.15);
+      setTimeout(function(){ osc('triangle',523,523,0.18,0.008,0.34,0.6,0.15); },110);
+      setTimeout(function(){ osc('sine',784,784,0.13,0.01,0.55,0.8,0); },220);
+    },
+    jackpot: function(){ if(!on)return;
+      for(var i=0;i<5;i++)(function(k){ setTimeout(function(){
+        osc('sawtooth',520,880,0.16,0.02,0.22,0.65,k%2?0.5:-0.5);
+        noise(0.06,0.004,0.14,'bandpass',2400,2,0.6,k%2?-0.5:0.5);
+      }, k*260); })(i);
+      setTimeout(function(){ osc('sine',80,40,0.34,0.01,0.9,0.7,0); },140);
+    },
+    /* a dead buzzer: two detuned squares beating against each other */
+    error: function(){
+      osc('square',92,74,0.20,0.004,0.26,0.35,-0.1,0);
+      osc('square',92,74,0.16,0.004,0.26,0.35,0.1,26);
+      noise(0.07,0.004,0.18,'lowpass',560,1,0.4,0);
+    },
+    /* pressure release */
+    open: function(){
+      noise(0.13,0.006,0.34,'bandpass',900,0.8,0.7,0,3000);
+      osc('sine',120,320,0.16,0.012,0.34,0.6,0);
+      setTimeout(function(){ osc('sine',480,480,0.09,0.01,0.5,0.9,0); },150);
+    },
+    tension: setTension,
+    unlock: unlock,
+    isOn: function(){ return on; },
+    set: function(v){
+      on=!!v;
+      if(!boot()) return on;
+      bus.gain.setTargetAtTime(on?0.8:0, ctx.currentTime, 0.03);
+      if(on){ if(ctx.state==='suspended') ctx.resume(); ambient(true); } else ambient(false);
+      return on;
+    }
+  };
+})();
 
 const Q=[
  {q:'It is 2am and you are down. What happens next?',a:[['Deposit again',3],['Close everything',0],['Watch someone else lose',2],['Set an alarm and sleep',1]]},
@@ -634,7 +1046,7 @@ const $=(id,root)=>root?root.querySelector('#'+id):document.getElementById(id);
 
 function buildWallet(card){
   card.innerHTML=`
-    <p class="kicker">ROOM 02 · EXAMINATION</p>
+    <p class="kicker">ROOM 02 · ADMISSIONS</p>
     <h2>Prove you play.</h2>
     <p>Show any crypto casino wallet or transaction and you are in Sunday's draw. One entry each, add as many as you like.</p>
     <div class="chips" id="w_chains">
@@ -701,8 +1113,8 @@ function buildWallet(card){
 function buildQuiz(card){
   card.innerHTML=`
     <div id="q_intro">
-      <p class="kicker">ROOM <b>07</b> · CHECKING IN</p>
-      <h2>She is waiting at the door.</h2>
+      <p class="kicker">ROOM 01 · EXAMINATION</p>
+      <h2>She has your file.</h2>
       <p>Five questions. Answer them honestly, there is nobody here to impress.
          We work out what is wrong with you, put it on a chart, and tell you what
          you get for being early.</p>
@@ -711,7 +1123,7 @@ function buildQuiz(card){
       <button class="btn" id="q_begin">Begin the examination</button>
     </div>
     <div id="q_body" style="display:none">
-      <p class="kicker" id="q_plate">ROOM 02 · EXAMINATION</p>
+      <p class="kicker" id="q_plate">ROOM 01 · EXAMINATION</p>
       <div class="prog" id="q_prog"></div>
       <h2 id="q_t" style="font-size:clamp(20px,5vw,28px)"></h2>
       <div id="q_opts"></div>
@@ -721,7 +1133,7 @@ function buildQuiz(card){
     for(let i=0;i<Q.length;i++){const b=document.createElement('i');
       b.className=i<ST.i?'on':(i===ST.i?'now':'');el.appendChild(b);}}
   function renderQ(){
-    $('q_plate',card).textContent='Room '+String(ST.i+1).padStart(2,'0')+' · Examination';
+    $('q_plate',card).textContent='Room 01 · Examination';
     renderProg();$('q_t',card).textContent=Q[ST.i].q;
     const el=$('q_opts',card);el.innerHTML='';
     Q[ST.i].a.forEach((a,ix)=>{const b=document.createElement('button');b.className='opt';
@@ -737,7 +1149,7 @@ function buildQuiz(card){
     let d=DX[0];for(let i=0;i<DX.length;i++){if(ST.score>=DX[i].min)d=DX[i];}
     ST.dx=d;ST.pno++;
     $('q_t',card).style.display='none';$('q_opts',card).style.display='none';$('q_prog',card).style.display='none';
-    $('q_plate',card).textContent='Room 06 · Diagnosis';
+    $('q_plate',card).textContent='Room 01 · Diagnosis';
     const dx=$('q_dx',card);dx.style.display='block';
     dx.innerHTML=`<div class="dxwrap">
       <div class="pno">PATIENT #${String(ST.pno).padStart(5,'0')}</div>
@@ -877,7 +1289,7 @@ const Pry=(function(){
 
 function buildReveal(card){
   card.innerHTML=`
-    <p class="kicker">LOCKER <b>07</b> · IT'S YOURS</p>
+    <p class="kicker">THE LOCKER · IT'S YOURS</p>
     <h2 id="r_h">Pry it open.</h2>
     <p id="r_p">Everyone gets one. 1 in 200 takes the full $1,000.</p>
     <div id="r_out" style="display:none">
@@ -1120,13 +1532,16 @@ function buildLogin(card){
     p.type=p.type==='password'?'text':'password';this.textContent=p.type==='password'?'SHOW':'HIDE';});
   const normId=v=>(v||'').trim().toLowerCase().replace(/^@/,'');
   function doLogin(){const idv=$('li_id',card).value.trim(),pw=$('li_pw',card).value,n=$('li_note',card);
-    if(!ST.sent||!ST.pw){n.className='note warn';n.textContent='No chart on this device yet. Check in above first.';return;}
+    if(!ST.sent||!ST.pw){n.className='note warn';n.textContent='No chart on this device yet. Scroll up and go through the intake first.';return;}
     if(!idv||!pw){n.className='note warn';n.textContent='Both fields, please.';return;}
     const known=[normId(ST.handle),String(ST.pno),String(ST.pno).padStart(5,'0')];
     if(known.indexOf(normId(idv))===-1){n.className='note warn';n.textContent='Nothing matches that. Try your handle or patient number.';return;}
     if(pw!==ST.pw){n.className='note warn';n.textContent='Wrong password. Message the Ward and a mod will reset it.';return;}
     n.className='note ok';n.textContent='Signed in. Welcome back, patient #'+String(ST.pno).padStart(5,'0')+'.';
-    toast('Signed in.');}
+    toast('Signed in.');
+    /* A returning patient is not walked anywhere. Rails on, chart now. */
+    setRails(true);
+    setTimeout(()=>walkToScene('dashboard',true),500);}
   $('li_go',card).addEventListener('click',doLogin);
   $('li_pw',card).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 }
@@ -1164,6 +1579,8 @@ function buildVip(card){
   card.innerHTML=`
     <p class="kicker">PRIVATE WARD · <b>VIP</b></p>
     <h2>Bring your tier with you.</h2>
+    <p class="lede">The private ward is a desk, not a level. If you already hold VIP at another
+       casino, you do not start again here.</p>
     <p>Whatever you are on now, we match it. In most cases we can do better.
        Terms in writing before you move a single coin, then locked to your
        account for good. No trial period, no review after three months.</p>
@@ -1355,9 +1772,36 @@ SCENES.forEach(s=>{
   if(s.type==='form'){
     FORMS[s.form](card);
     // browsing rooms get an explicit way on, so progress is always a button press
-    if(!s.gate&&s.next!==false&&s.id!=='login'){
+    if(s.nav){
+      const NAV={
+        dashboard:['My chart','Diagnosis, entries, locker and your record'],
+        dispensary:['Dispensary','Daily wheel, drop codes and your link'],
+        vip:['Private ward','Hold VIP somewhere else? We match the tier, usually better it, in writing'],
+        staff:['Staff entrance','We are hiring mods, streamers, influencers and promoters'],
+        channels:['The Ward','Telegram, Discord and X, where the results are posted'],
+        login:['Sign in','Reopen a chart on another device']
+      };
+      const wrap=document.createElement('div');
+      wrap.className='navlist';
+      wrap.innerHTML=s.nav.map(id=>{
+        const n=NAV[id]||[id,''];
+        return `<button class="nextroom" data-go="${id}">
+          <span class="nr-l">Go to</span>
+          <span class="nr-t">${n[0]}</span>
+          <span class="nr-s">${n[1]}</span></button>`;}).join('');
+      wrap.addEventListener('click',e=>{const t=e.target.closest('button[data-go]');
+        if(t) walkToScene(t.dataset.go);});
+      card.appendChild(wrap);
+    }
+    else if(!s.gate&&s.next!==false&&s.id!=='login'){
+      /* A ghost button carrying nothing but the name of the next room.
+         "The private ward" told nobody what the private ward is or why they
+         would press it. The name now comes with the reason. */
       const go=document.createElement('button');
-      go.className='btn ghost';go.textContent=s.nextLabel||'Continue';
+      go.className='nextroom';
+      go.innerHTML=`<span class="nr-l">Next</span>
+        <span class="nr-t">${s.nextLabel||'Continue'}</span>
+        ${s.nextNote?`<span class="nr-s">${s.nextNote}</span>`:''}`;
       go.addEventListener('click',()=>Station.advance(scenes.find(x=>x.cfg.id===s.id)));
       card.appendChild(go);
     }
@@ -1388,7 +1832,8 @@ addEventListener('resize',sizeAll);
 function cardOpacity(p,r){const[a,b,c,d]=r||[.12,.28,.82,.96];
   if(p<a||p>d)return 0;if(p<b)return (p-a)/(b-a);if(p>c)return 1-(p-c)/(d-c);return 1;}
 
-const vitals=document.getElementById('vitals'),tag=document.getElementById('tag'),hint=document.getElementById('hint');
+const vitals=document.getElementById('vitals'),tag=document.getElementById('tag'),
+      hint=document.getElementById('hint');   // the scroll cue replaced it; may be absent
 const resumeBtn=document.getElementById('resume');
 let current=null;
 resumeBtn.addEventListener('click',()=>{ if(current) Station.advance(current); });
@@ -1414,7 +1859,7 @@ function render(){
     }
   }
   vitals.style.width=Math.max(0,Math.min(1,y/total))*100+'%';
-  if(y>vh*.4&&hint.textContent==='Or scroll to look around')hint.style.opacity=0;
+  if(hint&&y>vh*.4&&hint.textContent==='Keep scrolling')hint.style.opacity=0;
 
   scenes.forEach(sc=>{
     const start=sc._top,end=start+sc._h;let p=(y-start)/(end-start);
@@ -1458,7 +1903,11 @@ function render(){
 
   /* Safety net: if the film is sitting still between stations with nothing to
      press, offer a way on so nobody is ever stranded mid-corridor. */
-  const stranded = current && !Station.open && !Station.playing
+  /* Not on the opening scene. With the Check in button gone the hero is a
+     scrub with no cta and an unfinished gate ahead of it, so the safety net
+     armed the instant the page opened and sat on top of the scroll cue -
+     offering a way past the one thing the page asks you to do yourself. */
+  const stranded = current && current!==scenes[0] && !Station.open && !Station.playing
     && current.cfg.type==='scrub' && !current.cfg.cta
     && scenes.some(s=>s.cfg.gate&&!gateDone(s.cfg.gate));
   resumeBtn.classList.toggle('on',Boolean(stranded));
@@ -1520,18 +1969,27 @@ const Station=(function(){
     const from=scrollY||pageYOffset, to=nextStop(sc), dist=Math.abs(to-from);
     if(dist<20) return;
     // deliberate pace: the film should feel walked, not skipped through
-    const DUR=sc.cfg.pushMs||Math.max(3200,Math.min(9000,dist*1.35));
+    /* Filmed pace unless the scene names its own. The old fallback was a flat
+       1.35ms per pixel, roughly twice the speed of the footage. */
+    const DUR=sc.cfg.pushMs||Math.max(1600,Math.min(9000,PACE.msFor(dist)));
     const t0=performance.now();
     playing=true; acc=0; since=t0;
+    /* easeInOut moved 1px in the first quarter second and 57px after a full
+       second, so pressing Claim this chart looked like nothing had happened at
+       all. She now leaves almost at once, holds a steady pace, and only eases
+       on the approach: short ramp in, long cruise, soft settle. */
+    const A=0.02, B=0.18, span=(A/2)+(1-A-B)+(B/2);
+    function ramp(e){
+      let d;
+      if(e<A) d=(e*e)/(2*A);
+      else if(e<1-B) d=(A/2)+(e-A);
+      else { const u=(e-(1-B))/B; d=(A/2)+(1-A-B)+B*(u-u*u/2); }
+      return d/span;
+    }
     (function step(t){
       if(open||!playing) {playing=false;return;}          // a popup arrived, stop here
-      // easeOutCubic, not easeInOut: a slow-start curve left the first ~1.5s
-      // of every long walk (some run 13-29s) showing well under 3% of the
-      // scroll distance, i.e. an imperceptible frame change right after the
-      // button press, reading as the click having done nothing. Full speed
-      // immediately, easing only into the stop, matches spinWheelTo below.
-      const e=Math.min(1,(t-t0)/DUR), k=1-Math.pow(1-e,3);
-      window.scrollTo(0, from+(to-from)*k);
+      const e=Math.min(1,(t-t0)/DUR);
+      window.scrollTo(0, from+(to-from)*ramp(e));
       if(e<1) requestAnimationFrame(step); else playing=false;
     })(t0);
   }
@@ -1550,19 +2008,24 @@ const Station=(function(){
            get playing(){return playing;} };
 })();
 /* every capture station reports completion the same way */
-function stationDone(){ passHint(); Station.done(); }
+function stationDone(){
+  /* The examination is the last thing scrolling is responsible for. */
+  if(gateDone('quiz')) setRails(true);
+  passHint(); Station.done();
+}
 
 /* ---- Directory menu: jump to any room; browsing unlocks the gates ---------- */
 (function(){
   const btn=document.getElementById('menub'),menu=document.getElementById('menu'),
         list=document.getElementById('menuList');
   // directory order is deliberate, not scroll order
-  const ORDER=['dashboard','dispensary','vip','staff','channels'];
+  const ORDER=['login','dashboard','dispensary','vip','staff','channels'];
   const items=ORDER.map(id=>{const i=scenes.findIndex(s=>s.cfg.id===id);
     return i<0?null:{sc:scenes[i],i};}).filter(o=>o&&o.sc.cfg.menu);
   list.innerHTML=items.map(o=>{
     const [no,label]=o.sc.cfg.menu;
-    const sub={dashboard:'Diagnosis, entries, October drop',
+    const sub={login:'Been here before. Open your chart.',
+      dashboard:'Diagnosis, entries, October drop',
       dispensary:'Wheel, tasks, giveaways, drop codes',
       vip:'Bring your tier. We match it, often better.',
       staff:'We are hiring. Paid weekly on results.',
@@ -1582,11 +2045,312 @@ function stationDone(){ passHint(); Station.done(); }
     const gated=scenes.some(s=>s.cfg.gate&&!gateDone(s.cfg.gate)&&s._top<sc._top);
     if(gated&&!ST.roam){ST.roam=true;toast('Have a look around. You need a chart before anything can pay out.');}
     open(false);
-    window.scrollTo({top:sc._top+sc._h*0.4,behavior:'smooth'});
+    walkTo(sc._top+sc._h*0.4);
   });
 })();
 
+/* ============================================================================
+   WALK. The directory used a native smooth scroll, which covers thirty
+   thousand pixels in about half a second and throws away every frame between
+   here and there. That is why a menu jump read as a cut rather than as
+   following her down the corridor.
+
+   Distance is measured in frames, so the pace is the same whether the room is
+   one along or eight. Long jumps may walk up to PACE.hurry times filmed speed
+   so crossing the whole ward does not take a minute and a half.
+   ========================================================================== */
+let walking=false;
+function walkToScene(id,instant){
+  const sc=scenes.find(x=>x.cfg.id===id);
+  if(!sc) return;
+  const gated=scenes.some(x=>x.cfg.gate&&!gateDone(x.cfg.gate)&&x._top<sc._top);
+  if(gated&&!ST.roam){ST.roam=true;}
+  const y=sc._top+sc._h*0.4;
+  /* On rails the rooms are destinations. Walking between them is a corridor
+     the film does not have, so once past the examination they are cuts. */
+  if(instant||RAILS){ walking=false; window.scrollTo(0,y); render(); return; }
+  walkTo(y);
+}
+
+/* The route is not one thing. Scrub scenes are footage and must pass at filmed
+   speed or she does not read as walking. Form scenes hold on a single frame,
+   so time spent crossing them buys nothing and is skimmed. Duration therefore
+   comes out of the content rather than being guessed, and is only compressed
+   if the whole trip would otherwise outstay its welcome. */
+function routeSegments(from,to){
+  const lo=Math.min(from,to), hi=Math.max(from,to), out=[];
+  scenes.forEach(sc=>{
+    const a=Math.max(lo,sc._top), b=Math.min(hi,sc._top+sc._h);
+    if(b>a) out.push({a,b,mult: sc.cfg.type==='form' ? PACE.skim : 1});
+  });
+  out.sort((x,y)=>x.a-y.a);
+  if(!out.length) out.push({a:lo,b:hi,mult:1});
+  return out;
+}
+function walkTo(to){
+  const from=scrollY||pageYOffset, dist=to-from;
+  if(Math.abs(dist)<12){ window.scrollTo(0,to); return; }
+  const segs=routeSegments(from,to), v=PACE.pxPerSec;
+  let T=0; segs.forEach(g=>{ T += (g.b-g.a)/(v*g.mult)*1000; });
+
+  /* Short hop: walk the whole way at filmed pace. Anything longer is not a
+     walk, it is a journey, and compressing it into a few seconds turns the
+     corridor into a smear. Cut most of the distance, then walk the last couple
+     of seconds in at true speed, which is the part anyone actually watches. */
+  if(T > PACE.walkMax){
+    const approach = approachPx(v)*(dist>0?1:-1);
+    const startAt = to-approach;
+    try{
+      const pf=PACE.pxPerFrame;
+      film.ensure(Math.round(Math.min(startAt,to)/pf)-8, Math.round(Math.max(startAt,to)/pf)+24);
+    }catch(e){}
+    const cut=document.getElementById('cut');
+    if(cut) cut.classList.add('on');
+    setTimeout(()=>{
+      window.scrollTo(0, Math.max(0,startAt));
+      requestAnimationFrame(()=>{ if(cut) cut.classList.remove('on'); walkRun(Math.max(0,startAt), to); });
+    },140);
+    return;
+  }
+  try{
+    const pf=PACE.pxPerFrame, f0=Math.round(from/pf), f1=Math.round(to/pf);
+    const stepN=Math.max(1,Math.round(Math.abs(f1-f0)/48));
+    for(let f=Math.min(f0,f1); f<=Math.max(f0,f1); f+=stepN) film.ensure(f,f);
+    film.ensure(f1-24,f1+40);
+  }catch(e){}
+  walkPiecewise(from,to,segs,Math.max(PACE.walkMin,T),v);
+}
+
+/* filmed pace across the route, forms skimmed, eased at both ends */
+function walkPiecewise(from,to,segs,T,v){
+  const back=to<from, t0=performance.now();
+  walking=true;
+  (function step(t){
+    if(!walking) return;
+    const e=Math.min(1,(t-t0)/T);
+    const k=e<.5 ? 4*e*e*e : 1-Math.pow(-2*e+2,3)/2;
+    let budget=k*T, y=null;
+    for(const g of (back?segs.slice().reverse():segs)){
+      const len=g.b-g.a, ms=len/(v*g.mult)*1000;
+      if(budget<=ms){ const f=ms?budget/ms:1; y=back?g.b-len*f:g.a+len*f; break; }
+      budget-=ms;
+    }
+    if(y===null) y=to;
+    window.scrollTo(0,y);
+    if(e<1) requestAnimationFrame(step); else { walking=false; window.scrollTo(0,to); }
+  })(t0);
+}
+/* The final approach. An ease-out would enter at double speed and coast to a
+   stop, which is a camera move, not a walk. She cruises at exactly filmed pace
+   and only settles over the last stride. */
+function approachPx(v){
+  const tail=PACE.tailMs, cruise=PACE.approachMs-tail;
+  return v*(cruise + tail/2)/1000;
+}
+function walkRun(from,to){
+  const v=PACE.pxPerSec, dir=Math.sign(to-from)||1;
+  const T=PACE.approachMs, tail=PACE.tailMs, cruise=T-tail;
+  const t0=performance.now();
+  walking=true;
+  (function step(t){
+    if(!walking) return;
+    const el=Math.min(T,t-t0);
+    let d;
+    if(el<=cruise){ d=v*el/1000; }
+    else{ const u=(el-cruise)/tail; d=v*cruise/1000 + v*tail/1000*(u-u*u/2); }
+    window.scrollTo(0, from+dir*d);
+    if(el<T) requestAnimationFrame(step); else { walking=false; window.scrollTo(0,to); }
+  })(t0);
+}
+addEventListener('wheel',()=>{walking=false;},{passive:true});
+addEventListener('touchstart',()=>{walking=false;},{passive:true});
+
 (function boot(){if(!sizeCanvas(scenes[0]))return requestAnimationFrame(boot);sizeAll();})();
+</script>
+
+<script>
+/* ============================================================================
+   COLD OPEN + SCROLL AFFORDANCE + PROGRESS RAIL
+   The film used to be covered by the procedural placeholder for as long as the
+   opening frames took to arrive, so the first thing anyone saw was the fallback
+   rather than the corridor. The page now holds on black until frame one has
+   actually decoded, then reveals with the film already painted.
+   ========================================================================== */
+(function(){
+  const cold=document.getElementById('cold'), bar=document.getElementById('coldBar'),
+        st=document.getElementById('coldSt'),
+        cue=document.getElementById('cue'), fill=document.getElementById('railFill');
+  /* The gate used to wait for twelve decoded frames or nine seconds. On a phone
+     over mobile data that is 700KB before anything appears, so people sat on
+     "Preparing the ward" and gave up. Frame one is all the first paint needs;
+     the window keeps loading behind the reveal. Ceiling is 3s, not 9. */
+  const WARM=48, LIMIT=3000, t0=performance.now();
+  document.body.classList.add('gated');
+  window.scrollTo(0,0);
+
+  try{ film.ensure(1,WARM); }catch(e){}
+
+  let released=false;
+  function release(){
+    if(released) return; released=true;
+    document.body.classList.remove('gated');
+    try{ render(); }catch(e){}
+    cold.classList.add('gone');
+    setTimeout(()=>cold.remove(),800);
+  }
+
+  (function poll(){
+    if(released) return;
+    /* the bar tracks the clock, not the frame count, so it always moves */
+    const el=performance.now()-t0;
+    bar.style.width=Math.max(6,Math.round(Math.min(1,el/LIMIT)*100))+'%';
+    st.textContent='Preparing the ward';
+    /* frame one decoded plus a short run behind it is enough to open on film
+       and keep scrubbing without dropping back to the placeholder */
+    let ok=false; try{ ok = !!film.ready(1); }catch(e){}
+    if(ok) return release();
+    if(performance.now()-t0>LIMIT) return release();
+    setTimeout(poll,140);
+  })();
+
+  /* ---- scroll cue: visible until they actually scroll ---------------------- */
+  let moved=false;
+  function cueCheck(){
+    const y=scrollY||pageYOffset;
+    if(!moved && y>30) moved=true;
+    cue.classList.toggle('off', moved);
+  }
+
+  addEventListener('scroll',()=>{
+    cueCheck();
+    const max=Math.max(1,document.body.scrollHeight-innerHeight);
+    fill.style.height=Math.min(100,(scrollY||pageYOffset)/max*100)+'%';
+  },{passive:true});
+  cueCheck();
+})();
+</script>
+
+<script>
+/* ============================================================================
+   SOUND, WIRED INTO THE WALK
+   Same engine and the same voices as the room build. Unlocked on the first
+   gesture because browsers will not start audio without one, then the ambient
+   bed runs for as long as the page is open.
+   ========================================================================== */
+(function(){
+  if(typeof Snd==='undefined') return;
+
+  ['pointerdown','keydown','touchstart'].forEach(function(ev){
+    document.addEventListener(ev,function(){ Snd.unlock(); },{passive:true});
+  });
+
+  /* every control gets a voice unless something below gives it a better one */
+  document.addEventListener('pointerdown',function(e){
+    var t=e.target.closest('button, summary, .chip, .opt');
+    if(!t) return;
+    if(t.classList.contains('opt')) Snd.select();
+    else if(t.tagName==='SUMMARY') Snd.tick();
+    else Snd.tap();
+  },{passive:true});
+
+  /* the toggle */
+  var b=document.getElementById('sndBtn');
+  function paint(){ var on=Snd.isOn();
+    b.classList.toggle('off',!on);
+    b.setAttribute('aria-pressed',on?'true':'false');
+    b.setAttribute('aria-label',on?'Sound on':'Sound off'); }
+  b.addEventListener('click',function(){
+    var on=Snd.set(!Snd.isOn());
+    paint(); if(on) Snd.tap();
+    toast(on?'Sound on':'Sound off');
+  });
+  paint();
+
+  /* tension tracks how deep into the ward you are, so the bed tightens as the
+     corridor darkens rather than sitting flat for the whole walk */
+  var lastT=-1;
+  setInterval(function(){
+    var max=Math.max(1,document.body.scrollHeight-innerHeight);
+    var t=Math.min(1,(scrollY||pageYOffset)/max);
+    if(Math.abs(t-lastT)>0.03){ lastT=t; try{ Snd.tension(t); }catch(e){} }
+  },500);
+
+  /* the beats worth hearing */
+  function hook(sel,fn){ document.addEventListener('click',function(e){
+    if(e.target.closest(sel)) setTimeout(fn,0); },true); }
+
+  hook('#q_claim', function(){ Snd.stamp(); });
+  hook('.card.hero .btn', function(){ Snd.creak(); });
+  hook('#w_go', function(){
+    setTimeout(function(){
+      var n=document.getElementById('w_note');
+      if(n && n.className.indexOf('warn')>-1) Snd.error(); else Snd.stamp();
+    },60);
+  });
+  hook('#d_go', function(){
+    setTimeout(function(){
+      var n=document.getElementById('d_note');
+      if(n && n.className.indexOf('warn')>-1) Snd.error(); else Snd.stamp();
+    },60);
+  });
+  hook('#f_go', function(){
+    setTimeout(function(){
+      var n=document.getElementById('f_note');
+      if(n && n.className.indexOf('warn')>-1) Snd.error(); else Snd.win();
+    },60);
+  });
+  hook('#li_go', function(){
+    setTimeout(function(){
+      var n=document.getElementById('li_note');
+      if(n && n.className.indexOf('warn')>-1) Snd.error(); else Snd.open();
+    },60);
+  });
+  hook('#r_go', function(){ Snd.open(); });
+  hook('#pryTake, #pry', function(){ Snd.creak(); });
+
+  /* the wheel: it ticks while it turns, then pays off on what it lands on */
+  var ticker=null;
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('#w_spin'); if(!t) return;
+    clearInterval(ticker);
+    var n=0;
+    ticker=setInterval(function(){ n++; Snd.tick(); if(n>34) clearInterval(ticker); },110);
+    setTimeout(function(){
+      clearInterval(ticker);
+      var r=document.getElementById('w_res');
+      var txt=r?r.textContent:'';
+      if(/500 USDT/.test(txt)) Snd.jackpot();
+      else if(/Nothing/i.test(txt)) Snd.error();
+      else if(txt && txt!=='Ready' && txt!=='Spinning') Snd.win();
+    },4300);
+  },true);
+
+  /* arriving somewhere new */
+  var lastScene=null;
+  /* read the opacity render() already wrote rather than asking the engine for
+     a computed style on every scene, four times a second, forever */
+  setInterval(function(){
+    if(typeof scenes==='undefined') return;
+    var top=null,best=0;
+    for(var i=0;i<scenes.length;i++){
+      var o=+scenes[i].el.style.opacity||0;
+      if(o>best){best=o;top=scenes[i].cfg.id;}
+    }
+    if(top && top!==lastScene && best>0.6){ lastScene=top; Snd.move(); }
+  },700);
+})();
+</script>
+
+<script>
+/* Sign in, always reachable */
+(function(){
+  const b=document.getElementById('signIn');
+  if(!b) return;
+  b.addEventListener('click',()=>{ if(typeof walkToScene==='function') walkToScene('login'); });
+  /* ST is a top-level const, so it is lexical and never lands on window --
+     testing window.ST here left the button on screen for good. */
+  setInterval(()=>{ b.classList.toggle('done', typeof ST!=='undefined' && !!(ST.sent&&ST.pno)); },800);
+})();
 </script>
 </body>
 </html>
