@@ -362,3 +362,160 @@ The plate is a single square image drawn at `R * 2`, so nothing about
 - [ ] No baked drop shadow, no baked hotspot
 - [ ] No pointer, no stand, no text unless section 6 was used
 - [ ] Viewed at 280 px wide: dividers still visible, hub still reads
+
+---
+
+## 10. REBRANDING A CODED 3D WHEEL (brief for another model)
+
+Not an image prompt. This is the brand briefing to paste into another AI when
+handing it an existing HTML/CSS/JS 3D wheel to restyle. Paste the block, then
+paste the component's code after it.
+
+Two failure modes to check for in whatever comes back. It will almost always
+introduce a gold or amber win state, because every model's training equates
+jackpot with gold, and it will want to add a pulsing glow loop on the pointer
+or hub. Both are banned in the brief and both get through anyway.
+
+```
+You are restyling an existing 3D wheel component (HTML + CSS + JS) into the
+pain.bet brand. Do not rewrite it. Keep the existing rendering approach,
+markup structure, class names, event handlers, spin logic, easing hooks and
+public API exactly as they are. Change appearance only. If a value is not
+covered below, derive it from the tokens rather than inventing a new one.
+
+## THE BRAND IN ONE LINE
+
+pain.bet is a hospital, not a casino. Cold, clinical, expensive, slightly
+wrong. Think an anaesthesia machine in a decommissioned ward, not a Vegas
+floor. Every instinct that says "make it fun" is wrong. Restraint reads as
+money here.
+
+## PALETTE (hard limit, four colours plus neutral structure)
+
+--red:      #E10600   arterial red
+--red-hot:  #FF3B33   red on hover / active only
+--red-deep: #520703   deep red for large flat masses
+--blue:     #7FD6E8   morphine blue
+--blue-dim: #16333a   blue on dark fills
+--white:    #F7F8F8
+--ground:   #232427   page behind the wheel
+--card:     #1B1D20   panel the wheel sits on
+--sunk:     #131517   recessed wells, the darkest surface
+--line:     #454A50   borders
+--ink:      hsla(0,0%,100%,.55)  body text
+--ink-hi:   hsla(0,0%,100%,.75)  emphasis text
+--ink-lo:   hsla(0,0%,100%,.25)  muted text
+
+COLOUR LAW, this is not decorative:
+- Arterial red means pain, risk, the house, and calls to action. Never money.
+- Morphine blue means money, credit, relief and payout. Only money. Never
+  risk, never a warning, never a generic accent.
+- White is neutral, chart paper, entries, hairlines.
+- Near-black is absence, the losing outcome, recessed surfaces.
+- Greys are strictly black-to-white neutrals for structure. No warm grey,
+  no blue grey, no gunmetal tint.
+- Banned outright: gold, brass, yellow, green, purple, orange, teal, pink,
+  neon cyan, any rainbow or multi-hue gradient, any colour not listed above.
+
+If the wheel currently colour-codes segments by prize tier, remap it:
+cash payouts go morphine blue, house currency and perks go arterial red,
+entries go white, the losing segment goes near-black.
+
+## TYPE
+
+--disp: 'Archivo Black', 'Archivo', sans-serif   headings, prize values, the
+        big result readout. Tight tracking, uppercase where it fits.
+--sans: 'Archivo', sans-serif                    body, 14.5px/1.5
+--mono: 'JetBrains Mono', ui-monospace, monospace
+
+Labels, odds, counters, timers, meta lines and anything numeric go mono,
+10.5px to 11px, uppercase, letter-spacing .16em to .22em, colour --ink-lo.
+That spaced mono micro-label is the single most recognisable thing about the
+brand. Use it on every small label on the component.
+
+Buttons: --disp or 800 weight, 11.5px, uppercase, letter-spacing .08em,
+padding 10px 20px, border-radius 999px. Primary is red on white text with
+box-shadow 0 6px 18px rgba(225,6,0,.35). Secondary is transparent with a
+1px --line border and --ink-hi text. Never a blue primary button unless the
+action is literally withdrawing or receiving money.
+
+## SHAPE AND SURFACE
+
+--r-lg:16px  --r-md:12px  --r-sm:8px  --r-pill:999px
+--shadow:    0 10px 28px rgba(0,0,0,.35)
+--shadow-lg: 0 18px 44px rgba(0,0,0,.5)
+--ease-out:  cubic-bezier(.22,1,.36,1)
+
+Panels are flat --card fills with --r-lg corners and a soft black shadow. No
+borders unless a hairline is needed for separation, in which case 1px --line
+or an inset 0 0 0 1px hsla(0,0%,100%,.04) ring. Recessed areas use --sunk.
+
+The house mark is a solid red equilateral triangle, point up, made with
+clip-path: polygon(50% 0, 100% 100%, 0 100%). Use it as the hub cap face, as
+an oversized low-opacity background mass bleeding off a corner, and nowhere
+else. Never outline it, never round it, never rotate it off axis.
+
+## THE 3D WHEEL SPECIFICALLY
+
+Keep whatever technique the code already uses, CSS 3D transforms or WebGL.
+Restyle the materials, not the maths.
+
+- Read the wheel as machined hospital equipment: a heavy dial plate seated in
+  a steel bezel, mounted flat. Not a carnival wheel, not a lottery drum.
+- The rim / side wall is the thickest visual element. Give it real depth,
+  neutral dark grey stepping to near-black at the back edge, with a single
+  thin arterial red line running around its circumference. That red line is
+  the only chrome-equivalent flourish permitted.
+- Segment faces are flat matte fills. No gloss, no plastic sheen, no
+  metallic reflection, no environment map, no fresnel rim glow in any colour
+  other than red or blue.
+- Segment dividers are thin white lines, not grey. Grey dividers disappear
+  against the dark segments at small render sizes.
+- Hub is a small near-black disc with a thin red ring and the red triangle
+  at its centre, point up.
+- Lighting: one soft key from slightly above front, one very dim fill, a
+  black background. Low overall exposure. Shadows are black, never coloured.
+  Nothing in the scene should be brighter than the white segments.
+- Depth of field, bloom and glow stay off, except an optional tight red glow
+  under the pointer.
+- If there is a pointer, it is a solid arterial red triangle at 12 o'clock
+  with a razor point, and it must not rotate with the wheel.
+- If the wheel tilts, keep the tilt shallow, under 20 degrees. A steeply
+  raked wheel reads as a game show.
+
+## MOTION
+
+- All transitions use cubic-bezier(.22,1,.36,1), 300ms for state changes.
+- The spin decelerates on a long ease-out and stops dead. No overshoot, no
+  elastic settle, no bounce, no wobble.
+- Hover lifts an element by translateY(-1px), active pushes it down 1px.
+  That is the entire hover vocabulary.
+- No confetti, no particles, no fireworks, no coin showers, no screen shake,
+  no flashing, no pulsing glow loops. A win is announced by the result text
+  changing colour and weight, nothing else.
+- No hard white flashes anywhere, at any time.
+
+## COPY TONE
+
+Clinical and flat, delivered deadpan. "Ready." "Nothing today." "Paid to your
+wallet on verification." Never exclamation marks, never "Congratulations",
+never "You won!", never emoji, never casino language like jackpot, lucky,
+bonanza, mega, fortune.
+
+Never use em-dashes in any visible text. Use commas, periods or parentheses.
+
+## ACCEPTANCE CHECK
+
+Before you return the code, verify every one of these:
+1. No colour appears anywhere outside the token list above.
+2. Blue appears only on money. Red never appears on money.
+3. Every small label is spaced uppercase mono.
+4. No gloss, metallic reflection, bloom or coloured shadow on the 3D wheel.
+5. The spin stops without bouncing.
+6. No confetti, particles or white flash on a win.
+7. Spin logic, odds, markup structure and public API are byte-for-byte
+   unchanged in behaviour.
+
+Return the full restyled file. Where you changed a visual decision that was
+load-bearing for the existing layout, note it in one line above the code.
+```
