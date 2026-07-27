@@ -511,18 +511,26 @@ const PK=[
 ];
 function addEntries(n){var room=Math.max(0,ST.ENTRY_CAP-ST.entries),g=Math.min(room,n);ST.entries+=g;return g;}
 
-/* dispensary / dashboard data — from intake_7 */
+/* dispensary / dashboard data — from intake_7
+   Array order matches the ten wedges on assets/wheel/plate.webp, clockwise
+   from 12 o'clock: white, black, red, blue, white, black, blue, red, white,
+   blue. Money (jack/cash) always lands on blue, entries always land on
+   white, house currency (pk) always lands on red. The plate came back with
+   three white/blue but only two red against two black, one short of the
+   red/black split the brief called for, so "Pain Scale +1" takes the second
+   black wedge instead of red. rollWheel() sums by probability, not index,
+   so this order is free to change without touching the odds. */
 const WHEEL=[
- {t:'500 USDT',s:'The whole jackpot. Paid on verification.',p:1/50000,kind:'jack',usd:500},
  {t:'+2 entries',s:"Straight into Sunday's draw.",p:0.15,kind:'ent',ent:2},
- {t:'50 USDT',s:'Paid to your wallet on verification.',p:1/10000,kind:'cash',usd:50},
- {t:'+1 entry',s:"Straight into Sunday's draw.",p:0.30,kind:'ent',ent:1},
- {t:'1,000 PK',s:'Lands in your account in October.',p:0.01,kind:'pk',pk:1000},
  {t:'Nothing',s:'Back tomorrow. The wheel resets at midnight UTC.',p:null,kind:'none'},
- {t:'10 USDT',s:'Paid to your wallet on verification.',p:1/2000,kind:'cash',usd:10},
- {t:'+5 entries',s:"Straight into Sunday's draw.",p:0.08,kind:'ent',ent:5},
+ {t:'1,000 PK',s:'Lands in your account in October.',p:0.01,kind:'pk',pk:1000},
+ {t:'500 USDT',s:'The whole jackpot. Paid on verification.',p:1/50000,kind:'jack',usd:500},
+ {t:'+1 entry',s:"Straight into Sunday's draw.",p:0.30,kind:'ent',ent:1},
+ {t:'Pain Scale +1',s:'You open one tier higher on day one.',p:0.02,kind:'perk'},
+ {t:'50 USDT',s:'Paid to your wallet on verification.',p:1/10000,kind:'cash',usd:50},
  {t:'5,000 PK',s:'Lands in your account in October.',p:1/500,kind:'pk',pk:5000},
- {t:'Pain Scale +1',s:'You open one tier higher on day one.',p:0.02,kind:'perk'}
+ {t:'+5 entries',s:"Straight into Sunday's draw.",p:0.08,kind:'ent',ent:5},
+ {t:'10 USDT',s:'Paid to your wallet on verification.',p:1/2000,kind:'cash',usd:10}
 ];
 (function(){var used=0;WHEEL.forEach(w=>{if(w.p!==null)used+=w.p;});WHEEL.forEach(w=>{if(w.p===null)w.p=Math.max(0,1-used);});})();
 const GIVE=[
@@ -867,39 +875,62 @@ function renderGive(card){const el=$('g_list',card);el.innerHTML='';
     if(id==='sun'){toast('Scroll back up to the wallet room to add an entry.');return;}
     ST.entered[id]=true;renderGive(card);toast('Entry received. Watch the Ward for the result.');}));}
 let wTurning=false;
-/* ---- the wheel itself: 10 segments, lands on the weighted roll ------------- */
-const SEG_COL={jack:'#F2C14E',cash:'#5FE3A1',ent:'#7FD6E8',pk:'#E10600',perk:'#A46BD8',none:'#2A2D31'};
+/* ---- the wheel itself: the plate is a photographed 10-tooth-wedge saw
+   blade (assets/wheel/plate.webp); canvas only draws the prize labels and
+   the spin sparks over it. Wedge 0 sits at 12 o'clock at rot=0 and wedges
+   run clockwise from there, matching the plate's own painted order. ------ */
+const WHEEL_PLATE=new Image();WHEEL_PLATE.src='assets/wheel/plate.webp';
+const LABEL_INK={jack:'#F7F8F8',cash:'#F7F8F8',ent:'#0d0e10',pk:'#F7F8F8',perk:'#F7F8F8',none:'#8b9298'};
 function drawWheel(cv,rot){
   const ctx=cv.getContext('2d'),R=cv.width/2,n=WHEEL.length,step=Math.PI*2/n;
   ctx.clearRect(0,0,cv.width,cv.width);
   ctx.save();ctx.translate(R,R);ctx.rotate(rot);
+  if(WHEEL_PLATE.complete&&WHEEL_PLATE.naturalWidth)ctx.drawImage(WHEEL_PLATE,-R,-R,R*2,R*2);
   for(let i=0;i<n;i++){
-    const a0=i*step,a1=a0+step,w=WHEEL[i];
-    ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R-8,a0,a1);ctx.closePath();
-    ctx.fillStyle=SEG_COL[w.kind]||'#2A2D31';
-    ctx.globalAlpha=w.kind==='none'?1:.88;ctx.fill();ctx.globalAlpha=1;
-    ctx.strokeStyle='rgba(19,21,23,.9)';ctx.lineWidth=3;ctx.stroke();
-    // label
-    ctx.save();ctx.rotate(a0+step/2);ctx.textAlign='right';ctx.textBaseline='middle';
-    ctx.fillStyle=w.kind==='none'?'#8b9298':'#0d0e10';
+    const w=WHEEL[i];
+    ctx.save();ctx.rotate(-Math.PI/2+i*step);ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.fillStyle=LABEL_INK[w.kind]||'#F7F8F8';
     ctx.font='700 21px "JetBrains Mono",monospace';
-    ctx.fillText(w.t,R-26,0);ctx.restore();
+    ctx.fillText(w.t,R*0.78,0);ctx.restore();
   }
-  ctx.beginPath();ctx.arc(0,0,R-8,0,Math.PI*2);ctx.strokeStyle='#454A50';ctx.lineWidth=6;ctx.stroke();
-  ctx.beginPath();ctx.arc(0,0,34,0,Math.PI*2);ctx.fillStyle='#131517';ctx.fill();
-  ctx.strokeStyle='#E10600';ctx.lineWidth=3;ctx.stroke();
   ctx.restore();
+}
+/* ---- sparks: spawned off the pointer in proportion to how fast the plate
+   is turning, so they're heaviest at full spin and taper to nothing as it
+   grinds to a stop. Palette-locked white fading to arterial red. --------- */
+let SPARKS=[];
+function spawnSparks(x,y,n){
+  for(let i=0;i<n;i++){
+    const a=-Math.PI/2+(Math.random()-0.5)*1.4,sp=3+Math.random()*7;
+    SPARKS.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,life:1,decay:.025+Math.random()*.035,r:1+Math.random()*2});
+  }
+}
+function drawSparks(ctx){
+  for(let i=SPARKS.length-1;i>=0;i--){
+    const s=SPARKS[i];
+    s.x+=s.vx;s.y+=s.vy;s.vy+=.25;s.vx*=.98;s.life-=s.decay;
+    if(s.life<=0){SPARKS.splice(i,1);continue;}
+    ctx.globalAlpha=Math.max(0,s.life);
+    ctx.fillStyle=s.life>0.55?'#F7F8F8':'#E10600';
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
 }
 function spinWheelTo(cv,idx,done){
   const n=WHEEL.length,step=Math.PI*2/n;
-  // pointer sits at 12 o'clock (-90deg); land the middle of segment idx under it
-  const target=(-Math.PI/2)-(idx*step+step/2)+Math.PI*2*6;
+  // pointer sits at 12 o'clock (-90deg); wedge idx starts there at rot 0,
+  // so landing it under the pointer again is just undoing its own offset
+  const target=-(idx*step)+Math.PI*2*6;
   const start=performance.now(),DUR=4200,from=cv._rot||0;
+  const ctx=cv.getContext('2d'),R=cv.width/2,sparkX=R,sparkY=R-R*0.9;
+  SPARKS=[];
   (function frame(t){
     const e=Math.min(1,(t-start)/DUR),k=1-Math.pow(1-e,3);   // easeOutCubic
-    const rot=from+(target-from)*k;
+    const rot=from+(target-from)*k,prevRot=cv._rot||rot,speed=Math.abs(rot-prevRot);
     cv._rot=rot;drawWheel(cv,rot);
-    if(e<1)requestAnimationFrame(frame);else done();
+    if(speed>0.002)spawnSparks(sparkX,sparkY,Math.min(6,Math.round(speed*220)));
+    drawSparks(ctx);
+    if(e<1)requestAnimationFrame(frame);else{SPARKS=[];done();}
   })(start);
 }
 function buildDispensary(card){
@@ -925,6 +956,7 @@ function buildDispensary(card){
   renderOdds(card);renderGive(card);renderFeed(card);
   const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card),cv=$('w_wheel',card);
   cv._rot=0; drawWheel(cv,0);
+  if(!WHEEL_PLATE.complete)WHEEL_PLATE.addEventListener('load',()=>drawWheel(cv,cv._rot||0),{once:true});
   btn.addEventListener('click',()=>{
     if(wTurning||ST.spun)return;
     if(!ST.sent){toast('Check in first. The wheel needs an account to pay into.');return;}
