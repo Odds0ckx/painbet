@@ -209,20 +209,28 @@
   /* ===================== MOBILE ===================== */
   .bottomnav{display:none}
   .side-scrim{display:none}
+  .mobmode{display:none}
   @media (max-width: 900px){
     .shell{grid-template-columns:1fr}
     .topbar, footer{grid-column:1}
     .side{position:fixed;left:0;top:0;bottom:0;z-index:150;
       width:min(78vw,300px);transform:translateX(-100%);transition:transform .3s ease;
       background:#0d0e11;box-shadow:0 0 40px rgba(0,0,0,.5);
-      padding:66px 14px 30px;height:100vh;overflow-y:auto}
+      padding:18px 14px 30px;height:100vh;overflow-y:auto}
     body.mobnav-open .side{transform:translateX(0)}
     .side-scrim{display:block;position:fixed;inset:0;z-index:149;background:rgba(0,0,0,.6);
       opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
     body.mobnav-open .side-scrim{opacity:1;visibility:visible}
-    .navburger{display:grid !important;place-items:center}
+    .navburger{display:none}
     .topbar{grid-column:1;gap:10px;padding:0 14px;height:56px}
     .topbar .navtabs, .topbar .search, .topbar .btn:not(.red){display:none}
+    .mobmode{display:flex;position:sticky;top:56px;z-index:48;gap:8px;padding:8px 14px;
+      background:#0d0e11;border-bottom:1px solid rgba(255,255,255,.07)}
+    .mobmode button{flex:1;padding:9px 0;border-radius:999px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);color:var(--ink-dim);font-family:var(--mono);font-size:11px;
+      font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+      transition:background .2s,color .2s,border-color .2s}
+    .mobmode button.on{background:var(--blood);border-color:var(--blood);color:#fff}
     .topbar img.logo{height:24px}
     .bal{font-size:10px;padding:7px 9px;margin-left:auto}
     .btn.red{padding:9px 13px;font-size:9.5px}
@@ -2180,8 +2188,12 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     <button class="btn red">Deposit</button>
   </header>
 
+  <div class="mobmode">
+    <button type="button" class="on" id="mobModeCasino">Casino</button>
+    <button type="button" id="mobModeSports">Sports</button>
+  </div>
+
   <aside class="side">
-    <a href="#" id="sideSportsEntry">Sports betting</a>
     <div class="grp">Casino</div>
     <a class="on" href="#">Lobby</a>
     <a href="#">Originals</a>
@@ -4779,24 +4791,33 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeTr
 
   var more = document.getElementById('bnMore');
   if(more) more.addEventListener('click', function(e){ e.preventDefault(); document.body.classList.toggle('mobnav-open'); });
+  function syncMobMode(mode){
+    var casinoBtn = document.getElementById('mobModeCasino');
+    var sportsBtn = document.getElementById('mobModeSports');
+    if(casinoBtn) casinoBtn.classList.toggle('on', mode !== 'sports');
+    if(sportsBtn) sportsBtn.classList.toggle('on', mode === 'sports');
+  }
   var bnLobby = document.getElementById('bnLobby');
   if(bnLobby) bnLobby.addEventListener('click', function(e){
     e.preventDefault();
     closeMobileNav();
     document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim().toLowerCase() === 'lobby') a.click(); });
     window.scrollTo(0,0);
+    syncMobMode('casino');
   });
   var bnArcade = document.getElementById('bnArcade');
   if(bnArcade) bnArcade.addEventListener('click', function(e){
     e.preventDefault();
     closeMobileNav();
     if(typeof window.showView === 'function') window.showView('view-arcade', null);
+    syncMobMode('casino');
   });
   var bnPain = document.getElementById('bnPain');
   if(bnPain) bnPain.addEventListener('click', function(e){
     e.preventDefault();
     closeMobileNav();
     document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim().toLowerCase() === 'pain scale') a.click(); });
+    syncMobMode('casino');
   });
   var bnWallet = document.getElementById('bnWallet');
   if(bnWallet) bnWallet.addEventListener('click', function(e){
@@ -4805,11 +4826,18 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeTr
     var dep = document.getElementById('depVeil');
     if(dep) dep.classList.add('open');
   });
-  var sideSports = document.getElementById('sideSportsEntry');
-  if(sideSports) sideSports.addEventListener('click', function(e){
+  var mobModeSports = document.getElementById('mobModeSports');
+  if(mobModeSports) mobModeSports.addEventListener('click', function(e){
     e.preventDefault();
-    closeMobileNav();
     if(typeof window.__enterSports === 'function') window.__enterSports();
+    syncMobMode('sports');
+  });
+  var mobModeCasino = document.getElementById('mobModeCasino');
+  if(mobModeCasino) mobModeCasino.addEventListener('click', function(e){
+    e.preventDefault();
+    document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim().toLowerCase() === 'lobby') a.click(); });
+    window.scrollTo(0,0);
+    syncMobMode('casino');
   });
 })();
 </script>
