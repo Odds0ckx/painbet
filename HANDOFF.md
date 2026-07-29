@@ -1,83 +1,98 @@
 # pain.bet — Session Handoff
 
-_Last updated: 2026-07-22. Hand this file to a new chat to continue work with full context._
+_Last updated: 2026-07-29. Hand this file to a new chat to continue work with full context._
 
 ## What this project is
 
-**pain.bet** is a crypto-casino mockup / concept site. It is a **single-file static site**: everything (markup, CSS, JS) lives in **`index.html`** at the repo root (~600 KB). It is deployed via **GitHub Pages**. There is no build step, no framework — plain HTML/CSS/vanilla JS.
+**pain.bet** is a crypto-casino concept site. It is a **single-file static site**: everything (markup, CSS, JS) lives in **`index.html`** at the repo root (~2.1 MB, mostly inline base64 image/video assets). It is deployed via **GitHub Pages** from `main`. No build step, no framework — plain HTML/CSS/vanilla JS.
 
 - **Repo:** `Odds0ckx/painbet`
-- **Working branch:** `claude/handoff-8h673z` (all work happens here; see Git workflow below)
+- **Working branch:** `claude/handoff-documentation-review-vm3mvf` (all work happens here; see Git workflow below)
 - **Default branch:** `main`
+- **Live URL:** `https://odds0ckx.github.io/painbet/`
 
-### Other files at repo root (standalone HTML explorations, not the live site)
-- `painbet-paintracker.html` — a standalone "PainTracker" app mockup. **Important reference:** it imports into Figma cleanly; used to diagnose the Figma-import bug (see skill below).
-- `painbet-arcade.html`, `painbet-synapse.html`, `concepts-pk-anesthesia.html` — other standalone concept pages.
-- `scratch/` — throwaway explorations, all committed (the repo's stop-hook complains about untracked files, so commit new scratch files):
-  - `painscale-breakthrough.html` — preview of the Pain Scale level-up effect (now shipped in index.html)
-  - `drip-badge.html`, `drip-canvas.html` — Halloween drip visual explorations
-  - `signup-form*.html` — four standalone signup-form exports (see "Most recent work")
+### How `index.html` is structured today
+The current `index.html` is a **literal rebuild on top of an uploaded mockup file** (internally referred to as "B71" / `painbet_brand_mockup_27.html`), not a hand-written site. That history matters because bugs sometimes come from the mockup's own source file (corrupted embedded images, hardcoded absolute URLs, dead CSS) rather than from any edit made in a session — see "Known gotchas" below.
+
+Two page systems coexist in the same file:
+- **B71-native lobby pages** — Home, Promotions (`#promoPage`), Pain Scale (`#painPage`), Proof (`#proofPage`), The Chart (`#chartPage`), Sports (`#view-sports`, `.v5m`). Use `.tile` / `.banner` / `.pcard` / `.pscard` / `.row-head` card patterns, styled with the top-of-file `:root` tokens (`--blood`, `--glass`, `--glass-border`, `--tile-r`).
+- **"v5m ported module" pages** — Threshold Raid, PainKillers, Anesthesia, Affiliate, Triage/Support, Arcade, plus modals (chat, apply/admissions, legal, providers). Marked `class="view v5m syspage"` / `class="modal-bg v5m"`, toggled via `.on`, styled under a **second, `.v5m`-scoped `:root` token set** (`--card`, `--ink-hi`, `--red` remapped to `var(--blood)`). `.v5m .blk` is the card wrapper for these pages — it needs `padding` set explicitly (was `padding:0` for a while, a real bug, now fixed at `28px 32px`).
+
+### Other files at repo root (not the live site)
+- `painbet-arcade.html` — The Arcade's 9 playable Originals, loaded via iframe (`?embed=1`) from the "Arcade" nav. Has its own `:root` token set; was restyled this session to match the main site (see changelog).
+- `painbet-paintracker.html` — PainTracker drawer content, loaded via iframe (`?embed=1`).
+- `painbet-synapse.html`, `concepts-pk-anesthesia.html`, `painbet-intake-11-v2.html`, `painbet-intake-scroll.html`, `painbet-design-system.html` — older standalone concept pages, not wired into the live site.
+- `index-depreciated.html` — the pre-mockup version of the site (kept for reference; had the neuron WebGL sign-in cinematic that got ported back into the new `index.html`).
 
 ## Brand rules (non-negotiable — apply to everything)
 
-- **Arterial red** (`--red:#E10600`, `--redhi:#FF3B33`) = pain / risk / primary CTAs.
-- **Morphine blue** (`--blue:#7FD6E8`) = money-back / credit / relief ONLY. Never use blue for risk.
-- **Never** blend red directly into flat grey or white. No hard white flashes.
-- **No em-dashes** anywhere in copy.
-- Fonts: **Archivo Black** (display, `--disp`) and **Archivo** (body, `--sans`) only. Sometimes IBM Plex Mono for tabular numbers on standalone pages.
-- Background `--bg:#232427`, cards `--card:#1b1d20`.
-- **Ambient motion always plays** regardless of `prefers-reduced-motion` (deliberate brand choice).
-
-### Key `:root` tokens (in index.html)
-`--bg --card --card-hi --ink/--ink-hi/--ink-lo --red/--redhi --blue --disp --sans --r-lg(16) --r-md(12) --r-sm(8) --ease-out(cubic-bezier(.22,1,.36,1)) --shadow-lg`
+- **Arterial red** = pain / risk / primary CTAs. Current token: `--blood:#e0163c` (top-level `:root`), remapped inside `.v5m` as `--red:var(--blood)`, with `--redhi:#ff2450` as the brighter hover/accent shade.
+- **Morphine blue** = money-back / relief / withdrawals ONLY. Token: `--blue:#7FD6E8` (inside `.v5m`) / literal `#7FD6E8` on B71-native pages. **Never use blue for a generic "success" or generic accent** — it's semantically reserved. (Caught a real instance of this: the "Lightning fast withdrawals" panel is blue-themed because withdrawals = relief; when replacing its zap-emoji icon with a custom bolt animation, it was recolored to `--blue`, not red, to keep the convention.)
+- No em-dashes anywhere in copy.
+- Fonts: **Archivo Black** (display) and **Archivo** (body) only. IBM Plex Mono / JetBrains Mono for tabular numbers, tags, and mono labels.
+- Page background `--bg:#07080a`, but **the actual visible background is `.ambient{background:#101114}`**, a fixed full-viewport layer painted on top of `body`. Any gradient/overlay meant to fade to "the page background" must target `#101114`, not `var(--bg)` — got this wrong once (hero vignette faded to the wrong color, visible as a grey seam) before fixing it.
+- Card glass tokens: `--glass:rgba(15,17,22,.70)`, `--glass-border:rgba(255,255,255,.10)`, `--tile-r:18px`.
 
 ## Architecture patterns to know
 
-- **View-gating:** animation loops check `document.getElementById('view-X').classList.contains('on')` inside `requestAnimationFrame` so off-screen widgets pause. Applies to Threshold Raid neuron, PainKillers/Anesthesia widgets, and the Pain Scale breakthrough engine.
-- **Canvas 0×0 sizing bug (recurring gotcha):** a canvas initialized while its view is `display:none` sizes to 0×0 and never re-measures (only a `window resize` fires `resizeCanvas()`). Fix pattern: a `sized` flag + guard `if (w<2||h<2) return;` + lazy retry on the first active render-loop frame. Used by the Pain Scale engine and Threshold Raid neuron.
-- **Balance sync:** `pkBalance` JS var → `syncPkBalance()` updates every `.js-pk-bal` element (sidebar, topbar, hero, mobile sheet, wallet modal, `#pk-wallet-num`).
-- **Custom checkbox/radio:** `<label><input hidden><span class="box"></span>…</label>` with `input:checked ~ .box` sibling selector. Requires true DOM siblinghood.
-- **Verification discipline:** confirm real DOM state with Playwright (`getBoundingClientRect`, `getComputedStyle`, `getImageData` alpha sampling) — screenshots can look deceptively correct (a card's own CSS glow was once mistaken for rendered canvas particles).
+- **Two router/view systems, both live, confusingly similar.** There are two separate `showView`/`VIEWS`-map IIFEs in the file (one earlier, effectively dead code left over from an older pass; one later, actually wired to the sidebar and exposed as `window.showView`). If you need to programmatically switch views from new code, always use `window.showView(key, null)` — grep for `window.showView = showView` to confirm which block is live before editing router logic.
+- **Home page game rails** (`Pain Originals` / `Pick your poison` / `Live`, ids `secOriginals`/`secSlots`/`secLive`): horizontal-scroll rails (`.rail.originals/.slots/.live`) with pagination arrows (`.railnav .rbtn`, wired via `homeRailScroll(btn,dir)`) and a **"View all"** button (`showAllGames(cat)`) that populates a dedicated full-grid page (`view-originals-all` / `view-slots-all` / `view-live-all`, `.v5m syspage`) by cloning the rail's `.tile` markup into an empty grid on first click (`fillAllGrid`), then calls `window.showView`. These dedicated pages are cheap to extend — same pattern for any future "view all" needs.
+- **Provider row** (`Browse by provider`): `.provmarquee` wrapping `.provrow`, an infinite auto-scroll marquee (duplicated content once, `translateX(-50%)` keyframe loop, pauses on hover). Edge-faded via `mask-image` gradient, not an overlay div. `.prov` cards carry a persistent (not hover-only) arterial-red glow.
+- **Promo detail modal system:** any element with `data-promo="key"` (except `#pdGo` itself) opens `openDetail(key)`, which reads from a `PROMOS` JS object (keys: `welcome`, `anesthesia`, `raid`, `drops`, `quests`, `arcade`) and shows `#pdVeil`. The modal's Go button (`#pdGo`) routes per-key: `welcome`→deposit modal, `anesthesia`/`raid`/`arcade`→`window.showView(...)`, `quests`→`openTracker()`, `drops`→closes only (no dedicated page exists yet for Drops — a real, still-open gap, not a bug).
+- **Mobile navigation (rebuilt this session, read this before touching topbar/sidebar CSS):**
+  - The hamburger button (`#navBurger`) is **hidden on mobile** (`@media max-width:900px`). Desktop-only now.
+  - In its place: a sticky **Casino/Sports segmented toggle** (`.mobmode`, buttons `#mobModeCasino`/`#mobModeSports`) right under the topbar. Clicking Sports calls `window.__enterSports()`; clicking Casino re-clicks the sidebar's "Lobby" link programmatically. A helper `syncMobMode(mode)` keeps the `.on` class in sync and is called from every mode-changing bottom-nav action too.
+  - The sidebar (`.side`) becomes a **slide-in drawer** on mobile instead of `display:none` — `position:fixed`, `transform:translateX(-100%)` by default, `body.mobnav-open .side{transform:translateX(0)}`. A scrim (`#sideScrim`) dims the page and closes the drawer on click; Escape also closes it; clicking any link inside the drawer both navigates (existing behavior, untouched) and closes the drawer.
+  - Bottom nav (`.bottomnav`, ids `#bnLobby`/`#bnArcade`/`#bnPain`/`#bnWallet`/`#bnMore`) was previously all dead `href="#"` links with zero JS — now fully wired: Lobby scrolls home + resets mode, Arcade/Pain route via the sidebar's own links or `showView`, Wallet opens the deposit modal, More opens the same drawer as before.
+  - All of this JS lives in one IIFE near the bottom of the file (search for `getElementById('navBurger')`) — extend it there, don't create a third copy elsewhere.
+- **View-gating:** animation loops check `document.getElementById('view-X').classList.contains('on')` inside `requestAnimationFrame` so off-screen widgets pause (Threshold Raid neuron, PainKillers/Anesthesia widgets).
+- **Canvas 0×0 sizing bug (recurring gotcha):** a canvas initialized while its view is `display:none` sizes to 0×0 and never re-measures. Fix pattern: measure via `el.getBoundingClientRect()` at the moment of use, not at attach-time, and don't assume a single `resize` listener is enough.
+- **Blood-splatter hover effect (`.fx`):** on `.tile`/`.banner`/`.pcard`/`.promo-hero`/`.pscard`, a **canvas-drawn** particle splatter (not an image — see `attach(el)`/`burst()`/`draw()` in the script block with the comment "Blood splatter on hover"), triggered on real `:hover` and, on coarse-pointer devices, on `touchstart` via a `.touch-lit` class with a 1200ms auto-clear. Note: `.tile .splat` (a *different*, older CSS class expecting a `<div class="splat">` child) is **dead CSS** — no HTML element ever uses it. Don't waste time tuning `.splat` opacity values; the real hover effect is the `.fx` canvas.
 
-### Running Playwright in this environment
-Playwright lives at `/opt/node22/lib/node_modules/playwright`. Use a CommonJS script that `require`s it by absolute path; Chromium is pre-installed (`PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers`). Do not run `playwright install`. External Google Fonts requests fail behind the sandbox proxy — this is harmless (fonts fall back).
+### Verification discipline
+- Always test with a local server (`python3 -m http.server 8931` from the repo root) + Playwright, not just by reading CSS. Several bugs this session were invisible from source (a corrupted image baked into the mockup's own base64 data; a card that was 840px tall for a legitimate reason, not a bug) and only obvious once rendered.
+- **Absolute GitHub Pages URLs break in sandboxed testing and in production off that exact path.** Always use relative paths for Three.js import maps, iframe `src`, asset URLs.
+- **Playwright quirks specific to this repo:**
+  - `fullPage: true` screenshots visually duplicate `position:fixed` elements (topbar, bottomnav, drawers) at intervals of one viewport-height — this is a screenshot-capture artifact, not a real bug. Don't chase phantom "duplicate panel" issues in full-page screenshots; use scrolled non-fullPage captures to confirm.
+  - Clicking a `.side a` link while the mobile drawer is closed (`transform:translateX(-100%)`) sometimes hangs Playwright's actionability wait far longer than expected. Open the drawer first (`#bnMore` or, on old code before this session's changes, `#navBurger`) before clicking sidebar links in mobile tests.
+  - `min-width:0` is required on flex/grid children that contain `overflow:hidden;text-overflow:ellipsis` text (e.g. wallet addresses) — otherwise flexbox/grid's implicit `min-width:auto` prevents the browser from ever shrinking the element below its content's natural width, and it overflows the viewport instead of truncating. Caught and fixed once on the Proof page; watch for the same pattern elsewhere.
 
-## Features shipped this session (in index.html)
+## Session changelog (2026-07-29, this thread, PRs #79–#93)
 
-- **PainKillers page** rebuilt: Tolerance Dial (250×250, `×1.6` text 45px, "TOLERANCE" caption 12.5px) first, then a merged **Wallet + IV drip** card, then **Live Relief Feed** + a "how relief arrives" info card. Cards use `.pk-row{display:flex;align-items:stretch}` with each `.promo` as a flex column so heights match.
-- **Gooey/metaball IV drip** (SVG + `feColorMatrix` alpha-threshold), recolored from neon cyan to morphine blue, flipped horizontally, cropped (`viewBox="60 0 130 500"`), placed beside the wallet balance.
-- **Anesthesia page:** countdown + blood-loss gauge concepts.
-- **Pain Scale breakthrough effect:** ambient sparks, click bursts, unlock animation. Two tweaks the user required: (1) only the **active tier card** shakes, not the whole scale; (2) the hard white flash was replaced with a **soft glow-pulse** (`psbFlash`/`psb-flash` keyframes), not a flat white block.
-- **Auth modal:** the Email tab gained **Register / Login** sub-tabs (Username, Password+eye, Email, Promo code, two consent checkboxes, Google/Telegram social buttons). The crypto **Wallet tab was left unchanged** (user: "crypto wallet is there so good"). Adapted the yellow reference screenshots to the site's red/black/grey brand.
+Starting point: user uploaded a newer, more complete mockup file (`painbet_brand_mockup_27.html`, "B71") and asked to overwrite `index.html` with it exactly, then backfill real data/functionality. Everything below shipped and merged, in order:
 
-## Most recent work (this session's tail)
+1. **B71 mockup adopted wholesale** (PR #79) — real game inventory/provider list backfilled over the mockup's placeholder set, all absolute GitHub Pages URLs converted to relative, dev-only debug leftovers removed (stray ECG-trace canvas, hidden diagnostics panel), modal tab-switch vertical-jump bug fixed, neuron WebGL sign-in cinematic ported back from `index-depreciated.html`, Legal/Providers modals restored and footer links wired.
+2. **Card padding + corrupted art + game rails** (PR #80) — `.v5m .blk` cards had `padding:0` (headers touching borders); an earlier "dedupe vs breadcrumb" pass had hidden several page `<h2>`s via `display:none`, leaving pages with no visible title (reversed). Three of the mockup's own embedded promo images were **corrupted at the source** (truncated JPEG data, confirmed byte-identical to the original upload) — cropped above the corruption point and re-encoded. Pain Originals/Slots/Live converted from wrapping grids to horizontal-scroll rails.
+3. **Arcade restyle + rail pagination + View all pages** (PR #81) — `painbet-arcade.html` was still on the pre-redesign flat-red/solid-panel palette; retokenized to match. Added pagination arrows and dedicated "View all" pages for the three home rails.
+4. **Hero vignette** (PR #82, 2 commits) — blended the hero video's hard edges into the page background (mint.io-style radial/linear mask), then fixed the color to target `#101114` (the real `.ambient` background) instead of `var(--bg)`, which had been a slightly-off near-black causing a visible seam.
+5. **Mobile footer dead space** (PR #83) — `.main`'s and the footer's mobile bottom padding were both independently sized to clear the fixed bottom nav, stacking into two oversized gaps. Trimmed both.
+6. **Provider marquee** (PR #84, #85) — converted the static provider grid into an infinite auto-scroll marquee with edge fade and persistent red glow; follow-up added vertical padding so the hover glow/lift stopped clipping against the marquee's own `overflow:hidden`.
+7. **Tile glow clipping + opacity + splatter** (PR #86, #87) — rails had no top padding so the tile hover glow clipped flat; fixed with padding + a matching negative margin (twice — first pass wasn't enough, second pass tripled it and also deepened the glow's saturation). Game tile art moved from `opacity:.55` resting / `.92` hover to a flat `opacity:1` always, per explicit feedback. Discovered `.tile .splat` is dead CSS (see Architecture notes above) — the real "blood splatter" effect is the `.fx` canvas, which got a stronger/more saturated glow instead.
+8. **Promo banners linked + CTAs wired** (PR #88, #90) — the three home banners had no click handler at all; added `data-promo` attributes to reuse the existing detail-modal system. A later pass found only the "welcome" promo's Go button actually did anything — wired Anesthesia/raid/Arcade to `showView`, Quests to `openTracker()`.
+9. **Custom bolt icon** (PR #89) — replaced the "Lightning fast withdrawals" panel's `⚡` emoji with a bolt-drop-and-strike animation adapted from a user-supplied reference (originally yellow/white, jQuery+GSAP-dependent), reimplemented in pure CSS keyframes (no new JS deps), recolored to `--blue` per the money-back/relief brand rule.
+10. **Proof page mobile overflow** (PR #91) — wallet address `<code>` elements overflowed the viewport on mobile; root cause was missing `min-width:0` on a `flex:1` + ellipsis-truncated element (see Verification discipline above). Also ran a full 390px-width overflow audit across all pages/modals — this was the only bug found.
+11. **Mobile menu was fully broken, then redesigned** (PR #92, #93) — discovered the hamburger was `display:none` on mobile with nothing replacing it, AND all 5 bottom nav links were dead placeholders: **the entire sidebar (Slots, Promotions, Threshold Raid, PainKillers, Anesthesia, The Chart, Affiliate, Triage, Sports…) was unreachable on mobile.** Built a slide-in drawer + wired the bottom nav (PR #92), added a Sports entry point (also PR #92). Then, per follow-up feedback that a plain-text "Sports betting" link didn't read as a control, replaced the hamburger entirely with the Casino/Sports segmented toggle described in Architecture notes above (PR #93) — the drawer is still there, just now opened via "More" instead of a hamburger icon.
+12. **Written report delivered as an Artifact** — a build-log style document explaining everything found broken/fixed vs. the raw mockup, for the user to show why the rebuild took as long as it did. Not part of the codebase; mentioned here in case a similar report is wanted for this later batch of work (items 1–11 above, i.e. the mobile-focused pass) — it wasn't generated for that half yet.
 
-The user wanted the **signup form as a standalone HTML file** (no neuron WebGL background) and then to **import it into Figma via an HTML-to-Figma plugin**. It kept importing blank. Four iterations in `scratch/`:
-1. `signup-form.html` — single centered modal, full styling, flat bg.
-2. `signup-form-figma.html` — all states visible, no `display:none`, normal flow.
-3. `signup-form-figma-safe.html` — `<input>`/`<button>` replaced with divs, CSS vars resolved to literals.
-4. **`signup-form-figma-v2.html` — THE ONE THAT WORKED.**
+## Known gaps / things intentionally left alone
 
-**Root cause (now captured as a skill):** HTML-to-Figma importers **skip elements whose class/id/role signals a hidden overlay** (`modal`, `popup`, `dialog`, `overlay`, `role="dialog"`…). The fix was renaming `.modal`/`.mhead`/`.mbody`/`.mtabs` → `.card`/`.card-head`/`.card-body`/`.tabs`. Confirmed working by comparison with `painbet-paintracker.html`, which uses a neutral `.app` container and imports fine.
+- **`drops` promo has no destination page.** Its Go button just closes the modal — there's genuinely no "Dispensary/Drops" feature page built anywhere in the site. Either build one or leave as-is; not treated as a bug.
+- **`markSignedIn()` / topbar Sign In → Account swap** has not been re-verified against the current B71 build's "The Chart" account page. This was flagged as an open question early in the mockof-adoption work and never revisited — worth checking if sign-in should route somewhere specific post-auth.
+- **Mobile balance pill** (`USDT 2,840 · PK 1,250`) is 147px wide and the text needs slightly more, so it wraps to 2 lines inside its own pill on some mobile widths. Not overflow, not broken, just not perfectly tight. Freed up a little space when the hamburger was removed but not fully investigated/resolved.
+- **`.tile .splat` dead CSS** (see Architecture notes) is still in the stylesheet, just unused. Harmless; could be deleted in a cleanup pass but low priority.
 
-### New skill created
-**`.claude/skills/html-to-figma-export/SKILL.md`** — a **project skill** (committed to the repo, so it persists and auto-triggers in future sessions). It documents the overlay-detection fix plus the `display:none`, native-form-control, and viewport-centering traps, with a pre-handoff checklist.
+## Git workflow (important, recurring — confirmed via repeated use this session)
 
-## Git workflow (important, recurring)
-
-- All work → branch **`claude/handoff-8h673z`**. Never push elsewhere without permission.
-- The repo owner (`Odds0ckx`) **merges PRs very quickly**, often within minutes. So each new round of work needs: `git fetch origin main`, confirm state, then a **new draft PR** — never reopen a merged one.
-- If the branch's PR is already merged: restart the branch from latest `main` (`git fetch origin main && git checkout -B claude/handoff-8h673z origin/main`), keep the same branch name, push follow-up as a new PR.
-- Commit messages: use heredoc form (`git commit -m "$(cat <<'EOF' … EOF)"`) to avoid quote-escaping breakage. Do NOT put the model identifier in commits/PRs.
-- **Stop-hook false positives:** GitHub's own "Merge pull request #N" commits (committer `noreply@github.com`) get flagged as "Unverified." These are NOT authored by us — do not amend/rewrite merged shared history.
-- **Do not schedule proactive check-ins.** The user has repeatedly rejected `send_later`/`ScheduleWakeup` calls. Only check the PR on demand.
+- All work → branch **`claude/handoff-documentation-review-vm3mvf`**. Never push elsewhere without permission.
+- The repo owner (`Odds0ckx`) **merges PRs within minutes**, essentially every time. Standing instruction from the user: **open a new PR automatically whenever a batch of changes is complete, without asking first.**
+- Before starting *any* new work, check whether the branch's last PR is already merged: `git fetch origin main`, then `git merge-base --is-ancestor HEAD origin/main`. If true, **restart the branch from latest `main`** (`git checkout -B claude/handoff-documentation-review-vm3mvf origin/main`) before making new edits — never stack new commits on already-merged history. If the branch has *unmerged* commits beyond the merged history, rebase them onto the new base instead of discarding them.
+- Commit messages: heredoc form (`git commit -m "$(cat <<'EOF' … EOF)"`). Never put the model identifier in commits/PRs/code comments.
+- **Stop-hook false positive:** GitHub's own "Merge pull request #N" commits (committer `noreply@github.com`) get flagged as "Unverified." These are not authored by us — do not amend/rewrite merged shared history to fix this; it's expected/normal GitHub behavior, not a real problem.
+- **Do schedule check-ins** (`send_later`) after opening a PR — roughly an hour out, re-checking CI/review/merge state, re-arming silently if nothing changed. This is the current standing instruction (opposite of an older, outdated note that used to say not to schedule check-ins — that guidance no longer applies).
+- A GitHub webhook subscription is active for PR activity; merge notifications arrive automatically and the trigger should be deleted once a PR merges.
 
 ## Current state at handoff
 
-- **PR #30** ("Add standalone signup/login form preview") is **open, draft, mergeable, clean.** Head commit `10c99b9`. Contains: the 4 `signup-form*.html` files + the `html-to-figma-export` skill. Awaiting owner merge.
-- Working tree is clean (before this handoff file). **This `HANDOFF.md` is new/uncommitted** — commit it if you want it tracked.
-- No open tasks. The signup-form/Figma thread is fully resolved (v2 worked, user confirmed "YES that worked perfectly").
-
-## Note on the user's standing request
-
-The user asked to be **prompted to move to a new chat (with a fresh handoff file) once the conversation grows long / token-heavy.** There is no automated token-count trigger available, so watch for it conversationally and proactively suggest a handoff when the thread gets long.
+- Working tree clean. Branch `claude/handoff-documentation-review-vm3mvf` currently sits exactly at `origin/main` (PR #93 merged, no unmerged local commits) as of this handoff.
+- No open PRs, no open tasks. This `HANDOFF.md` update itself is the only uncommitted change — commit and push it (new PR, per standing instruction) if you want it tracked on `main`.
+- Local dev loop used throughout: `python3 -m http.server 8931` from the repo root, Playwright via `/opt/node22/lib/node_modules/playwright`, Chromium at `/opt/pw-browsers/chromium`.
