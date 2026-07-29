@@ -651,7 +651,8 @@ const ST = { chain:'BTC', entries:0, hashes:{}, ENTRY_CAP:100,
   chan:'Telegram', vip:false, pw:null, handle:null, sent:false,
   pried:false, pkWon:null,
   spun:false, usd:0, entered:{}, codes:{},
-  walletSkipped:false, track:null, excl:'exclusive', roam:false };
+  walletSkipped:false, track:null, excl:'exclusive', roam:false,
+  loginAttempts:0, lockedUntil:0 };
 
 /* A gated scene holds the scroll until its station is finished. Mirrors the
    original flow: the wallet room is the only one that can be skipped. */
@@ -947,19 +948,46 @@ var Snd=(function(){
   };
 })();
 
-const Q=[
+/* Full 15-question bank (master spec §06). Every question's options span
+   0 to 3 with both extremes present, so any 5 drawn score in the same 0-15
+   domain and the diagnosis thresholds below hold regardless of the draw. */
+const QBANK=[
  {q:'It is 2am and you are down. What happens next?',a:[['Deposit again',3],['Close everything',0],['Watch someone else lose',2],['Set an alarm and sleep',1]]},
  {q:'Your last decent win. Where is it now?',a:[['Withdrawn the same hour',0],['Gone',3],['Still in the account',2],['What win',1]]},
- {q:'Pick the one that actually hurts',a:[['0.1x off the cashout',2],['Rug on the last spin of the bonus',3],['Wrong game, wrong day',1],['Watching someone hit your seed',3]]},
- {q:'How do you choose where to play?',a:[['Best bonus',1],['Fastest withdrawal',2],['Wherever the streamer is',3],['Whichever has not banned me',3]]},
- {q:'Someone asks how you are doing. Honestly.',a:[['Up',0],['Down',2],['Even, allegedly',1],['Not answering that',3]]}
+ {q:'Pick the one that actually hurts',a:[['0.1x off the cashout',2],['Rug on the last spin of the bonus',3],['Wrong game, wrong day',1],['A planned loss, on budget',0]]},
+ {q:'How do you choose where to play?',a:[['Best bonus',1],['Fastest withdrawal',2],['Wherever the streamer is',3],['A shortlist I actually made',0]]},
+ {q:'Someone asks how you are doing. Honestly.',a:[['Up',0],['Down',2],['Even, allegedly',1],['Not answering that',3]]},
+ {q:'The deposit that hurt most this year?',a:[['A planned one, on budget',0],['The one after the last one',2],['Rent week',3],['Cannot pick, there were several',3]]},
+ {q:'A withdrawal hits your wallet. First feeling?',a:[['Nothing, it is just money moving',0],['Relief',1],['Checking the fee',2],['Regret it is not still in play',3]]},
+ {q:'Your bankroll strategy?',a:[['Spreadsheet',0],['Stop loss, mostly respected',1],['Vibes',2],['Whatever is left is the bankroll',3]]},
+ {q:'The word bonus makes you feel',a:[['Suspicious',0],['Curious',1],['Hungry',2],['Alive',3]]},
+ {q:'Longest session, honestly?',a:[['Under an hour',0],['An evening',1],['Sunrise involved',2],['Days are a construct',3]]},
+ {q:'You hit big. Who do you tell?',a:[['My bank',0],['The group chat, instantly',1],['Nobody, ever',2],['The casino, asking why it is not bigger',3]]},
+ {q:'Autoplay is',a:[['Off, always',0],['For breaks',1],['The default',2],['The only way my wrist survives',3]]},
+ {q:'Your limits are set by',a:[['Me, in settings',0],['The casino, reluctantly',1],['My balance',2],['My mood',3]]},
+ {q:'A red day ends when',a:[['The stop loss says so',0],['I get bored',1],['The sun comes up',2],['It goes green',3]]},
+ {q:'Gambling is',a:[['Entertainment, priced in',0],['A hobby with overheads',1],['A second income, allegedly',2],['A relationship',3]]}
 ];
+/* Each visitor gets 5 distinct questions, shuffled, drawn fresh per session
+   (the reference build is memory-only, so "per visitor" means per page
+   load, not persisted across a reload). Q is populated by drawQuestions()
+   when the room is built. */
+let Q=[];
+function drawQuestions(){
+  const pool=QBANK.slice();
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  return pool.slice(0,5);
+}
+/* Diagnosis only, nothing else (master spec): no score, no scale, no tier,
+   no reward level is ever shown alongside it. Do not add a tier/scale field
+   back onto these — see the diagnose() toast and the dashboard tier cell,
+   both of which used to leak a "Pain Scale X/10" reading here. */
 const DX=[
- {min:0,n:'THE TOURIST',t:2,l:'You visit. You leave. You sleep fine. We respect it and we do not understand it.'},
- {min:7,n:'THE SURGEON',t:4,l:'Cold, deliberate, quietly keeping score. You will like that we publish the numbers.'},
- {min:9,n:'THE INSOMNIAC',t:6,l:'The hours you keep are the diagnosis. Nothing good was ever decided at 3am and you know it.'},
- {min:10,n:'THE MARTYR',t:8,l:'You take the hit and you take it personally. The scale was built to measure exactly this.'},
- {min:11,n:'FLATLINE',t:10,l:'There is no tier above you. Set a limit before you set an alarm.'}
+ {min:0,n:'THE TOURIST',l:'You visit. You leave. You sleep fine. We respect it and we do not understand it.'},
+ {min:7,n:'THE SURGEON',l:'Cold, deliberate, quietly keeping score. You will like that we publish the numbers.'},
+ {min:9,n:'THE INSOMNIAC',l:'The hours you keep are the diagnosis. Nothing good was ever decided at 3am and you know it.'},
+ {min:10,n:'THE MARTYR',l:'You take the hit and you take it personally. The scale was built to measure exactly this.'},
+ {min:11,n:'FLATLINE',l:'There is no tier above you. Set a limit before you set an alarm.'}
 ];
 const PK=[
  {pk:2000,usd:10,w:0.55,n:'Most common. Still yours.'},
@@ -971,22 +999,36 @@ const PK=[
 ];
 function addEntries(n){var room=Math.max(0,ST.ENTRY_CAP-ST.entries),g=Math.min(room,n);ST.entries+=g;return g;}
 
+/* Drop codes: first 40 in, each a roll not a payout, roughly 1 in 3 pays
+   (spec §12/S12). A real deployment enforces "first 40 across everyone" and
+   the roll server-side; this reference approximates it with a fixed local
+   pool so an unknown code and a real-but-unlucky code read differently. */
+const DROP_CODES=new Set(Array.from({length:40},(_,i)=>'PAIN-'+String(i+1).padStart(4,'0')));
+
 /* dispensary / dashboard data — from intake_7
    Array order matches the ten wedges on assets/wheel/plate.webp, clockwise
    from 12 o'clock: white, black, red, blue, white, black, blue, red, white,
    blue. Money (jack/cash) always lands on blue, entries always land on
    white, house currency (pk) always lands on red. The plate came back with
    three white/blue but only two red against two black, one short of the
-   red/black split the brief called for, so "Pain Scale +1" takes the second
-   black wedge instead of red. rollWheel() sums by probability, not index,
-   so this order is free to change without touching the odds. */
+   red/black split the brief called for, so the second black wedge below
+   carries a PK prize instead of red. rollWheel() sums by probability, not
+   index, so this order is free to change without touching the odds.
+
+   The wedge in that slot used to be "Pain Scale +1" — a tier/scale reward.
+   The master spec is explicit that the intake exposes no scale and no tier
+   anywhere ("diagnosis only... no scale, no tier"), and separately flags
+   this exact wedge (§22, open decision 1) as needing a real replacement
+   prize. 500 PK at the same 2% is a placeholder that keeps the math and the
+   wedge-colour mapping intact — swap the prize, not the odds, once product
+   decides what actually goes here. */
 const WHEEL=[
  {t:'+2 entries',s:"Straight into Sunday's draw.",p:0.15,kind:'ent',ent:2},
  {t:'Nothing',s:'Back tomorrow. The wheel resets at midnight UTC.',p:null,kind:'none'},
  {t:'1,000 PK',s:'Lands in your account in October.',p:0.01,kind:'pk',pk:1000},
  {t:'500 USDT',s:'The whole jackpot. Paid on verification.',p:1/50000,kind:'jack',usd:500},
  {t:'+1 entry',s:"Straight into Sunday's draw.",p:0.30,kind:'ent',ent:1},
- {t:'Pain Scale +1',s:'You open one tier higher on day one.',p:0.02,kind:'perk'},
+ {t:'500 PK',s:'Lands in your account in October.',p:0.02,kind:'pk',pk:500},
  {t:'50 USDT',s:'Paid to your wallet on verification.',p:1/10000,kind:'cash',usd:50},
  {t:'5,000 PK',s:'Lands in your account in October.',p:1/500,kind:'pk',pk:5000},
  {t:'+5 entries',s:"Straight into Sunday's draw.",p:0.08,kind:'ent',ent:5},
@@ -1068,6 +1110,28 @@ function buildWallet(card){
     ST.chain=b.dataset.ch;
     txh.placeholder=ST.chain==='TRON'?'T…  wallet or hash':((ST.chain==='ETH'||ST.chain==='BNB')?'0x…  wallet or hash':'Wallet address or transaction hash');
     txh.focus();});
+  /* Auto-continue (spec §05): once a first wallet is logged, the room is not
+     a trap for hands-off visitors — it moves itself on after 1.5s. Typing or
+     focusing a field cancels the pending advance; if the field is mid-entry
+     right when it would fire, one retry after 2.5s goes ahead only if the
+     field has emptied out by then. */
+  let autoT=null;
+  function cancelAuto(){ if(autoT){clearTimeout(autoT);autoT=null;} }
+  function fireAuto(isRetry){
+    autoT=null;
+    if(txh.value.trim()!==''){
+      if(!isRetry) autoT=setTimeout(()=>fireAuto(true),2500);
+      return;
+    }
+    note.className='note';note.textContent='Moving on.';
+    toast(ST.entries+" in Sunday's draw. Sending your chart.");
+    stationDone();
+  }
+  function scheduleAuto(){ cancelAuto(); autoT=setTimeout(()=>fireAuto(false),1500); }
+  [txh,$('w_amt',card),$('w_casino',card)].forEach(el=>{
+    el.addEventListener('input',cancelAuto);
+    el.addEventListener('focus',cancelAuto);
+  });
   function submitTx(){
     const raw=txh.value,a=$('w_amt',card).value.trim(),c=$('w_casino',card).value.trim();
     const r=parseInput(ST.chain,raw);
@@ -1087,12 +1151,14 @@ function buildWallet(card){
     note.className='note ok';
     note.textContent=(r.kind==='wallet'?'Wallet':'Transaction')+' logged. Entry '+ST.entries+'. Add another, or move on.';
     toast('Entry added. '+ST.entries+" in Sunday's draw."); txh.focus();
-    // entries are unlimited, so the room stays open until they choose to leave
+    // capped at ENTRY_CAP total, but the room stays open until they leave or auto-continue fires
     const skip=$('w_skip',card);
     skip.textContent='Done, send my chart';skip.classList.remove('ghost');
+    scheduleAuto();
   }
   $('w_go',card).addEventListener('click',submitTx);
   $('w_skip',card).addEventListener('click',()=>{
+    cancelAuto();
     ST.walletSkipped=true;
     // the popup is about to close and a ~7s walk follows before the next one
     // opens; without a toast here, clicking with entries already logged gave
@@ -1111,6 +1177,7 @@ function buildWallet(card){
 }
 
 function buildQuiz(card){
+  Q=drawQuestions();
   card.innerHTML=`
     <div id="q_intro">
       <p class="kicker">ROOM 01 · EXAMINATION</p>
@@ -1153,12 +1220,11 @@ function buildQuiz(card){
     const dx=$('q_dx',card);dx.style.display='block';
     dx.innerHTML=`<div class="dxwrap">
       <div class="pno">PATIENT #${String(ST.pno).padStart(5,'0')}</div>
-      <div class="scale">${d.t}<span>/10</span></div>
       <div class="dx">${d.n}</div>
       <p>${d.l}</p></div>
       <p style="text-align:center;margin-top:10px">Issued once. There is no second opinion.</p>
       <button class="btn" id="q_claim">Claim this chart</button>`;
-    toast('Diagnosis: '+d.n+'. Pain Scale '+d.t+'/10.');
+    toast('Diagnosis: '+d.n+'.');
     $('q_claim',card).addEventListener('click',stationDone);
   }
   $('q_begin',card).addEventListener('click',()=>{
@@ -1427,23 +1493,51 @@ function buildDispensary(card){
 
     <details class="sect">
       <summary>
+        <span class="sl"><span class="sname">Redeem a drop code</span>
+          <span class="sdesc">First 40 in. Roughly 1 in 3 pays.</span></span>
+        <span class="sr"><span class="badge">Anytime</span><span class="chev"></span></span>
+      </summary>
+      <div class="sbody">
+        <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">Codes like PAIN-0413 appear with no warning in Telegram, Discord and with creators. First forty codes in. Each code is a roll, not a payout.</p>
+        <div class="codebox"><input class="in" id="f_code" placeholder="PAIN-0001"><button class="btn ghost" id="f_go">Redeem</button></div>
+        <div class="note" id="f_note">Each code works once. Roughly 1 in 3 pays, $5 to $50.</div>
+      </div>
+    </details>
+
+    <details class="sect" open>
+      <summary>
+        <span class="sl"><span class="sname">Sunday draw</span>
+          <span class="sdesc">$400 every week, 14 winners.</span></span>
+        <span class="sr"><span class="cv" id="dr_cd">--</span><span class="chev"></span></span>
+      </summary>
+      <div class="sbody">
+        <div class="note">Entries: <b id="dr_ent">0</b> of 100 · $400 every Sunday · 14 winners.</div>
+        <p style="font-size:12px;color:var(--ink-3);margin-top:8px">The draw runs on a published seed nobody can steer, us included. Revealed after every draw so anyone can check it.</p>
+      </div>
+    </details>
+
+    <details class="sect">
+      <summary>
+        <span class="sl"><span class="sname">Your link</span>
+          <span class="sdesc">5 entries per verified check-in.</span></span>
+        <span class="sr"><span class="chev"></span></span>
+      </summary>
+      <div class="sbody">
+        <div class="codebox"><input class="in" id="rf_link" readonly><button class="btn ghost" id="rf_copy">Copy</button></div>
+        <div class="note">+5 entries for every person who checks in through it and verifies. Capped at 25 referral entries a week.</div>
+        <div class="chips" id="rf_socials" style="margin-top:12px">
+          ${[['Telegram','tg'],['Discord','dc'],['X','x'],['Kick','kk']].map(([n,k])=>`<button class="chip" data-soc="${k}">${n}</button>`).join('')}
+        </div>
+      </div>
+    </details>
+
+    <details class="sect">
+      <summary>
         <span class="sl"><span class="sname">Giveaways running</span>
           <span class="sdesc">Free to enter. Nothing to deposit.</span></span>
         <span class="sr"><span class="badge live" id="g_badge">0 open</span><span class="chev"></span></span>
       </summary>
       <div class="sbody"><div id="g_list"></div></div>
-    </details>
-
-    <details class="sect">
-      <summary>
-        <span class="sl"><span class="sname">Redeem a drop code</span>
-          <span class="sdesc">$5 to $50, random, first come.</span></span>
-        <span class="sr"><span class="badge">Anytime</span><span class="chev"></span></span>
-      </summary>
-      <div class="sbody">
-        <div class="codebox"><input class="in" id="f_code" placeholder="PAIN-0001"><button class="btn ghost" id="f_go">Redeem</button></div>
-        <div class="note" id="f_note">Try PAIN-0001. Each code works once, amount revealed on redeem.</div>
-      </div>
     </details>
 
     <details class="sect">
@@ -1455,6 +1549,19 @@ function buildDispensary(card){
       <div class="sbody"><div id="f_feed"></div></div>
     </details>`;
   renderOdds(card);renderGive(card);renderFeed(card);
+  card._enter=()=>{ $('rf_link',card).value='pain.bet/i/'+String(ST.pno).padStart(5,'0'); };
+  $('rf_copy',card).addEventListener('click',()=>{
+    const inp=$('rf_link',card);
+    (navigator.clipboard&&navigator.clipboard.writeText
+      ? navigator.clipboard.writeText(inp.value)
+      : Promise.reject()).catch(()=>{inp.select();document.execCommand('copy');})
+      .then(()=>toast('Link copied.'),()=>toast('Link copied.'));
+  });
+  $('rf_socials',card).addEventListener('click',e=>{
+    const b=e.target.closest('.chip');if(!b)return;
+    const names={tg:'Telegram',dc:'Discord',x:'X',kk:'Kick'};
+    toast(names[b.dataset.soc]+' opens on 14 August.');
+  });
   const res=$('w_res',card),sub=$('w_sub',card),btn=$('w_spin',card),cv=$('w_wheel',card),badge=$('w_badge',card);
   cv._rot=0; drawWheel(cv,0);
   if(!WHEEL_PLATE.complete)WHEEL_PLATE.addEventListener('load',()=>drawWheel(cv,cv._rot||0),{once:true});
@@ -1480,10 +1587,17 @@ function buildDispensary(card){
   function redeem(){const c=$('f_code',card).value.trim().toUpperCase(),n=$('f_note',card);
     if(!/^PAIN-\d{4}$/.test(c)){n.className='note warn';n.textContent='Codes look like PAIN-0001. Check the channel post.';return;}
     if(ST.codes[c]){n.className='note warn';n.textContent='That code is already spent.';return;}
-    ST.codes[c]=true;const amt=[5,10,15,25,35,50][Math.floor(Math.random()*6)];
-    FEED.unshift(['Patient #'+String(ST.pno).padStart(5,'0'),'$'+amt,'just now']);FEED.pop();renderFeed(card);
-    n.className='note ok';n.textContent='Code accepted. $'+amt+' sent to your wallet on verification.';
-    $('f_code',card).value='';toast('Drop redeemed. $'+amt+'.');}
+    if(!DROP_CODES.has(c)){n.className='note warn';n.textContent="That code doesn't exist. Check the channel post for the real one.";return;}
+    ST.codes[c]=true;
+    if(Math.random()<1/3){
+      const amt=[5,10,15,25,35,50][Math.floor(Math.random()*6)];
+      FEED.unshift(['Patient #'+String(ST.pno).padStart(5,'0'),'$'+amt,'just now']);FEED.pop();renderFeed(card);
+      n.className='note ok';n.textContent='Code accepted. $'+amt+' sent to your wallet on verification.';
+      $('f_code',card).value='';toast('Drop redeemed. $'+amt+'.');
+    }else{
+      n.className='note';n.textContent='Code redeemed, no prize this time. Roughly 1 in 3 pays, try the next drop.';
+      $('f_code',card).value='';toast('No prize this time.');
+    }}
   $('f_go',card).addEventListener('click',redeem);
   $('f_code',card).addEventListener('keydown',e=>{if(e.key==='Enter')redeem();});
 }
@@ -1507,7 +1621,7 @@ function buildDashboard(card){
     <div class="sub-h">Promotions</div><div id="d_promos"></div>`;
   card._enter=()=>{
     $('dash_who',card).textContent='Patient #'+String(ST.pno).padStart(5,'0');
-    if(ST.dx){$('d_dx',card).textContent=ST.dx.n;$('d_tier',card).textContent='Pain Scale '+ST.dx.t+'/10';}
+    if(ST.dx){$('d_dx',card).textContent=ST.dx.n;}
     $('d_ent',card).textContent=ST.entries+' '+(ST.entries===1?'entry':'entries');
     if(ST.pkWon){$('d_pk',card).textContent=ST.pkWon.pk.toLocaleString('en-US')+' PK';}
     else{$('d_pk',card).textContent='Not opened';}
@@ -1531,12 +1645,29 @@ function buildLogin(card){
   $('li_eye',card).addEventListener('click',function(){const p=$('li_pw',card);
     p.type=p.type==='password'?'text':'password';this.textContent=p.type==='password'?'SHOW':'HIDE';});
   const normId=v=>(v||'').trim().toLowerCase().replace(/^@/,'');
+  /* No self-service reset, by design (spec §J5/S14): three wrong tries locks
+     sign-in for an hour, recovery is a moderator verifying against the last
+     logged wallet. An account that can be reset by whoever holds the chat
+     can be stolen by whoever holds the chat. */
   function doLogin(){const idv=$('li_id',card).value.trim(),pw=$('li_pw',card).value,n=$('li_note',card);
+    if(Date.now()<ST.lockedUntil){
+      const mins=Math.ceil((ST.lockedUntil-Date.now())/60000);
+      n.className='note warn';n.textContent='Too many wrong tries. Locked for '+mins+' more minute'+(mins===1?'':'s')+'. Message the Ward if you need a mod to verify you.';
+      return;}
     if(!ST.sent||!ST.pw){n.className='note warn';n.textContent='No chart on this device yet. Scroll up and go through the intake first.';return;}
     if(!idv||!pw){n.className='note warn';n.textContent='Both fields, please.';return;}
     const known=[normId(ST.handle),String(ST.pno),String(ST.pno).padStart(5,'0')];
-    if(known.indexOf(normId(idv))===-1){n.className='note warn';n.textContent='Nothing matches that. Try your handle or patient number.';return;}
-    if(pw!==ST.pw){n.className='note warn';n.textContent='Wrong password. Message the Ward and a mod will reset it.';return;}
+    const fail=(msg)=>{
+      ST.loginAttempts++;
+      if(ST.loginAttempts>=3){
+        ST.lockedUntil=Date.now()+3600000;ST.loginAttempts=0;
+        n.className='note warn';n.textContent='Three wrong tries. Locked for an hour. Message the Ward and a mod can verify you against your last logged wallet.';
+        return;}
+      n.className='note warn';n.textContent=msg;
+    };
+    if(known.indexOf(normId(idv))===-1){fail('Nothing matches that. Try your handle or patient number.');return;}
+    if(pw!==ST.pw){fail('Wrong password. No reset here, a mod can verify you against your last logged wallet.');return;}
+    ST.loginAttempts=0;
     n.className='note ok';n.textContent='Signed in. Welcome back, patient #'+String(ST.pno).padStart(5,'0')+'.';
     toast('Signed in.');
     /* A returning patient is not walked anywhere. Rails on, chart now. */
@@ -1696,6 +1827,10 @@ setInterval(function(){
   var ms=Math.max(0,nextSunday()-new Date());
   var e=document.getElementById('d_cd');
   if(e)e.textContent=Math.floor(ms/864e5)+'d '+p2(Math.floor(ms%864e5/36e5))+':'+p2(Math.floor(ms%36e5/6e4));
+  var dcd=document.getElementById('dr_cd');
+  if(dcd)dcd.textContent=Math.floor(ms/864e5)+'d '+p2(Math.floor(ms%864e5/36e5))+':'+p2(Math.floor(ms%36e5/6e4));
+  var dent=document.getElementById('dr_ent');
+  if(dent)dent.textContent=ST.entries;
   var wn=document.getElementById('w_next');
   if(wn){ if(!ST.spun){wn.textContent='Ready';}
     else{var now=new Date();var mid=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1,0,0,0));
