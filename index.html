@@ -2181,6 +2181,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   </header>
 
   <aside class="side">
+    <a href="#" id="sideSportsEntry">Sports betting</a>
     <div class="grp">Casino</div>
     <a class="on" href="#">Lobby</a>
     <a href="#">Originals</a>
@@ -4803,6 +4804,12 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeTr
     closeMobileNav();
     var dep = document.getElementById('depVeil');
     if(dep) dep.classList.add('open');
+  });
+  var sideSports = document.getElementById('sideSportsEntry');
+  if(sideSports) sideSports.addEventListener('click', function(e){
+    e.preventDefault();
+    closeMobileNav();
+    if(typeof window.__enterSports === 'function') window.__enterSports();
   });
 })();
 </script>
