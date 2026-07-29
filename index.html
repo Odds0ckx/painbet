@@ -4236,13 +4236,18 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   veil.addEventListener('click', function(e){ if(e.target === veil) closePd(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePd(); });
 
-  // CTA routing: welcome -> Transfusion modal; others just close for now
+  // CTA routing: each promo's Go button opens the feature it's actually about
   document.getElementById('pdGo').addEventListener('click', function(){
     const k = this.dataset.promo;
     closePd();
     if(k === 'welcome'){
       const dep = document.getElementById('depVeil');
       if(dep){ dep.classList.add('open'); }
+    } else if(k === 'anesthesia' || k === 'raid' || k === 'arcade'){
+      const key = {anesthesia:'view-anesthesia', raid:'view-synapse', arcade:'view-arcade'}[k];
+      if(typeof window.showView === 'function') window.showView(key, null);
+    } else if(k === 'quests'){
+      if(typeof openTracker === 'function') openTracker();
     }
   });
 })();
