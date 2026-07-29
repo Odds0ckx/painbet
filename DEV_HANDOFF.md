@@ -127,9 +127,6 @@ canonical URL. `<title>` is present.
 
 ### P2 — cleanup, non-blocking
 
-- **~94 MB of dead assets.** `assets/seq/` (81 MB) and `assets/wheel/` (13 MB) are
-  referenced only by `painbet-intake-scroll.html`, an unwired concept page. They are
-  not used by the live site. Removing them cuts the repo from ~116 MB to ~22 MB.
 - **4 dead legal links** in modal body copy (the `<a>Terms</a>` / `<a>Privacy Policy</a>`
   inside the admissions and affiliate modals have no handler). The *footer* legal
   links work correctly — only the in-modal ones are inert.
@@ -260,11 +257,17 @@ Microgaming, Spribe, Habanero, OneTouch, Fugaso, plus a "+116 studios" modal.
    Recommendation: **keep the single file for launch**, extract the base64 assets,
    and revisit the split after the platform integration is stable.
 
-5. **Delete `assets/seq/` and `assets/wheel/` before handing over** (94 MB, unused).
-   Also consider removing the unwired concept pages —
-   `painbet-synapse.html`, `concepts-pk-anesthesia.html`, `painbet-intake-*.html`,
-   `painbet-design-system.html`, `index-depreciated.html` — or moving them to an
-   `archive/` folder so the dev team does not mistake them for live code.
+5. **Tell the dev team what else is in this repo, so they don't touch it by mistake.**
+   `painbet-intake-scroll.html` and `painbet-intake-11-v2.html` are **not** part of
+   this site — they're a separate prelaunch project ("THE INTAKE," a scroll-driven
+   capture/giveaway funnel), each with its own handoff doc and, for the scroll build,
+   its own live Pages URL. `assets/seq/` (81 MB) and `assets/wheel/` (13 MB) belong
+   to that project, not to `index.html` — leave them alone.
+
+   `painbet-synapse.html`, `concepts-pk-anesthesia.html`, `painbet-design-system.html`,
+   and `index-depreciated.html` genuinely are unwired concept scraps (confirmed: no
+   other file references them). Those are safe to archive or remove if you want a
+   cleaner repo for the incoming team, but that's a nice-to-have, not a blocker.
 
 6. **Fix P0-2 (the fonts) before handover.** It is a small change and it means the
    dev team sees the site as it is meant to look, rather than reporting the fallback
