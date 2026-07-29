@@ -799,7 +799,7 @@
     border:1px solid var(--glass-border);border-radius:var(--tile-r);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
   .v5m .gcrumb button{cursor:pointer}
-.v5m /* Hallmark · macrostructure: App-Shell Lobby v4 (studied-DNA: rounded cards + tailwind-dark hovers + liquid bubble scale)
+/* Hallmark · macrostructure: App-Shell Lobby v4 (studied-DNA: rounded cards + tailwind-dark hovers + liquid bubble scale)
  * genre: atmospheric · studied: yes · pre-emit critique: P5 H4 E5 S5 R5 V5
  * brand rule: arterial red = pain/action · morphine blue = money back only · fonts: Archivo Black / Archivo
  * v5: every control wired (views, .v5m modals, .v5m drawers) · 9 playable Originals via arcade iframe · PainTracker drawer · mobile bottom bar restored
@@ -832,14 +832,14 @@
 .v5m .btn-blue:hover{background:#a5e4f1}
 .v5m .ticker .lbl .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px 2px rgba(127,214,232,.5)}
 .v5m .ticker .track{display:inline-flex;gap:36px;white-space:nowrap;width:max-content;will-change:transform;padding-left:22px;animation:tick 45s linear infinite}
-.v5m /* ---------- content ---------- */
+/* ---------- content ---------- */
 .content{padding:22px;max-width:1320px;width:100%;margin:0 auto}
 .view.v5m{display:none}
 .v5m .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}
 .v5m .sec-head h2{font-family:var(--disp);font-size:24px;text-transform:uppercase;line-height:1;color:#fff;overflow-wrap:anywhere;min-width:0}
 .v5m .sec-head .tag{font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .v5m .sec-head .tag a, .v5m .sec-head .tag button{color:var(--redhi);cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit}
-.v5m /* ---------- promo banners ---------- */
+/* ---------- promo banners ---------- */
 .promos{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:16px}
 .v5m .promo{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--card);box-shadow:var(--shadow);padding:24px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
 .v5m .promo:hover{transform:translateY(-5px) scale(1.01);box-shadow:var(--shadow-lg)}
@@ -853,10 +853,10 @@
 .v5m .promo.blue-promo .k{color:var(--blue)}
 .v5m .promo .ekg{position:absolute;left:0;right:0;bottom:6px;height:36px;opacity:.35;pointer-events:none;z-index:0}
 .v5m .promo .ekg svg{width:200%;height:100%;animation:ekgmove 8s linear infinite}
-.v5m /* ---------- game rails ---------- */
+/* ---------- game rails ---------- */
 .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
 .v5m .gcard .meta .t{display:block;font-weight:700;font-size:12.5px;color:var(--white)}
-.v5m /* Pain Originals: 3D tilt + radial shatter-shard hover, .v5m adapted from a user-provided
+/* Pain Originals: 3D tilt + radial shatter-shard hover, .v5m adapted from a user-provided
    demo - a concentric-ring "impact crack" mesh radiating from the card's center, .v5m fragments swaying in a slow-motion sine-wave loop, .v5m plus a cursor-tracking glow.
    Fragments (clip-path + explosion vector) are generated per-card by JS
    (ogcBuildMesh/initShatterCard, .v5m hooked into wireCards) rather than hardcoded, .v5m since
@@ -874,7 +874,7 @@
    interacted with reads as a completely whole, .v5m uncracked image - no permanent
    hairline texture left over from the effect. */
 .gcard[data-cats~="originals"]{perspective:2800px;border-radius:24px}
-.v5m /* ---------- two-col: race + relief ---------- */
+/* ---------- two-col: race + relief ---------- */
 .duo{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
 .v5m .panel{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .3s var(--ease-out)}
 .v5m .panel:hover{box-shadow:var(--shadow-lg)}
@@ -896,13 +896,15 @@
 .v5m .relief-body .row .v{color:var(--ink-hi)}
 .v5m .relief-body .row .v.blue{color:var(--blue)}
 .v5m .relief-body .btn{width:100%;margin-top:14px;text-align:center;border-radius:var(--r-md)}
-.v5m /* fill ps-badge-wrap exactly at every breakpoint, .v5m so it's always concentric with the ps-badge inside it, .v5m instead of relying on the hardcoded width/height attributes on the <svg> tag */
+.v5m .provgrid{display:flex;flex-wrap:wrap;gap:8px}
+.v5m .provgrid span{font-weight:700;font-size:11px;padding:8px 13px;background:var(--card-hi);color:var(--ink-hi);border-radius:var(--r-pill)}
+/* fill ps-badge-wrap exactly at every breakpoint, .v5m so it's always concentric with the ps-badge inside it, .v5m instead of relying on the hardcoded width/height attributes on the <svg> tag */
 .ps-badge{z-index:1}
-.v5m /* ring fill reflects REAL status and stays visible always, .v5m whether or not the
+/* ring fill reflects REAL status and stays visible always, .v5m whether or not the
    card is selected: cleared tiers show a complete ring, .v5m the current tier
    shows real progress (612K/720K), .v5m the locked tier stays empty */
 .ps-c0 .ps-ring-fill, .v5m .ps-c1 .ps-ring-fill, .v5m .ps-c2 .ps-ring-fill, .v5m .ps-c3 .ps-ring-fill{stroke-dashoffset:0}
-.v5m /* phone: one tier per row, .v5m in tier order, .v5m so the ladder reads top-to-bottom
+/* phone: one tier per row, .v5m in tier order, .v5m so the ladder reads top-to-bottom
    instead of zigzagging across a 2-up wrap grid */
 @media (max-width:640px){
   .ps-tier-dash{flex-direction:column;gap:10px}
@@ -916,7 +918,7 @@
 .v5m .railc .n{font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-top:6px}
 .v5m .rails-note{font-weight:600;font-size:11.5px;color:var(--ink-lo);margin-top:14px}
 .v5m .rails-note b{color:var(--blue)}
-.v5m /* ---------- game view (Flatline) ---------- */
+/* ---------- game view (Flatline) ---------- */
 .gcrumb{font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:16px}
 .v5m .gcrumb button{color:var(--redhi);font:inherit;letter-spacing:inherit;text-transform:inherit}
 .v5m .mhead .x{color:var(--ink);font-size:15px;padding:4px 8px;border-radius:var(--r-sm)}
@@ -936,7 +938,7 @@
 .v5m .gcard .meta .t{font-size:11px}
 .v5m .sec-head{flex-wrap:wrap;gap:6px}
 .v5m .sec-head h2{font-size:18px}}
-.v5m /* ---------- paintracker ---------- */
+/* ---------- paintracker ---------- */
 .trk-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .v5m .trk{display:flex;align-items:center;gap:12px;background:var(--card-hi);border-radius:var(--r-sm);padding:10px 12px}
 .v5m .trk .t{flex:1;font-size:12.5px;color:var(--ink-hi);font-weight:600}
@@ -946,7 +948,7 @@
 .v5m .trk.done .t{color:var(--ink);text-decoration:line-through}
 .v5m .trk-btn{padding:7px 12px;font-size:10px}
 @media(max-width:600px){.v5m .trk .bar{width:70px}}
-.v5m /* ---- Threshold Net (synapse) view ---- */
+/* ---- Threshold Net (synapse) view ---- */
 .syn-live{margin-left:auto;font-weight:800;font-size:10px;letter-spacing:.16em;color:var(--redhi)}
 .v5m .syn-stage{position:relative;height:440px;background:radial-gradient(ellipse at 60% 55%,rgba(60,4,3,.5),#0a0b0e 72%);overflow:hidden}
 .v5m .syn-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -973,7 +975,7 @@
 .v5m #syn-lb .share{text-align:right;color:var(--blue);font-weight:700}
 @media(max-width:820px){#view-synapse.v5m .duo{grid-template-columns:1fr}
 .v5m .syn-stage{height:300px}}
-.v5m /* v5: restore generated promo banner artwork (home + promotions views only) */
+/* v5: restore generated promo banner artwork (home + promotions views only) */
 #view-home .promo.hero-promo, #view-promos.v5m .promo.hero-promo{
   background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/welcome-dose-bg.png');
   background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:#1c0605;
@@ -1007,7 +1009,7 @@
 .v5m .gmodal .ghead .x:hover{color:#fff;background:var(--card-hi)}
 .v5m .drawer .dhead .x{color:var(--ink);font-size:15px;padding:5px 10px;border-radius:var(--r-sm)}
 .v5m .drawer .dhead .x:hover{color:#fff;background:var(--card-hi)}
-.v5m /* slots 1 and 2 swap content by mode; both variants share a grid-column so hiding
+/* slots 1 and 2 swap content by mode; both variants share a grid-column so hiding
    one via display:none leaves the slot empty instead of collapsing the layout */
 body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .mbar-icwrap .dot{position:absolute;top:-2px;right:-4px;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--card)}
@@ -1018,7 +1020,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .sheet-painscale .painscale-card .percent .n{font-size:34px}
 .v5m .sheet-painscale .btn{width:100%;margin-top:18px;text-align:center;border-radius:var(--r-md)}
 @media(max-width:860px){.v5m .content{padding-bottom:88px}}
-.v5m /* ============ PainKillers · tolerance dial / wallet+drip / live feed / relief info ============ */
+/* ============ PainKillers · tolerance dial / wallet+drip / live feed / relief info ============ */
 /* Four cards, .v5m two per row (dial+wallet, .v5m feed+relief-info). Cards match
    height with their row partner (align-items:stretch) - each .promo is
    itself a flex column so its own content can use the extra height
@@ -1030,7 +1032,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .pk-row > .promo{flex:1 1 0;min-width:280px;display:flex;flex-direction:column}
 @media(max-width:960px){.v5m .pk-row > .promo{flex-basis:100%}}
 .v5m .pk-lead{font-size:12px;color:var(--ink);margin:6px 0 14px;line-height:1.5}
-.v5m /* the drip visual lives inside the wallet card now (it's the same balance, .v5m not a second pot) - a divider separates "your balance" from "watch it
+/* the drip visual lives inside the wallet card now (it's the same balance, .v5m not a second pot) - a divider separates "your balance" from "watch it
    arrive" so the card doesn't read as two unrelated things mashed together */
 .pk-ivsplit{margin-top:16px;padding-top:16px;border-top:1px solid hsla(0,0%,100%,.06)}
 .v5m .pk-ivnote{font-size:11.5px;color:var(--ink-lo);margin-top:10px;line-height:1.5}
@@ -1042,7 +1044,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m }
 .pk-feedhead .today{color:var(--ink-hi);text-transform:none;letter-spacing:normal;font-weight:600}
 .v5m .pk-feedhead .today b{color:var(--blue);font-weight:800}
-.v5m /* gooey IV drip: real metaball technique (blur + alpha threshold via
+/* gooey IV drip: real metaball technique (blur + alpha threshold via
    feColorMatrix), .v5m same trick as the drip-canvas exploration - recolored
    from the original's neon cyan to morphine blue (--blue) to match the
    brand's "blue = money coming back" rule instead of a generic neon look */
@@ -1072,13 +1074,13 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m }
 .pk-dial .cap{font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-top:4px}
 .v5m .pk-warn{font-size:11px;color:var(--redhi);background:rgba(225,6,0,.08);border-radius:var(--r-sm);padding:9px 10px;line-height:1.45;margin-top:10px}
-.v5m /* grows to absorb any extra height the row-stretch gives this card, .v5m so the
+/* grows to absorb any extra height the row-stretch gives this card, .v5m so the
    warning banner settles at the bottom instead of floating right under the
    streak rows with a big gap after it - collapses to nothing when the two
    cards in the row are already close in height */
 .pk-spacer{flex:1 1 auto}
 .v5m .pk-warn b{letter-spacing:.02em}
-.v5m /* ============ Anesthesia · countdown monitor / blood loss gauge ============ */
+/* ============ Anesthesia · countdown monitor / blood loss gauge ============ */
 .ax-live-row{margin-top:14px}
 @media(max-width:960px){.v5m .ax-live-row{grid-template-columns:1fr}}
 .v5m .ax-monitor{position:relative;background:#0b0d0e;border-radius:var(--r-lg);padding:20px 18px 16px;overflow:hidden;border:1px solid rgba(127,214,232,.15);box-shadow:var(--shadow)}
@@ -1117,7 +1119,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .ax-gscale i{position:absolute;font-size:9px;font-weight:700;color:var(--ink-lo);transform:translateX(-50%)}
 .v5m .ax-gnote{margin-top:8px;font-size:11.5px;color:var(--ink)}
 .v5m .ax-gnote b{color:var(--blue)}
-.v5m /* ============ Pain Scale · breakthrough (Agony -> Threshold unlock) ============ */
+/* ============ Pain Scale · breakthrough (Agony -> Threshold unlock) ============ */
 /* shake just the current tier card, .v5m not the whole scale - the lift
    (translateY(-6px) scale(1)) is baked in since Agony stays the selected/
    checked card throughout, .v5m so the shake composes with that transform
@@ -1131,7 +1133,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
   0%{box-shadow:0 22px 40px rgba(0,0,0,.5),0 0 0 1px var(--tc) inset,0 0 34px -6px var(--tc)}
 .v5m .psb-toast .t b{display:block;font-family:var(--disp);font-size:13px;color:#fff;text-transform:uppercase}
 .v5m .psb-toast .t span{font-size:11px;color:var(--ink-lo)}
-.v5m /* ---------- sportsbook: live dot ---------- */
+/* ---------- sportsbook: live dot ---------- */
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px 2px rgba(225,6,0,.5);animation:pk-blink 1.4s ease-in-out infinite;display:inline-block;flex:none}
 .v5m .bs-head .x{color:var(--ink);font-size:15px;padding:4px 8px;border-radius:var(--r-sm)}
 .v5m .bs-head .x:hover{color:#fff;background:var(--card-hi)}
@@ -1211,7 +1213,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .fld .inp:focus-within{box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.18)}
 .v5m .fld input{flex:1;background:none;border:none;color:var(--white);font-family:var(--sans);font-weight:700;font-size:14px;padding:11px 13px;outline:none;min-width:0}
 .v5m .fld .unit{font-weight:700;font-size:11px;color:var(--ink-lo);padding:11px 13px;border-left:1px solid hsla(0,0%,100%,.05)}
-.v5m /* ---------- wallet modal ---------- */
+/* ---------- wallet modal ---------- */
 .modal-bg{position:fixed;inset:0;background:rgba(16,17,18,.82);backdrop-filter:blur(4px);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}
 .v5m .modal{width:100%;max-width:470px;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);overflow:hidden}
 .v5m .mhead{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid hsla(0,0%,100%,.05)}
@@ -1221,13 +1223,13 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .mbody{padding:20px}
 .v5m .mbody .btn{width:100%;margin-top:16px;padding:13px;border-radius:var(--r-md)}
 .v5m @media(max-width:600px){.btn{padding:9px 12px;font-size:10px}}
-.v5m /* game modal (arcade iframe) */
+/* game modal (arcade iframe) */
 .gmodal{position:fixed;inset:0;z-index:96;background:rgba(16,17,18,.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:18px}
 .v5m .gmodal .ghead .x{color:var(--ink);font-size:15px;padding:5px 10px;border-radius:var(--r-sm)}
 .v5m .gmodal .ghead .x:hover{color:#fff;background:var(--card-hi)}
 .v5m .drawer .dhead .x{color:var(--ink);font-size:15px;padding:5px 10px;border-radius:var(--r-sm)}
 .v5m .drawer .dhead .x:hover{color:#fff;background:var(--card-hi)}
-.v5m /* legal / info modals reuse .modal, .v5m add scroll body */
+/* legal / info modals reuse .modal, .v5m add scroll body */
 .mbody.scroll{max-height:56vh;overflow-y:auto;line-height:1.7;font-size:12.5px;color:var(--ink)}
 .v5m .chatlog{display:flex;flex-direction:column;gap:10px;max-height:40vh;overflow-y:auto;margin-bottom:14px}
 .v5m .chatlog .msg{max-width:82%;padding:10px 13px;border-radius:var(--r-md);font-size:12.5px;line-height:1.5}
@@ -1238,7 +1240,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .sheet .shead2 .x{color:var(--ink);font-size:15px;padding:4px 8px;border-radius:var(--r-sm)}
 .v5m .sheet .shead2 .x:hover{color:#fff;background:var(--card-hi)}
 .v5m .sheet-painscale .btn{width:100%;margin-top:18px;text-align:center;border-radius:var(--r-md)}
-.v5m /* gooey IV drip: real metaball technique (blur + alpha threshold via
+/* gooey IV drip: real metaball technique (blur + alpha threshold via
    feColorMatrix), .v5m same trick as the drip-canvas exploration - recolored
    from the original's neon cyan to morphine blue (--blue) to match the
    brand's "blue = money coming back" rule instead of a generic neon look */
@@ -1272,7 +1274,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .btn-blue:hover{background:#a5e4f1}
 .v5m .ticker .lbl .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px 2px rgba(127,214,232,.5)}
 .v5m .ticker .track{display:inline-flex;gap:36px;white-space:nowrap;width:max-content;will-change:transform;padding-left:22px;animation:tick 45s linear infinite}
-.v5m /* ---------- content ---------- */
+/* ---------- content ---------- */
 .content{padding:22px;max-width:1320px;width:100%;margin:0 auto}
 .view.v5m{display:none}
 .view.on.v5m{display:block}
@@ -1281,7 +1283,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .sec-head h2{font-family:var(--disp);font-size:24px;text-transform:uppercase;line-height:1;color:#fff;overflow-wrap:anywhere;min-width:0}
 .v5m .sec-head .tag{font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .v5m .sec-head .tag a, .v5m .sec-head .tag button{color:var(--redhi);cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit}
-.v5m /* ---------- promo banners ---------- */
+/* ---------- promo banners ---------- */
 .promos{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:16px}
 .v5m .promo{position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--card);box-shadow:var(--shadow);padding:24px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
 .v5m .promo:hover{transform:translateY(-5px) scale(1.01);box-shadow:var(--shadow-lg)}
@@ -1300,7 +1302,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .promo .ekg svg{width:200%;height:100%;animation:ekgmove 8s linear infinite}
 .v5m .gcard .meta .t{display:block;font-weight:700;font-size:12.5px;color:var(--white)}
 .v5m .gcard .badge.relief{background:var(--blue);color:#101314}
-.v5m /* ---------- two-col: race + relief ---------- */
+/* ---------- two-col: race + relief ---------- */
 .duo{display:grid;grid-template-columns:1.35fr 1fr;gap:16px}
 .v5m .panel{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .3s var(--ease-out)}
 .v5m .panel:hover{box-shadow:var(--shadow-lg)}
@@ -1332,7 +1334,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .railc .n{font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-top:6px}
 .v5m .rails-note{font-weight:600;font-size:11.5px;color:var(--ink-lo);margin-top:14px}
 .v5m .rails-note b{color:var(--blue)}
-.v5m /* ---------- game view (Flatline) ---------- */
+/* ---------- game view (Flatline) ---------- */
 .gcrumb{font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:16px}
 .v5m .gcrumb button{color:var(--redhi);font:inherit;letter-spacing:inherit;text-transform:inherit}
 .v5m .fld label{display:block;font-weight:700;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:7px}
@@ -1340,7 +1342,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .fld .inp:focus-within{box-shadow:inset 0 0 0 1px hsla(0,0%,100%,.18)}
 .v5m .fld input{flex:1;background:none;border:none;color:var(--white);font-family:var(--sans);font-weight:700;font-size:14px;padding:11px 13px;outline:none;min-width:0}
 .v5m .fld .unit{font-weight:700;font-size:11px;color:var(--ink-lo);padding:11px 13px;border-left:1px solid hsla(0,0%,100%,.05)}
-.v5m /* ---------- wallet modal ---------- */
+/* ---------- wallet modal ---------- */
 .modal-bg{position:fixed;inset:0;background:rgba(16,17,18,.82);backdrop-filter:blur(4px);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-bg.on.v5m{display:flex}
 .v5m .modal{width:100%;max-width:470px;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);overflow:hidden}
@@ -1357,7 +1359,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .sec-head h2{font-size:20px}
 .v5m .promo h3{font-size:22px}
 @media(max-width:600px){.v5m .content{padding:14px 12px}.v5m .btn{padding:9px 12px;font-size:10px}.v5m .hero h1, .v5m .promo h3{font-size:24px;line-height:1.05}.v5m .promos{gap:12px}.v5m .promo{padding:18px 16px}.v5m .gcard .meta .t{font-size:11px}.v5m .sec-head{flex-wrap:wrap;gap:6px}.v5m .sec-head h2{font-size:18px}}
-.v5m /* ---------- paintracker ---------- */
+/* ---------- paintracker ---------- */
 .trk-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .v5m .trk{display:flex;align-items:center;gap:12px;background:var(--card-hi);border-radius:var(--r-sm);padding:10px 12px}
 .v5m .trk .t{flex:1;font-size:12.5px;color:var(--ink-hi);font-weight:600}
@@ -1370,7 +1372,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .trk.total{background:transparent;border:1px dashed hsla(0,0%,100%,.14)}
 .v5m .trk-btn{padding:7px 12px;font-size:10px}
 @media(max-width:600px){.v5m .trk .bar{width:70px}}
-.v5m /* ---- Threshold Net (synapse) view ---- */
+/* ---- Threshold Net (synapse) view ---- */
 .syn-live{margin-left:auto;font-weight:800;font-size:10px;letter-spacing:.16em;color:var(--redhi)}
 .v5m .syn-stage{position:relative;height:440px;background:radial-gradient(ellipse at 60% 55%,rgba(60,4,3,.5),#0a0b0e 72%);overflow:hidden}
 .v5m .syn-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -1397,7 +1399,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m #syn-lb tr.you{background:linear-gradient(90deg,rgba(225,6,0,.14),transparent)}
 .v5m #syn-lb .share{text-align:right;color:var(--blue);font-weight:700}
 @media(max-width:820px){#view-synapse.v5m .duo{grid-template-columns:1fr}.v5m .syn-stage{height:300px}}
-.v5m /* v5: restore generated promo banner artwork (home + promotions views only) */
+/* v5: restore generated promo banner artwork (home + promotions views only) */
 #view-home .promo.hero-promo, #view-promos.v5m .promo.hero-promo{
   background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/welcome-dose-bg.png');
   background-size:cover;background-position:right center;background-repeat:no-repeat;background-color:#1c0605;
@@ -1432,7 +1434,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .gmodal .ghead .x:hover{color:#fff;background:var(--card-hi)}
 .v5m .drawer .dhead .x{color:var(--ink);font-size:15px;padding:5px 10px;border-radius:var(--r-sm)}
 .v5m .drawer .dhead .x:hover{color:#fff;background:var(--card-hi)}
-.v5m /* legal / info modals reuse .modal, .v5m add scroll body */
+/* legal / info modals reuse .modal, .v5m add scroll body */
 .mbody.scroll{max-height:56vh;overflow-y:auto;line-height:1.7;font-size:12.5px;color:var(--ink)}
 .v5m .mbody.scroll h5{font-family:var(--disp);font-size:13px;text-transform:uppercase;color:#fff;margin:14px 0 6px}
 .v5m .mbody.scroll h5:first-child{margin-top:0}
@@ -1452,7 +1454,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .sheet-painscale .painscale-card .percent .n{font-size:34px}
 .v5m .sheet-painscale .btn{width:100%;margin-top:18px;text-align:center;border-radius:var(--r-md)}
 @media(max-width:860px){.v5m .content{padding-bottom:88px}}
-.v5m /* ============ PainKillers · tolerance dial / wallet+drip / live feed / relief info ============ */
+/* ============ PainKillers · tolerance dial / wallet+drip / live feed / relief info ============ */
 /* Four cards, .v5m two per row (dial+wallet, .v5m feed+relief-info). Cards match
    height with their row partner (align-items:stretch) - each .promo is
    itself a flex column so its own content can use the extra height
@@ -1464,7 +1466,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .pk-row > .promo{flex:1 1 0;min-width:280px;display:flex;flex-direction:column}
 @media(max-width:960px){.v5m .pk-row > .promo{flex-basis:100%}}
 .v5m .pk-lead{font-size:12px;color:var(--ink);margin:6px 0 14px;line-height:1.5}
-.v5m /* the drip visual lives inside the wallet card now (it's the same balance, .v5m not a second pot) - a divider separates "your balance" from "watch it
+/* the drip visual lives inside the wallet card now (it's the same balance, .v5m not a second pot) - a divider separates "your balance" from "watch it
    arrive" so the card doesn't read as two unrelated things mashed together */
 .pk-ivsplit{margin-top:16px;padding-top:16px;border-top:1px solid hsla(0,0%,100%,.06)}
 .v5m .pk-ivnote{font-size:11.5px;color:var(--ink-lo);margin-top:10px;line-height:1.5}
@@ -1477,7 +1479,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .pk-feedhead .today{color:var(--ink-hi);text-transform:none;letter-spacing:normal;font-weight:600}
 .v5m .pk-feedhead .today b{color:var(--blue);font-weight:800}
 .v5m .pk-frow .res.loss{color:var(--redhi);background:rgba(225,6,0,.12)}
-.v5m /* gooey IV drip: real metaball technique (blur + alpha threshold via
+/* gooey IV drip: real metaball technique (blur + alpha threshold via
    feColorMatrix), .v5m same trick as the drip-canvas exploration - recolored
    from the original's neon cyan to morphine blue (--blue) to match the
    brand's "blue = money coming back" rule instead of a generic neon look */
@@ -1503,13 +1505,13 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .pk-dial .x{font-family:var(--disp);font-size:45px;color:#fff;line-height:1;text-shadow:0 0 14px rgba(225,6,0,.6);animation:pk-dialpulse 2.6s ease-in-out infinite}
 .v5m .pk-dial .cap{font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-top:4px}
 .v5m .pk-warn{font-size:11px;color:var(--redhi);background:rgba(225,6,0,.08);border-radius:var(--r-sm);padding:9px 10px;line-height:1.45;margin-top:10px}
-.v5m /* grows to absorb any extra height the row-stretch gives this card, .v5m so the
+/* grows to absorb any extra height the row-stretch gives this card, .v5m so the
    warning banner settles at the bottom instead of floating right under the
    streak rows with a big gap after it - collapses to nothing when the two
    cards in the row are already close in height */
 .pk-spacer{flex:1 1 auto}
 .v5m .pk-warn b{letter-spacing:.02em}
-.v5m /* ============ Anesthesia · countdown monitor / blood loss gauge ============ */
+/* ============ Anesthesia · countdown monitor / blood loss gauge ============ */
 .ax-live-row{margin-top:14px}
 @media(max-width:960px){.v5m .ax-live-row{grid-template-columns:1fr}}
 .v5m .ax-monitor{position:relative;background:#0b0d0e;border-radius:var(--r-lg);padding:20px 18px 16px;overflow:hidden;border:1px solid rgba(127,214,232,.15);box-shadow:var(--shadow)}
@@ -1654,7 +1656,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
     <div class="grow"></div>
     <div class="search">Search games</div>
     <div class="bal">USDT 2,840 · <b>PK 1,250</b></div>
-    <button class="btn">Sign in</button>
+    <button class="btn" data-signin-btn>Sign in</button>
     <button class="btn red">Deposit</button>
   </header>
 
@@ -1949,7 +1951,7 @@ body[data-mode="sports"] .mbar-casino{display:none}
 </section>
     <section class="lobbyview">
       <div class="row-head"><h2>Browse by provider</h2><span class="meta">Pick a studio</span></div>
-      <div class="provrow"><div class="prov"><img src="assets/providers/pragmatic-play.png" alt="Pragmatic Play"></div><div class="prov"><span class="more" style="color:#e0163c">EVOLUTION</span></div><div class="prov"><img src="assets/providers/hacksaw.svg" alt="Hacksaw"></div><div class="prov"><span class="more">NOLIMIT CITY</span></div><div class="prov"><span class="more">PUSH GAMING</span></div><div class="prov"><span class="more">BGAMING</span></div><div class="prov"><img src="assets/providers/games-global.svg" alt="Games Global"></div><div class="prov"><img src="assets/providers/betgames.png" alt="BetGames"></div><div class="prov"><img src="assets/providers/smartsoft.svg" alt="SmartSoft"></div><div class="prov"><img src="assets/providers/betsoft.png" alt="Betsoft"></div><div class="prov"><img src="assets/providers/vivo-gaming.png" alt="Vivo Gaming"></div><div class="prov"><img src="assets/providers/microgaming.png" alt="Microgaming"></div><div class="prov"><img src="assets/providers/spribe.svg" alt="Spribe"></div><div class="prov"><img src="assets/providers/habanero.png" alt="Habanero"></div><div class="prov"><img src="assets/providers/onetouch.png" alt="OneTouch"></div><div class="prov"><img src="assets/providers/fugaso.png" alt="Fugaso"></div><div class="prov"><span class="more">+116 STUDIOS</span></div></div>
+      <div class="provrow"><div class="prov"><img src="assets/providers/pragmatic-play.png" alt="Pragmatic Play"></div><div class="prov"><span class="more" style="color:#e0163c">EVOLUTION</span></div><div class="prov"><img src="assets/providers/hacksaw.svg" alt="Hacksaw"></div><div class="prov"><span class="more">NOLIMIT CITY</span></div><div class="prov"><span class="more">PUSH GAMING</span></div><div class="prov"><span class="more">BGAMING</span></div><div class="prov"><img src="assets/providers/games-global.svg" alt="Games Global"></div><div class="prov"><img src="assets/providers/betgames.png" alt="BetGames"></div><div class="prov"><img src="assets/providers/smartsoft.svg" alt="SmartSoft"></div><div class="prov"><img src="assets/providers/betsoft.png" alt="Betsoft"></div><div class="prov"><img src="assets/providers/vivo-gaming.png" alt="Vivo Gaming"></div><div class="prov"><img src="assets/providers/microgaming.png" alt="Microgaming"></div><div class="prov"><img src="assets/providers/spribe.svg" alt="Spribe"></div><div class="prov"><img src="assets/providers/habanero.png" alt="Habanero"></div><div class="prov"><img src="assets/providers/onetouch.png" alt="OneTouch"></div><div class="prov"><img src="assets/providers/fugaso.png" alt="Fugaso"></div><div class="prov" style="cursor:pointer" onclick="openModal('providers-modal')"><span class="more">+116 STUDIOS</span></div></div>
     </section>
 
 <section id="promoPage">
@@ -2356,8 +2358,8 @@ body[data-mode="sports"] .mbar-casino{display:none}
     Set limits, take breaks, and only play with what you can afford to lose. Self-exclusion and session limit tools
     are available in your account. One confirmation in. One signature out. BTC · ETH · USDT · BNB · TRON.</div>
     <div class="links">
-      <a href="#">Terms</a><a href="#">Privacy</a><a href="#">AML</a><a href="#">Provably fair</a>
-      <a href="#">Responsible gaming</a><a href="#">Support</a><a href="#">Community</a>
+      <a href="javascript:void(0)" onclick="openLegal('terms')">Terms</a><a href="javascript:void(0)" onclick="openLegal('privacy')">Privacy</a><a href="javascript:void(0)" onclick="openLegal('aml')">AML</a><a href="javascript:void(0)" onclick="openLegal('fair')">Provably fair</a>
+      <a href="javascript:void(0)" onclick="openLegal('rg')">Responsible gaming</a><a href="javascript:void(0)" onclick="document.querySelectorAll('.side a').forEach(function(a){if(a.textContent.trim().toLowerCase()==='live support')a.click()})">Support</a><a href="javascript:void(0)" onclick="openModal('community-modal')">Community</a>
     </div>
   </footer>
 
@@ -2635,6 +2637,101 @@ body[data-mode="sports"] .mbar-casino{display:none}
       </div>
       <button class="btn btn-red" style="width:100%;margin-top:16px;border-radius:var(--r-md)" onclick="fakeApply(this)">Submit application</button>
       <div class="ok-note" id="apply-ok">Received. The affiliate desk answers within 48 hours.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="legal-modal">
+  <div class="modal" role="dialog" aria-label="Legal">
+    <div class="mhead"><h3 id="lg-title">Terms</h3><button class="x" onclick="closeModal('legal-modal')">✕</button></div>
+    <div class="mtabs">
+      <button data-ltab="terms" class="active">Terms</button>
+      <button data-ltab="privacy">Privacy</button>
+      <button data-ltab="aml">AML</button>
+      <button data-ltab="fair">Provably fair</button>
+      <button data-ltab="rg">Responsible</button>
+    </div>
+    <div class="mbody scroll" id="lb-terms">
+      <h5>1 · The service</h5>
+      Pain.bet is a crypto-only casino operated under an Anjouan gaming licence. By opening an account you confirm you are 18 or older and that online gambling is legal in your jurisdiction.
+      <h5>2 · Accounts and wallets</h5>
+      One account per person. Your connected wallet is your identity; keys are never held by the house. Balances are denominated in USDT with multi-chain deposit rails.
+      <h5>3 · Bets and settlement</h5>
+      All Originals settle against published, provably fair math at a fixed 1% house edge. Provider games settle per provider rules. Settled bets are final.
+      <h5>4 · Bonuses</h5>
+      Bonus terms, wagering weights and caps are stated on each promotion. Anesthesia and PK Relief carry no wagering. Abuse voids rewards.
+    </div>
+    <div class="mbody scroll" id="lb-privacy" style="display:none">
+      <h5>Data we hold</h5>
+      Wallet addresses, bet history, and the minimum required for compliance. No selling of data, ever.
+      <h5>Cookies</h5>
+      Strictly functional: session, preferences, fraud prevention. No third party ad trackers.
+      <h5>Retention</h5>
+      Compliance data is kept only as long as the licence requires, then purged.
+    </div>
+    <div class="mbody scroll" id="lb-aml" style="display:none">
+      <h5>Policy</h5>
+      Deposits and withdrawals are monitored on-chain. Structuring, mixing-service proximity, and sanctioned-address exposure trigger review.
+      <h5>Verification threshold</h5>
+      Play below the threshold requires no KYC. Cumulative withdrawals above it trigger a one-time verification.
+      <h5>Reporting</h5>
+      Suspicious activity is reported to the licensing authority as required by law.
+    </div>
+    <div class="mbody scroll" id="lb-fair" style="display:none">
+      <h5>How it works</h5>
+      Every Originals round derives its outcome from <b>server seed + client seed + nonce</b>. The server seed hash is shown before you bet; the seed is revealed after rotation so you can verify every round yourself.
+      <h5>Verify</h5>
+      Open any settled round, copy the seeds into the verifier, and recompute the result. Same seeds, same outcome, every time.
+      <h5>The edge</h5>
+      All nine Originals run a fixed 1% house edge. Published, certified, identical in the PK arcade.
+    </div>
+    <div class="mbody scroll" id="lb-rg" style="display:none">
+      <h5>18+ only</h5>
+      Gambling involves risk. Only play with what you can afford to lose.
+      <h5>Your tools</h5>
+      Deposit limits, loss limits, session reminders, cool-off, and permanent self-exclusion are available in your account, effective immediately.
+      <h5>Help</h5>
+      If gambling stops being fun, reach out: BeGambleAware.org, Gamblers Anonymous, or your local support line. Support can enable self-exclusion for you at any time.
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="providers-modal">
+  <div class="modal" role="dialog" aria-label="Providers">
+    <div class="mhead"><h3>Providers</h3><button class="x" onclick="closeModal('providers-modal')">✕</button></div>
+    <div class="mbody">
+      <div class="provgrid">
+        <span>Pragmatic Play</span><span>Evolution</span><span>Hacksaw</span><span>Nolimit City</span><span>Push Gaming</span><span>BGaming</span><span>Relax Gaming</span><span>Play'n GO</span><span>Big Time Gaming</span><span>Thunderkick</span><span>ELK Studios</span><span>Red Tiger</span><span>NetEnt</span><span>Wazdan</span><span>PG Soft</span><span>Spinomenal</span><span>3 Oaks</span><span>Playson</span>
+      </div>
+      <div class="mnote">132 providers integrated at launch. Full catalogue lands with the platform build.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="community-modal">
+  <div class="modal" role="dialog" aria-label="Community">
+    <div class="mhead"><h3>Community</h3><button class="x" onclick="closeModal('community-modal')">✕</button></div>
+    <div class="mbody">
+      <div class="relief-body" style="padding:0">
+        <div class="row"><span class="k">X / Twitter</span><span class="v">@painbet</span></div>
+        <div class="row"><span class="k">Telegram</span><span class="v">t.me/painbet</span></div>
+        <div class="row"><span class="k">Discord</span><span class="v">discord.gg/painbet</span></div>
+      </div>
+      <div class="mnote">Channels open with the public launch. Handles reserved.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="account-modal">
+  <div class="modal" role="dialog" aria-label="Account">
+    <div class="mhead"><h3>Account</h3><button class="x" onclick="closeModal('account-modal')">✕</button></div>
+    <div class="mbody">
+      <div class="relief-body" style="padding:0">
+        <div class="row"><span class="k">Wallet</span><span class="v">0x4F2…9A1c</span></div>
+        <div class="row"><span class="k">Balance</span><span class="v">2,840 USDT</span></div>
+        <div class="row"><span class="k">PainKillers</span><span class="v blue"><span class="js-pk-bal">1,250</span> PK</span></div>
+      </div>
+      <button class="btn btn-red" style="width:100%;margin-top:16px;border-radius:var(--r-md)" onclick="signOut()">Sign out</button>
     </div>
   </div>
 </div>
@@ -3172,6 +3269,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
 
   document.getElementById('admClose').addEventListener('click', close);
   document.getElementById('admDone').addEventListener('click', close);
+  document.getElementById('admDone').addEventListener('click', function(){ if(window.markSignedIn) markSignedIn(); });
   veil.addEventListener('click', function(e){ if(e.target === veil) close(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
 
@@ -3734,6 +3832,46 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
 function fakeApply(btn){document.getElementById('apply-ok').classList.add('on');btn.disabled=true;btn.style.opacity=.5}
 function openModal(id){var el=document.getElementById(id); if(el) el.classList.add('on');}
 function closeModal(id){var el=document.getElementById(id); if(el) el.classList.remove('on');}
+function openLegal(tab){
+  openModal('legal-modal');
+  document.querySelectorAll('#legal-modal .mtabs button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.ltab === tab);
+  });
+  ['terms','privacy','aml','fair','rg'].forEach(function(k){
+    var el = document.getElementById('lb-' + k);
+    if(el) el.style.display = (k === tab ? 'block' : 'none');
+  });
+  var titles = {terms:'Terms', privacy:'Privacy', aml:'AML policy', fair:'Provably fair', rg:'Responsible gaming'};
+  document.getElementById('lg-title').textContent = titles[tab] || 'Terms';
+}
+document.querySelectorAll('#legal-modal .mtabs button').forEach(function(b){
+  b.addEventListener('click', function(){ openLegal(b.dataset.ltab); });
+});
+function markSignedIn(){
+  document.body.classList.add('signedIn');
+  document.querySelectorAll('[data-signin-btn]').forEach(function(b){
+    b.textContent = '0x4F2…9A1c';
+  });
+}
+function signOut(){
+  document.body.classList.remove('signedIn');
+  document.querySelectorAll('[data-signin-btn]').forEach(function(b){
+    b.textContent = 'Sign in';
+  });
+  closeModal('account-modal');
+}
+// the admissions modal's own "Sign in" trigger is bound by button text at load
+// time and stays attached even after markSignedIn() renames the button, so
+// intercept in the capture phase (fires before that bubble-phase listener)
+// and swap in the account modal instead once signed in.
+document.addEventListener('click', function(e){
+  if(!document.body.classList.contains('signedIn')) return;
+  var btn = e.target.closest('[data-signin-btn]');
+  if(!btn) return;
+  e.stopImmediatePropagation();
+  e.preventDefault();
+  openModal('account-modal');
+}, true);
 document.querySelectorAll('.modal-bg.v5m').forEach(function(m){
   m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('on'); });
 });
