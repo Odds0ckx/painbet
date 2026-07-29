@@ -33,15 +33,16 @@
   .row-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
   .row-head h2{font-size:22px;font-weight:900;letter-spacing:.02em;text-transform:uppercase}
   .row-head .meta{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
-  .row-head .viewall{margin-left:auto;background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--redhi);white-space:nowrap}
+  .row-head .railnav{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .row-head .rbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:var(--glass);border:1px solid var(--glass-border);color:var(--ink);font-size:16px;font-weight:800;line-height:1;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+  .row-head .rbtn:hover{background:var(--blood);color:#fff;border-color:var(--blood);transform:translateY(-1px)}
+  .row-head .viewall{background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--redhi);white-space:nowrap}
   .row-head .viewall:hover{text-decoration:underline}
 
   .rail.originals,.rail.slots,.rail.live{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:16px;scroll-snap-type:x proximity;padding:2px 14px 14px;margin:0 -14px -14px;scrollbar-width:thin;scrollbar-color:var(--glass-border) transparent}
   .rail.originals::-webkit-scrollbar,.rail.slots::-webkit-scrollbar,.rail.live::-webkit-scrollbar{height:8px}
   .rail.originals::-webkit-scrollbar-thumb,.rail.slots::-webkit-scrollbar-thumb,.rail.live::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:999px}
   .rail.originals .tile,.rail.slots .tile,.rail.live .tile{flex:0 0 calc((100% - 5*16px)/6.4);min-width:140px;scroll-snap-align:start}
-  .rail.originals.expanded,.rail.slots.expanded,.rail.live.expanded{display:grid;grid-template-columns:repeat(6,1fr);overflow:visible}
-  .rail.originals.expanded .tile,.rail.slots.expanded .tile,.rail.live.expanded .tile{flex:unset;min-width:0}
 
   .banners{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .banner{position:relative;overflow:hidden;border-radius:var(--tile-r);background:var(--glass);border:1px solid var(--glass-border);
@@ -2242,7 +2243,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     </section>
     
 <section class="lobbyview" id="secOriginals">
-  <div class="row-head"><h2>Pain Originals</h2><span class="meta">Provably fair · fixed 1% edge</span><button class="viewall" type="button" onclick="toggleRail(this)">View all</button></div>
+  <div class="row-head"><h2>Pain Originals</h2><span class="meta">Provably fair · fixed 1% edge</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('originals')">View all</button></div>
   <div class="rail originals">
     <div class="tile orig" title="Crash · 10,000x">
       <div class="img" style="background-image:url('assets/originals/flatline-bg.png')"></div>
@@ -2293,7 +2294,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 </section>
     
 <section class="lobbyview" id="secSlots">
-  <div class="row-head"><h2>Pick your poison</h2><span class="meta">5,000+ games</span><button class="viewall" type="button" onclick="toggleRail(this)">View all</button></div>
+  <div class="row-head"><h2>Pick your poison</h2><span class="meta">5,000+ games</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('slots')">View all</button></div>
   <div class="rail slots">
     <div class="tile" title="Wanted Dead or a Wild">
       <div class="img" style="background-image:url('assets/games/wanted.png')"></div>
@@ -2343,7 +2344,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 </section>
     
 <section class="lobbyview" id="secLive">
-  <div class="row-head"><h2>Live</h2><span class="meta">Real dealers, real time</span><button class="viewall" type="button" onclick="toggleRail(this)">View all</button></div>
+  <div class="row-head"><h2>Live</h2><span class="meta">Real dealers, real time</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('live')">View all</button></div>
   <div class="rail live">
     <div class="tile" title="Crazy Time">
       <div class="img" style="background-image:url('assets/games/crazy-time.png')"></div>
@@ -3103,6 +3104,33 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
           </div>
 
           <p class="mnote" style="margin-top:14px">For anything involving a wallet or a transaction, have the tx hash ready. It is the fastest painkiller we stock.</p>
+        </section>
+      </div>
+    </div>
+<div class="view v5m syspage" id="view-originals-all">
+      <div class="content">
+        <div class="gcrumb"><button data-view="home">Pain.bet</button> / <span style="color:var(--ink-hi)">Pain Originals</span></div>
+        <section class="blk">
+          <div class="sec-head"><h2>Pain Originals</h2><div class="tag">Provably fair · fixed 1% edge</div></div>
+          <div class="rail" id="originalsAllGrid"></div>
+        </section>
+      </div>
+    </div>
+<div class="view v5m syspage" id="view-slots-all">
+      <div class="content">
+        <div class="gcrumb"><button data-view="home">Pain.bet</button> / <span style="color:var(--ink-hi)">Pick your poison</span></div>
+        <section class="blk">
+          <div class="sec-head"><h2>Pick your poison</h2><div class="tag">5,000+ games</div></div>
+          <div class="rail" id="slotsAllGrid"></div>
+        </section>
+      </div>
+    </div>
+<div class="view v5m syspage" id="view-live-all">
+      <div class="content">
+        <div class="gcrumb"><button data-view="home">Pain.bet</button> / <span style="color:var(--ink-hi)">Live</span></div>
+        <section class="blk">
+          <div class="sec-head"><h2>Live</h2><div class="tag">Real dealers, real time</div></div>
+          <div class="rail" id="liveAllGrid"></div>
         </section>
       </div>
     </div>
@@ -4419,6 +4447,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
     if(typeof syncTabs === 'function') syncTabs(key === 'view-arcade');
     if(key !== 'view-sports'){ setMode('casino'); if(window.__syncSports) window.__syncSports(false); }
   }
+  window.showView = showView;
   function clearView(){
     document.body.removeAttribute('data-view');
     hideAllPorted();
@@ -5371,11 +5400,21 @@ function railScroll(btn,dir){
   const rail=btn.closest('section').querySelector('.rail.rx');
   rail.scrollBy({left:dir*rail.clientWidth*0.8,behavior:'smooth'});
 }
-function toggleRail(btn){
-  const rail=btn.closest('.lobbyview').querySelector('.rail');
-  const expanded=rail.classList.toggle('expanded');
-  btn.textContent = expanded ? 'Show less' : 'View all';
-  if(!expanded) rail.scrollTo({left:0});
+function homeRailScroll(btn,dir){
+  const rail=btn.closest('.row-head').nextElementSibling;
+  if(rail) rail.scrollBy({left:dir*rail.clientWidth*0.8,behavior:'smooth'});
+}
+const ALLGAMES_VIEW={originals:'view-originals-all',slots:'view-slots-all',live:'view-live-all'};
+function fillAllGrid(railClass,gridId){
+  const rail=document.querySelector('.rail.'+railClass);
+  const grid=document.getElementById(gridId);
+  if(rail && grid && !grid.childElementCount) grid.innerHTML=rail.innerHTML;
+}
+function showAllGames(cat){
+  const key=ALLGAMES_VIEW[cat];
+  if(!key) return;
+  fillAllGrid(cat, cat+'AllGrid');
+  if(typeof window.showView==='function') window.showView(key,null);
 }
 function buildSports(){
   if(sportsBuilt) return; sportsBuilt = true;
