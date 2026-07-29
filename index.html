@@ -39,7 +39,7 @@
   .row-head .viewall{background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--redhi);white-space:nowrap}
   .row-head .viewall:hover{text-decoration:underline}
 
-  .rail.originals,.rail.slots,.rail.live{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:16px;scroll-snap-type:x proximity;padding:2px 14px 14px;margin:0 -14px -14px;scrollbar-width:thin;scrollbar-color:var(--glass-border) transparent}
+  .rail.originals,.rail.slots,.rail.live{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:16px;scroll-snap-type:x proximity;padding:20px 14px 14px;margin:-18px -14px -14px;scrollbar-width:thin;scrollbar-color:var(--glass-border) transparent}
   .rail.originals::-webkit-scrollbar,.rail.slots::-webkit-scrollbar,.rail.live::-webkit-scrollbar{height:8px}
   .rail.originals::-webkit-scrollbar-thumb,.rail.slots::-webkit-scrollbar-thumb,.rail.live::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:999px}
   .rail.originals .tile,.rail.slots .tile,.rail.live .tile{flex:0 0 calc((100% - 5*16px)/6.4);min-width:140px;scroll-snap-align:start}
@@ -82,16 +82,16 @@
   .tile:hover{border-color:rgba(224,22,60,.5);box-shadow:0 18px 44px rgba(0,0,0,.5), 0 0 0 1px rgba(224,22,60,.2), 0 0 46px rgba(224,22,60,.22), 0 0 110px rgba(224,22,60,.10)}
   .tile{will-change:transform;transform-style:preserve-3d}
   .tile:hover::before{opacity:1}
-  .tile .img{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center top;opacity:.55;transition:opacity .25s}
-  .tile:hover .img{opacity:.92}
+  .tile .img{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center top;opacity:.82;transition:opacity .25s}
+  .tile:hover .img{opacity:1}
   .tile::before{background:rgba(0,0,0,.22)!important}
   .tile .play{position:absolute;inset:0;z-index:3;display:grid;place-items:center;opacity:0;transition:opacity .25s;pointer-events:none}
   .tile:hover .play{opacity:1}
   .tile .play span{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--blood);box-shadow:0 6px 24px rgba(224,22,60,.5)}
   .tile .play svg{width:16px;height:16px;margin-left:2px}
 
-  .tile .splat{position:absolute;z-index:1;pointer-events:none;background-size:contain;background-repeat:no-repeat;opacity:.4;transition:opacity .3s;mix-blend-mode:screen}
-  .tile:hover .splat{opacity:.85}
+  .tile .splat{position:absolute;z-index:1;pointer-events:none;background-size:contain;background-repeat:no-repeat;opacity:.22;transition:opacity .3s;mix-blend-mode:screen}
+  .tile:hover .splat{opacity:.5}
   .splat.tl{top:-24px;left:-28px;width:170px;height:170px}
   .splat.br{bottom:-10px;right:-30px;width:150px;height:150px}
 
@@ -239,7 +239,7 @@
 
     /* rails: swipe rows, ~2.4 tiles visible, aspect held */
     .rail{display:flex !important;overflow-x:auto;scroll-snap-type:x proximity;gap:12px;
-      margin:0 -14px;padding:0 14px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      margin:-16px -14px 0;padding:16px 14px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .rail::-webkit-scrollbar{display:none}
     .rail .tile{flex:0 0 38vw;scroll-snap-align:start}
 
