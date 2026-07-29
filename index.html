@@ -165,10 +165,16 @@
   .painchip .bar i{display:block;height:100%;width:85%;background:linear-gradient(90deg,#8f0e26,var(--blood));border-radius:4px}
   .painchip .num{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
 
-  .provrow{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
-  .prov{display:grid;place-items:center;height:70px;border-radius:12px;background:var(--glass);
-    border:1px solid var(--glass-border);backdrop-filter:blur(10px);transition:border-color .2s, transform .2s;cursor:pointer}
-  .prov:hover{border-color:rgba(224,22,60,.4);transform:translateY(-2px)}
+  .provmarquee{position:relative;overflow:hidden;margin:0 -40px;padding:0 40px;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 10%,#000 90%,transparent);
+    mask-image:linear-gradient(to right,transparent,#000 10%,#000 90%,transparent)}
+  .provrow{display:flex;gap:12px;width:max-content;animation:provScroll 36s linear infinite}
+  .provmarquee:hover .provrow{animation-play-state:paused}
+  @keyframes provScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .prov{flex:0 0 168px;display:grid;place-items:center;height:70px;border-radius:12px;background:var(--glass);
+    border:1px solid var(--glass-border);backdrop-filter:blur(10px);cursor:pointer;
+    box-shadow:0 0 16px rgba(224,22,60,.16);transition:border-color .2s, transform .2s, box-shadow .2s}
+  .prov:hover{border-color:rgba(224,22,60,.45);transform:translateY(-2px);box-shadow:0 0 28px rgba(224,22,60,.4)}
   .prov img{max-height:30px;max-width:72%;filter:grayscale(1) brightness(1.7);opacity:.8;transition:filter .2s,opacity .2s}
   .prov:hover img{filter:grayscale(0) brightness(1.1);opacity:1}
   .prov .more{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink-dim)}
@@ -237,8 +243,7 @@
     .rail::-webkit-scrollbar{display:none}
     .rail .tile{flex:0 0 38vw;scroll-snap-align:start}
 
-    .provrow{display:flex;overflow-x:auto;gap:10px;margin:0 -14px;padding:0 14px 6px;scrollbar-width:none}
-    .provrow::-webkit-scrollbar{display:none}
+    .provmarquee{margin:0 -14px;padding:0 14px}
     .prov{flex:0 0 128px;height:60px}
 
     footer{padding:26px 16px 76px}
@@ -2458,7 +2463,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 </section>
     <section class="lobbyview">
       <div class="row-head"><h2>Browse by provider</h2><span class="meta">Pick a studio</span></div>
-      <div class="provrow"><div class="prov"><img src="assets/providers/pragmatic-play.png" alt="Pragmatic Play"></div><div class="prov"><span class="more" style="color:#e0163c">EVOLUTION</span></div><div class="prov"><img src="assets/providers/hacksaw.svg" alt="Hacksaw"></div><div class="prov"><span class="more">NOLIMIT CITY</span></div><div class="prov"><span class="more">PUSH GAMING</span></div><div class="prov"><span class="more">BGAMING</span></div><div class="prov"><img src="assets/providers/games-global.svg" alt="Games Global"></div><div class="prov"><img src="assets/providers/betgames.png" alt="BetGames"></div><div class="prov"><img src="assets/providers/smartsoft.svg" alt="SmartSoft"></div><div class="prov"><img src="assets/providers/betsoft.png" alt="Betsoft"></div><div class="prov"><img src="assets/providers/vivo-gaming.png" alt="Vivo Gaming"></div><div class="prov"><img src="assets/providers/microgaming.png" alt="Microgaming"></div><div class="prov"><img src="assets/providers/spribe.svg" alt="Spribe"></div><div class="prov"><img src="assets/providers/habanero.png" alt="Habanero"></div><div class="prov"><img src="assets/providers/onetouch.png" alt="OneTouch"></div><div class="prov"><img src="assets/providers/fugaso.png" alt="Fugaso"></div><div class="prov" style="cursor:pointer" onclick="openModal('providers-modal')"><span class="more">+116 STUDIOS</span></div></div>
+      <div class="provmarquee"><div class="provrow"><div class="prov"><img src="assets/providers/pragmatic-play.png" alt="Pragmatic Play"></div><div class="prov"><span class="more" style="color:#e0163c">EVOLUTION</span></div><div class="prov"><img src="assets/providers/hacksaw.svg" alt="Hacksaw"></div><div class="prov"><span class="more">NOLIMIT CITY</span></div><div class="prov"><span class="more">PUSH GAMING</span></div><div class="prov"><span class="more">BGAMING</span></div><div class="prov"><img src="assets/providers/games-global.svg" alt="Games Global"></div><div class="prov"><img src="assets/providers/betgames.png" alt="BetGames"></div><div class="prov"><img src="assets/providers/smartsoft.svg" alt="SmartSoft"></div><div class="prov"><img src="assets/providers/betsoft.png" alt="Betsoft"></div><div class="prov"><img src="assets/providers/vivo-gaming.png" alt="Vivo Gaming"></div><div class="prov"><img src="assets/providers/microgaming.png" alt="Microgaming"></div><div class="prov"><img src="assets/providers/spribe.svg" alt="Spribe"></div><div class="prov"><img src="assets/providers/habanero.png" alt="Habanero"></div><div class="prov"><img src="assets/providers/onetouch.png" alt="OneTouch"></div><div class="prov"><img src="assets/providers/fugaso.png" alt="Fugaso"></div><div class="prov" style="cursor:pointer" onclick="openModal('providers-modal')"><span class="more">+116 STUDIOS</span></div><div class="prov"><img src="assets/providers/pragmatic-play.png" alt="Pragmatic Play"></div><div class="prov"><span class="more" style="color:#e0163c">EVOLUTION</span></div><div class="prov"><img src="assets/providers/hacksaw.svg" alt="Hacksaw"></div><div class="prov"><span class="more">NOLIMIT CITY</span></div><div class="prov"><span class="more">PUSH GAMING</span></div><div class="prov"><span class="more">BGAMING</span></div><div class="prov"><img src="assets/providers/games-global.svg" alt="Games Global"></div><div class="prov"><img src="assets/providers/betgames.png" alt="BetGames"></div><div class="prov"><img src="assets/providers/smartsoft.svg" alt="SmartSoft"></div><div class="prov"><img src="assets/providers/betsoft.png" alt="Betsoft"></div><div class="prov"><img src="assets/providers/vivo-gaming.png" alt="Vivo Gaming"></div><div class="prov"><img src="assets/providers/microgaming.png" alt="Microgaming"></div><div class="prov"><img src="assets/providers/spribe.svg" alt="Spribe"></div><div class="prov"><img src="assets/providers/habanero.png" alt="Habanero"></div><div class="prov"><img src="assets/providers/onetouch.png" alt="OneTouch"></div><div class="prov"><img src="assets/providers/fugaso.png" alt="Fugaso"></div><div class="prov" style="cursor:pointer" onclick="openModal('providers-modal')"><span class="more">+116 STUDIOS</span></div></div></div>
     </section>
 
 <section id="promoPage">
