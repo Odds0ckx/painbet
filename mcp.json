@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "svgmaker": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@genwave/svgmaker-mcp"],
+      "env": {
+        "SVGMAKER_API_KEY": "svgmaker-io091ff04a50f94594"
+      }
+    }
+  }
+}
