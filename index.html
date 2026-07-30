@@ -144,6 +144,36 @@
   .btn.red{background:var(--blood);border-color:var(--blood);color:#fff}
   .btn.red:hover{filter:brightness(1.12)}
 
+  /* ===== signed-in account menu (hidden until body.signed-in) ===== */
+  .acctzone{position:relative;display:none}
+  body.signed-in #btnSignIn{display:none}
+  body.signed-in .acctzone{display:block}
+  .acctbtn{display:flex;align-items:center;gap:8px;font-family:var(--mono);color:var(--ink);
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;
+    padding:6px 10px 6px 6px;cursor:pointer;transition:background .2s}
+  .acctbtn:hover{background:rgba(255,255,255,.09)}
+  .acctbtn .ava{width:26px;height:26px;border-radius:50%;background:var(--blood);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none}
+  .acctbtn .acctid{font-size:10.5px;letter-spacing:.06em}
+  .acctbtn .chev{width:14px;height:14px;transition:transform .2s}
+  .acctzone.open .acctbtn .chev{transform:rotate(180deg)}
+  .acctmenu{position:absolute;top:calc(100% + 8px);right:0;min-width:230px;z-index:60;
+    background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:12px;
+    box-shadow:0 20px 50px rgba(0,0,0,.55);padding:8px;
+    opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
+    transition:opacity .18s,transform .18s,visibility .18s}
+  .acctzone.open .acctmenu{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+  .acctmenu-head{padding:8px 10px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:6px}
+  .acctmenu-head .nm{font-size:12.5px;color:var(--ink);word-break:break-all}
+  .acctmenu-head .id{font-family:var(--mono);font-size:10px;color:var(--ink-dim);margin-top:3px}
+  .acctmenu button{display:block;width:100%;text-align:left;background:transparent;border:0;
+    color:var(--ink);font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+    padding:10px;border-radius:8px;cursor:pointer}
+  .acctmenu button:hover{background:rgba(255,255,255,.07)}
+  .acctmenu-sep{height:1px;background:rgba(255,255,255,.08);margin:6px 4px}
+  #acctSignOut{color:#ff5c7c}
+  @media(max-width:720px){ .acctbtn .acctid{display:none} .acctbtn{padding:6px} }
+
   .side{position:sticky;top:64px;align-self:start;height:calc(100vh - 64px);overflow:auto;padding:22px 14px 30px;
     background:rgba(9,10,13,.6);backdrop-filter:blur(14px);border-right:1px solid rgba(255,255,255,.06)}
   .side .grp{font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-dim);
@@ -2184,7 +2214,21 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     <div class="grow"></div>
     <div class="search">Search games</div>
     <div class="bal">USDT 2,840 · <b>PK 1,250</b></div>
-    <button class="btn">Sign in</button>
+    <button class="btn" id="btnSignIn">Sign in</button>
+    <div class="acctzone" id="acctZone">
+      <button class="acctbtn" id="acctBtn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="ava" id="acctAva">P</span>
+        <span class="acctid" id="acctId">PB-000000</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="acctmenu" id="acctMenu" role="menu">
+        <div class="acctmenu-head"><div class="nm" id="acctName">Patient</div><div class="id">Patient <span id="acctIdMenu">PB-000000</span></div></div>
+        <button type="button" id="acctGoChart">The Chart · account &amp; settings</button>
+        <button type="button" id="acctSupport">Triage · support</button>
+        <div class="acctmenu-sep"></div>
+        <button type="button" id="acctSignOut">Sign out</button>
+      </div>
+    </div>
     <button class="btn red">Deposit</button>
   </header>
 
@@ -2633,7 +2677,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 
   <div class="pscard">
     <div class="ch-band">
-      <span class="bid">PB-728423</span>
+      <span class="bid" id="chBandId">PB-728423</span>
       <span class="kv">Patient<b id="chBandAlias">WardRat_77</b></span>
       <span class="kv">Admitted<b>03 Jun 2026</b></span>
       <span class="kv">Preferred coin<b id="chBandCoin">USDT · TRC20</b></span>
@@ -4023,10 +4067,13 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
     if(bad || !validate()) return;
     function proceed(){
       if(mode === 'reg'){
-        document.getElementById('bandId').textContent = 'PB-' + String(Math.floor(100000 + Math.random()*900000));
+        var pid = 'PB-' + String(Math.floor(100000 + Math.random()*900000));
+        document.getElementById('bandId').textContent = pid;
         box.classList.add('ok');
         veil.classList.remove('neuron-mode');
+        if(window.markSignedIn) window.markSignedIn({id: pid, email: email.value.trim()});
       } else {
+        if(window.markSignedIn) window.markSignedIn({email: email.value.trim()});
         close();
       }
     }
@@ -5845,6 +5892,83 @@ document.querySelectorAll('.pgback').forEach(function(b){
     pay.disabled = true; pay.textContent = 'Sent';
     document.getElementById('chPaid').classList.add('show');
   });
+})();
+</script>
+
+<script>
+(function(){
+  // ---- Signed-in state: topbar account menu + The Chart personalization ----
+  var zone = document.getElementById('acctZone');
+  var acctBtn = document.getElementById('acctBtn');
+  var ava = document.getElementById('acctAva');
+  var idChip = document.getElementById('acctId');
+  var idMenu = document.getElementById('acctIdMenu');
+  var nameEl = document.getElementById('acctName');
+
+  function closeMenu(){ zone.classList.remove('open'); acctBtn.setAttribute('aria-expanded','false'); }
+  function toggleMenu(){
+    var open = zone.classList.toggle('open');
+    acctBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  acctBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleMenu(); });
+  document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeMenu(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
+
+  function goChart(){
+    document.querySelectorAll('.side a').forEach(function(a){
+      if(a.textContent.trim() === 'The Chart') a.click();
+    });
+  }
+  document.getElementById('acctGoChart').addEventListener('click', function(){ closeMenu(); goChart(); });
+  document.getElementById('acctSupport').addEventListener('click', function(){
+    closeMenu();
+    document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim() === 'Triage') a.click(); });
+  });
+  document.getElementById('acctSignOut').addEventListener('click', function(){ closeMenu(); window.signOut(); });
+
+  function fillChart(user){
+    var alias = user.alias || (user.email ? user.email.split('@')[0] : 'Patient');
+    var setVal = function(id, v){ var el = document.getElementById(id); if(el) el.value = v; };
+    var setTxt = function(id, v){ var el = document.getElementById(id); if(el) el.textContent = v; };
+    setTxt('chBandId', user.id);
+    setTxt('chBandAlias', alias);
+    setVal('chAlias', alias);
+    setVal('chEmail', user.email || '—');
+    if(user.handle) setVal('chTg', '@' + user.handle);
+    setVal('chLink', 'https://pain.bet/r/' + user.id);
+  }
+
+  window.markSignedIn = function(user){
+    user = user || {};
+    if(!user.id) user.id = 'PB-' + String(Math.floor(100000 + Math.random() * 900000));
+    var label = user.email || (user.handle ? '@' + user.handle : 'Patient');
+    document.body.classList.add('signed-in');
+    idChip.textContent = user.id;
+    idMenu.textContent = user.id;
+    nameEl.textContent = label;
+    ava.textContent = label.replace('@','').slice(0,1).toUpperCase();
+    fillChart(user);
+    try{ sessionStorage.setItem('pb_session', JSON.stringify(user)); }catch(e){}
+  };
+
+  window.signOut = function(){
+    document.body.classList.remove('signed-in');
+    try{ sessionStorage.removeItem('pb_session'); }catch(e){}
+    if(document.body.classList.contains('view-chart')){
+      document.body.classList.remove('view-chart');
+      document.querySelectorAll('.side a').forEach(function(a){ a.classList.remove('on'); });
+      var lobby = null;
+      document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim().toLowerCase() === 'lobby') lobby = a; });
+      if(lobby) lobby.classList.add('on');
+      window.scrollTo(0,0);
+    }
+  };
+
+  // demo-only: restore the signed-in look across view navigation within the same tab
+  try{
+    var saved = sessionStorage.getItem('pb_session');
+    if(saved) window.markSignedIn(JSON.parse(saved));
+  }catch(e){}
 })();
 </script>
 
