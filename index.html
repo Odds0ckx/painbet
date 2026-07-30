@@ -157,21 +157,36 @@
   .acctbtn .acctid{font-size:10.5px;letter-spacing:.06em}
   .acctbtn .chev{width:14px;height:14px;transition:transform .2s}
   .acctzone.open .acctbtn .chev{transform:rotate(180deg)}
-  .acctmenu{position:absolute;top:calc(100% + 8px);right:0;min-width:230px;z-index:60;
-    background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:12px;
+  .acctmenu{position:absolute;top:calc(100% + 8px);right:0;width:272px;max-width:calc(100vw - 28px);z-index:60;
+    background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:14px;
     box-shadow:0 20px 50px rgba(0,0,0,.55);padding:8px;
     opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
     transition:opacity .18s,transform .18s,visibility .18s}
   .acctzone.open .acctmenu{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
-  .acctmenu-head{padding:8px 10px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:6px}
-  .acctmenu-head .nm{font-size:12.5px;color:var(--ink);word-break:break-all}
-  .acctmenu-head .id{font-family:var(--mono);font-size:10px;color:var(--ink-dim);margin-top:3px}
-  .acctmenu button{display:block;width:100%;text-align:left;background:transparent;border:0;
-    color:var(--ink);font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
-    padding:10px;border-radius:8px;cursor:pointer}
-  .acctmenu button:hover{background:rgba(255,255,255,.07)}
-  .acctmenu-sep{height:1px;background:rgba(255,255,255,.08);margin:6px 4px}
-  #acctSignOut{color:#ff5c7c}
+  .acctmenu-head{display:flex;align-items:center;gap:10px;padding:6px 8px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
+  .acctmenu-head .ava2{width:34px;height:34px;border-radius:50%;background:var(--blood);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none}
+  .acctmenu-head .txwrap{min-width:0}
+  .acctmenu-head .nm{font-size:12.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .acctmenu-head .id{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);margin-top:3px}
+  .acctmenu-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+    background:transparent;border:0;color:var(--ink);padding:8px;border-radius:10px;cursor:pointer}
+  .acctmenu-item:hover{background:rgba(255,255,255,.07)}
+  .acctmenu-item .ic{width:30px;height:30px;border-radius:9px;flex:none;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:var(--ink-dim)}
+  .acctmenu-item .ic svg{width:15px;height:15px}
+  .acctmenu-item .tx{min-width:0}
+  .acctmenu-item .tx b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ink);font-weight:600}
+  .acctmenu-item .tx span{display:block;font-size:10.5px;color:var(--ink-dim);margin-top:2px}
+  .acctmenu-item.danger .ic{background:rgba(224,22,60,.14);color:#ff5c7c}
+  .acctmenu-item.danger .tx b{color:#ff5c7c}
+  .acctmenu-quick{display:flex;gap:6px;padding:4px 8px 8px}
+  .acctmenu-quick button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-dim);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+    border-radius:8px;padding:8px 6px;cursor:pointer;text-align:center;transition:color .2s,border-color .2s}
+  .acctmenu-quick button:hover{color:var(--ink);border-color:rgba(255,255,255,.22)}
+  .acctmenu-sep{height:1px;background:rgba(255,255,255,.08);margin:4px 4px 6px}
   @media(max-width:720px){ .acctbtn .acctid{display:none} .acctbtn{padding:6px} }
 
   .side{position:sticky;top:64px;align-self:start;height:calc(100vh - 64px);overflow:auto;padding:22px 14px 30px;
@@ -2234,13 +2249,32 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="acctmenu" id="acctMenu" role="menu">
-        <div class="acctmenu-head"><div class="nm" id="acctName">Patient</div><div class="id">Patient <span id="acctIdMenu">PB-000000</span></div></div>
-        <button type="button" id="acctGoChart">The Chart · account &amp; settings</button>
-        <button type="button" id="acctGoActivity">Game &amp; bet activity</button>
-        <button type="button" id="acctGoTx">Transactions</button>
-        <button type="button" id="acctSupport">Triage · support</button>
+        <div class="acctmenu-head">
+          <span class="ava2" id="acctAva2">P</span>
+          <div class="txwrap"><div class="nm" id="acctName">Patient</div><div class="id">Patient <span id="acctIdMenu">PB-000000</span></div></div>
+        </div>
+
+        <button type="button" class="acctmenu-item" id="acctGoChart">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.1-4.2 4-6.4 7-6.4s5.9 2.2 7 6.4"/></svg></span>
+          <span class="tx"><b>The Chart</b><span>Account &amp; settings</span></span>
+        </button>
+
+        <div class="acctmenu-quick">
+          <button type="button" id="acctGoActivity">Activity</button>
+          <button type="button" id="acctGoTx">Transactions</button>
+        </div>
+
+        <button type="button" class="acctmenu-item" id="acctSupport">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8 8 0 0 1-8 8H4l2.5-2.5A8 8 0 1 1 21 12z"/></svg></span>
+          <span class="tx"><b>Triage</b><span>Live support</span></span>
+        </button>
+
         <div class="acctmenu-sep"></div>
-        <button type="button" id="acctSignOut">Sign out</button>
+
+        <button type="button" class="acctmenu-item danger" id="acctSignOut">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>
+          <span class="tx"><b>Sign out</b></span>
+        </button>
       </div>
     </div>
     <button class="btn red">Deposit</button>
@@ -5967,6 +6001,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
   var zone = document.getElementById('acctZone');
   var acctBtn = document.getElementById('acctBtn');
   var ava = document.getElementById('acctAva');
+  var ava2 = document.getElementById('acctAva2');
   var idChip = document.getElementById('acctId');
   var idMenu = document.getElementById('acctIdMenu');
   var nameEl = document.getElementById('acctName');
@@ -6021,6 +6056,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
     idMenu.textContent = user.id;
     nameEl.textContent = label;
     ava.textContent = label.replace('@','').slice(0,1).toUpperCase();
+    ava2.textContent = ava.textContent;
     fillChart(user);
     try{ sessionStorage.setItem('pb_session', JSON.stringify(user)); }catch(e){}
   };
