@@ -2149,6 +2149,18 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     border:1px solid rgba(127,214,232,.35);background:rgba(127,214,232,.07);border-radius:12px;padding:13px 15px}
   .ch-unpaid b{font-family:var(--mono);font-size:16px;color:#fff}
   .ch-unpaid span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#9aa0aa;display:block}
+  .ch-pill{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+    padding:3px 8px;border-radius:999px;display:inline-block;white-space:nowrap}
+  .ch-pill.win{background:rgba(62,207,106,.14);color:#3ecf6a}
+  .ch-pill.loss{background:rgba(224,22,60,.14);color:#ff5c7c}
+  .ch-pill.pending{background:rgba(255,255,255,.07);color:#9aa0aa}
+  .ch-pill.deposit{background:rgba(127,214,232,.14);color:#7FD6E8}
+  .ch-pill.withdraw{background:rgba(224,22,60,.1);color:#ff8fa3}
+  .ch-comtbl td.r{text-align:right}
+  .ch-empty{color:#6b7078;font-size:11px;text-align:center;padding:20px 4px !important}
+  .ch-actrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:22px}
+  .ch-actrow .kick{margin:0}
+  .ch-actrow .meta{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:#6b7078;text-transform:uppercase}
   @media (max-width:1000px){ .ch-grid{grid-template-columns:1fr} .ch-refstats{grid-template-columns:1fr 1fr} }
   @media (max-width:560px){ .ch-frow{grid-template-columns:1fr} }
 
@@ -2224,6 +2236,8 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       <div class="acctmenu" id="acctMenu" role="menu">
         <div class="acctmenu-head"><div class="nm" id="acctName">Patient</div><div class="id">Patient <span id="acctIdMenu">PB-000000</span></div></div>
         <button type="button" id="acctGoChart">The Chart · account &amp; settings</button>
+        <button type="button" id="acctGoActivity">Game &amp; bet activity</button>
+        <button type="button" id="acctGoTx">Transactions</button>
         <button type="button" id="acctSupport">Triage · support</button>
         <div class="acctmenu-sep"></div>
         <button type="button" id="acctSignOut">Sign out</button>
@@ -2742,6 +2756,42 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       </div>
       <div class="ch-note" id="chPaid">Sent. Watch your wallet, it will not take long.</div>
     </div>
+  </div>
+
+  <div class="pscard" id="chActivity" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Game activity</div><span class="meta">Casino rounds · this patient record</span></div>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Game</th><th>Stake</th><th>Multiplier</th><th class="r">Payout</th></tr></thead>
+      <tbody>
+        <tr><td>Today 04:12</td><td>FLATLINE</td><td>25.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-25.00</span></td></tr>
+        <tr><td>Today 03:58</td><td>Sweet Bonanza 1000</td><td>10.00</td><td>14.60x</td><td class="r"><span class="ch-pill win">+146.00</span></td></tr>
+        <tr><td>Today 03:41</td><td>BONESAW</td><td>15.00</td><td>3.20x</td><td class="r"><span class="ch-pill win">+48.00</span></td></tr>
+        <tr><td>Yesterday 22:07</td><td>Crazy Time</td><td>50.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-50.00</span></td></tr>
+        <tr><td>Yesterday 21:50</td><td>NERVE</td><td>20.00</td><td>1.80x</td><td class="r"><span class="ch-pill win">+36.00</span></td></tr>
+        <tr><td>Yesterday 21:30</td><td>DOSAGE</td><td>10.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-10.00</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pscard" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Sportsbook activity</div><span class="meta">Live · from your bet slip</span></div>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Match &middot; pick</th><th>Stake</th><th class="r">Status</th></tr></thead>
+      <tbody id="chSportsBody"><tr><td colspan="4" class="ch-empty">No bets placed yet.</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="pscard" id="chTxSection" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Transactions</div><span class="meta">Deposits &amp; withdrawals</span></div>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Type</th><th>Coin</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
+      <tbody id="chTxBody">
+        <tr><td>27 Jul</td><td><span class="ch-pill deposit">Deposit</span></td><td>USDT</td><td class="r amt">+500.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+        <tr><td>22 Jul</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>BTC</td><td class="r amt">-0.0041</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+        <tr><td>19 Jul</td><td><span class="ch-pill deposit">Deposit</span></td><td>USDT</td><td class="r amt">+1,000.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+        <tr><td>11 Jul</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>USDT</td><td class="r amt">-240.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
@@ -3419,11 +3469,11 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       <label>Currency</label>
       <select id="wdCoin"><option value="usdt">Tether (USDT)</option><option value="btc">Bitcoin (BTC)</option><option value="eth">Ethereum (ETH)</option><option value="usdc">USD Coin (USDC)</option><option value="bnb">BNB (BNB)</option><option value="trx">TRON (TRX)</option><option value="ton">Toncoin (TON)</option></select>
       <label>Destination address</label>
-      <input type="text" placeholder="Paste your wallet address" autocomplete="off">
+      <input type="text" id="wdAddr" placeholder="Paste your wallet address" autocomplete="off">
       <label>Amount</label>
-      <input type="text" placeholder="0.00" inputmode="decimal">
-      <button class="go" type="button">Request discharge</button>
-      <div class="fine">Network fee deducted from the amount. Withdrawals are processed after standard checks.</div>
+      <input type="text" id="wdAmt" placeholder="0.00" inputmode="decimal">
+      <button class="go" type="button" id="wdGo">Request discharge</button>
+      <div class="fine" id="wdNote">Network fee deducted from the amount. Withdrawals are processed after standard checks.</div>
     </div>
 
     <div id="buyPane" style="display:none">
@@ -5773,6 +5823,19 @@ function renderMyBets(){
       <div class="bs-o pending">PENDING</div>
     </div>`).join('');
 }
+function renderChartSports(){
+  const body = document.getElementById('chSportsBody');
+  if(!body) return;
+  if(!myBets.length){ body.innerHTML = '<tr><td colspan="4" class="ch-empty">No bets placed yet.</td></tr>'; return; }
+  body.innerHTML = myBets.map(b => `
+    <tr>
+      <td>${b.time || 'Just now'}</td>
+      <td>${b.picks.map(p=>p.label+' &middot; '+p.pickLabel).join('<br>')}</td>
+      <td>${b.stake} USDT</td>
+      <td class="r"><span class="ch-pill pending">Pending</span></td>
+    </tr>`).join('');
+}
+function saveMyBets(){ try{ localStorage.setItem('pb_mybets', JSON.stringify(myBets)); }catch(e){} }
 function openBetslip(tab){
   document.body.classList.add('betslip-open');
   setBsTab(tab||'slip');
@@ -5787,7 +5850,10 @@ function placeBet(){
   const stake = +(document.getElementById('bs-stake')?document.getElementById('bs-stake').value:0) || 0;
   if(stake<=0) return;
   const combined = betslip.reduce((p,s)=>p*s.odds,1);
-  myBets.unshift({picks:betslip.slice(), stake, combined});
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  myBets.unshift({picks:betslip.slice(), stake, combined, time});
+  saveMyBets();
+  renderChartSports();
   const balBtn = document.querySelector('.balance');
   if(balBtn){
     const m = balBtn.innerHTML.match(/(USDT<\/span>\s*)([\d,]+)/);
@@ -5914,12 +5980,20 @@ document.querySelectorAll('.pgback').forEach(function(b){
   document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeMenu(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
 
-  function goChart(){
+  function goChart(anchorId){
     document.querySelectorAll('.side a').forEach(function(a){
       if(a.textContent.trim() === 'The Chart') a.click();
     });
+    if(anchorId){
+      setTimeout(function(){
+        var el = document.getElementById(anchorId);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 60);
+    }
   }
   document.getElementById('acctGoChart').addEventListener('click', function(){ closeMenu(); goChart(); });
+  document.getElementById('acctGoActivity').addEventListener('click', function(){ closeMenu(); goChart('chActivity'); });
+  document.getElementById('acctGoTx').addEventListener('click', function(){ closeMenu(); goChart('chTxSection'); });
   document.getElementById('acctSupport').addEventListener('click', function(){
     closeMenu();
     document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim() === 'Triage') a.click(); });
@@ -5969,6 +6043,46 @@ document.querySelectorAll('.pgback').forEach(function(b){
     var saved = sessionStorage.getItem('pb_session');
     if(saved) window.markSignedIn(JSON.parse(saved));
   }catch(e){}
+
+  // restore sportsbook activity placed in earlier sessions, then draw it into The Chart
+  try{
+    var savedBets = localStorage.getItem('pb_mybets');
+    if(savedBets && typeof myBets !== 'undefined'){
+      var restored = JSON.parse(savedBets);
+      myBets.length = 0;
+      restored.forEach(function(b){ myBets.push(b); });
+    }
+  }catch(e){}
+  if(typeof renderChartSports === 'function') renderChartSports();
+
+  // Discharge (withdrawal request) -> Transactions ledger. Previously a dead button.
+  var wdGo = document.getElementById('wdGo');
+  if(wdGo){
+    wdGo.addEventListener('click', function(){
+      var addrEl = document.getElementById('wdAddr');
+      var amtEl = document.getElementById('wdAmt');
+      var note = document.getElementById('wdNote');
+      var amt = parseFloat(amtEl.value);
+      if(!addrEl.value.trim() || !(amt > 0)){
+        note.textContent = 'Enter a destination address and an amount above 0.';
+        note.style.color = '#ff5c7c';
+        return;
+      }
+      var coin = document.getElementById('wdCoin').value.toUpperCase();
+      var tbody = document.getElementById('chTxBody');
+      if(tbody){
+        var row = document.createElement('tr');
+        row.innerHTML = '<td>Just now</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>' + coin + '</td>' +
+          '<td class="r amt">-' + amt.toFixed(amt < 1 ? 6 : 2) + '</td><td class="r"><span class="ch-pill pending">Pending</span></td>';
+        tbody.prepend(row);
+      }
+      note.textContent = 'Discharge requested — it now shows as pending in Transactions, on The Chart.';
+      note.style.color = '#7FD6E8';
+      wdGo.disabled = true;
+      wdGo.textContent = 'Requested';
+      addrEl.disabled = true; amtEl.disabled = true;
+    });
+  }
 })();
 </script>
 
