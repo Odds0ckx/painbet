@@ -144,16 +144,70 @@
   .btn.red{background:var(--blood);border-color:var(--blood);color:#fff}
   .btn.red:hover{filter:brightness(1.12)}
 
+  /* ===== signed-in account menu (hidden until body.signed-in) ===== */
+  .acctzone{position:relative;display:none}
+  body.signed-in #btnSignIn{display:none}
+  body.signed-in .acctzone{display:block}
+  .acctbtn{display:flex;align-items:center;gap:8px;font-family:var(--mono);color:var(--ink);
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;
+    padding:6px 10px 6px 6px;cursor:pointer;transition:background .2s}
+  .acctbtn:hover{background:rgba(255,255,255,.09)}
+  .acctbtn .ava{width:26px;height:26px;border-radius:50%;background:var(--blood);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none}
+  .acctbtn .acctid{font-size:10.5px;letter-spacing:.06em}
+  .acctbtn .chev{width:14px;height:14px;transition:transform .2s}
+  .acctzone.open .acctbtn .chev{transform:rotate(180deg)}
+  .acctmenu{position:absolute;top:calc(100% + 8px);right:0;width:272px;max-width:calc(100vw - 28px);z-index:60;
+    background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:14px;
+    box-shadow:0 20px 50px rgba(0,0,0,.55);padding:8px;
+    opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
+    transition:opacity .18s,transform .18s,visibility .18s}
+  .acctzone.open .acctmenu{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+  .acctmenu-head{display:flex;align-items:center;gap:10px;padding:6px 8px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
+  .acctmenu-head .ava2{width:34px;height:34px;border-radius:50%;background:var(--blood);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none}
+  .acctmenu-head .txwrap{min-width:0}
+  .acctmenu-head .nm{font-size:12.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .acctmenu-head .id{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);margin-top:3px}
+  .acctmenu-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+    background:transparent;border:0;color:var(--ink);padding:8px;border-radius:10px;cursor:pointer}
+  .acctmenu-item:hover{background:rgba(255,255,255,.07)}
+  .acctmenu-item .ic{width:30px;height:30px;border-radius:9px;flex:none;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:var(--ink-dim)}
+  .acctmenu-item .ic svg{width:15px;height:15px}
+  .acctmenu-item .tx{min-width:0}
+  .acctmenu-item .tx b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ink);font-weight:600}
+  .acctmenu-item .tx span{display:block;font-size:10.5px;color:var(--ink-dim);margin-top:2px}
+  .acctmenu-item.danger .ic{background:rgba(224,22,60,.14);color:#ff5c7c}
+  .acctmenu-item.danger .tx b{color:#ff5c7c}
+  .acctmenu-quick{display:flex;gap:6px;padding:4px 8px 8px}
+  .acctmenu-quick button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-dim);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+    border-radius:8px;padding:8px 6px;cursor:pointer;text-align:center;transition:color .2s,border-color .2s}
+  .acctmenu-quick button:hover{color:var(--ink);border-color:rgba(255,255,255,.22)}
+  .acctmenu-sep{height:1px;background:rgba(255,255,255,.08);margin:4px 4px 6px}
+  @media(max-width:720px){ .acctbtn .acctid{display:none} .acctbtn{padding:6px} }
+
   .side{position:sticky;top:64px;align-self:start;height:calc(100vh - 64px);overflow:auto;padding:22px 14px 30px;
     background:rgba(9,10,13,.6);backdrop-filter:blur(14px);border-right:1px solid rgba(255,255,255,.06)}
-  .side .grp{font-family:var(--mono);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-dim);
-    margin:20px 10px 8px}
-  .side .grp:first-child{margin-top:0}
-  .side a{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#c8ccd4;text-decoration:none;
+  .side .grp{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink);display:flex;align-items:center;gap:9px;margin:24px 10px 10px}
+  .side .grp:first-child{margin-top:2px}
+  .side .grp::before{content:'';width:6px;height:6px;border-radius:50%;flex:none;background:var(--ink-lo,#454a52)}
+  .side .grp.red::before{background:var(--blood);box-shadow:0 0 9px rgba(224,22,60,.65)}
+  .side .grp.blue::before{background:#7FD6E8;box-shadow:0 0 9px rgba(127,214,232,.55)}
+  .side .grp.sub{font-size:9.5px;font-weight:600;letter-spacing:.2em;color:var(--ink-dim);margin-top:18px}
+  .side .grp.sub::before{display:none}
+  .side a{display:flex;align-items:center;gap:11px;color:#c8ccd4;text-decoration:none;
     font-size:13px;padding:9px 10px;border-radius:9px;transition:background .15s,color .15s}
+  .side a .ic{width:17px;height:17px;flex:none;opacity:.8;transition:opacity .15s}
+  .side a .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .side a:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+  .side a:hover .ic{opacity:1}
   .side a.on{background:rgba(224,22,60,.12);color:var(--ink)}
-  .side a .pk{font-family:var(--mono);font-size:10px;color:var(--blood)}
+  .side a.on .ic{color:var(--blood);opacity:1}
+  .side a .pk{font-family:var(--mono);font-size:10px;color:var(--blood);flex:none}
 
   .main{padding:36px 40px 90px;min-width:0}
   .painchip{display:flex;align-items:center;gap:16px;margin-bottom:26px;padding:14px 18px;border-radius:14px;
@@ -325,8 +379,8 @@
   #auth-overlay.show-mark .auth-cinematic-mark{opacity:1}
   .auth-cinematic-mark .lg{font-family:var(--disp,var(--sans));font-size:34px;color:#fff;letter-spacing:.03em;text-shadow:0 0 30px rgba(224,22,60,.5);text-transform:uppercase}
   .auth-cinematic-mark .status{margin-top:14px;font-family:var(--mono);font-weight:800;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#fff;opacity:.85}
-  .adm-veil.neuron-mode{background:transparent;backdrop-filter:none}
-  .adm-veil.neuron-mode .adm{background:rgba(15,17,22,.78)}
+  .adm-veil.neuron-mode{background:rgba(4,5,7,.45);backdrop-filter:blur(2px)}
+  .adm-veil.neuron-mode .adm{background:rgba(15,17,22,.94)}
   .adm{position:relative;width:420px;max-width:100%;max-height:92vh;overflow:auto;border-radius:18px;
     background:rgba(15,17,22,.92);border:1px solid rgba(255,255,255,.12);
     box-shadow:0 30px 90px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12);
@@ -2119,6 +2173,18 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     border:1px solid rgba(127,214,232,.35);background:rgba(127,214,232,.07);border-radius:12px;padding:13px 15px}
   .ch-unpaid b{font-family:var(--mono);font-size:16px;color:#fff}
   .ch-unpaid span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#9aa0aa;display:block}
+  .ch-pill{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+    padding:3px 8px;border-radius:999px;display:inline-block;white-space:nowrap}
+  .ch-pill.win{background:rgba(62,207,106,.14);color:#3ecf6a}
+  .ch-pill.loss{background:rgba(224,22,60,.14);color:#ff5c7c}
+  .ch-pill.pending{background:rgba(255,255,255,.07);color:#9aa0aa}
+  .ch-pill.deposit{background:rgba(127,214,232,.14);color:#7FD6E8}
+  .ch-pill.withdraw{background:rgba(224,22,60,.1);color:#ff8fa3}
+  .ch-comtbl td.r{text-align:right}
+  .ch-empty{color:#6b7078;font-size:11px;text-align:center;padding:20px 4px !important}
+  .ch-actrow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:22px}
+  .ch-actrow .kick{margin:0}
+  .ch-actrow .meta{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:#6b7078;text-transform:uppercase}
   @media (max-width:1000px){ .ch-grid{grid-template-columns:1fr} .ch-refstats{grid-template-columns:1fr 1fr} }
   @media (max-width:560px){ .ch-frow{grid-template-columns:1fr} }
 
@@ -2169,6 +2235,31 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 </style>
 </head>
 <body>
+<svg style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="i-lobby" viewBox="0 0 24 24"><path d="M4 11.5l8-7.5 8 7.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.2V19a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-8.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-originals" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="8.7" cy="8.7" r="1.15" fill="currentColor" stroke="none"/><circle cx="15.3" cy="8.7" r="1.15" fill="currentColor" stroke="none"/><circle cx="8.7" cy="15.3" r="1.15" fill="currentColor" stroke="none"/><circle cx="15.3" cy="15.3" r="1.15" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.15" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-slots" viewBox="0 0 24 24"><rect x="2.8" y="5" width="4.6" height="14" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="9.7" y="5" width="4.6" height="14" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="16.6" y="5" width="4.6" height="14" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-live" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M8.6 8.6a5 5 0 0 0 0 6.8M15.4 8.6a5 5 0 0 1 0 6.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.6 5.6a9.2 9.2 0 0 0 0 12.8M18.4 5.6a9.2 9.2 0 0 1 0 12.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="4" y="9.5" width="16" height="10" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M4 9.5h16M12 9.5V20" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 9.5c-1.7 0-4-1-4-3.2S9.7 3 12 5.4 14.3 3 16 6.3s-2.3 3.2-4 3.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4.3 15.5a8 8 0 0 1 15.4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 15l3.6-3.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="15" r="1.3" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 1.8v3.4M12 18.8v3.4M1.8 12h3.4M18.8 12h3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-pill" viewBox="0 0 24 24"><rect x="2.6" y="9.4" width="18.8" height="5.2" rx="2.6" transform="rotate(45 12 12)" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 6.2v11.6" transform="rotate(45 12 12)" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.2s6.2 7.2 6.2 11.4a6.2 6.2 0 0 1-12.4 0C5.8 10.4 12 3.2 12 3.2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="i-track" viewBox="0 0 24 24"><path d="M4.5 19.5V5M4.5 19.5h15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M7 15.2l3.4-4.6 2.6 2.6 4.5-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.4V12l3.4 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M4.3 8.2A1.8 1.8 0 0 1 6.1 6.4h11.8a1.8 1.8 0 0 1 1.8 1.8v1.9a1.9 1.9 0 0 0 0 3.8v1.9a1.8 1.8 0 0 1-1.8 1.8H6.1a1.8 1.8 0 0 1-1.8-1.8v-1.9a1.9 1.9 0 0 0 0-3.8V8.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M13.8 6.4v11.2" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2.2 2.2"/></symbol>
+    <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 8.2l3.2 2.3-1.2 3.8h-4l-1.2-3.8z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 3.7v4.5M4.6 9l3.2 1.5M19.4 9l-3.2 1.5M7.3 19l1.9-4.7M16.7 19l-1.9-4.7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
+    <symbol id="i-basketball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3.7 12h16.6M12 3.7v16.6" stroke="currentColor" stroke-width="1.5"/><path d="M6 5.8a11.6 11.6 0 0 1 12 0M6 18.2a11.6 11.6 0 0 0 12 0" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-tennis" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.7 7c4 2.6 4 10.4 0 14M19.3 7c-4 2.6-4 10.4 0 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="i-fist" viewBox="0 0 24 24"><path d="M7.2 10.4V6.9a1.5 1.5 0 0 1 3 0v3.2M10.2 10V5.7a1.5 1.5 0 0 1 3 0V10M13.2 10.2V6.9a1.5 1.5 0 0 1 3 0v4.4M16.2 11.3V9.6a1.5 1.5 0 0 1 3 0v4.2a6.2 6.2 0 0 1-6.2 6.2h-2.4a6.2 6.2 0 0 1-5.7-3.8l-1.6-3.8a1.4 1.4 0 0 1 2.5-1.3l1.4 2.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-controller" viewBox="0 0 24 24"><rect x="3" y="8.6" width="18" height="8.4" rx="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11v3M6.5 12.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="16.2" cy="11.6" r=".9" fill="currentColor" stroke="none"/><circle cx="18.1" cy="13.6" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-football" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8.6" ry="5.2" transform="rotate(-32 12 12)" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.6 12.9l8.8-5.2M9.2 10.4l1.5 1M11.4 8.9l1.5 1M13.7 7.4l1.5 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1.1-4.2 4-6.4 7-6.4s5.9 2.2 7 6.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><circle cx="6.2" cy="12" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.8" cy="6.2" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.8" cy="17.8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 11l7.6-3.8M8.2 13l7.6 3.8" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2.5-2.5A8 8 0 1 1 21 12z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
 <div class="ambient"></div>
 
 
@@ -2184,7 +2275,42 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     <div class="grow"></div>
     <div class="search">Search games</div>
     <div class="bal">USDT 2,840 · <b>PK 1,250</b></div>
-    <button class="btn">Sign in</button>
+    <button class="btn" id="btnSignIn">Sign in</button>
+    <div class="acctzone" id="acctZone">
+      <button class="acctbtn" id="acctBtn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="ava" id="acctAva">P</span>
+        <span class="acctid" id="acctId">PB-000000</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="acctmenu" id="acctMenu" role="menu">
+        <div class="acctmenu-head">
+          <span class="ava2" id="acctAva2">P</span>
+          <div class="txwrap"><div class="nm" id="acctName">Patient</div><div class="id">Patient <span id="acctIdMenu">PB-000000</span></div></div>
+        </div>
+
+        <button type="button" class="acctmenu-item" id="acctGoChart">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.1-4.2 4-6.4 7-6.4s5.9 2.2 7 6.4"/></svg></span>
+          <span class="tx"><b>The Chart</b><span>Account &amp; settings</span></span>
+        </button>
+
+        <div class="acctmenu-quick">
+          <button type="button" id="acctGoActivity">Activity</button>
+          <button type="button" id="acctGoTx">Transactions</button>
+        </div>
+
+        <button type="button" class="acctmenu-item" id="acctSupport">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8 8 0 0 1-8 8H4l2.5-2.5A8 8 0 1 1 21 12z"/></svg></span>
+          <span class="tx"><b>Triage</b><span>Live support</span></span>
+        </button>
+
+        <div class="acctmenu-sep"></div>
+
+        <button type="button" class="acctmenu-item danger" id="acctSignOut">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>
+          <span class="tx"><b>Sign out</b></span>
+        </button>
+      </div>
+    </div>
     <button class="btn red">Deposit</button>
   </header>
 
@@ -2194,35 +2320,35 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   </div>
 
   <aside class="side">
-    <div class="grp">Casino</div>
-    <a class="on" href="#">Lobby</a>
-    <a href="#">Originals</a>
-    <a href="#">Slots</a>
-    <a href="#">Live casino</a>
-    <a href="#">Promotions</a>
-    <div class="grp">Pain system</div>
-    <a href="#">Pain scale</a>
-    <a href="#">Threshold Raid</a>
-    <a href="#">PainKillers <span class="pk">1,250</span></a>
-    <a href="#">Anesthesia</a>
-    <a href="#">PainTracker</a>
+    <div class="grp red">Casino</div>
+    <a class="on" href="#"><svg class="ic"><use href="#i-lobby"/></svg><span class="lbl">Lobby</span></a>
+    <a href="#"><svg class="ic"><use href="#i-originals"/></svg><span class="lbl">Originals</span></a>
+    <a href="#"><svg class="ic"><use href="#i-slots"/></svg><span class="lbl">Slots</span></a>
+    <a href="#"><svg class="ic"><use href="#i-live"/></svg><span class="lbl">Live casino</span></a>
+    <a href="#"><svg class="ic"><use href="#i-gift"/></svg><span class="lbl">Promotions</span></a>
+    <div class="grp blue">Pain system</div>
+    <a href="#"><svg class="ic"><use href="#i-gauge"/></svg><span class="lbl">Pain scale</span></a>
+    <a href="#"><svg class="ic"><use href="#i-target"/></svg><span class="lbl">Threshold Raid</span></a>
+    <a href="#"><svg class="ic"><use href="#i-pill"/></svg><span class="lbl">PainKillers</span> <span class="pk">1,250</span></a>
+    <a href="#"><svg class="ic"><use href="#i-drop"/></svg><span class="lbl">Anesthesia</span></a>
+    <a href="#"><svg class="ic"><use href="#i-track"/></svg><span class="lbl">PainTracker</span></a>
 
-    <div class="grp sportnav">Sports</div>
-    <a href="#" class="sportnav" data-sp="live">Live</a>
-    <a href="#" class="sportnav" data-sp="prematch">Starting soon</a>
-    <a href="#" class="sportnav" data-sp="mybets">My bets</a>
-    <div class="grp sportnav">By sport</div>
-    <a href="#" class="sportnav" data-sport="soccer">Soccer</a>
-    <a href="#" class="sportnav" data-sport="basketball">Basketball</a>
-    <a href="#" class="sportnav" data-sport="tennis">Tennis</a>
-    <a href="#" class="sportnav" data-sport="mma">MMA</a>
-    <a href="#" class="sportnav" data-sport="esports">eSports</a>
-    <a href="#" class="sportnav" data-sport="nfl">American Football</a>
+    <div class="grp red sportnav">Sports</div>
+    <a href="#" class="sportnav" data-sp="live"><svg class="ic"><use href="#i-live"/></svg><span class="lbl">Live</span></a>
+    <a href="#" class="sportnav" data-sp="prematch"><svg class="ic"><use href="#i-clock"/></svg><span class="lbl">Starting soon</span></a>
+    <a href="#" class="sportnav" data-sp="mybets"><svg class="ic"><use href="#i-ticket"/></svg><span class="lbl">My bets</span></a>
+    <div class="grp sportnav sub">By sport</div>
+    <a href="#" class="sportnav" data-sport="soccer"><svg class="ic"><use href="#i-ball"/></svg><span class="lbl">Soccer</span></a>
+    <a href="#" class="sportnav" data-sport="basketball"><svg class="ic"><use href="#i-basketball"/></svg><span class="lbl">Basketball</span></a>
+    <a href="#" class="sportnav" data-sport="tennis"><svg class="ic"><use href="#i-tennis"/></svg><span class="lbl">Tennis</span></a>
+    <a href="#" class="sportnav" data-sport="mma"><svg class="ic"><use href="#i-fist"/></svg><span class="lbl">MMA</span></a>
+    <a href="#" class="sportnav" data-sport="esports"><svg class="ic"><use href="#i-controller"/></svg><span class="lbl">eSports</span></a>
+    <a href="#" class="sportnav" data-sport="nfl"><svg class="ic"><use href="#i-football"/></svg><span class="lbl">American Football</span></a>
 
     <div class="grp">More</div>
-    <a href="#">The Chart</a>
-    <a href="#">Affiliate</a>
-    <a href="#">Triage</a>
+    <a href="#"><svg class="ic"><use href="#i-user"/></svg><span class="lbl">The Chart</span></a>
+    <a href="#"><svg class="ic"><use href="#i-network"/></svg><span class="lbl">Affiliate</span></a>
+    <a href="#"><svg class="ic"><use href="#i-chat"/></svg><span class="lbl">Triage</span></a>
   </aside>
   <div class="side-scrim" id="sideScrim"></div>
 
@@ -2633,7 +2759,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 
   <div class="pscard">
     <div class="ch-band">
-      <span class="bid">PB-728423</span>
+      <span class="bid" id="chBandId">PB-728423</span>
       <span class="kv">Patient<b id="chBandAlias">WardRat_77</b></span>
       <span class="kv">Admitted<b>03 Jun 2026</b></span>
       <span class="kv">Preferred coin<b id="chBandCoin">USDT · TRC20</b></span>
@@ -2698,6 +2824,42 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       </div>
       <div class="ch-note" id="chPaid">Sent. Watch your wallet, it will not take long.</div>
     </div>
+  </div>
+
+  <div class="pscard" id="chActivity" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Game activity</div><span class="meta">Casino rounds · this patient record</span></div>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Game</th><th>Stake</th><th>Multiplier</th><th class="r">Payout</th></tr></thead>
+      <tbody>
+        <tr><td>Today 04:12</td><td>FLATLINE</td><td>25.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-25.00</span></td></tr>
+        <tr><td>Today 03:58</td><td>Sweet Bonanza 1000</td><td>10.00</td><td>14.60x</td><td class="r"><span class="ch-pill win">+146.00</span></td></tr>
+        <tr><td>Today 03:41</td><td>BONESAW</td><td>15.00</td><td>3.20x</td><td class="r"><span class="ch-pill win">+48.00</span></td></tr>
+        <tr><td>Yesterday 22:07</td><td>Crazy Time</td><td>50.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-50.00</span></td></tr>
+        <tr><td>Yesterday 21:50</td><td>NERVE</td><td>20.00</td><td>1.80x</td><td class="r"><span class="ch-pill win">+36.00</span></td></tr>
+        <tr><td>Yesterday 21:30</td><td>DOSAGE</td><td>10.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-10.00</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pscard" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Sportsbook activity</div><span class="meta">Live · from your bet slip</span></div>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Match &middot; pick</th><th>Stake</th><th class="r">Status</th></tr></thead>
+      <tbody id="chSportsBody"><tr><td colspan="4" class="ch-empty">No bets placed yet.</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="pscard" id="chTxSection" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Transactions</div><span class="meta">Deposits &amp; withdrawals</span></div>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Type</th><th>Coin</th><th class="r">Amount</th><th class="r">Status</th></tr></thead>
+      <tbody id="chTxBody">
+        <tr><td>27 Jul</td><td><span class="ch-pill deposit">Deposit</span></td><td>USDT</td><td class="r amt">+500.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+        <tr><td>22 Jul</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>BTC</td><td class="r amt">-0.0041</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+        <tr><td>19 Jul</td><td><span class="ch-pill deposit">Deposit</span></td><td>USDT</td><td class="r amt">+1,000.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+        <tr><td>11 Jul</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>USDT</td><td class="r amt">-240.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
@@ -3375,11 +3537,11 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       <label>Currency</label>
       <select id="wdCoin"><option value="usdt">Tether (USDT)</option><option value="btc">Bitcoin (BTC)</option><option value="eth">Ethereum (ETH)</option><option value="usdc">USD Coin (USDC)</option><option value="bnb">BNB (BNB)</option><option value="trx">TRON (TRX)</option><option value="ton">Toncoin (TON)</option></select>
       <label>Destination address</label>
-      <input type="text" placeholder="Paste your wallet address" autocomplete="off">
+      <input type="text" id="wdAddr" placeholder="Paste your wallet address" autocomplete="off">
       <label>Amount</label>
-      <input type="text" placeholder="0.00" inputmode="decimal">
-      <button class="go" type="button">Request discharge</button>
-      <div class="fine">Network fee deducted from the amount. Withdrawals are processed after standard checks.</div>
+      <input type="text" id="wdAmt" placeholder="0.00" inputmode="decimal">
+      <button class="go" type="button" id="wdGo">Request discharge</button>
+      <div class="fine" id="wdNote">Network fee deducted from the amount. Withdrawals are processed after standard checks.</div>
     </div>
 
     <div id="buyPane" style="display:none">
@@ -4023,10 +4185,13 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
     if(bad || !validate()) return;
     function proceed(){
       if(mode === 'reg'){
-        document.getElementById('bandId').textContent = 'PB-' + String(Math.floor(100000 + Math.random()*900000));
+        var pid = 'PB-' + String(Math.floor(100000 + Math.random()*900000));
+        document.getElementById('bandId').textContent = pid;
         box.classList.add('ok');
         veil.classList.remove('neuron-mode');
+        if(window.markSignedIn) window.markSignedIn({id: pid, email: email.value.trim()});
       } else {
+        if(window.markSignedIn) window.markSignedIn({email: email.value.trim()});
         close();
       }
     }
@@ -5726,6 +5891,19 @@ function renderMyBets(){
       <div class="bs-o pending">PENDING</div>
     </div>`).join('');
 }
+function renderChartSports(){
+  const body = document.getElementById('chSportsBody');
+  if(!body) return;
+  if(!myBets.length){ body.innerHTML = '<tr><td colspan="4" class="ch-empty">No bets placed yet.</td></tr>'; return; }
+  body.innerHTML = myBets.map(b => `
+    <tr>
+      <td>${b.time || 'Just now'}</td>
+      <td>${b.picks.map(p=>p.label+' &middot; '+p.pickLabel).join('<br>')}</td>
+      <td>${b.stake} USDT</td>
+      <td class="r"><span class="ch-pill pending">Pending</span></td>
+    </tr>`).join('');
+}
+function saveMyBets(){ try{ localStorage.setItem('pb_mybets', JSON.stringify(myBets)); }catch(e){} }
 function openBetslip(tab){
   document.body.classList.add('betslip-open');
   setBsTab(tab||'slip');
@@ -5740,7 +5918,10 @@ function placeBet(){
   const stake = +(document.getElementById('bs-stake')?document.getElementById('bs-stake').value:0) || 0;
   if(stake<=0) return;
   const combined = betslip.reduce((p,s)=>p*s.odds,1);
-  myBets.unshift({picks:betslip.slice(), stake, combined});
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  myBets.unshift({picks:betslip.slice(), stake, combined, time});
+  saveMyBets();
+  renderChartSports();
   const balBtn = document.querySelector('.balance');
   if(balBtn){
     const m = balBtn.innerHTML.match(/(USDT<\/span>\s*)([\d,]+)/);
@@ -5845,6 +6026,133 @@ document.querySelectorAll('.pgback').forEach(function(b){
     pay.disabled = true; pay.textContent = 'Sent';
     document.getElementById('chPaid').classList.add('show');
   });
+})();
+</script>
+
+<script>
+(function(){
+  // ---- Signed-in state: topbar account menu + The Chart personalization ----
+  var zone = document.getElementById('acctZone');
+  var acctBtn = document.getElementById('acctBtn');
+  var ava = document.getElementById('acctAva');
+  var ava2 = document.getElementById('acctAva2');
+  var idChip = document.getElementById('acctId');
+  var idMenu = document.getElementById('acctIdMenu');
+  var nameEl = document.getElementById('acctName');
+
+  function closeMenu(){ zone.classList.remove('open'); acctBtn.setAttribute('aria-expanded','false'); }
+  function toggleMenu(){
+    var open = zone.classList.toggle('open');
+    acctBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  acctBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleMenu(); });
+  document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeMenu(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
+
+  function goChart(anchorId){
+    document.querySelectorAll('.side a').forEach(function(a){
+      if(a.textContent.trim() === 'The Chart') a.click();
+    });
+    if(anchorId){
+      setTimeout(function(){
+        var el = document.getElementById(anchorId);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 60);
+    }
+  }
+  document.getElementById('acctGoChart').addEventListener('click', function(){ closeMenu(); goChart(); });
+  document.getElementById('acctGoActivity').addEventListener('click', function(){ closeMenu(); goChart('chActivity'); });
+  document.getElementById('acctGoTx').addEventListener('click', function(){ closeMenu(); goChart('chTxSection'); });
+  document.getElementById('acctSupport').addEventListener('click', function(){
+    closeMenu();
+    document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim() === 'Triage') a.click(); });
+  });
+  document.getElementById('acctSignOut').addEventListener('click', function(){ closeMenu(); window.signOut(); });
+
+  function fillChart(user){
+    var alias = user.alias || (user.email ? user.email.split('@')[0] : 'Patient');
+    var setVal = function(id, v){ var el = document.getElementById(id); if(el) el.value = v; };
+    var setTxt = function(id, v){ var el = document.getElementById(id); if(el) el.textContent = v; };
+    setTxt('chBandId', user.id);
+    setTxt('chBandAlias', alias);
+    setVal('chAlias', alias);
+    setVal('chEmail', user.email || '—');
+    if(user.handle) setVal('chTg', '@' + user.handle);
+    setVal('chLink', 'https://pain.bet/r/' + user.id);
+  }
+
+  window.markSignedIn = function(user){
+    user = user || {};
+    if(!user.id) user.id = 'PB-' + String(Math.floor(100000 + Math.random() * 900000));
+    var label = user.email || (user.handle ? '@' + user.handle : 'Patient');
+    document.body.classList.add('signed-in');
+    idChip.textContent = user.id;
+    idMenu.textContent = user.id;
+    nameEl.textContent = label;
+    ava.textContent = label.replace('@','').slice(0,1).toUpperCase();
+    ava2.textContent = ava.textContent;
+    fillChart(user);
+    try{ sessionStorage.setItem('pb_session', JSON.stringify(user)); }catch(e){}
+  };
+
+  window.signOut = function(){
+    document.body.classList.remove('signed-in');
+    try{ sessionStorage.removeItem('pb_session'); }catch(e){}
+    if(document.body.classList.contains('view-chart')){
+      document.body.classList.remove('view-chart');
+      document.querySelectorAll('.side a').forEach(function(a){ a.classList.remove('on'); });
+      var lobby = null;
+      document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim().toLowerCase() === 'lobby') lobby = a; });
+      if(lobby) lobby.classList.add('on');
+      window.scrollTo(0,0);
+    }
+  };
+
+  // demo-only: restore the signed-in look across view navigation within the same tab
+  try{
+    var saved = sessionStorage.getItem('pb_session');
+    if(saved) window.markSignedIn(JSON.parse(saved));
+  }catch(e){}
+
+  // restore sportsbook activity placed in earlier sessions, then draw it into The Chart
+  try{
+    var savedBets = localStorage.getItem('pb_mybets');
+    if(savedBets && typeof myBets !== 'undefined'){
+      var restored = JSON.parse(savedBets);
+      myBets.length = 0;
+      restored.forEach(function(b){ myBets.push(b); });
+    }
+  }catch(e){}
+  if(typeof renderChartSports === 'function') renderChartSports();
+
+  // Discharge (withdrawal request) -> Transactions ledger. Previously a dead button.
+  var wdGo = document.getElementById('wdGo');
+  if(wdGo){
+    wdGo.addEventListener('click', function(){
+      var addrEl = document.getElementById('wdAddr');
+      var amtEl = document.getElementById('wdAmt');
+      var note = document.getElementById('wdNote');
+      var amt = parseFloat(amtEl.value);
+      if(!addrEl.value.trim() || !(amt > 0)){
+        note.textContent = 'Enter a destination address and an amount above 0.';
+        note.style.color = '#ff5c7c';
+        return;
+      }
+      var coin = document.getElementById('wdCoin').value.toUpperCase();
+      var tbody = document.getElementById('chTxBody');
+      if(tbody){
+        var row = document.createElement('tr');
+        row.innerHTML = '<td>Just now</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>' + coin + '</td>' +
+          '<td class="r amt">-' + amt.toFixed(amt < 1 ? 6 : 2) + '</td><td class="r"><span class="ch-pill pending">Pending</span></td>';
+        tbody.prepend(row);
+      }
+      note.textContent = 'Discharge requested — it now shows as pending in Transactions, on The Chart.';
+      note.style.color = '#7FD6E8';
+      wdGo.disabled = true;
+      wdGo.textContent = 'Requested';
+      addrEl.disabled = true; amtEl.disabled = true;
+    });
+  }
 })();
 </script>
 
