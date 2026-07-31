@@ -2279,6 +2279,59 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     border-radius:9px;padding:10px 11px;color:#e8eaee;font-size:12px;min-width:0}
   .addr-add input:focus,.addr-add select:focus{outline:none;border-color:rgba(224,22,60,.55)}
 
+  /* ===== recovery ===== */
+  .rec-in{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);
+    border-radius:10px;padding:12px 14px;color:#e8eaee;font-size:13px}
+  .rec-in:focus{outline:none;border-color:rgba(224,22,60,.6)}
+  .rec-alt{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);
+    font-size:11.5px;color:#6b7078}
+  .rec-alt a{color:#7FD6E8;text-decoration:none;font-size:11.5px}
+  .rec-alt a:hover{text-decoration:underline}
+  .rec-steps{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .rec-steps > div{display:flex;align-items:flex-start;gap:11px}
+  .rec-steps b{flex:none;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;
+    background:rgba(224,22,60,.14);color:#ff6b86;font-family:var(--mono);font-size:10px}
+  .rec-steps span{font-size:12.5px;color:#a8aeb8;line-height:1.55}
+  .rec-back{background:none;border:0;color:#8b909a;cursor:pointer;font-family:var(--mono);
+    font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;padding:12px 0 0;width:100%}
+  .rec-back:hover{color:#e8eaee}
+
+  /* ===== reality check ===== */
+  .rc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .rc-stat{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:13px}
+  .rc-stat b{display:block;font-family:var(--mono);font-size:19px;color:#fff}
+  .rc-stat b.up{color:#3ecf6a} .rc-stat b.down{color:#ff6b86}
+  .rc-stat span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a}
+  .rc-acts{display:flex;gap:9px;margin-top:6px}
+  .rc-acts button{flex:1;border-radius:var(--r-md);padding:13px}
+
+  /* ===== pending withdrawals ===== */
+  .pw-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .pw{display:flex;align-items:center;gap:12px;border:1px solid rgba(224,161,62,.35);
+    background:rgba(224,161,62,.06);border-radius:11px;padding:11px 13px}
+  .pw.rejected{border-color:rgba(224,22,60,.4);background:rgba(224,22,60,.07)}
+  .pw > div{flex:1;min-width:0}
+  .pw b{display:block;font-family:var(--mono);font-size:12.5px;color:#e8eaee}
+  .pw i{display:block;font-style:normal;font-size:10.5px;color:#8b909a;margin-top:2px}
+  .pw button{flex:none;background:none;border:0;color:#ff6b86;cursor:pointer;
+    font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 6px}
+  .pw button:hover{text-decoration:underline}
+
+  /* ===== email verification banner (site-wide — a warning nobody sees is
+     not a warning, so this sits under the topbar on every view) ===== */
+  .ev-bar{grid-column:1/3;display:none;align-items:center;gap:13px;flex-wrap:wrap;
+    border-bottom:1px solid rgba(224,161,62,.45);background:rgba(34,24,8,.97);
+    padding:11px 22px;position:sticky;top:64px;z-index:45}
+  body.email-unverified .ev-bar{display:flex}
+  @media(max-width:900px){ .ev-bar{grid-column:1;top:56px;padding:11px 14px} }
+  .ev-bar span{flex:1;min-width:200px;font-size:12.5px;color:#e0a13e}
+  .ev-bar b{color:#fff}
+  .ev-bar button{flex:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:#e0a13e;background:rgba(224,161,62,.14);border:1px solid rgba(224,161,62,.5);
+    border-radius:8px;padding:9px 13px;cursor:pointer}
+  .ev-bar button:hover{color:#fff;background:rgba(224,161,62,.26)}
+
   /* ===== two-factor ===== */
   .tfa-qr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
     height:150px;border:1px dashed rgba(255,255,255,.2);border-radius:12px;margin-bottom:16px;
@@ -2397,6 +2450,10 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   body.pb-locked .rg-lockbar{display:flex}
   .rg-lockbar b{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#ff6b86}
   .rg-lockbar span{font-size:12.5px;color:#e8eaee}
+  .rg-lockbar button{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);
+    border-radius:8px;padding:9px 14px;cursor:pointer;flex:none}
+  .rg-lockbar button:hover{background:rgba(255,255,255,.2)}
 
   /* ===== provably fair verifier ===== */
   .pf-lead{font-size:12.5px;color:#a8aeb8;line-height:1.65;margin:0 0 16px}
@@ -2577,6 +2634,9 @@ window.PB = (function(){
       },
       linked: { telegram:null, google:null, wallet:null },
       addresses: [],
+      emailVerified: false,
+      withdrawals: [],
+      session: { startedAt: Date.now(), wagered: 0, net: 0 },
       sessions: [
         { id:'cur', device:'This device', where:'Chrome · current session', when:Date.now(), current:true },
         { id:'s2',  device:'iPhone',      where:'Safari · mobile',          when:Date.now()-864e5*2 },
@@ -2827,11 +2887,15 @@ window.PB = (function(){
       state.balance.real += amount;
       return Promise.resolve(state.balance).then(tap);
     },
-    requestWithdrawal: function(amount){
+    requestWithdrawal: function(amount, coin){
       state.balance.real -= amount;
       state.balance.locked += amount;
       state.verification.cumulativeWithdrawn += amount;
-      return Promise.resolve({ status:'pending' }).then(tap);
+      if(!state.withdrawals) state.withdrawals = [];
+      var rec = { id:'w' + Date.now(), amount:amount, coin:coin || 'USDT',
+                  at:Date.now(), status:'pending' };
+      state.withdrawals.unshift(rec);
+      return Promise.resolve(rec).then(tap);
     }
   };
   function tap(v){ emit(); return v; }
@@ -2944,6 +3008,13 @@ window.PB = (function(){
     <a href="#"><svg class="ic"><use href="#i-chat"/></svg><span class="lbl">Triage</span></a>
   </aside>
   <div class="side-scrim" id="sideScrim"></div>
+
+  <div class="ev-bar">
+    <span><b>Confirm your email.</b> Until you do we can't send you a password reset — so losing your password
+      would lock you out for good.</span>
+    <button type="button" id="evResend">Resend the email</button>
+    <button type="button" id="evDemo">Confirm (demo)</button>
+  </div>
 
   <main class="main">
     
@@ -3724,7 +3795,12 @@ window.PB = (function(){
   </div>
 
   <div class="acct-pane" data-pane="wallet">
-    <div class="pscard">
+    <div class="pscard" id="pwCard" hidden>
+      <div class="ch-actrow"><div class="kick">In flight</div><span class="meta">Cancel any time before it's signed</span></div>
+      <div class="pw-list" id="pwList"></div>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
       <div class="ch-actrow"><div class="kick">Withdrawal addresses</div><span class="meta">Saved &amp; whitelisted</span></div>
       <p class="rg-sub">Save the wallets you cash out to so you never paste an address under pressure. A saved
         address can be used straight from the Discharge screen.</p>
@@ -4310,7 +4386,7 @@ window.PB = (function(){
           <span>I am at least 18 years old and I accept the <a>Terms</a> and <a>Privacy Policy</a>. I confirm online gambling is legal in my jurisdiction.</span>
         </div>
       </div>
-      <div class="forgot" id="forgotRow" style="display:none">Forgot password?</div>
+      <div class="forgot" id="forgotRow" style="display:none"><a href="javascript:void(0)" id="forgotLink">Forgot password?</a></div>
 
       <button class="go" id="admGo" type="submit" disabled>Admit me</button>
     </form>
@@ -4574,6 +4650,102 @@ window.PB = (function(){
         <span>Pragmatic Play</span><span>Evolution</span><span>Hacksaw</span><span>Nolimit City</span><span>Push Gaming</span><span>BGaming</span><span>Relax Gaming</span><span>Play'n GO</span><span>Big Time Gaming</span><span>Thunderkick</span><span>ELK Studios</span><span>Red Tiger</span><span>NetEnt</span><span>Wazdan</span><span>PG Soft</span><span>Spinomenal</span><span>3 Oaks</span><span>Playson</span>
       </div>
       <div class="mnote">132 providers integrated at launch. Full catalogue lands with the platform build.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="rc-modal">
+  <div class="modal" role="dialog" aria-label="Session reminder" style="max-width:400px">
+    <div class="mhead"><h3>You've been playing a while</h3></div>
+    <div class="mbody">
+      <p class="pf-lead">You asked us to check in. Here's where you are — no judgement, just the numbers.</p>
+      <div class="rc-stats">
+        <div class="rc-stat"><b id="rcTime">0m</b><span>This session</span></div>
+        <div class="rc-stat"><b id="rcNet">0.00</b><span>Net this session · USDT</span></div>
+        <div class="rc-stat"><b id="rcWagered">0</b><span>Wagered · USDT</span></div>
+        <div class="rc-stat"><b id="rcBal">0</b><span>Balance · USDT</span></div>
+      </div>
+      <div class="rc-acts">
+        <button class="btn btn-red" id="rcContinue" type="button">Keep playing</button>
+        <button class="btn" id="rcBreak" type="button"
+                style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#e8eaee">Take a break</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="recover-modal">
+  <div class="modal" role="dialog" aria-label="Recover your account" style="max-width:440px">
+    <div class="mhead"><h3 id="recTitle">Recover access</h3><button class="x" onclick="closeModal('recover-modal')">✕</button></div>
+    <div class="mbody">
+
+      <div id="recStep1">
+        <p class="pf-lead">Tell us the email on the account and we'll send a reset link. It's valid for 30 minutes
+          and can only be used once.</p>
+        <label class="tfa-lab" for="recEmail">Email</label>
+        <input class="rec-in" id="recEmail" type="email" autocomplete="email" placeholder="you@example.com">
+        <div class="tfa-err" id="recErr" hidden></div>
+        <button class="btn btn-red" id="recSend" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">Send reset link</button>
+        <div class="rec-alt">
+          <span>Lost your authenticator too?</span>
+          <a href="javascript:void(0)" id="recLost2fa">Recover a locked account</a>
+        </div>
+      </div>
+
+      <div id="recStep2" hidden>
+        <div class="tfa-done">Link sent</div>
+        <p class="pf-lead">If <b id="recSentTo">that address</b> is on an account, a reset link is on its way.
+          Check spam before asking us — it's usually there.</p>
+        <p class="kyc-fine">We don't confirm whether an email is registered. That's deliberate: it stops someone
+          using this form to find out who has an account here.</p>
+        <button class="btn btn-red" id="recDemo" type="button"
+                style="width:100%;margin-top:6px;border-radius:var(--r-md)">Open the link (demo)</button>
+      </div>
+
+      <div id="recStep3" hidden>
+        <p class="pf-lead">Choose a new password. This signs out every other device.</p>
+        <label class="tfa-lab" for="recNew">New password</label>
+        <input class="rec-in" id="recNew" type="password" autocomplete="new-password"
+               placeholder="Minimum 8 characters, one number">
+        <div class="meter" id="recMeterWrap"><i id="recMeter"></i></div>
+        <div class="tfa-err" id="recNewErr" hidden></div>
+        <button class="btn btn-red" id="recSave" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">Set password and sign in</button>
+      </div>
+
+      <div id="recStep4" hidden>
+        <p class="pf-lead">If you've lost both your password and your authenticator, we have to verify you're the
+          account holder before we can unlock it. That means identity documents, and it is deliberately slower
+          than the normal route.</p>
+        <div class="rec-steps">
+          <div><b>1</b><span>Write to Triage from the email on the account</span></div>
+          <div><b>2</b><span>Send a government ID and a selfie holding it</span></div>
+          <div><b>3</b><span>We reset 2FA once verified — usually within a day</span></div>
+        </div>
+        <a class="btn btn-red" href="mailto:support@painbet.com?subject=Locked%20account%20recovery"
+           style="display:block;text-align:center;width:100%;margin-top:14px;border-radius:var(--r-md);text-decoration:none">Write to Triage</a>
+        <button class="rec-back" id="recBack" type="button">← Back</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="login2fa-modal">
+  <div class="modal" role="dialog" aria-label="Two-factor required" style="max-width:400px">
+    <div class="mhead"><h3>Two-factor</h3><button class="x" onclick="closeModal('login2fa-modal')">✕</button></div>
+    <div class="mbody">
+      <p class="pf-lead" id="l2fWhy">Enter the 6-digit code from your authenticator to finish signing in.</p>
+      <input class="tfa-code" id="l2fCode" inputmode="numeric" autocomplete="one-time-code"
+             maxlength="9" placeholder="000000">
+      <div class="tfa-err" id="l2fErr" hidden></div>
+      <button class="btn btn-red" id="l2fGo" type="button"
+              style="width:100%;margin-top:14px;border-radius:var(--r-md)">Sign in</button>
+      <div class="rec-alt">
+        <a href="javascript:void(0)" id="l2fBackup">Use a backup code</a>
+        <a href="javascript:void(0)" id="l2fLost">Lost both?</a>
+      </div>
     </div>
   </div>
 </div>
@@ -5180,8 +5352,18 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
         veil.classList.remove('neuron-mode');
         if(window.markSignedIn) window.markSignedIn({id: pid, email: email.value.trim()});
       } else {
-        if(window.markSignedIn) window.markSignedIn({email: email.value.trim()});
-        close();
+        // If this account has 2FA, possession must be proved before the
+        // session is issued — otherwise the second factor is decoration.
+        var finish = function(){
+          if(window.markSignedIn) window.markSignedIn({email: email.value.trim()});
+          close();
+        };
+        if(window.PB && PB.state.twofa.enabled && PB.requireLogin2fa){
+          close();
+          PB.requireLogin2fa().then(function(ok){ if(ok) finish(); });
+        } else {
+          finish();
+        }
       }
     }
     if(window.fireAuthCinematic){
@@ -7171,7 +7353,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
             '<td class="r amt">-' + amt.toFixed(amt < 1 ? 6 : 2) + '</td><td class="r"><span class="ch-pill pending">Pending</span></td>';
           tbody.prepend(row);
         }
-        if(window.PB) PB.api.requestWithdrawal(amt);
+        if(window.PB) PB.api.requestWithdrawal(amt, coin);
         note.textContent = 'Discharge requested — it now shows as pending in Transactions, on The Chart.';
         note.style.color = '#7FD6E8';
         wdGo.disabled = true;
@@ -7515,7 +7697,9 @@ document.querySelectorAll('.pgback').forEach(function(b){
   // ---- site-wide lock enforcement -----------------------------------
   var bar = document.createElement('div');
   bar.className = 'rg-lockbar';
-  bar.innerHTML = '<b id="rgLockKind">On a break</b><span id="rgLockMsg"></span>';
+  // The bar promises withdrawals stay open, so it has to offer the route.
+  bar.innerHTML = '<b id="rgLockKind">On a break</b><span id="rgLockMsg"></span>' +
+    '<button type="button" id="rgLockWd">Withdraw my balance</button>';
   document.body.appendChild(bar);
 
   function applyLock(){
@@ -8225,6 +8409,282 @@ document.querySelectorAll('.pgback').forEach(function(b){
     empty.classList.toggle('on', !!show);
     if(show) empty.textContent = 'Nothing matches "' + q + '". Try a provider or a category.';
   }
+})();
+</script>
+
+<!-- ===================================================================
+     Dead ends — the routes a user needs when something has gone wrong.
+     Everything here exists because without it somebody is stuck: locked
+     out with no reset, no authenticator and no way back, on a break with
+     no visible route to their own money, or waiting on a withdrawal they
+     can't cancel.
+
+     DEVS: recovery, email confirmation and withdrawal cancellation all go
+     through PB.api.* stubs. The 2FA login challenge is validated on the
+     client here only so the flow is demonstrable — it must be enforced
+     server-side before a session is ever issued.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  if(!window.PB) return;
+
+  // emailVerified / withdrawals / session live in PB defaults(), so reset
+  // and stale saved payloads can never leave them undefined here.
+  PB.api.requestPasswordReset = function(email){
+    // Always resolves — never reveal whether an address is registered.
+    return Promise.resolve({ sent: true });
+  };
+  PB.api.completePasswordReset = function(next){
+    if(!(next && next.length >= 8 && /\d/.test(next)))
+      return Promise.reject({ message:'Use at least 8 characters including a number.' });
+    return Promise.resolve(true);
+  };
+  PB.api.resendVerificationEmail = function(){ return Promise.resolve(true); };
+  PB.api.confirmEmail = function(){
+    PB.state.emailVerified = true;
+    return persist();
+  };
+  PB.api.cancelWithdrawal = function(id){
+    var w = PB.state.withdrawals.filter(function(x){ return x.id === id; })[0];
+    if(!w || w.status !== 'pending') return Promise.reject({ message:'Already on its way — too late to cancel.' });
+    w.status = 'cancelled';
+    // Funds return clean: out of locked, back to withdrawable. No re-wagering.
+    PB.state.balance.locked = Math.max(0, PB.state.balance.locked - w.amount);
+    PB.state.balance.real += w.amount;
+    PB.state.verification.cumulativeWithdrawn =
+      Math.max(0, PB.state.verification.cumulativeWithdrawn - w.amount);
+    return persist();
+  };
+  function persist(){
+    try{ localStorage.setItem('pb_state_v1', JSON.stringify(PB.state)); }catch(e){}
+    repaint();
+    return Promise.resolve(true);
+  }
+
+  function show(id){ if(typeof openModal === 'function') openModal(id); }
+  function hide(id){ if(typeof closeModal === 'function') closeModal(id); }
+  function step(n){
+    ['recStep1','recStep2','recStep3','recStep4'].forEach(function(s, i){
+      var el = document.getElementById(s); if(el) el.hidden = (i + 1) !== n;
+    });
+    var t = document.getElementById('recTitle');
+    if(t) t.textContent = n === 3 ? 'New password' : (n === 4 ? 'Locked out' : 'Recover access');
+  }
+
+  // ---- forgot password -------------------------------------------------
+  var forgot = document.getElementById('forgotLink');
+  if(forgot) forgot.addEventListener('click', function(){
+    var typed = (document.getElementById('admEmail') || {}).value || '';
+    var f = document.getElementById('recEmail'); if(f) f.value = typed.trim();
+    step(1);
+    document.getElementById('recErr').hidden = true;
+    // close the admissions modal so they aren't stacked
+    var veil = document.getElementById('admVeil'); if(veil) veil.classList.remove('open');
+    show('recover-modal');
+  });
+
+  var recSend = document.getElementById('recSend');
+  if(recSend) recSend.addEventListener('click', function(){
+    var email = (document.getElementById('recEmail').value || '').trim();
+    var err = document.getElementById('recErr');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+      err.hidden = false; err.textContent = 'Enter a valid email address.';
+      return;
+    }
+    err.hidden = true;
+    PB.api.requestPasswordReset(email).then(function(){
+      document.getElementById('recSentTo').textContent = email;
+      step(2);
+    });
+  });
+
+  // Stands in for arriving from the emailed link.
+  var recDemo = document.getElementById('recDemo');
+  if(recDemo) recDemo.addEventListener('click', function(){ step(3); });
+
+  var recNew = document.getElementById('recNew');
+  if(recNew) recNew.addEventListener('input', function(){
+    var v = recNew.value, s = 0;
+    if(v.length >= 8) s++; if(/\d/.test(v)) s++; if(/[A-Z]/.test(v)) s++; if(/[^A-Za-z0-9]/.test(v)) s++;
+    var m = document.getElementById('recMeter');
+    m.style.width = (s * 25) + '%';
+    m.style.background = s <= 1 ? '#e0163c' : s === 2 ? '#e08a16' : '#3ecf6a';
+  });
+
+  var recSave = document.getElementById('recSave');
+  if(recSave) recSave.addEventListener('click', function(){
+    var err = document.getElementById('recNewErr');
+    PB.api.completePasswordReset(recNew.value).then(function(){
+      err.hidden = true;
+      hide('recover-modal');
+      if(PB.api.revokeAllOthers) PB.api.revokeAllOthers();
+      var email = (document.getElementById('recEmail').value || '').trim();
+      if(window.markSignedIn) window.markSignedIn({ email: email });
+    }).catch(function(e){ err.hidden = false; err.textContent = e.message; });
+  });
+
+  var lost = document.getElementById('recLost2fa');
+  if(lost) lost.addEventListener('click', function(){ step(4); });
+  var back = document.getElementById('recBack');
+  if(back) back.addEventListener('click', function(){ step(1); });
+
+  // ---- 2FA at sign-in ---------------------------------------------------
+  // PB.requireLogin2fa() resolves true once the user proves possession.
+  var l2fResolve = null, usingBackup = false;
+  PB.requireLogin2fa = function(){
+    if(!PB.state.twofa.enabled) return Promise.resolve(true);
+    usingBackup = false;
+    var code = document.getElementById('l2fCode');
+    code.value = ''; code.maxLength = 6; code.placeholder = '000000';
+    document.getElementById('l2fWhy').textContent =
+      'Enter the 6-digit code from your authenticator to finish signing in.';
+    document.getElementById('l2fErr').hidden = true;
+    show('login2fa-modal');
+    return new Promise(function(res){ l2fResolve = res; });
+  };
+
+  var l2fBackup = document.getElementById('l2fBackup');
+  if(l2fBackup) l2fBackup.addEventListener('click', function(){
+    usingBackup = !usingBackup;
+    var code = document.getElementById('l2fCode');
+    code.value = '';
+    code.maxLength = usingBackup ? 9 : 6;
+    code.placeholder = usingBackup ? 'XXXX-XXXX' : '000000';
+    document.getElementById('l2fWhy').textContent = usingBackup
+      ? 'Enter one of the backup codes you saved when you turned 2FA on. Each works once.'
+      : 'Enter the 6-digit code from your authenticator to finish signing in.';
+    l2fBackup.textContent = usingBackup ? 'Use my authenticator' : 'Use a backup code';
+  });
+
+  var l2fLost = document.getElementById('l2fLost');
+  if(l2fLost) l2fLost.addEventListener('click', function(){
+    hide('login2fa-modal');
+    step(4); show('recover-modal');
+  });
+
+  var l2fGo = document.getElementById('l2fGo');
+  if(l2fGo) l2fGo.addEventListener('click', function(){
+    var val = (document.getElementById('l2fCode').value || '').trim().toUpperCase();
+    var err = document.getElementById('l2fErr');
+    var codes = PB.state.twofa.backupCodes || [];
+    l2fGo.disabled = true;
+    var check = usingBackup
+      ? Promise.resolve(codes.indexOf(val) !== -1)
+      : PB.totp.verify(PB.state.twofa.secret, val);
+    check.then(function(ok){
+      l2fGo.disabled = false;
+      if(!ok){
+        err.hidden = false;
+        err.textContent = usingBackup ? 'That backup code is not valid or has been used.' : 'Incorrect code.';
+        return;
+      }
+      if(usingBackup){
+        PB.state.twofa.backupCodes = codes.filter(function(c){ return c !== val; });
+        persist();
+      }
+      hide('login2fa-modal');
+      if(l2fResolve){ l2fResolve(true); l2fResolve = null; }
+    });
+  });
+
+  // ---- locked account: route to the money -------------------------------
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('#rgLockWd')) return;
+    var dep = document.getElementById('depVeil');
+    if(dep) dep.classList.add('open');
+    var wd = document.getElementById('dtWd');
+    if(wd) wd.click();
+  });
+
+  // ---- email verification ------------------------------------------------
+  function paintEmail(){
+    var signedIn = PB.state.account !== 'anonymous' && PB.state.account !== 'closed';
+    document.body.classList.toggle('email-unverified', signedIn && !PB.state.emailVerified);
+  }
+  var evResend = document.getElementById('evResend');
+  if(evResend) evResend.addEventListener('click', function(){
+    PB.api.resendVerificationEmail().then(function(){
+      evResend.textContent = 'Sent — check your inbox';
+      setTimeout(function(){ evResend.textContent = 'Resend the email'; }, 3500);
+    });
+  });
+  var evDemo = document.getElementById('evDemo');
+  if(evDemo) evDemo.addEventListener('click', function(){ PB.api.confirmEmail(); });
+
+  // ---- pending withdrawals -----------------------------------------------
+  function paintWithdrawals(){
+    var card = document.getElementById('pwCard');
+    var list = document.getElementById('pwList');
+    if(!card || !list || !PB.state.withdrawals) return;
+    var live = PB.state.withdrawals.filter(function(w){
+      return w.status === 'pending' || w.status === 'rejected'; });
+    card.hidden = live.length === 0;
+    list.innerHTML = live.map(function(w){
+      var rejected = w.status === 'rejected';
+      return '<div class="pw' + (rejected ? ' rejected' : '') + '">' +
+        '<div><b>' + w.amount.toFixed(2) + ' ' + w.coin + '</b><i>' +
+        (rejected ? ('Declined — ' + (w.reason || 'contact Triage')) :
+          ('Awaiting signing · requested ' + PB.fmtDate(w.at))) + '</i></div>' +
+        (rejected ? '' : '<button type="button" data-cancelwd="' + w.id + '">Cancel</button>') +
+        '</div>';
+    }).join('');
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-cancelwd]'); if(!b) return;
+    PB.api.cancelWithdrawal(b.dataset.cancelwd).catch(function(err){ alert(err.message); });
+  });
+
+  // ---- live balance in the topbar -----------------------------------------
+  function paintBalance(){
+    var el = document.querySelector('.topbar .bal');
+    if(!el || !PB.state.balance) return;
+    if(PB.state.account === 'anonymous') return;   // keep the marketing figure while logged out
+    var b = PB.state.balance;
+    var ccy = (PB.state.prefs && PB.state.prefs.display.currency) || 'USDT';
+    var total = b.real + b.bonus;
+    el.innerHTML = ccy + ' ' + total.toLocaleString(undefined, {maximumFractionDigits:2}) +
+      (b.bonus > 0 ? ' <span style="color:#e0a13e">(+' + b.bonus.toFixed(0) + ' bonus)</span>' : '') +
+      ' · <b>PK 1,250</b>';
+    el.title = 'Withdrawable ' + b.real.toFixed(2) + ' · bonus ' + b.bonus.toFixed(2) +
+               ' · in play ' + b.locked.toFixed(2);
+  }
+
+  // ---- reality check --------------------------------------------------------
+  var rcTimer = null;
+  function armReminder(){
+    if(rcTimer){ clearInterval(rcTimer); rcTimer = null; }
+    var mins = PB.state.rg.sessionReminderMin;
+    if(!mins || PB.state.account === 'anonymous') return;
+    rcTimer = setInterval(fireReminder, mins * 60 * 1000);
+  }
+  function fireReminder(){
+    if(PB.isLocked()) return;
+    var s = PB.state.session;
+    var mins = Math.round((Date.now() - s.startedAt) / 60000);
+    document.getElementById('rcTime').textContent =
+      mins >= 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : mins + 'm';
+    var net = document.getElementById('rcNet');
+    net.textContent = (s.net >= 0 ? '+' : '') + s.net.toFixed(2);
+    net.className = s.net > 0 ? 'up' : (s.net < 0 ? 'down' : '');
+    document.getElementById('rcWagered').textContent = Math.round(s.wagered).toLocaleString();
+    document.getElementById('rcBal').textContent = Math.round(PB.state.balance.real).toLocaleString();
+    show('rc-modal');
+  }
+  PB.fireReminder = fireReminder;   // exposed so it can be triggered in testing
+  var rcContinue = document.getElementById('rcContinue');
+  if(rcContinue) rcContinue.addEventListener('click', function(){ hide('rc-modal'); });
+  var rcBreak = document.getElementById('rcBreak');
+  if(rcBreak) rcBreak.addEventListener('click', function(){
+    hide('rc-modal');
+    document.querySelectorAll('.side a').forEach(function(a){
+      if(a.textContent.trim() === 'The Chart') a.click(); });
+    if(PB.showAccountTab) PB.showAccountTab('limits');
+  });
+
+  function repaint(){ paintEmail(); paintWithdrawals(); paintBalance(); }
+  PB.onChange(function(){ repaint(); armReminder(); });
+  repaint(); armReminder();
 })();
 </script>
 
