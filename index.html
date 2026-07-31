@@ -2173,6 +2173,20 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     border:1px solid rgba(127,214,232,.35);background:rgba(127,214,232,.07);border-radius:12px;padding:13px 15px}
   .ch-unpaid b{font-family:var(--mono);font-size:16px;color:#fff}
   .ch-unpaid span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#9aa0aa;display:block}
+  /* ===== game search ===== */
+  .search{padding:0}
+  .search input{width:100%;min-width:0;background:none;border:0;color:var(--ink);font-size:12px;
+    font-family:inherit;padding:8px 12px}
+  .search input::placeholder{color:var(--ink-dim)}
+  .search input:focus{outline:none}
+  .search:focus-within{border-color:rgba(224,22,60,.5)}
+  .search input::-webkit-search-cancel-button{filter:invert(.6)}
+  body.searching .rail > *:not(.tile),
+  body.searching .row-head .railnav{opacity:.35}
+  .tile[hidden]{display:none !important}
+  .search-empty{display:none;padding:26px 4px;text-align:center;color:var(--ink-dim);font-size:13px}
+  body.searching .search-empty.on{display:block}
+
   /* ===== account tabs ===== */
   .acct-tabs{display:flex;gap:6px;margin:18px 0 16px;overflow-x:auto;scrollbar-width:none;
     border-bottom:1px solid rgba(255,255,255,.09);padding-bottom:0}
@@ -2554,7 +2568,20 @@ window.PB = (function(){
         lockUntil: null,        // epoch ms, or Infinity for permanent
         lockKind: null          // 'cooloff' | 'exclusion'
       },
-      counters: { day: null, deposit: 0, loss: 0, wager: 0 }
+      counters: { day: null, deposit: 0, loss: 0, wager: 0 },
+      prefs: {
+        notif: { tx:{email:true,telegram:false}, security:{email:true,telegram:false},
+                 rewards:{email:true,telegram:true}, marketing:{email:false,telegram:false} },
+        display: { currency:'USDT', odds:'decimal', tz:'local' },
+        betting: { oddsChange:'up', defaultStake:25 }
+      },
+      linked: { telegram:null, google:null, wallet:null },
+      addresses: [],
+      sessions: [
+        { id:'cur', device:'This device', where:'Chrome · current session', when:Date.now(), current:true },
+        { id:'s2',  device:'iPhone',      where:'Safari · mobile',          when:Date.now()-864e5*2 },
+        { id:'s3',  device:'Windows PC',  where:'Firefox',                  when:Date.now()-864e5*9 }
+      ]
     };
   }
 
@@ -2839,7 +2866,7 @@ window.PB = (function(){
       <a href="#">Arcade</a>
     </nav>
     <div class="grow"></div>
-    <div class="search">Search games</div>
+    <div class="search"><input id="gameSearch" type="search" placeholder="Search games" autocomplete="off" aria-label="Search games"></div>
     <div class="bal">USDT 2,840 · <b>PK 1,250</b></div>
     <button class="btn" id="btnSignIn">Sign in</button>
     <div class="acctzone" id="acctZone">
@@ -2996,47 +3023,47 @@ window.PB = (function(){
 <section class="lobbyview" id="secOriginals">
   <div class="row-head"><h2>Pain Originals</h2><span class="meta">Provably fair · fixed 1% edge</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('originals')">View all</button></div>
   <div class="rail originals">
-    <div class="tile orig" title="Crash · 10,000x">
+    <div class="tile orig" title="Crash · 10,000x" data-game="crash" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/flatline-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">FLATLINE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Mines · 24 cells">
+    <div class="tile orig" title="Mines · 24 cells" data-game="mines" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/nerve-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">NERVE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Plinko · 16 rows">
+    <div class="tile orig" title="Plinko · 16 rows" data-game="plinko" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/bonesaw-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">BONESAW</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Dice · 98% RTP">
+    <div class="tile orig" title="Dice · 98% RTP" data-game="dice" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/dosage-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">DOSAGE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Limbo · 1,000,000x">
+    <div class="tile orig" title="Limbo · 1,000,000x" data-game="limbo" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/tolerance-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">SPIKE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Keno · 10 picks">
+    <div class="tile orig" title="Keno · 10 picks" data-game="keno" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/threshold-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">PULSE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Blackjack · sedate to 21">
+    <div class="tile orig" title="Blackjack · sedate to 21" data-game="blackjack" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/blackout-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">BLACKOUT</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Dice duel · one reroll">
+    <div class="tile orig" title="Dice duel · one reroll" data-game="dice-duel" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/rigor-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">RIGOR</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Ward hold · commit">
+    <div class="tile orig" title="Ward hold · commit" data-game="ward-hold" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/relapse-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">RELAPSE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
@@ -3047,47 +3074,47 @@ window.PB = (function(){
 <section class="lobbyview" id="secSlots">
   <div class="row-head"><h2>Pick your poison</h2><span class="meta">5,000+ games</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('slots')">View all</button></div>
   <div class="rail slots">
-    <div class="tile" title="Wanted Dead or a Wild">
+    <div class="tile" title="Wanted Dead or a Wild" data-game="wanted-dead-or-a-wild" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/wanted.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Gates of Olympus 1000">
+    <div class="tile" title="Gates of Olympus 1000" data-game="gates-of-olympus-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/gates.png')"></div>
       <span class="badge drops">Drops &amp; Wins</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Le Bandit">
+    <div class="tile" title="Le Bandit" data-game="le-bandit" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/lebandit.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Sweet Bonanza 1000">
+    <div class="tile" title="Sweet Bonanza 1000" data-game="sweet-bonanza-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/bonanza.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Zeus vs Hades">
+    <div class="tile" title="Zeus vs Hades" data-game="zeus-vs-hades" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/zeusvshades.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="RIP City">
+    <div class="tile" title="RIP City" data-game="rip-city" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/ripcity.png')"></div>
       <span class="badge paying">Paying</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="The Dog House">
+    <div class="tile" title="The Dog House" data-game="the-dog-house" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/doghouse.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Sugar Rush 1000">
+    <div class="tile" title="Sugar Rush 1000" data-game="sugar-rush-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/sugarrush.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Starlight Princess 1000">
+    <div class="tile" title="Starlight Princess 1000" data-game="starlight-princess-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/starlight.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Hand of Anubis">
+    <div class="tile" title="Hand of Anubis" data-game="hand-of-anubis" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/anubis.png')"></div>
       <span class="badge new">New</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Fire Portals">
+    <div class="tile" title="Fire Portals" data-game="fire-portals" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/fireportals.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
@@ -3097,111 +3124,111 @@ window.PB = (function(){
 <section class="lobbyview" id="secLive">
   <div class="row-head"><h2>Live</h2><span class="meta">Real dealers, real time</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('live')">View all</button></div>
   <div class="rail live">
-    <div class="tile" title="Crazy Time">
+    <div class="tile" title="Crazy Time" data-game="crazy-time" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/crazy-time.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Lightning Roulette">
+    <div class="tile" title="Lightning Roulette" data-game="lightning-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/lightning-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Stock Market">
+    <div class="tile" title="Stock Market" data-game="stock-market" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/stock-market.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Funky Time">
+    <div class="tile" title="Funky Time" data-game="funky-time" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/funky-time.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Monopoly Live">
+    <div class="tile" title="Monopoly Live" data-game="monopoly-live" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/monopoly-live.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Roulette 3000">
+    <div class="tile" title="Mega Roulette 3000" data-game="mega-roulette-3000" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-roulette-3000.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Roulette">
+    <div class="tile" title="Mega Roulette" data-game="mega-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Gates of Olympus Roulette">
+    <div class="tile" title="Gates of Olympus Roulette" data-game="gates-of-olympus-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/gates-of-olympus-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Crazy Balls">
+    <div class="tile" title="Crazy Balls" data-game="crazy-balls" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/crazy-balls.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="XXXtreme Lightning Roulette">
+    <div class="tile" title="XXXtreme Lightning Roulette" data-game="xxxtreme-lightning-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/xxxtreme-lightning-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Ice Fishing">
+    <div class="tile" title="Ice Fishing" data-game="ice-fishing" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/ice-fishing.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Red Door Roulette">
+    <div class="tile" title="Red Door Roulette" data-game="red-door-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/red-door-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Monopoly Big Baller">
+    <div class="tile" title="Monopoly Big Baller" data-game="monopoly-big-baller" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/monopoly-big-baller.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Amazing Baccarat">
+    <div class="tile" title="Amazing Baccarat" data-game="amazing-baccarat" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/amazing-baccarat.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Dragon Tiger">
+    <div class="tile" title="Dragon Tiger" data-game="dragon-tiger" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/dragon-tiger-pp.jpg')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Roulette">
+    <div class="tile" title="Roulette" data-game="roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/roulette-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Fortune Roulette">
+    <div class="tile" title="Fortune Roulette" data-game="fortune-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/fortune-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Baccarat">
+    <div class="tile" title="Baccarat" data-game="baccarat" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/baccarat-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Sic Bo">
+    <div class="tile" title="Mega Sic Bo" data-game="mega-sic-bo" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-sic-bo.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Blackjack">
+    <div class="tile" title="Blackjack" data-game="blackjack-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/blackjack-pp.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Roulette">
+    <div class="tile" title="Roulette" data-game="roulette-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/roulette-pp.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Extreme Texas Hold'em">
+    <div class="tile" title="Extreme Texas Hold'em" data-game="extreme-texas-hold-em" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/extreme-texas-holdem.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Dragon Tiger">
+    <div class="tile" title="Dragon Tiger" data-game="dragon-tiger-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/dragon-tiger-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Blackjack">
+    <div class="tile" title="Blackjack" data-game="blackjack-3" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/blackjack-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Baccarat">
+    <div class="tile" title="Mega Baccarat" data-game="mega-baccarat" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-baccarat.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Baccarat">
+    <div class="tile" title="Baccarat" data-game="baccarat-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/baccarat-pp.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="One Blackjack">
+    <div class="tile" title="One Blackjack" data-game="one-blackjack" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/one-blackjack.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
@@ -4521,7 +4548,8 @@ window.PB = (function(){
       <h5>Policy</h5>
       Deposits and withdrawals are monitored on-chain. Structuring, mixing-service proximity, and sanctioned-address exposure trigger review.
       <h5>Verification threshold</h5>
-      Play below the threshold requires no KYC. Cumulative withdrawals above it trigger a one-time verification.
+      Play below the threshold requires no KYC. Once your cumulative withdrawals pass 2,000 USDT a one-time
+      verification is required; your progress toward it is shown in your account under Verification.
       <h5>Reporting</h5>
       Suspicious activity is reported to the licensing authority as required by law.
     </div>
@@ -4529,7 +4557,9 @@ window.PB = (function(){
       <h5>18+ only</h5>
       Gambling involves risk. Only play with what you can afford to lose.
       <h5>Your tools</h5>
-      Deposit limits, loss limits, session reminders, cool-off, and permanent self-exclusion are available in your account, effective immediately.
+      Deposit limits, loss limits, wager limits, session reminders, cool-off and self-exclusion are in your account,
+      under Limits &amp; breaks. Lowering a limit takes effect immediately; raising one takes 24 hours. Breaks and
+      self-exclusion cannot be shortened once set, by you or by us. Withdrawing stays available throughout.
       <h5>Help</h5>
       If gambling stops being fun, reach out: BeGambleAware.org, Gamblers Anonymous, or your local support line. Support can enable self-exclusion for you at any time.
     </div>
@@ -6283,7 +6313,11 @@ const stage  = canvas ? canvas.parentElement : null;
 const viewEl = document.getElementById('view-synapse');
 if (canvas && stage && viewEl) {
 
-  const TARGET = 50000;                 // bounty + overload threshold
+  const TARGET = 50000;                 // pool size that trips the firing threshold
+  // House-funded prize, split by contribution share when the boss flatlines.
+  // Kept separate from TARGET so the two can be tuned independently — the
+  // margin between them is the house position on the whole mechanic.
+  const BOUNTY = 50000;
   const REST_MV = -70.0, FIRE_MV = -55.0;
   const YOU = { name: 'you', stake: 0, you: true };
   const BOT_NAMES = ['nervend','flatlin','morphi','bonesa','stingr','agonyx','numbsk','dosage','clotshot','tremor','ischemia','venous','ripcord','coldcut','lastrit'];
@@ -6390,9 +6424,12 @@ if (canvas && stage && viewEl) {
   function addStake(r, amt){ r.stake += amt; pool += amt; miniPulse(); if(pool>=TARGET && !firing) flatline(); }
   function flatline(){ firing=true; state=2; actProg=0; material.uniforms.uPulseProgress.value=-10;
     if(stage) stage.classList.add('firing');
-    const total=pool, payout=Math.round(total*(YOU.stake/Math.max(total,1)));
-    // prepend a cleared-raid row to the leaderboard header note
-    const nf=$('syn-nextfire'); if(nf) nf.textContent='cleared · '+fmt(total)+' USDT paid';
+    // The bounty is funded by the house, NOT skimmed from the pool. Paying
+    // `pool × (stake/pool)` cancels down to `stake`, which would hand every
+    // raider back exactly what they put in — no upside, no house position,
+    // and a contradiction of the copy promising a share of the bounty.
+    const total=pool, payout=Math.round(BOUNTY*(YOU.stake/Math.max(total,1)));
+    const nf=$('syn-nextfire'); if(nf) nf.textContent='cleared · '+fmt(BOUNTY)+' USDT bounty paid';
     lastYouPayout=payout;
   }
   let lastYouPayout=0;
@@ -6429,7 +6466,7 @@ if (canvas && stage && viewEl) {
     if($('syn-mv'))       $('syn-mv').textContent = (mv>=0?'+':'−')+Math.abs(mv).toFixed(1)+' mV';
     if($('syn-yourstake'))$('syn-yourstake').textContent = fmt(YOU.stake)+' USDT';
     if($('syn-yourshare'))$('syn-yourshare').textContent = (share*100).toFixed(2)+'%';
-    if($('syn-yourpayout'))$('syn-yourpayout').textContent = fmt(share*TARGET)+' USDT';
+    if($('syn-yourpayout'))$('syn-yourpayout').textContent = fmt(share*BOUNTY)+' USDT';
     const st=$('syn-status'); if(st){ st.textContent = firing?'Flatline':(crit?'Critical':'Raid live'); st.style.color = (firing||crit)?'var(--redhi)':'var(--ink-hi)'; }
     // leaderboard
     if(lb){
@@ -7807,24 +7844,8 @@ document.querySelectorAll('.pgback').forEach(function(b){
   'use strict';
   if(!window.PB) return;
 
-  // ---- extend the state layer with settings ------------------------
-  var st = PB.state;
-  if(!st.prefs){
-    st.prefs = {
-      notif: { tx:{email:true,telegram:false}, security:{email:true,telegram:false},
-               rewards:{email:true,telegram:true}, marketing:{email:false,telegram:false} },
-      display: { currency:'USDT', odds:'decimal', tz:'local' },
-      betting: { oddsChange:'up', defaultStake:25 }
-    };
-  }
-  if(!st.linked) st.linked = { telegram:null, google:null, wallet:null };
-  if(!st.addresses) st.addresses = [];
-  if(!st.sessions) st.sessions = [
-    { id:'cur', device:'This device', where:'Chrome · current session', when:Date.now(), current:true },
-    { id:'s2',  device:'iPhone',      where:'Safari · mobile',          when:Date.now()-864e5*2 },
-    { id:'s3',  device:'Windows PC',  where:'Firefox',                  when:Date.now()-864e5*9 }
-  ];
-
+  // prefs / linked / addresses / sessions all live in PB defaults(), so a
+  // reset or a stale saved payload can never leave them undefined here.
   PB.api.setPrefs = function(next){
     PB.state.prefs = next;
     return Promise.resolve(next).then(function(v){ PB.onChange && bump(); return v; });
@@ -8031,7 +8052,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
   function repaintAll(){ paintNotif(); paintSelects(); paintLinked(); paintSessions(); paintAddresses(); }
 
   function paintNotif(){
-    if(!notifGrid) return;
+    if(!notifGrid || !PB.state.prefs) return;
     var n = PB.state.prefs.notif;
     notifGrid.querySelectorAll('.pref-row').forEach(function(row){
       var key = row.dataset.n;
@@ -8042,13 +8063,14 @@ document.querySelectorAll('.pgback').forEach(function(b){
     });
   }
   function paintSelects(){
+    if(!PB.state.prefs) return;
     var d = PB.state.prefs.display, bt = PB.state.prefs.betting;
     var set = function(id, v){ var el = document.getElementById(id); if(el) el.value = v; };
     set('prefCcy', d.currency); set('prefOdds', d.odds); set('prefTz', d.tz);
     set('prefOddsChange', bt.oddsChange); set('prefStake', bt.defaultStake);
   }
   function paintLinked(){
-    if(!lkList) return;
+    if(!lkList || !PB.state.linked) return;
     var cap = function(s){ return s.charAt(0).toUpperCase() + s.slice(1); };
     lkList.querySelectorAll('.lk').forEach(function(row){
       var kind = row.dataset.lk;
@@ -8061,7 +8083,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
     });
   }
   function paintSessions(){
-    if(!sessList) return;
+    if(!sessList || !PB.state.sessions) return;
     sessList.innerHTML = PB.state.sessions.map(function(s){
       return '<div class="sess' + (s.current ? ' current' : '') + '">' +
         '<div><b>' + s.device + '</b><i>' + s.where + ' · ' +
@@ -8072,7 +8094,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
     }).join('');
   }
   function paintAddresses(){
-    if(!addrList) return;
+    if(!addrList || !PB.state.addresses) return;
     var a = PB.state.addresses;
     if(!a.length){
       addrList.innerHTML = '<div class="addr-empty">No saved addresses yet.</div>';
@@ -8087,6 +8109,122 @@ document.querySelectorAll('.pgback').forEach(function(b){
 
   PB.onChange(repaintAll);
   repaintAll();
+})();
+</script>
+
+<!-- ===================================================================
+     Game launch seam + search.
+
+     DEVS: this is the one function to fill in. Every tile in the lobby now
+     carries data-game (unique — the duplicated Live titles are
+     disambiguated), data-cat and data-provider. One delegated listener
+     resolves a click to launchGame(); replace the body of PB.launchGame
+     with the provider mount and nothing else in the lobby has to change.
+
+     The gate stack already runs before it: anonymous users get the intake
+     modal, locked accounts are told why, and limits are enforced — so the
+     provider integration never has to think about eligibility.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+
+  // ---- the seam ------------------------------------------------------
+  window.PB = window.PB || {};
+  PB.launchGame = function(game){
+    // game = { id, title, category, provider, mode: 'real' | 'demo' }
+    console.info('[PB] launchGame', game);
+    var msg = game.mode === 'demo'
+      ? 'Demo mode for "' + game.title + '" mounts here.'
+      : 'Real-money round for "' + game.title + '" mounts here.';
+    alert(msg + '\n\nid: ' + game.id +
+          '\ncategory: ' + game.category +
+          '\nprovider: ' + (game.provider || '(unassigned — set data-provider)') +
+          '\n\nDEVS: replace PB.launchGame() with the provider mount.');
+  };
+
+  function tileTitle(el){
+    return (el.getAttribute('title') || '').split('·')[0].trim();
+  }
+
+  document.addEventListener('click', function(e){
+    var tile = e.target.closest('[data-game]');
+    if(!tile) return;
+
+    var game = {
+      id: tile.dataset.game,
+      title: tileTitle(tile),
+      category: tile.dataset.cat,
+      provider: tile.dataset.provider || null,
+      mode: 'real'
+    };
+
+    // Eligibility first — logic spec §03/§07.
+    if(window.PB && PB.gate){
+      var g = PB.gate('bet', { amount: 0 });
+      if(!g.ok){
+        if(g.code === 'anonymous'){
+          // Send them to intake rather than a dead end.
+          document.querySelectorAll('.topbar .btn').forEach(function(b){
+            if(b.textContent.trim().toLowerCase() === 'sign in') b.click(); });
+          return;
+        }
+        if(g.code === 'locked'){ alert(g.message); return; }
+        // Limits and balance are per-stake, so they're checked at stake
+        // entry inside the game rather than blocking launch.
+      }
+    }
+    PB.launchGame(game);
+  });
+
+  // ---- search --------------------------------------------------------
+  var input = document.getElementById('gameSearch');
+  if(!input) return;
+  var tiles = null;
+
+  function collect(){
+    tiles = Array.prototype.map.call(document.querySelectorAll('[data-game]'), function(el){
+      return { el: el, hay: (tileTitle(el) + ' ' + (el.dataset.cat || '') + ' ' +
+                             (el.dataset.provider || '')).toLowerCase() };
+    });
+  }
+
+  var t;
+  input.addEventListener('input', function(){
+    clearTimeout(t);
+    t = setTimeout(run, 90);
+  });
+  input.addEventListener('search', run);   // fires on the native clear button
+
+  function run(){
+    if(!tiles) collect();
+    var q = input.value.trim().toLowerCase();
+    document.body.classList.toggle('searching', !!q);
+    if(!q){
+      tiles.forEach(function(x){ x.el.hidden = false; });
+      markEmpty(false);
+      return;
+    }
+    var hits = 0;
+    tiles.forEach(function(x){
+      var match = x.hay.indexOf(q) !== -1;
+      x.el.hidden = !match;
+      if(match) hits++;
+    });
+    markEmpty(hits === 0, q);
+  }
+
+  var empty = null;
+  function markEmpty(show, q){
+    if(!empty){
+      empty = document.createElement('div');
+      empty.className = 'search-empty';
+      var host = document.querySelector('.rail');
+      if(host && host.parentNode) host.parentNode.insertBefore(empty, host);
+    }
+    empty.classList.toggle('on', !!show);
+    if(show) empty.textContent = 'Nothing matches "' + q + '". Try a provider or a category.';
+  }
 })();
 </script>
 
