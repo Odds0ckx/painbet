@@ -2173,6 +2173,98 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     border:1px solid rgba(127,214,232,.35);background:rgba(127,214,232,.07);border-radius:12px;padding:13px 15px}
   .ch-unpaid b{font-family:var(--mono);font-size:16px;color:#fff}
   .ch-unpaid span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#9aa0aa;display:block}
+  /* ===== account tabs ===== */
+  .acct-tabs{display:flex;gap:6px;margin:18px 0 16px;overflow-x:auto;scrollbar-width:none;
+    border-bottom:1px solid rgba(255,255,255,.09);padding-bottom:0}
+  .acct-tabs::-webkit-scrollbar{display:none}
+  .acct-tabs button{flex:none;font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+    color:#8b909a;background:none;border:0;border-bottom:2px solid transparent;
+    padding:11px 13px;cursor:pointer;white-space:nowrap;transition:color .18s,border-color .18s}
+  .acct-tabs button:hover{color:#e8eaee}
+  .acct-tabs button.on{color:#fff;border-bottom-color:var(--blood)}
+  .acct-pane{display:none}
+  .acct-pane.on{display:block}
+  .acct-pane > .pscard:first-child{margin-top:0}
+  .acct-pane[data-pane="profile"],.acct-pane[data-pane="security"],.acct-pane[data-pane="referral"]{}
+
+  /* ===== linked accounts ===== */
+  .lk-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .lk{display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.1);
+    border-radius:11px;padding:11px 13px}
+  .lk .ic{width:30px;height:30px;flex:none;display:grid;place-items:center;
+    background:rgba(255,255,255,.05);border-radius:9px}
+  .lk .ic svg{width:16px;height:16px}
+  .lk > div{flex:1;min-width:0}
+  .lk b{display:block;font-size:12.5px;color:#e8eaee}
+  .lk i{display:block;font-style:normal;font-family:var(--mono);font-size:10.5px;color:#6b7078;margin-top:2px;
+    word-break:break-all}
+  .lk.linked i{color:#7FD6E8}
+  .lk button{flex:none}
+
+  /* ===== sessions ===== */
+  .sess-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .sess{display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.1);
+    border-radius:11px;padding:11px 13px}
+  .sess.current{border-color:rgba(127,214,232,.4);background:rgba(127,214,232,.05)}
+  .sess > div{flex:1;min-width:0}
+  .sess b{display:block;font-size:12.5px;color:#e8eaee}
+  .sess i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:2px}
+  .sess .tag{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:#7FD6E8;flex:none}
+  .sess button{flex:none;background:none;border:0;color:#ff6b86;cursor:pointer;
+    font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 6px}
+  .sess button:hover{text-decoration:underline}
+
+  /* ===== preference toggles ===== */
+  .pref-grid{border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;margin-top:12px}
+  .pref-head,.pref-row{display:grid;grid-template-columns:1fr 74px 74px;gap:10px;align-items:center;padding:11px 14px}
+  .pref-head{background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.1)}
+  .pref-head span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8b909a;text-align:center}
+  .pref-head span:first-child{text-align:left}
+  .pref-row{border-bottom:1px solid rgba(255,255,255,.06)}
+  .pref-row:last-child{border-bottom:0}
+  .pref-name{font-size:12.5px;color:#e8eaee}
+  .pref-name i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:2px}
+  .pref-row button{justify-self:center;width:40px;height:22px;border-radius:999px;border:0;cursor:pointer;
+    background:rgba(255,255,255,.13);position:relative;transition:background .2s}
+  .pref-row button::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;
+    border-radius:50%;background:#fff;transition:left .2s}
+  .pref-row button.on{background:rgba(127,214,232,.6)}
+  .pref-row button.on::after{left:21px}
+  .pref-row button.locked{opacity:.5;cursor:not-allowed}
+  .pref-selects{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+  @media(max-width:640px){.pref-selects{grid-template-columns:1fr}}
+  .pref-selects label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;color:#9aa0aa;margin-bottom:6px}
+  .pref-selects select,.pref-selects input{width:100%;background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:10px 12px;color:#e8eaee;font-size:12.5px}
+  .pref-selects select:focus,.pref-selects input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+  .bst-empty{border:1px dashed rgba(255,255,255,.16);border-radius:12px;padding:20px;text-align:center;margin-top:12px}
+  .bst-empty b{display:block;font-size:13px;color:#c3c8d1;margin-bottom:5px}
+  .bst-empty span{font-size:11.5px;color:#6b7078;line-height:1.6;display:block;max-width:46ch;margin:0 auto}
+
+  /* ===== withdrawal address book ===== */
+  .addr-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .addr{display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.1);
+    border-radius:11px;padding:11px 13px}
+  .addr .coin{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:#7FD6E8;
+    background:rgba(127,214,232,.12);border-radius:6px;padding:4px 8px;flex:none}
+  .addr > div{flex:1;min-width:0}
+  .addr b{display:block;font-size:12.5px;color:#e8eaee}
+  .addr i{display:block;font-style:normal;font-family:var(--mono);font-size:10px;color:#6b7078;margin-top:2px;
+    word-break:break-all}
+  .addr button{flex:none;background:none;border:0;color:#ff6b86;cursor:pointer;
+    font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 6px}
+  .addr button:hover{text-decoration:underline}
+  .addr-empty{border:1px dashed rgba(255,255,255,.16);border-radius:11px;padding:16px;text-align:center;
+    font-size:12px;color:#6b7078}
+  .addr-add{display:grid;grid-template-columns:1fr 90px 2fr auto;gap:8px;margin-top:12px}
+  @media(max-width:760px){.addr-add{grid-template-columns:1fr 1fr}.addr-add input:nth-of-type(2){grid-column:1/-1}}
+  .addr-add input,.addr-add select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:10px 11px;color:#e8eaee;font-size:12px;min-width:0}
+  .addr-add input:focus,.addr-add select:focus{outline:none;border-color:rgba(224,22,60,.55)}
+
   /* ===== two-factor ===== */
   .tfa-qr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
     height:150px;border:1px dashed rgba(255,255,255,.2);border-radius:12px;margin-bottom:16px;
@@ -3241,7 +3333,18 @@ window.PB = (function(){
     </div>
   </div>
 
-  <div class="ch-grid">
+  <nav class="acct-tabs" id="acctTabs" role="tablist" aria-label="Account sections">
+    <button type="button" data-tab="profile" class="on" role="tab">Profile</button>
+    <button type="button" data-tab="security" role="tab">Security</button>
+    <button type="button" data-tab="verify" role="tab">Verification</button>
+    <button type="button" data-tab="prefs" role="tab">Preferences</button>
+    <button type="button" data-tab="limits" role="tab">Limits &amp; breaks</button>
+    <button type="button" data-tab="wallet" role="tab">Wallet</button>
+    <button type="button" data-tab="activity" role="tab">Activity</button>
+    <button type="button" data-tab="referral" role="tab">Referral</button>
+  </nav>
+
+  <div class="acct-pane on" data-pane="profile">
     <div class="pscard ch-sec">
       <div class="kick">Patient details</div>
       <div class="ch-form">
@@ -3260,9 +3363,49 @@ window.PB = (function(){
         <div class="ch-note" id="chSaved">Chart updated. Changes are live.</div>
       </div>
 
-      <div class="kick" style="margin-top:22px">Security</div>
+      <div class="kick" style="margin-top:24px">Linked accounts</div>
+      <p class="rg-sub">Any of these can sign you in. Keep at least one, plus an email and password.</p>
+      <div class="lk-list" id="lkList">
+        <div class="lk" data-lk="telegram"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M21 4L2.7 11.2c-.8.3-.8 1.4.05 1.7l4.6 1.5 1.7 5.2c.25.8 1.3.95 1.8.3l2.5-3 4.7 3.5c.6.45 1.5.1 1.65-.65L22.6 5.2c.2-.9-.7-1.6-1.6-1.2z" stroke="#2AABEE" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <div><b>Telegram</b><i id="lkTelegramVal">Not linked</i></div>
+          <button class="ch-btn alt" type="button" data-act="link">Link</button></div>
+        <div class="lk" data-lk="google"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.4" stroke="#8A96F0" stroke-width="1.6"/><path d="M12 8.4v7.2M8.4 12h7.2" stroke="#8A96F0" stroke-width="1.6"/></svg></span>
+          <div><b>Google</b><i id="lkGoogleVal">Not linked</i></div>
+          <button class="ch-btn alt" type="button" data-act="link">Link</button></div>
+        <div class="lk" data-lk="wallet"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="#F0B90B" stroke-width="1.6"/><path d="M3 9h18" stroke="#F0B90B" stroke-width="1.6"/></svg></span>
+          <div><b>Wallet</b><i id="lkWalletVal">Not linked</i></div>
+          <button class="ch-btn alt" type="button" data-act="link">Link</button></div>
+      </div>
+      <div class="ch-note" id="lkNote"></div>
+
+      <div class="kick" style="margin-top:24px">Leaving</div>
+      <p class="rg-sub">Closing is permanent and different from taking a break. Withdraw your balance first —
+        we will not hold it, but recovering a closed account is not possible.</p>
+      <div class="ch-actions">
+        <button class="ch-btn alt" id="chExport" type="button">Download my data</button>
+        <button class="ch-btn alt" id="chClose" type="button" style="border-color:rgba(224,22,60,.45);color:#ff8fa3">Close account</button>
+      </div>
+      <div class="ch-note" id="chCloseNote"></div>
+    </div>
+  </div>
+
+  <div class="acct-pane" data-pane="security">
+    <div class="pscard ch-sec">
+      <div class="kick">Password</div>
+      <div class="ch-form">
+        <div class="ch-frow">
+          <div><label for="pwCurrent">Current password</label><input type="password" id="pwCurrent" autocomplete="current-password"></div>
+          <div><label for="pwNew">New password</label><input type="password" id="pwNew" autocomplete="new-password" placeholder="Minimum 8 characters, one number"></div>
+        </div>
+        <div class="ch-actions">
+          <button class="ch-btn" id="pwSave" type="button">Change password</button>
+        </div>
+        <div class="ch-note" id="pwNote"></div>
+      </div>
+
+      <div class="kick" style="margin-top:24px">Recovery</div>
       <div class="ch-actions" style="margin-top:4px">
-        <button class="ch-btn alt" id="chReset" type="button">Reset password</button>
+        <button class="ch-btn alt" id="chReset" type="button">Email me a reset link</button>
       </div>
       <div class="ch-note" id="chResetNote">Reset link sent to your email. Valid for 30 minutes.</div>
       <div class="ch-2fa">
@@ -3285,8 +3428,18 @@ window.PB = (function(){
         <button class="ch-btn alt" id="sdVerify" type="button">Open verifier</button>
       </div>
       <div class="ch-note" id="sdNote"></div>
-    </div>
 
+      <div class="kick" style="margin-top:24px">Where you're signed in</div>
+      <p class="rg-sub">If you don't recognise something here, sign it out and change your password.</p>
+      <div class="sess-list" id="sessList"></div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn alt" id="sessAll" type="button">Sign out everywhere else</button>
+      </div>
+      <div class="ch-note" id="sessNote"></div>
+    </div>
+  </div>
+
+  <div class="acct-pane" data-pane="referral">
     <div class="pscard ch-sec">
       <div class="kick">Referral coms · 0.5% of every wager</div>
       <div class="af-linkrow" style="margin-top:4px">
@@ -3316,6 +3469,91 @@ window.PB = (function(){
     </div>
   </div>
 
+  <div class="acct-pane" data-pane="prefs">
+    <div class="pscard">
+      <div class="ch-actrow"><div class="kick">Notifications</div><span class="meta">Where we reach you</span></div>
+      <p class="rg-sub">Transactional alerts about your own money stay on — you can choose the channel, not
+        whether we tell you. Everything else is yours to switch off.</p>
+      <div class="pref-grid" id="notifGrid">
+        <div class="pref-head"><span></span><span>Email</span><span>Telegram</span></div>
+        <div class="pref-row" data-n="tx">
+          <span class="pref-name">Deposits &amp; withdrawals<i>Confirmations and anything that needs you</i></span>
+          <button type="button" data-ch="email" class="on" aria-label="Email deposits and withdrawals"></button>
+          <button type="button" data-ch="telegram" aria-label="Telegram deposits and withdrawals"></button>
+        </div>
+        <div class="pref-row" data-n="security">
+          <span class="pref-name">Security<i>New sign-ins, password and 2FA changes</i></span>
+          <button type="button" data-ch="email" class="on locked" aria-label="Email security alerts" title="Security alerts by email cannot be switched off"></button>
+          <button type="button" data-ch="telegram" aria-label="Telegram security alerts"></button>
+        </div>
+        <div class="pref-row" data-n="rewards">
+          <span class="pref-name">Rewards<i>Anesthesia payouts, level-ups, PainKiller drops</i></span>
+          <button type="button" data-ch="email" class="on" aria-label="Email rewards"></button>
+          <button type="button" data-ch="telegram" class="on" aria-label="Telegram rewards"></button>
+        </div>
+        <div class="pref-row" data-n="marketing">
+          <span class="pref-name">Promotions<i>Offers, tournaments and campaigns</i></span>
+          <button type="button" data-ch="email" aria-label="Email promotions"></button>
+          <button type="button" data-ch="telegram" aria-label="Telegram promotions"></button>
+        </div>
+      </div>
+      <div class="ch-note" id="notifNote"></div>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
+      <div class="ch-actrow"><div class="kick">Display</div><span class="meta">How numbers and times read</span></div>
+      <div class="pref-selects">
+        <div><label for="prefCcy">Show balances in</label>
+          <select id="prefCcy">
+            <option value="USDT">USDT</option><option value="BTC">BTC</option>
+            <option value="ETH">ETH</option><option value="USD">USD equivalent</option>
+            <option value="EUR">EUR equivalent</option>
+          </select></div>
+        <div><label for="prefOdds">Odds format</label>
+          <select id="prefOdds">
+            <option value="decimal">Decimal — 2.50</option>
+            <option value="fractional">Fractional — 3/2</option>
+            <option value="american">American — +150</option>
+          </select></div>
+        <div><label for="prefTz">Time zone</label>
+          <select id="prefTz">
+            <option value="local">Device local</option>
+            <option value="utc">UTC</option>
+          </select></div>
+      </div>
+      <p class="kyc-fine">Anesthesia is always calculated Monday–Sunday in UTC regardless of this setting, so a
+        display change never moves your payout window.</p>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
+      <div class="ch-actrow"><div class="kick">Betting</div><span class="meta">Defaults for the bet slip</span></div>
+      <div class="pref-selects">
+        <div><label for="prefOddsChange">If odds change before my bet is placed</label>
+          <select id="prefOddsChange">
+            <option value="up">Accept only if they improve</option>
+            <option value="any">Accept any change</option>
+            <option value="none">Never — ask me again</option>
+          </select></div>
+        <div><label for="prefStake">Default stake · USDT</label>
+          <input type="number" id="prefStake" min="0" step="1" value="25"></div>
+      </div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn" id="prefSave" type="button">Save preferences</button>
+      </div>
+      <div class="ch-note" id="prefNote"></div>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
+      <div class="ch-actrow"><div class="kick">Boosters</div><span class="meta">Bonus funds &amp; wagering</span></div>
+      <div class="bst-empty" id="bstEmpty">
+        <b>No active Booster</b>
+        <span>When you claim one, its wagering progress, maximum bet and expiry will show here — and you can
+          give it up at any time to free your balance.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="acct-pane" data-pane="verify">
   <div class="pscard" id="chKyc" style="margin-top:16px">
     <div class="ch-actrow"><div class="kick">Verification</div><span class="meta" id="kycTierLabel">Tier 0 &middot; unverified</span></div>
 
@@ -3354,7 +3592,9 @@ window.PB = (function(){
 
     <div class="ch-note" id="kycNote"></div>
   </div>
+  </div>
 
+  <div class="acct-pane" data-pane="limits">
   <div class="pscard" id="chRG" style="margin-top:16px">
     <div class="ch-actrow"><div class="kick">Responsible gambling</div><span class="meta">Your tools &middot; effective immediately</span></div>
     <p class="rg-lead">Lowering a limit takes effect the moment you save it. Raising one takes 24 hours, so a
@@ -3428,7 +3668,9 @@ window.PB = (function(){
       <a href="https://www.begambleaware.org" target="_blank" rel="noopener">BeGambleAware.org</a> &middot;
       <a href="https://www.gamblersanonymous.org" target="_blank" rel="noopener">Gamblers Anonymous</a>.</p>
   </div>
+  </div>
 
+  <div class="acct-pane" data-pane="activity">
   <div class="pscard" id="chActivity" style="margin-top:16px">
     <div class="ch-actrow"><div class="kick">Game activity</div><span class="meta">Casino rounds · this patient record</span></div>
     <table class="ch-comtbl">
@@ -3452,6 +3694,26 @@ window.PB = (function(){
     </table>
   </div>
 
+  </div>
+
+  <div class="acct-pane" data-pane="wallet">
+    <div class="pscard">
+      <div class="ch-actrow"><div class="kick">Withdrawal addresses</div><span class="meta">Saved &amp; whitelisted</span></div>
+      <p class="rg-sub">Save the wallets you cash out to so you never paste an address under pressure. A saved
+        address can be used straight from the Discharge screen.</p>
+      <div class="addr-list" id="addrList"></div>
+      <div class="addr-add">
+        <input type="text" id="addrLabel" placeholder="Label — e.g. Ledger cold" aria-label="Address label">
+        <select id="addrCoin" aria-label="Address coin">
+          <option>USDT</option><option>BTC</option><option>ETH</option>
+          <option>USDC</option><option>BNB</option><option>TRX</option><option>TON</option>
+        </select>
+        <input type="text" id="addrValue" placeholder="Wallet address" spellcheck="false" aria-label="Wallet address">
+        <button class="ch-btn" id="addrSave" type="button">Save</button>
+      </div>
+      <div class="ch-note" id="addrNote"></div>
+    </div>
+
   <div class="pscard" id="chTxSection" style="margin-top:16px">
     <div class="ch-actrow"><div class="kick">Transactions</div><span class="meta">Deposits &amp; withdrawals</span></div>
     <table class="ch-comtbl">
@@ -3463,6 +3725,7 @@ window.PB = (function(){
         <tr><td>11 Jul</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>USDT</td><td class="r amt">-240.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
       </tbody>
     </table>
+  </div>
   </div>
 </section>
 
@@ -6745,20 +7008,17 @@ document.querySelectorAll('.pgback').forEach(function(b){
   document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeMenu(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
 
-  function goChart(anchorId){
+  function goChart(tab){
     document.querySelectorAll('.side a').forEach(function(a){
       if(a.textContent.trim() === 'The Chart') a.click();
     });
-    if(anchorId){
-      setTimeout(function(){
-        var el = document.getElementById(anchorId);
-        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
-      }, 60);
+    if(tab && window.PB && PB.showAccountTab){
+      setTimeout(function(){ PB.showAccountTab(tab); }, 60);
     }
   }
-  document.getElementById('acctGoChart').addEventListener('click', function(){ closeMenu(); goChart(); });
-  document.getElementById('acctGoActivity').addEventListener('click', function(){ closeMenu(); goChart('chActivity'); });
-  document.getElementById('acctGoTx').addEventListener('click', function(){ closeMenu(); goChart('chTxSection'); });
+  document.getElementById('acctGoChart').addEventListener('click', function(){ closeMenu(); goChart('profile'); });
+  document.getElementById('acctGoActivity').addEventListener('click', function(){ closeMenu(); goChart('activity'); });
+  document.getElementById('acctGoTx').addEventListener('click', function(){ closeMenu(); goChart('wallet'); });
   document.getElementById('acctSupport').addEventListener('click', function(){
     closeMenu();
     document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim() === 'Triage') a.click(); });
@@ -6857,8 +7117,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
             var v = document.getElementById('depVeil'); if(v) v.classList.remove('open');
             document.querySelectorAll('.side a').forEach(function(a){
               if(a.textContent.trim() === 'The Chart') a.click(); });
-            var k = document.getElementById('chKyc');
-            if(k) k.scrollIntoView({behavior:'smooth', block:'start'});
+            if(PB.showAccountTab) PB.showAccountTab('verify');
           }, 900);
         }
         if(g.code === '2fa'){
@@ -7529,6 +7788,305 @@ document.querySelectorAll('.pgback').forEach(function(b){
 
   PB.onChange(paint);
   paint();
+})();
+</script>
+
+<!-- ===================================================================
+     Account area — tabs plus the settings that previously had no home.
+     Every control here exists so a user is never stranded: they can stop
+     marketing, revoke a session, unlink a provider, change a password,
+     save a payout address, pick an odds format, and close the account.
+
+     DEVS: preferences persist to PB.state.prefs via PB.api.setPrefs.
+     Sessions, linked accounts and the address book are seeded with
+     representative data and are read/written through PB.api.* stubs —
+     swap those for real endpoints; the UI reads only from PB.state.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  if(!window.PB) return;
+
+  // ---- extend the state layer with settings ------------------------
+  var st = PB.state;
+  if(!st.prefs){
+    st.prefs = {
+      notif: { tx:{email:true,telegram:false}, security:{email:true,telegram:false},
+               rewards:{email:true,telegram:true}, marketing:{email:false,telegram:false} },
+      display: { currency:'USDT', odds:'decimal', tz:'local' },
+      betting: { oddsChange:'up', defaultStake:25 }
+    };
+  }
+  if(!st.linked) st.linked = { telegram:null, google:null, wallet:null };
+  if(!st.addresses) st.addresses = [];
+  if(!st.sessions) st.sessions = [
+    { id:'cur', device:'This device', where:'Chrome · current session', when:Date.now(), current:true },
+    { id:'s2',  device:'iPhone',      where:'Safari · mobile',          when:Date.now()-864e5*2 },
+    { id:'s3',  device:'Windows PC',  where:'Firefox',                  when:Date.now()-864e5*9 }
+  ];
+
+  PB.api.setPrefs = function(next){
+    PB.state.prefs = next;
+    return Promise.resolve(next).then(function(v){ PB.onChange && bump(); return v; });
+  };
+  PB.api.revokeSession = function(id){
+    PB.state.sessions = PB.state.sessions.filter(function(s){ return s.id !== id; });
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.revokeAllOthers = function(){
+    PB.state.sessions = PB.state.sessions.filter(function(s){ return s.current; });
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.linkProvider = function(kind, handle){
+    PB.state.linked[kind] = handle;
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.unlinkProvider = function(kind){
+    PB.state.linked[kind] = null;
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.saveAddress = function(entry){
+    PB.state.addresses.push(entry);
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.deleteAddress = function(i){
+    PB.state.addresses.splice(i,1);
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.changePassword = function(current, next){
+    // Stub: a real backend verifies `current` and enforces its own policy.
+    if(!current) return Promise.reject({ code:'current', message:'Enter your current password.' });
+    if(!(next && next.length >= 8 && /\d/.test(next)))
+      return Promise.reject({ code:'weak', message:'Use at least 8 characters including a number.' });
+    return Promise.resolve(true);
+  };
+  PB.api.closeAccount = function(){
+    PB.state.account = 'closed';
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  function bump(){ try{ localStorage.setItem('pb_state_v1', JSON.stringify(PB.state)); }catch(e){}
+    PB.api.signIn && 0; repaintAll(); }
+
+  // ---- tabs ---------------------------------------------------------
+  var tabs = document.getElementById('acctTabs');
+  if(tabs){
+    tabs.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-tab]'); if(!b) return;
+      showTab(b.dataset.tab);
+    });
+  }
+  function showTab(name){
+    document.querySelectorAll('.acct-tabs button').forEach(function(b){
+      b.classList.toggle('on', b.dataset.tab === name);
+      b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false');
+    });
+    document.querySelectorAll('.acct-pane').forEach(function(p){
+      p.classList.toggle('on', p.dataset.pane === name);
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  PB.showAccountTab = showTab;
+
+  function say(id, msg, bad){
+    var el = document.getElementById(id); if(!el) return;
+    el.textContent = msg;
+    el.style.color = bad ? '#ff6b86' : '#7FD6E8';
+    el.classList.add('show');
+  }
+
+  // ---- notifications -------------------------------------------------
+  var notifGrid = document.getElementById('notifGrid');
+  if(notifGrid) notifGrid.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-ch]'); if(!b) return;
+    if(b.classList.contains('locked')){
+      say('notifNote', 'Security alerts by email stay on — they are how you find out if someone else gets in.', true);
+      return;
+    }
+    var row = b.closest('.pref-row').dataset.n;
+    var ch = b.dataset.ch;
+    var next = JSON.parse(JSON.stringify(PB.state.prefs));
+    next.notif[row][ch] = !next.notif[row][ch];
+    PB.api.setPrefs(next).then(function(){
+      say('notifNote', 'Saved.', false);
+    });
+  });
+
+  // ---- display + betting ---------------------------------------------
+  var prefSave = document.getElementById('prefSave');
+  if(prefSave) prefSave.addEventListener('click', function(){
+    var next = JSON.parse(JSON.stringify(PB.state.prefs));
+    next.display.currency = document.getElementById('prefCcy').value;
+    next.display.odds     = document.getElementById('prefOdds').value;
+    next.display.tz       = document.getElementById('prefTz').value;
+    next.betting.oddsChange  = document.getElementById('prefOddsChange').value;
+    next.betting.defaultStake = Math.max(0, Number(document.getElementById('prefStake').value) || 0);
+    PB.api.setPrefs(next).then(function(){
+      say('prefNote', 'Preferences saved. The bet slip and odds display use them from now on.', false);
+    });
+  });
+
+  // ---- linked accounts ------------------------------------------------
+  var lkList = document.getElementById('lkList');
+  if(lkList) lkList.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-act]'); if(!b) return;
+    var kind = b.closest('.lk').dataset.lk;
+    var linked = PB.state.linked[kind];
+    if(linked){
+      // Never let someone strand themselves without a way back in.
+      var others = Object.keys(PB.state.linked).filter(function(k){ return PB.state.linked[k]; });
+      var hasEmail = !!(PB.state.user && PB.state.user.email);
+      if(others.length === 1 && !hasEmail){
+        say('lkNote', 'This is your only way to sign in. Add an email and password first.', true);
+        return;
+      }
+      if(!confirm('Unlink ' + kind + '? You will no longer be able to sign in with it.')) return;
+      PB.api.unlinkProvider(kind).then(function(){ say('lkNote', kind + ' unlinked.', false); });
+    } else {
+      // Stub: a real flow hands off to the provider's OAuth screen.
+      var demo = { telegram:'@wardrat77', google:'wardrat@gmail.com', wallet:'0x71C…9e4b' }[kind];
+      PB.api.linkProvider(kind, demo).then(function(){ say('lkNote', kind + ' linked.', false); });
+    }
+  });
+
+  // ---- sessions --------------------------------------------------------
+  var sessList = document.getElementById('sessList');
+  if(sessList) sessList.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-sess]'); if(!b) return;
+    PB.api.revokeSession(b.dataset.sess).then(function(){
+      say('sessNote', 'Signed out on that device.', false);
+    });
+  });
+  var sessAll = document.getElementById('sessAll');
+  if(sessAll) sessAll.addEventListener('click', function(){
+    if(!confirm('Sign out everywhere except this device?')) return;
+    PB.api.revokeAllOthers().then(function(){
+      say('sessNote', 'All other sessions ended.', false);
+    });
+  });
+
+  // ---- password ---------------------------------------------------------
+  var pwSave = document.getElementById('pwSave');
+  if(pwSave) pwSave.addEventListener('click', function(){
+    PB.api.changePassword(
+      document.getElementById('pwCurrent').value,
+      document.getElementById('pwNew').value
+    ).then(function(){
+      document.getElementById('pwCurrent').value = '';
+      document.getElementById('pwNew').value = '';
+      say('pwNote', 'Password changed. Other sessions have been signed out.', false);
+      PB.api.revokeAllOthers();
+    }).catch(function(err){ say('pwNote', err.message, true); });
+  });
+
+  // ---- address book ------------------------------------------------------
+  var addrSave = document.getElementById('addrSave');
+  if(addrSave) addrSave.addEventListener('click', function(){
+    var label = document.getElementById('addrLabel').value.trim();
+    var coin  = document.getElementById('addrCoin').value;
+    var val   = document.getElementById('addrValue').value.trim();
+    if(!label || !val){ say('addrNote', 'Give it a label and an address.', true); return; }
+    PB.api.saveAddress({ label:label, coin:coin, value:val }).then(function(){
+      document.getElementById('addrLabel').value = '';
+      document.getElementById('addrValue').value = '';
+      say('addrNote', 'Saved. It will appear on the Discharge screen.', false);
+    });
+  });
+  var addrList = document.getElementById('addrList');
+  if(addrList) addrList.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-addr]'); if(!b) return;
+    PB.api.deleteAddress(Number(b.dataset.addr)).then(function(){
+      say('addrNote', 'Address removed.', false);
+    });
+  });
+
+  // ---- data export + close account ----------------------------------------
+  var exp = document.getElementById('chExport');
+  if(exp) exp.addEventListener('click', function(){
+    // Real implementation queues a server-side export and emails a link.
+    var blob = new Blob([JSON.stringify(PB.state, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'painbet-account-data.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    say('chCloseNote', 'Your data has been downloaded.', false);
+  });
+  var closeBtn = document.getElementById('chClose');
+  if(closeBtn) closeBtn.addEventListener('click', function(){
+    if(PB.state.balance.real > 0){
+      say('chCloseNote', 'Withdraw your ' + PB.state.balance.real.toFixed(2) +
+        ' USDT balance before closing — we cannot return it afterwards.', true);
+      return;
+    }
+    if(!confirm('Close this account permanently?\n\nThis is not a break. It cannot be undone and the account ' +
+                'cannot be recovered.')) return;
+    if(!confirm('Final confirmation. Close the account?')) return;
+    PB.api.closeAccount().then(function(){
+      say('chCloseNote', 'Account closed. You will be signed out.', false);
+      setTimeout(function(){ if(window.signOut) window.signOut(); }, 1400);
+    });
+  });
+
+  // ---- painting -------------------------------------------------------------
+  function repaintAll(){ paintNotif(); paintSelects(); paintLinked(); paintSessions(); paintAddresses(); }
+
+  function paintNotif(){
+    if(!notifGrid) return;
+    var n = PB.state.prefs.notif;
+    notifGrid.querySelectorAll('.pref-row').forEach(function(row){
+      var key = row.dataset.n;
+      row.querySelectorAll('button[data-ch]').forEach(function(b){
+        if(b.classList.contains('locked')) return;
+        b.classList.toggle('on', !!(n[key] && n[key][b.dataset.ch]));
+      });
+    });
+  }
+  function paintSelects(){
+    var d = PB.state.prefs.display, bt = PB.state.prefs.betting;
+    var set = function(id, v){ var el = document.getElementById(id); if(el) el.value = v; };
+    set('prefCcy', d.currency); set('prefOdds', d.odds); set('prefTz', d.tz);
+    set('prefOddsChange', bt.oddsChange); set('prefStake', bt.defaultStake);
+  }
+  function paintLinked(){
+    if(!lkList) return;
+    var cap = function(s){ return s.charAt(0).toUpperCase() + s.slice(1); };
+    lkList.querySelectorAll('.lk').forEach(function(row){
+      var kind = row.dataset.lk;
+      var v = PB.state.linked[kind];
+      row.classList.toggle('linked', !!v);
+      var val = document.getElementById('lk' + cap(kind) + 'Val');
+      if(val) val.textContent = v || 'Not linked';
+      var btn = row.querySelector('button[data-act]');
+      if(btn) btn.textContent = v ? 'Unlink' : 'Link';
+    });
+  }
+  function paintSessions(){
+    if(!sessList) return;
+    sessList.innerHTML = PB.state.sessions.map(function(s){
+      return '<div class="sess' + (s.current ? ' current' : '') + '">' +
+        '<div><b>' + s.device + '</b><i>' + s.where + ' · ' +
+        (s.current ? 'now' : PB.fmtDate(s.when)) + '</i></div>' +
+        (s.current ? '<span class="tag">This device</span>'
+                   : '<button type="button" data-sess="' + s.id + '">Sign out</button>') +
+        '</div>';
+    }).join('');
+  }
+  function paintAddresses(){
+    if(!addrList) return;
+    var a = PB.state.addresses;
+    if(!a.length){
+      addrList.innerHTML = '<div class="addr-empty">No saved addresses yet.</div>';
+      return;
+    }
+    addrList.innerHTML = a.map(function(x, i){
+      return '<div class="addr"><span class="coin">' + x.coin + '</span>' +
+        '<div><b>' + x.label + '</b><i>' + x.value + '</i></div>' +
+        '<button type="button" data-addr="' + i + '">Remove</button></div>';
+    }).join('');
+  }
+
+  PB.onChange(repaintAll);
+  repaintAll();
 })();
 </script>
 
