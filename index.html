@@ -2173,6 +2173,330 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     border:1px solid rgba(127,214,232,.35);background:rgba(127,214,232,.07);border-radius:12px;padding:13px 15px}
   .ch-unpaid b{font-family:var(--mono);font-size:16px;color:#fff}
   .ch-unpaid span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#9aa0aa;display:block}
+  /* ===== game search ===== */
+  .search{padding:0}
+  .search input{width:100%;min-width:0;background:none;border:0;color:var(--ink);font-size:12px;
+    font-family:inherit;padding:8px 12px}
+  .search input::placeholder{color:var(--ink-dim)}
+  .search input:focus{outline:none}
+  .search:focus-within{border-color:rgba(224,22,60,.5)}
+  .search input::-webkit-search-cancel-button{filter:invert(.6)}
+  body.searching .rail > *:not(.tile),
+  body.searching .row-head .railnav{opacity:.35}
+  .tile[hidden]{display:none !important}
+  .search-empty{display:none;padding:26px 4px;text-align:center;color:var(--ink-dim);font-size:13px}
+  body.searching .search-empty.on{display:block}
+
+  /* ===== account tabs ===== */
+  .acct-tabs{display:flex;gap:6px;margin:18px 0 16px;overflow-x:auto;scrollbar-width:none;
+    border-bottom:1px solid rgba(255,255,255,.09);padding-bottom:0}
+  .acct-tabs::-webkit-scrollbar{display:none}
+  .acct-tabs button{flex:none;font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+    color:#8b909a;background:none;border:0;border-bottom:2px solid transparent;
+    padding:11px 13px;cursor:pointer;white-space:nowrap;transition:color .18s,border-color .18s}
+  .acct-tabs button:hover{color:#e8eaee}
+  .acct-tabs button.on{color:#fff;border-bottom-color:var(--blood)}
+  .acct-pane{display:none}
+  .acct-pane.on{display:block}
+  .acct-pane > .pscard:first-child{margin-top:0}
+  .acct-pane[data-pane="profile"],.acct-pane[data-pane="security"],.acct-pane[data-pane="referral"]{}
+
+  /* ===== linked accounts ===== */
+  .lk-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .lk{display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.1);
+    border-radius:11px;padding:11px 13px}
+  .lk .ic{width:30px;height:30px;flex:none;display:grid;place-items:center;
+    background:rgba(255,255,255,.05);border-radius:9px}
+  .lk .ic svg{width:16px;height:16px}
+  .lk > div{flex:1;min-width:0}
+  .lk b{display:block;font-size:12.5px;color:#e8eaee}
+  .lk i{display:block;font-style:normal;font-family:var(--mono);font-size:10.5px;color:#6b7078;margin-top:2px;
+    word-break:break-all}
+  .lk.linked i{color:#7FD6E8}
+  .lk button{flex:none}
+
+  /* ===== sessions ===== */
+  .sess-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .sess{display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.1);
+    border-radius:11px;padding:11px 13px}
+  .sess.current{border-color:rgba(127,214,232,.4);background:rgba(127,214,232,.05)}
+  .sess > div{flex:1;min-width:0}
+  .sess b{display:block;font-size:12.5px;color:#e8eaee}
+  .sess i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:2px}
+  .sess .tag{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:#7FD6E8;flex:none}
+  .sess button{flex:none;background:none;border:0;color:#ff6b86;cursor:pointer;
+    font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 6px}
+  .sess button:hover{text-decoration:underline}
+
+  /* ===== preference toggles ===== */
+  .pref-grid{border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;margin-top:12px}
+  .pref-head,.pref-row{display:grid;grid-template-columns:1fr 74px 74px;gap:10px;align-items:center;padding:11px 14px}
+  .pref-head{background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.1)}
+  .pref-head span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8b909a;text-align:center}
+  .pref-head span:first-child{text-align:left}
+  .pref-row{border-bottom:1px solid rgba(255,255,255,.06)}
+  .pref-row:last-child{border-bottom:0}
+  .pref-name{font-size:12.5px;color:#e8eaee}
+  .pref-name i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:2px}
+  .pref-row button{justify-self:center;width:40px;height:22px;border-radius:999px;border:0;cursor:pointer;
+    background:rgba(255,255,255,.13);position:relative;transition:background .2s}
+  .pref-row button::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;
+    border-radius:50%;background:#fff;transition:left .2s}
+  .pref-row button.on{background:rgba(127,214,232,.6)}
+  .pref-row button.on::after{left:21px}
+  .pref-row button.locked{opacity:.5;cursor:not-allowed}
+  .pref-selects{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+  @media(max-width:640px){.pref-selects{grid-template-columns:1fr}}
+  .pref-selects label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;color:#9aa0aa;margin-bottom:6px}
+  .pref-selects select,.pref-selects input{width:100%;background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:10px 12px;color:#e8eaee;font-size:12.5px}
+  .pref-selects select:focus,.pref-selects input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+  .bst-empty{border:1px dashed rgba(255,255,255,.16);border-radius:12px;padding:20px;text-align:center;margin-top:12px}
+  .bst-empty b{display:block;font-size:13px;color:#c3c8d1;margin-bottom:5px}
+  .bst-empty span{font-size:11.5px;color:#6b7078;line-height:1.6;display:block;max-width:46ch;margin:0 auto}
+
+  /* ===== withdrawal address book ===== */
+  .addr-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .addr{display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.1);
+    border-radius:11px;padding:11px 13px}
+  .addr .coin{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:#7FD6E8;
+    background:rgba(127,214,232,.12);border-radius:6px;padding:4px 8px;flex:none}
+  .addr > div{flex:1;min-width:0}
+  .addr b{display:block;font-size:12.5px;color:#e8eaee}
+  .addr i{display:block;font-style:normal;font-family:var(--mono);font-size:10px;color:#6b7078;margin-top:2px;
+    word-break:break-all}
+  .addr button{flex:none;background:none;border:0;color:#ff6b86;cursor:pointer;
+    font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 6px}
+  .addr button:hover{text-decoration:underline}
+  .addr-empty{border:1px dashed rgba(255,255,255,.16);border-radius:11px;padding:16px;text-align:center;
+    font-size:12px;color:#6b7078}
+  .addr-add{display:grid;grid-template-columns:1fr 90px 2fr auto;gap:8px;margin-top:12px}
+  @media(max-width:760px){.addr-add{grid-template-columns:1fr 1fr}.addr-add input:nth-of-type(2){grid-column:1/-1}}
+  .addr-add input,.addr-add select{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:10px 11px;color:#e8eaee;font-size:12px;min-width:0}
+  .addr-add input:focus,.addr-add select:focus{outline:none;border-color:rgba(224,22,60,.55)}
+
+  /* ===== recovery ===== */
+  .rec-in{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);
+    border-radius:10px;padding:12px 14px;color:#e8eaee;font-size:13px}
+  .rec-in:focus{outline:none;border-color:rgba(224,22,60,.6)}
+  .rec-alt{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);
+    font-size:11.5px;color:#6b7078}
+  .rec-alt a{color:#7FD6E8;text-decoration:none;font-size:11.5px}
+  .rec-alt a:hover{text-decoration:underline}
+  .rec-steps{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .rec-steps > div{display:flex;align-items:flex-start;gap:11px}
+  .rec-steps b{flex:none;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;
+    background:rgba(224,22,60,.14);color:#ff6b86;font-family:var(--mono);font-size:10px}
+  .rec-steps span{font-size:12.5px;color:#a8aeb8;line-height:1.55}
+  .rec-back{background:none;border:0;color:#8b909a;cursor:pointer;font-family:var(--mono);
+    font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;padding:12px 0 0;width:100%}
+  .rec-back:hover{color:#e8eaee}
+
+  /* ===== reality check ===== */
+  .rc-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .rc-stat{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:13px}
+  .rc-stat b{display:block;font-family:var(--mono);font-size:19px;color:#fff}
+  .rc-stat b.up{color:#3ecf6a} .rc-stat b.down{color:#ff6b86}
+  .rc-stat span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a}
+  .rc-acts{display:flex;gap:9px;margin-top:6px}
+  .rc-acts button{flex:1;border-radius:var(--r-md);padding:13px}
+
+  /* ===== pending withdrawals ===== */
+  .pw-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .pw{display:flex;align-items:center;gap:12px;border:1px solid rgba(224,161,62,.35);
+    background:rgba(224,161,62,.06);border-radius:11px;padding:11px 13px}
+  .pw.rejected{border-color:rgba(224,22,60,.4);background:rgba(224,22,60,.07)}
+  .pw > div{flex:1;min-width:0}
+  .pw b{display:block;font-family:var(--mono);font-size:12.5px;color:#e8eaee}
+  .pw i{display:block;font-style:normal;font-size:10.5px;color:#8b909a;margin-top:2px}
+  .pw button{flex:none;background:none;border:0;color:#ff6b86;cursor:pointer;
+    font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:4px 6px}
+  .pw button:hover{text-decoration:underline}
+
+  /* ===== email verification banner (site-wide — a warning nobody sees is
+     not a warning, so this sits under the topbar on every view) ===== */
+  .ev-bar{grid-column:1/3;display:none;align-items:center;gap:13px;flex-wrap:wrap;
+    border-bottom:1px solid rgba(224,161,62,.45);background:rgba(34,24,8,.97);
+    padding:11px 22px;position:sticky;top:64px;z-index:45}
+  body.email-unverified .ev-bar{display:flex}
+  @media(max-width:900px){ .ev-bar{grid-column:1;top:56px;padding:11px 14px} }
+  .ev-bar span{flex:1;min-width:200px;font-size:12.5px;color:#e0a13e}
+  .ev-bar b{color:#fff}
+  .ev-bar button{flex:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:#e0a13e;background:rgba(224,161,62,.14);border:1px solid rgba(224,161,62,.5);
+    border-radius:8px;padding:9px 13px;cursor:pointer}
+  .ev-bar button:hover{color:#fff;background:rgba(224,161,62,.26)}
+
+  /* ===== two-factor ===== */
+  .tfa-qr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    height:150px;border:1px dashed rgba(255,255,255,.2);border-radius:12px;margin-bottom:16px;
+    background:rgba(255,255,255,.03)}
+  .tfa-qr span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6b7078}
+  .tfa-qr i{font-style:normal;font-size:11px;color:#5b6069}
+  .tfa-lab{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:#9aa0aa;margin:14px 0 6px}
+  .tfa-key{display:flex;gap:8px;align-items:stretch}
+  .tfa-key code{flex:1;min-width:0;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:11px 13px;font-family:var(--mono);font-size:12.5px;color:#a8e4f2;
+    letter-spacing:.09em;word-break:break-all}
+  .tfa-key button{flex:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:#c3c8d1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+    border-radius:9px;padding:0 14px;cursor:pointer}
+  .tfa-key button:hover{color:#fff;border-color:rgba(255,255,255,.34)}
+  .tfa-code{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);
+    border-radius:10px;padding:14px;color:#fff;font-family:var(--mono);font-size:24px;
+    letter-spacing:.5em;text-align:center;text-indent:.5em}
+  .tfa-code:focus{outline:none;border-color:rgba(224,22,60,.6)}
+  .tfa-err{margin-top:10px;border-radius:9px;padding:10px 13px;font-size:12px;
+    background:rgba(224,22,60,.12);border:1px solid rgba(224,22,60,.42);color:#ff6b86}
+  .tfa-done{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:#3ecf6a;background:rgba(62,207,106,.12);border:1px solid rgba(62,207,106,.4);
+    border-radius:999px;padding:7px 13px;display:inline-block;margin-bottom:14px}
+  .tfa-backup{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .tfa-backup code{background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.1);border-radius:8px;
+    padding:9px 11px;font-family:var(--mono);font-size:12px;color:#e8eaee;text-align:center;letter-spacing:.09em}
+
+  /* ===== verification (KYC) ===== */
+  .kyc-state{display:flex;align-items:flex-start;gap:14px;margin-top:12px;flex-wrap:wrap}
+  .kyc-badge{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    padding:6px 11px;border-radius:999px;flex:none;
+    background:rgba(255,255,255,.07);color:#9aa0aa;border:1px solid rgba(255,255,255,.16)}
+  .kyc-badge.pending{background:rgba(224,161,62,.14);color:#e0a13e;border-color:rgba(224,161,62,.5)}
+  .kyc-badge.ok{background:rgba(62,207,106,.13);color:#3ecf6a;border-color:rgba(62,207,106,.5)}
+  .kyc-badge.bad{background:rgba(224,22,60,.13);color:#ff6b86;border-color:rgba(224,22,60,.5)}
+  .kyc-state p{font-size:12.5px;color:#a8aeb8;line-height:1.65;margin:0;flex:1;min-width:220px}
+  .kyc-state p b{color:#e8eaee}
+  .kyc-meter{margin-top:16px}
+  .kyc-meter-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a}
+  .kyc-meter-top .mono{color:#c3c8d1;letter-spacing:.04em}
+  .kyc-meter-top b{color:#fff}
+  .kyc-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:8px}
+  .kyc-bar i{display:block;height:100%;width:0;border-radius:4px;
+    background:linear-gradient(90deg,#7FD6E8,#5bb9cf);transition:width .35s ease}
+  .kyc-bar i.warn{background:linear-gradient(90deg,#e0a13e,#c9871f)}
+  .kyc-bar i.full{background:linear-gradient(90deg,#8f0e26,var(--blood))}
+  .kyc-warn{margin-top:10px;border-radius:9px;padding:10px 13px;font-size:12px;
+    background:rgba(224,161,62,.1);border:1px solid rgba(224,161,62,.42);color:#e0a13e}
+  .kyc-docs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:600px){.kyc-docs{grid-template-columns:1fr}}
+  .kyc-doc{position:relative;display:block;border:1px dashed rgba(255,255,255,.2);border-radius:12px;
+    padding:16px;cursor:pointer;transition:border-color .2s,background .2s;text-align:center}
+  .kyc-doc:hover{border-color:rgba(224,22,60,.5);background:rgba(255,255,255,.03)}
+  .kyc-doc input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .kyc-doc .ic{display:block;font-size:19px;color:#6b7078;margin-bottom:6px}
+  .kyc-doc b{display:block;font-size:12.5px;color:#e8eaee}
+  .kyc-doc i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:3px}
+  .kyc-doc em{display:block;font-style:normal;font-family:var(--mono);font-size:10px;color:#7FD6E8;margin-top:7px;
+    word-break:break-all}
+  .kyc-doc.filled{border-style:solid;border-color:rgba(127,214,232,.5)}
+  .kyc-fine{font-size:11px;color:#6b7078;margin-top:11px;line-height:1.6}
+
+  /* ===== responsible gambling panel ===== */
+  .rg-lead{font-size:12.5px;color:#a8aeb8;line-height:1.65;margin:10px 0 16px;max-width:76ch}
+  .rg-limits{border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+  .rg-head,.rg-line{display:grid;grid-template-columns:minmax(150px,1.5fr) repeat(3,minmax(72px,1fr));
+    gap:10px;align-items:center;padding:10px 14px}
+  .rg-head{background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.1)}
+  .rg-head span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a}
+  .rg-line{border-bottom:1px solid rgba(255,255,255,.06)}
+  .rg-line:last-child{border-bottom:0}
+  .rg-name{font-size:12.5px;color:#e8eaee}
+  .rg-name i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:2px}
+  .rg-line input{width:100%;min-width:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:8px;padding:8px 10px;color:#e8eaee;font-family:var(--mono);font-size:11.5px}
+  .rg-line input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+  @media(max-width:700px){
+    .rg-head{display:none}
+    .rg-line{grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .rg-name{grid-column:1/-1}
+    .rg-line input::placeholder{color:#5b6069}
+  }
+  .rg-pending{margin-top:12px;border:1px dashed rgba(224,161,62,.5);background:rgba(224,161,62,.08);
+    border-radius:10px;padding:11px 14px;font-size:12px;color:#e0a13e}
+  .rg-pending .pr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 0}
+  .rg-pending button{background:none;border:0;color:#ff6b86;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:2px 6px}
+  .rg-pending button:hover{text-decoration:underline}
+  .rg-split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:700px){.rg-split{grid-template-columns:1fr;gap:4px}}
+  .rg-sub{font-size:11.5px;color:#8b909a;margin:6px 0 10px;line-height:1.6}
+  .rg-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .rg-chips button{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:#c3c8d1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:8px;padding:9px 13px;cursor:pointer;transition:border-color .2s,color .2s,background .2s}
+  .rg-chips button:hover{border-color:rgba(255,255,255,.34);color:#fff}
+  .rg-chips button.on{background:rgba(127,214,232,.14);border-color:#7FD6E8;color:#7FD6E8}
+  .rg-danger{margin-top:22px;border:1px solid rgba(224,22,60,.4);background:rgba(224,22,60,.07);
+    border-radius:12px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;
+    gap:18px;flex-wrap:wrap}
+  .rg-danger b{display:block;font-size:13px;color:#ff6b86;margin-bottom:4px}
+  .rg-danger span{display:block;font-size:11.5px;color:#a8aeb8;line-height:1.6;max-width:52ch}
+  .rg-danger .rg-chips button{border-color:rgba(224,22,60,.45);color:#ff8fa3}
+  .rg-danger .rg-chips button:hover{background:rgba(224,22,60,.18);border-color:#e0163c;color:#fff}
+  .rg-help{font-size:11.5px;color:#6b7078;margin-top:16px}
+  .rg-help a{color:#7FD6E8;text-decoration:none}
+  .rg-help a:hover{text-decoration:underline}
+
+  /* lock banner shown site-wide while a break or exclusion is active */
+  .rg-lockbar{position:fixed;left:0;right:0;bottom:0;z-index:220;background:#2a0a12;
+    border-top:1px solid rgba(224,22,60,.55);padding:13px 20px;display:none;
+    align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center}
+  body.pb-locked .rg-lockbar{display:flex}
+  .rg-lockbar b{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#ff6b86}
+  .rg-lockbar span{font-size:12.5px;color:#e8eaee}
+  .rg-lockbar button{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);
+    border-radius:8px;padding:9px 14px;cursor:pointer;flex:none}
+  .rg-lockbar button:hover{background:rgba(255,255,255,.2)}
+
+  /* ===== provably fair verifier ===== */
+  .pf-lead{font-size:12.5px;color:#a8aeb8;line-height:1.65;margin:0 0 16px}
+  .pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.pf-grid{grid-template-columns:1fr}}
+  .pf-grid label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:#9aa0aa;margin-bottom:6px}
+  .pf-grid label span{text-transform:none;letter-spacing:.02em;color:#6b7078;font-size:9.5px}
+  .pf-grid input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:10px 12px;color:#e8eaee;font-family:var(--mono);font-size:12px}
+  .pf-grid input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+  .pf-out{margin-top:16px;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
+  .pf-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;
+    border-bottom:1px solid rgba(255,255,255,.07)}
+  .pf-row:last-child{border-bottom:0}
+  .pf-row .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a;flex:none}
+  .pf-row .k i{font-style:normal;color:#5b6069;letter-spacing:.02em;text-transform:none}
+  .pf-row .v{font-size:12px;color:#e8eaee;text-align:right;min-width:0;word-break:break-all}
+  .pf-row .v.mono{font-family:var(--mono);font-size:10.5px;color:#a8e4f2}
+  .pf-row .v.big{font-family:var(--mono);font-size:20px;color:#fff;font-weight:700}
+  .pf-commit{padding:11px 14px;font-size:11.5px;border-top:1px solid rgba(255,255,255,.07)}
+  .pf-commit.ok{background:rgba(62,207,106,.1);color:#3ecf6a}
+  .pf-commit.bad{background:rgba(224,22,60,.12);color:#ff6b86}
+  .pf-how{margin-top:14px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
+  .pf-how summary{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8b909a;cursor:pointer}
+  .pf-how summary:hover{color:#e8eaee}
+  .pf-how p{font-size:12px;color:#9aa0aa;line-height:1.65;margin:11px 0 0}
+  .pf-how pre{background:rgba(0,0,0,.32);border-radius:8px;padding:11px 13px;margin:11px 0 0;
+    font-family:var(--mono);font-size:10.5px;color:#a8e4f2;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+  /* ===== seed panel (The Chart) ===== */
+  .sd-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;
+    border-bottom:1px solid rgba(255,255,255,.06)}
+  .sd-row:last-of-type{border-bottom:0}
+  .sd-row .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a;flex:none}
+  .sd-row .v{font-family:var(--mono);font-size:11px;color:#e8eaee;text-align:right;word-break:break-all;min-width:0}
+  .sd-row .v.hash{color:#a8e4f2;font-size:10px}
+  .sd-seedin{display:flex;gap:8px;margin-top:4px}
+  .sd-seedin input{flex:1;min-width:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:9px 11px;color:#e8eaee;font-family:var(--mono);font-size:11.5px}
+  .sd-seedin input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+
   .ch-pill{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
     padding:3px 8px;border-radius:999px;display:inline-block;white-space:nowrap}
   .ch-pill.win{background:rgba(62,207,106,.14);color:#3ecf6a}
@@ -2260,6 +2584,339 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2.5-2.5A8 8 0 1 1 21 12z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
+<!-- ===================================================================
+     PB — platform state layer and backend seams.
+     Everything the casino needs to know about "who is this user and what
+     are they allowed to do" lives here. The UI reads PB.state and calls
+     PB.api.*; nothing else touches persistence directly.
+
+     DEVS: PB.api is the seam. Every function in it is a stub that fakes a
+     backend round-trip against localStorage. Replace each body with a real
+     call — the signatures and return shapes are the contract, and the UI
+     will not need to change.
+     =================================================================== -->
+<script>
+window.PB = (function(){
+  'use strict';
+  var KEY = 'pb_state_v1';
+
+  // Business constants. See the logic spec §15 — these are the open
+  // decisions; they are gathered here so they can be changed in one place.
+  var CONST = {
+    KYC_THRESHOLD_USDT: 2000,   // cumulative lifetime withdrawals before Tier 1 is required
+    KYC_WARN_AT: 0.8,           // warn the user at 80% of the threshold
+    LIMIT_INCREASE_DELAY_MS: 24*60*60*1000,  // increases take 24h; decreases are instant
+    COOLOFF: { '24h': 864e5, '7d': 6048e5, '30d': 2592e6 },
+    EXCLUSION: { '6mo': 15552e6, '1yr': 31536e6, 'permanent': Infinity }
+  };
+
+  function defaults(){
+    return {
+      account: 'anonymous',
+      user: null,
+      balance: { real: 0, bonus: 0, locked: 0 },
+      verification: { tier: 0, submittedAt: null, rejectedReason: null, cumulativeWithdrawn: 0 },
+      twofa: { enabled: false, secret: null, backupCodes: [] },
+      seeds: { serverSeedHash: null, clientSeed: null, nonce: 0, previous: [] },
+      rg: {
+        limits: { deposit: {}, loss: {}, wager: {} },  // {daily,weekly,monthly} in USDT
+        pending: [],            // queued increases: {kind, period, value, effectiveAt}
+        sessionReminderMin: null,
+        lockUntil: null,        // epoch ms, or Infinity for permanent
+        lockKind: null          // 'cooloff' | 'exclusion'
+      },
+      counters: { day: null, deposit: 0, loss: 0, wager: 0 },
+      prefs: {
+        notif: { tx:{email:true,telegram:false}, security:{email:true,telegram:false},
+                 rewards:{email:true,telegram:true}, marketing:{email:false,telegram:false} },
+        display: { currency:'USDT', odds:'decimal', tz:'local' },
+        betting: { oddsChange:'up', defaultStake:25 }
+      },
+      linked: { telegram:null, google:null, wallet:null },
+      addresses: [],
+      emailVerified: false,
+      withdrawals: [],
+      session: { startedAt: Date.now(), wagered: 0, net: 0 },
+      sessions: [
+        { id:'cur', device:'This device', where:'Chrome · current session', when:Date.now(), current:true },
+        { id:'s2',  device:'iPhone',      where:'Safari · mobile',          when:Date.now()-864e5*2 },
+        { id:'s3',  device:'Windows PC',  where:'Firefox',                  when:Date.now()-864e5*9 }
+      ]
+    };
+  }
+
+  var state = defaults();
+  var listeners = [];
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){
+        var saved = JSON.parse(raw);
+        // shallow-merge so new fields in defaults() survive an old payload
+        Object.keys(saved).forEach(function(k){ state[k] = saved[k]; });
+      }
+    }catch(e){}
+    rollDay();
+    applyDueChanges();
+  }
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function emit(){
+    save();
+    listeners.forEach(function(fn){ try{ fn(state); }catch(e){ console.error(e); } });
+  }
+  function onChange(fn){ listeners.push(fn); return function(){
+    listeners = listeners.filter(function(f){ return f !== fn; }); }; }
+
+  // Daily counters reset on a UTC calendar day boundary.
+  function rollDay(){
+    var today = new Date().toISOString().slice(0,10);
+    if(state.counters.day !== today){
+      state.counters = { day: today, deposit: 0, loss: 0, wager: 0 };
+    }
+  }
+  // Any queued limit increase whose delay has elapsed becomes live.
+  function applyDueChanges(){
+    var now = Date.now(), due = [], keep = [];
+    (state.rg.pending || []).forEach(function(p){
+      (p.effectiveAt <= now ? due : keep).push(p);
+    });
+    due.forEach(function(p){ state.rg.limits[p.kind][p.period] = p.value; });
+    state.rg.pending = keep;
+    if(due.length) save();
+    return due.length;
+  }
+
+  function isLocked(){
+    applyDueChanges();
+    if(!state.rg.lockUntil) return false;
+    if(state.rg.lockUntil === null) return false;
+    if(Date.now() >= state.rg.lockUntil){
+      // a cool-off that has run its course releases itself; an exclusion
+      // requires an explicit opt-in, so it is NOT auto-cleared here
+      if(state.rg.lockKind === 'cooloff'){
+        state.rg.lockUntil = null; state.rg.lockKind = null;
+        if(state.account === 'cooling_off') state.account = state.verification.tier > 0 ? 'verified' : 'active';
+        emit();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // ---------------------------------------------------------------
+  // The gate stack — logic spec §03. Every money action runs through
+  // this before it executes. Returns {ok:true} or {ok:false, code, message}.
+  // Order is deliberate: the user should hit the most explanatory
+  // failure first, not the most technical one.
+  // ---------------------------------------------------------------
+  function gate(action, ctx){
+    ctx = ctx || {};
+    var amount = +ctx.amount || 0;
+
+    if(state.account === 'suspended')
+      return no('suspended', 'This account is on hold. Please contact Triage.');
+
+    if(state.account === 'anonymous' && action !== 'verify')
+      return no('anonymous', 'Sign in to continue.');
+
+    // A lock blocks play and deposits, but never withdrawals — a
+    // self-imposed break must not trap the user's money.
+    if(isLocked() && action !== 'withdraw'){
+      var until = state.rg.lockUntil === Infinity ? 'permanently' : 'until ' + fmtDate(state.rg.lockUntil);
+      return no('locked', (state.rg.lockKind === 'exclusion' ? 'Self-excluded ' : 'On a break ') + until + '.');
+    }
+
+    if(action === 'deposit'){
+      var dl = effectiveLimit('deposit');
+      if(dl !== null && state.counters.deposit + amount > dl)
+        return no('limit', 'Deposit limit reached. Resets ' + nextResetLabel() + '.');
+    }
+
+    if(action === 'bet'){
+      var wl = effectiveLimit('wager');
+      if(wl !== null && state.counters.wager + amount > wl)
+        return no('limit', 'Wager limit reached. Resets ' + nextResetLabel() + '.');
+      var ll = effectiveLimit('loss');
+      if(ll !== null && state.counters.loss >= ll)
+        return no('limit', 'Loss limit reached. Resets ' + nextResetLabel() + '.');
+      if(amount > state.balance.real + state.balance.bonus)
+        return no('funds', 'Not enough balance.');
+    }
+
+    if(action === 'withdraw'){
+      if(!state.twofa.enabled && ctx.requires2fa !== false)
+        return no('2fa', 'Two-factor authentication is required to withdraw.');
+      if(amount > state.balance.real)
+        return no('funds', 'Withdrawable balance is ' + state.balance.real.toFixed(2) + ' USDT. Bonus funds cannot be withdrawn until wagering clears.');
+      var after = state.verification.cumulativeWithdrawn + amount;
+      if(after > CONST.KYC_THRESHOLD_USDT && state.verification.tier < 1){
+        if(state.verification.submittedAt)
+          return no('kyc_pending', 'Verification is in review. This withdrawal will be queued and released on approval.');
+        return no('kyc', 'This takes you past the ' + CONST.KYC_THRESHOLD_USDT.toLocaleString() + ' USDT verification threshold. Verify your identity to continue.');
+      }
+    }
+    return { ok: true };
+  }
+  function no(code, message){ return { ok:false, code:code, message:message }; }
+
+  // Tightest of the three periods wins.
+  function effectiveLimit(kind){
+    var l = state.rg.limits[kind] || {};
+    var vals = ['daily','weekly','monthly'].map(function(p){ return l[p]; })
+      .filter(function(v){ return typeof v === 'number' && v > 0; });
+    return vals.length ? Math.min.apply(null, vals) : null;
+  }
+  function nextResetLabel(){ return 'at 00:00 UTC'; }
+  function fmtDate(ts){
+    if(ts === Infinity) return 'permanently';
+    return new Date(ts).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+  }
+
+  // ---------------------------------------------------------------
+  // PB.api — THE BACKEND SEAM.
+  // Each of these fakes a round-trip against localStorage and resolves
+  // with the shape the UI expects. Swap the bodies for real calls.
+  // ---------------------------------------------------------------
+  var api = {
+    // --- session ---
+    signIn: function(user){
+      state.account = 'active';
+      state.user = user;
+      if(!state.balance.real) state.balance.real = 2840;   // demo float
+      return Promise.resolve(state).then(tap);
+    },
+    signOut: function(){
+      state.account = 'anonymous'; state.user = null;
+      return Promise.resolve(state).then(tap);
+    },
+
+    // --- responsible gambling (logic spec §12) ---
+    // Decreases apply instantly. Increases queue for 24h, during which the
+    // old limit still holds and the pending change is cancellable.
+    setLimit: function(kind, period, value){
+      var current = state.rg.limits[kind][period];
+      var isIncrease = current != null && value != null && value > current;
+      if(value == null || current == null || !isIncrease){
+        state.rg.limits[kind][period] = value;
+        state.rg.pending = state.rg.pending.filter(function(p){
+          return !(p.kind === kind && p.period === period); });
+        return Promise.resolve({ applied:'immediately' }).then(tap);
+      }
+      state.rg.pending = state.rg.pending.filter(function(p){
+        return !(p.kind === kind && p.period === period); });
+      var eff = Date.now() + CONST.LIMIT_INCREASE_DELAY_MS;
+      state.rg.pending.push({ kind:kind, period:period, value:value, effectiveAt:eff });
+      return Promise.resolve({ applied:'queued', effectiveAt:eff }).then(tap);
+    },
+    cancelPendingLimit: function(kind, period){
+      state.rg.pending = state.rg.pending.filter(function(p){
+        return !(p.kind === kind && p.period === period); });
+      return Promise.resolve(true).then(tap);
+    },
+    setSessionReminder: function(minutes){
+      state.rg.sessionReminderMin = minutes;
+      return Promise.resolve(true).then(tap);
+    },
+    // Irreversible by design. Support must not be able to lift these early.
+    coolOff: function(key){
+      state.rg.lockUntil = Date.now() + CONST.COOLOFF[key];
+      state.rg.lockKind = 'cooloff';
+      state.account = 'cooling_off';
+      return Promise.resolve(state).then(tap);
+    },
+    selfExclude: function(key){
+      var span = CONST.EXCLUSION[key];
+      state.rg.lockUntil = span === Infinity ? Infinity : Date.now() + span;
+      state.rg.lockKind = 'exclusion';
+      state.account = 'self_excluded';
+      state.balance.bonus = 0;             // active Boosters are forfeited
+      return Promise.resolve(state).then(tap);
+    },
+
+    // --- verification (logic spec §13) ---
+    submitVerification: function(files){
+      state.verification.submittedAt = Date.now();
+      state.verification.rejectedReason = null;
+      state.account = 'verify_pending';
+      return Promise.resolve({ status:'pending' }).then(tap);
+    },
+    // Demo affordance only — a real backend decides this, never the client.
+    __approveVerification: function(){
+      state.verification.tier = 1;
+      state.account = 'verified';
+      return Promise.resolve(true).then(tap);
+    },
+
+    // --- two-factor (logic spec §04 gate) ---
+    enable2fa: function(secret, backupCodes){
+      state.twofa = { enabled:true, secret:secret, backupCodes:backupCodes };
+      return Promise.resolve(true).then(tap);
+    },
+    disable2fa: function(){
+      state.twofa = { enabled:false, secret:null, backupCodes:[] };
+      return Promise.resolve(true).then(tap);
+    },
+
+    // --- provably fair (logic spec §09) ---
+    // The server seed itself never reaches the client until rotation; only
+    // its hash does. This stub keeps the seed in memory to emulate that.
+    rotateSeeds: function(newHash, revealedPrevious){
+      if(revealedPrevious) state.seeds.previous.unshift(revealedPrevious);
+      state.seeds.serverSeedHash = newHash;
+      state.seeds.nonce = 0;
+      return Promise.resolve(state.seeds).then(tap);
+    },
+    setClientSeed: function(seed){
+      state.seeds.clientSeed = seed;
+      state.seeds.nonce = 0;             // changing the client seed resets the nonce
+      return Promise.resolve(state.seeds).then(tap);
+    },
+
+    // --- money + play ---
+    recordWager: function(amount, netLoss){
+      state.counters.wager += amount;
+      if(netLoss > 0) state.counters.loss += netLoss;
+      state.seeds.nonce += 1;
+      return Promise.resolve(state.counters).then(tap);
+    },
+    recordDeposit: function(amount){
+      state.counters.deposit += amount;
+      state.balance.real += amount;
+      return Promise.resolve(state.balance).then(tap);
+    },
+    requestWithdrawal: function(amount, coin){
+      state.balance.real -= amount;
+      state.balance.locked += amount;
+      state.verification.cumulativeWithdrawn += amount;
+      if(!state.withdrawals) state.withdrawals = [];
+      var rec = { id:'w' + Date.now(), amount:amount, coin:coin || 'USDT',
+                  at:Date.now(), status:'pending' };
+      state.withdrawals.unshift(rec);
+      return Promise.resolve(rec).then(tap);
+    }
+  };
+  function tap(v){ emit(); return v; }
+
+  load();
+
+  return {
+    CONST: CONST,
+    get state(){ return state; },
+    gate: gate,
+    onChange: onChange,
+    api: api,
+    isLocked: isLocked,
+    effectiveLimit: effectiveLimit,
+    fmtDate: fmtDate,
+    applyDueChanges: applyDueChanges,
+    reset: function(){ state = defaults(); emit(); }
+  };
+})();
+</script>
+
 <div class="ambient"></div>
 
 
@@ -2273,7 +2930,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       <a href="#">Arcade</a>
     </nav>
     <div class="grow"></div>
-    <div class="search">Search games</div>
+    <div class="search"><input id="gameSearch" type="search" placeholder="Search games" autocomplete="off" aria-label="Search games"></div>
     <div class="bal">USDT 2,840 · <b>PK 1,250</b></div>
     <button class="btn" id="btnSignIn">Sign in</button>
     <div class="acctzone" id="acctZone">
@@ -2351,6 +3008,13 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     <a href="#"><svg class="ic"><use href="#i-chat"/></svg><span class="lbl">Triage</span></a>
   </aside>
   <div class="side-scrim" id="sideScrim"></div>
+
+  <div class="ev-bar">
+    <span><b>Confirm your email.</b> Until you do we can't send you a password reset — so losing your password
+      would lock you out for good.</span>
+    <button type="button" id="evResend">Resend the email</button>
+    <button type="button" id="evDemo">Confirm (demo)</button>
+  </div>
 
   <main class="main">
     
@@ -2430,47 +3094,47 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 <section class="lobbyview" id="secOriginals">
   <div class="row-head"><h2>Pain Originals</h2><span class="meta">Provably fair · fixed 1% edge</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('originals')">View all</button></div>
   <div class="rail originals">
-    <div class="tile orig" title="Crash · 10,000x">
+    <div class="tile orig" title="Crash · 10,000x" data-game="crash" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/flatline-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">FLATLINE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Mines · 24 cells">
+    <div class="tile orig" title="Mines · 24 cells" data-game="mines" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/nerve-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">NERVE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Plinko · 16 rows">
+    <div class="tile orig" title="Plinko · 16 rows" data-game="plinko" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/bonesaw-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">BONESAW</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Dice · 98% RTP">
+    <div class="tile orig" title="Dice · 98% RTP" data-game="dice" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/dosage-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">DOSAGE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Limbo · 1,000,000x">
+    <div class="tile orig" title="Limbo · 1,000,000x" data-game="limbo" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/tolerance-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">SPIKE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Keno · 10 picks">
+    <div class="tile orig" title="Keno · 10 picks" data-game="keno" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/threshold-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">PULSE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Blackjack · sedate to 21">
+    <div class="tile orig" title="Blackjack · sedate to 21" data-game="blackjack" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/blackout-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">BLACKOUT</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Dice duel · one reroll">
+    <div class="tile orig" title="Dice duel · one reroll" data-game="dice-duel" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/rigor-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">RIGOR</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
     </div>
-    <div class="tile orig" title="Ward hold · commit">
+    <div class="tile orig" title="Ward hold · commit" data-game="ward-hold" data-cat="originals" data-provider="painbet">
       <div class="img" style="background-image:url('assets/originals/relapse-bg.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
       <div class="card-title"><div class="big">RELAPSE</div><div class="by">PAIN <span>x</span> ORIGINALS</div></div>
@@ -2481,47 +3145,47 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 <section class="lobbyview" id="secSlots">
   <div class="row-head"><h2>Pick your poison</h2><span class="meta">5,000+ games</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('slots')">View all</button></div>
   <div class="rail slots">
-    <div class="tile" title="Wanted Dead or a Wild">
+    <div class="tile" title="Wanted Dead or a Wild" data-game="wanted-dead-or-a-wild" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/wanted.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Gates of Olympus 1000">
+    <div class="tile" title="Gates of Olympus 1000" data-game="gates-of-olympus-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/gates.png')"></div>
       <span class="badge drops">Drops &amp; Wins</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Le Bandit">
+    <div class="tile" title="Le Bandit" data-game="le-bandit" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/lebandit.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Sweet Bonanza 1000">
+    <div class="tile" title="Sweet Bonanza 1000" data-game="sweet-bonanza-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/bonanza.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Zeus vs Hades">
+    <div class="tile" title="Zeus vs Hades" data-game="zeus-vs-hades" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/zeusvshades.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="RIP City">
+    <div class="tile" title="RIP City" data-game="rip-city" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/ripcity.png')"></div>
       <span class="badge paying">Paying</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="The Dog House">
+    <div class="tile" title="The Dog House" data-game="the-dog-house" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/doghouse.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Sugar Rush 1000">
+    <div class="tile" title="Sugar Rush 1000" data-game="sugar-rush-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/sugarrush.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Starlight Princess 1000">
+    <div class="tile" title="Starlight Princess 1000" data-game="starlight-princess-1000" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/starlight.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Hand of Anubis">
+    <div class="tile" title="Hand of Anubis" data-game="hand-of-anubis" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/anubis.png')"></div>
       <span class="badge new">New</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Fire Portals">
+    <div class="tile" title="Fire Portals" data-game="fire-portals" data-cat="slots" data-provider="">
       <div class="img" style="background-image:url('assets/games/fireportals.png')"></div>
       <div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
@@ -2531,111 +3195,111 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 <section class="lobbyview" id="secLive">
   <div class="row-head"><h2>Live</h2><span class="meta">Real dealers, real time</span><span class="railnav"><button class="rbtn" type="button" aria-label="Scroll back" onclick="homeRailScroll(this,-1)">‹</button><button class="rbtn" type="button" aria-label="Scroll forward" onclick="homeRailScroll(this,1)">›</button></span><button class="viewall" type="button" onclick="showAllGames('live')">View all</button></div>
   <div class="rail live">
-    <div class="tile" title="Crazy Time">
+    <div class="tile" title="Crazy Time" data-game="crazy-time" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/crazy-time.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Lightning Roulette">
+    <div class="tile" title="Lightning Roulette" data-game="lightning-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/lightning-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Stock Market">
+    <div class="tile" title="Stock Market" data-game="stock-market" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/stock-market.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Funky Time">
+    <div class="tile" title="Funky Time" data-game="funky-time" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/funky-time.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Monopoly Live">
+    <div class="tile" title="Monopoly Live" data-game="monopoly-live" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/monopoly-live.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Roulette 3000">
+    <div class="tile" title="Mega Roulette 3000" data-game="mega-roulette-3000" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-roulette-3000.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Roulette">
+    <div class="tile" title="Mega Roulette" data-game="mega-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Gates of Olympus Roulette">
+    <div class="tile" title="Gates of Olympus Roulette" data-game="gates-of-olympus-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/gates-of-olympus-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Crazy Balls">
+    <div class="tile" title="Crazy Balls" data-game="crazy-balls" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/crazy-balls.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="XXXtreme Lightning Roulette">
+    <div class="tile" title="XXXtreme Lightning Roulette" data-game="xxxtreme-lightning-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/xxxtreme-lightning-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Ice Fishing">
+    <div class="tile" title="Ice Fishing" data-game="ice-fishing" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/ice-fishing.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Red Door Roulette">
+    <div class="tile" title="Red Door Roulette" data-game="red-door-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/red-door-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Monopoly Big Baller">
+    <div class="tile" title="Monopoly Big Baller" data-game="monopoly-big-baller" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/monopoly-big-baller.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Amazing Baccarat">
+    <div class="tile" title="Amazing Baccarat" data-game="amazing-baccarat" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/amazing-baccarat.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Dragon Tiger">
+    <div class="tile" title="Dragon Tiger" data-game="dragon-tiger" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/dragon-tiger-pp.jpg')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Roulette">
+    <div class="tile" title="Roulette" data-game="roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/roulette-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Fortune Roulette">
+    <div class="tile" title="Fortune Roulette" data-game="fortune-roulette" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/fortune-roulette.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Baccarat">
+    <div class="tile" title="Baccarat" data-game="baccarat" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/baccarat-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Sic Bo">
+    <div class="tile" title="Mega Sic Bo" data-game="mega-sic-bo" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-sic-bo.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Blackjack">
+    <div class="tile" title="Blackjack" data-game="blackjack-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/blackjack-pp.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Roulette">
+    <div class="tile" title="Roulette" data-game="roulette-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/roulette-pp.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Extreme Texas Hold'em">
+    <div class="tile" title="Extreme Texas Hold'em" data-game="extreme-texas-hold-em" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/extreme-texas-holdem.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Dragon Tiger">
+    <div class="tile" title="Dragon Tiger" data-game="dragon-tiger-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/dragon-tiger-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Blackjack">
+    <div class="tile" title="Blackjack" data-game="blackjack-3" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/blackjack-evolution.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Mega Baccarat">
+    <div class="tile" title="Mega Baccarat" data-game="mega-baccarat" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/mega-baccarat.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="Baccarat">
+    <div class="tile" title="Baccarat" data-game="baccarat-2" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/baccarat-pp.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
-    <div class="tile" title="One Blackjack">
+    <div class="tile" title="One Blackjack" data-game="one-blackjack" data-cat="live" data-provider="">
       <div class="img" style="background-image:url('assets/games/one-blackjack.png')"></div>
       <span class="badge live">Live</span><div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></span></div>
     </div>
@@ -2767,7 +3431,18 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     </div>
   </div>
 
-  <div class="ch-grid">
+  <nav class="acct-tabs" id="acctTabs" role="tablist" aria-label="Account sections">
+    <button type="button" data-tab="profile" class="on" role="tab">Profile</button>
+    <button type="button" data-tab="security" role="tab">Security</button>
+    <button type="button" data-tab="verify" role="tab">Verification</button>
+    <button type="button" data-tab="prefs" role="tab">Preferences</button>
+    <button type="button" data-tab="limits" role="tab">Limits &amp; breaks</button>
+    <button type="button" data-tab="wallet" role="tab">Wallet</button>
+    <button type="button" data-tab="activity" role="tab">Activity</button>
+    <button type="button" data-tab="referral" role="tab">Referral</button>
+  </nav>
+
+  <div class="acct-pane on" data-pane="profile">
     <div class="pscard ch-sec">
       <div class="kick">Patient details</div>
       <div class="ch-form">
@@ -2786,17 +3461,83 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
         <div class="ch-note" id="chSaved">Chart updated. Changes are live.</div>
       </div>
 
-      <div class="kick" style="margin-top:22px">Security</div>
+      <div class="kick" style="margin-top:24px">Linked accounts</div>
+      <p class="rg-sub">Any of these can sign you in. Keep at least one, plus an email and password.</p>
+      <div class="lk-list" id="lkList">
+        <div class="lk" data-lk="telegram"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M21 4L2.7 11.2c-.8.3-.8 1.4.05 1.7l4.6 1.5 1.7 5.2c.25.8 1.3.95 1.8.3l2.5-3 4.7 3.5c.6.45 1.5.1 1.65-.65L22.6 5.2c.2-.9-.7-1.6-1.6-1.2z" stroke="#2AABEE" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <div><b>Telegram</b><i id="lkTelegramVal">Not linked</i></div>
+          <button class="ch-btn alt" type="button" data-act="link">Link</button></div>
+        <div class="lk" data-lk="google"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.4" stroke="#8A96F0" stroke-width="1.6"/><path d="M12 8.4v7.2M8.4 12h7.2" stroke="#8A96F0" stroke-width="1.6"/></svg></span>
+          <div><b>Google</b><i id="lkGoogleVal">Not linked</i></div>
+          <button class="ch-btn alt" type="button" data-act="link">Link</button></div>
+        <div class="lk" data-lk="wallet"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="#F0B90B" stroke-width="1.6"/><path d="M3 9h18" stroke="#F0B90B" stroke-width="1.6"/></svg></span>
+          <div><b>Wallet</b><i id="lkWalletVal">Not linked</i></div>
+          <button class="ch-btn alt" type="button" data-act="link">Link</button></div>
+      </div>
+      <div class="ch-note" id="lkNote"></div>
+
+      <div class="kick" style="margin-top:24px">Leaving</div>
+      <p class="rg-sub">Closing is permanent and different from taking a break. Withdraw your balance first —
+        we will not hold it, but recovering a closed account is not possible.</p>
+      <div class="ch-actions">
+        <button class="ch-btn alt" id="chExport" type="button">Download my data</button>
+        <button class="ch-btn alt" id="chClose" type="button" style="border-color:rgba(224,22,60,.45);color:#ff8fa3">Close account</button>
+      </div>
+      <div class="ch-note" id="chCloseNote"></div>
+    </div>
+  </div>
+
+  <div class="acct-pane" data-pane="security">
+    <div class="pscard ch-sec">
+      <div class="kick">Password</div>
+      <div class="ch-form">
+        <div class="ch-frow">
+          <div><label for="pwCurrent">Current password</label><input type="password" id="pwCurrent" autocomplete="current-password"></div>
+          <div><label for="pwNew">New password</label><input type="password" id="pwNew" autocomplete="new-password" placeholder="Minimum 8 characters, one number"></div>
+        </div>
+        <div class="ch-actions">
+          <button class="ch-btn" id="pwSave" type="button">Change password</button>
+        </div>
+        <div class="ch-note" id="pwNote"></div>
+      </div>
+
+      <div class="kick" style="margin-top:24px">Recovery</div>
       <div class="ch-actions" style="margin-top:4px">
-        <button class="ch-btn alt" id="chReset" type="button">Reset password</button>
+        <button class="ch-btn alt" id="chReset" type="button">Email me a reset link</button>
       </div>
       <div class="ch-note" id="chResetNote">Reset link sent to your email. Valid for 30 minutes.</div>
       <div class="ch-2fa">
         <button class="sw" id="ch2fa" type="button" aria-label="Toggle 2FA"><i></i></button>
         <span id="ch2faLabel">Two-factor · off</span>
       </div>
-    </div>
 
+      <div class="kick" style="margin-top:22px">Provably fair &middot; your seeds</div>
+      <div class="sd-row"><span class="k">Server seed hash</span><span class="v hash" id="sdHash">—</span></div>
+      <div class="sd-row"><span class="k">Nonce</span><span class="v" id="sdNonce">0</span></div>
+      <div style="margin-top:12px">
+        <span class="k" style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a">Client seed</span>
+        <div class="sd-seedin">
+          <input id="sdClient" type="text" spellcheck="false" aria-label="Client seed">
+          <button class="ch-btn alt" id="sdSave" type="button">Save</button>
+        </div>
+      </div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn alt" id="sdRotate" type="button">Rotate &amp; reveal</button>
+        <button class="ch-btn alt" id="sdVerify" type="button">Open verifier</button>
+      </div>
+      <div class="ch-note" id="sdNote"></div>
+
+      <div class="kick" style="margin-top:24px">Where you're signed in</div>
+      <p class="rg-sub">If you don't recognise something here, sign it out and change your password.</p>
+      <div class="sess-list" id="sessList"></div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn alt" id="sessAll" type="button">Sign out everywhere else</button>
+      </div>
+      <div class="ch-note" id="sessNote"></div>
+    </div>
+  </div>
+
+  <div class="acct-pane" data-pane="referral">
     <div class="pscard ch-sec">
       <div class="kick">Referral coms · 0.5% of every wager</div>
       <div class="af-linkrow" style="margin-top:4px">
@@ -2826,6 +3567,208 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     </div>
   </div>
 
+  <div class="acct-pane" data-pane="prefs">
+    <div class="pscard">
+      <div class="ch-actrow"><div class="kick">Notifications</div><span class="meta">Where we reach you</span></div>
+      <p class="rg-sub">Transactional alerts about your own money stay on — you can choose the channel, not
+        whether we tell you. Everything else is yours to switch off.</p>
+      <div class="pref-grid" id="notifGrid">
+        <div class="pref-head"><span></span><span>Email</span><span>Telegram</span></div>
+        <div class="pref-row" data-n="tx">
+          <span class="pref-name">Deposits &amp; withdrawals<i>Confirmations and anything that needs you</i></span>
+          <button type="button" data-ch="email" class="on" aria-label="Email deposits and withdrawals"></button>
+          <button type="button" data-ch="telegram" aria-label="Telegram deposits and withdrawals"></button>
+        </div>
+        <div class="pref-row" data-n="security">
+          <span class="pref-name">Security<i>New sign-ins, password and 2FA changes</i></span>
+          <button type="button" data-ch="email" class="on locked" aria-label="Email security alerts" title="Security alerts by email cannot be switched off"></button>
+          <button type="button" data-ch="telegram" aria-label="Telegram security alerts"></button>
+        </div>
+        <div class="pref-row" data-n="rewards">
+          <span class="pref-name">Rewards<i>Anesthesia payouts, level-ups, PainKiller drops</i></span>
+          <button type="button" data-ch="email" class="on" aria-label="Email rewards"></button>
+          <button type="button" data-ch="telegram" class="on" aria-label="Telegram rewards"></button>
+        </div>
+        <div class="pref-row" data-n="marketing">
+          <span class="pref-name">Promotions<i>Offers, tournaments and campaigns</i></span>
+          <button type="button" data-ch="email" aria-label="Email promotions"></button>
+          <button type="button" data-ch="telegram" aria-label="Telegram promotions"></button>
+        </div>
+      </div>
+      <div class="ch-note" id="notifNote"></div>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
+      <div class="ch-actrow"><div class="kick">Display</div><span class="meta">How numbers and times read</span></div>
+      <div class="pref-selects">
+        <div><label for="prefCcy">Show balances in</label>
+          <select id="prefCcy">
+            <option value="USDT">USDT</option><option value="BTC">BTC</option>
+            <option value="ETH">ETH</option><option value="USD">USD equivalent</option>
+            <option value="EUR">EUR equivalent</option>
+          </select></div>
+        <div><label for="prefOdds">Odds format</label>
+          <select id="prefOdds">
+            <option value="decimal">Decimal — 2.50</option>
+            <option value="fractional">Fractional — 3/2</option>
+            <option value="american">American — +150</option>
+          </select></div>
+        <div><label for="prefTz">Time zone</label>
+          <select id="prefTz">
+            <option value="local">Device local</option>
+            <option value="utc">UTC</option>
+          </select></div>
+      </div>
+      <p class="kyc-fine">Anesthesia is always calculated Monday–Sunday in UTC regardless of this setting, so a
+        display change never moves your payout window.</p>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
+      <div class="ch-actrow"><div class="kick">Betting</div><span class="meta">Defaults for the bet slip</span></div>
+      <div class="pref-selects">
+        <div><label for="prefOddsChange">If odds change before my bet is placed</label>
+          <select id="prefOddsChange">
+            <option value="up">Accept only if they improve</option>
+            <option value="any">Accept any change</option>
+            <option value="none">Never — ask me again</option>
+          </select></div>
+        <div><label for="prefStake">Default stake · USDT</label>
+          <input type="number" id="prefStake" min="0" step="1" value="25"></div>
+      </div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn" id="prefSave" type="button">Save preferences</button>
+      </div>
+      <div class="ch-note" id="prefNote"></div>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
+      <div class="ch-actrow"><div class="kick">Boosters</div><span class="meta">Bonus funds &amp; wagering</span></div>
+      <div class="bst-empty" id="bstEmpty">
+        <b>No active Booster</b>
+        <span>When you claim one, its wagering progress, maximum bet and expiry will show here — and you can
+          give it up at any time to free your balance.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="acct-pane" data-pane="verify">
+  <div class="pscard" id="chKyc" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Verification</div><span class="meta" id="kycTierLabel">Tier 0 &middot; unverified</span></div>
+
+    <div class="kyc-state" id="kycState">
+      <div class="kyc-badge" id="kycBadge">Unverified</div>
+      <p id="kycBlurb">You can deposit, play and withdraw without verifying. Verification is only required once
+        your <b>lifetime withdrawals</b> pass the threshold below.</p>
+    </div>
+
+    <div class="kyc-meter">
+      <div class="kyc-meter-top">
+        <span>Withdrawn to date</span>
+        <span class="mono"><b id="kycUsed">0</b> / <span id="kycCap">2,000</span> USDT</span>
+      </div>
+      <div class="kyc-bar"><i id="kycBarFill"></i></div>
+      <div class="kyc-warn" id="kycWarn" hidden></div>
+    </div>
+
+    <div class="kyc-upload" id="kycUpload">
+      <div class="kick" style="margin-top:18px">Verify now</div>
+      <p class="rg-sub">Doing this early means nothing interrupts you later. Two documents, one time.</p>
+      <div class="kyc-docs">
+        <label class="kyc-doc"><input type="file" accept="image/*,.pdf" id="kycId">
+          <span class="ic">＋</span><b>Government ID</b><i>Passport, licence or national ID</i>
+          <em id="kycIdName"></em></label>
+        <label class="kyc-doc"><input type="file" accept="image/*" id="kycSelfie">
+          <span class="ic">＋</span><b>Selfie</b><i>Holding the same document</i>
+          <em id="kycSelfieName"></em></label>
+      </div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn" id="kycSubmit" type="button" disabled>Submit for review</button>
+      </div>
+      <p class="kyc-fine">Documents are used only to satisfy our licence obligations and are never shared for
+        marketing. Review usually completes within a few hours.</p>
+    </div>
+
+    <div class="ch-note" id="kycNote"></div>
+  </div>
+  </div>
+
+  <div class="acct-pane" data-pane="limits">
+  <div class="pscard" id="chRG" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Responsible gambling</div><span class="meta">Your tools &middot; effective immediately</span></div>
+    <p class="rg-lead">Lowering a limit takes effect the moment you save it. Raising one takes 24 hours, so a
+      decision made in the moment can't undo one made calmly. Breaks and self-exclusion cannot be lifted early —
+      not by you, and not by support.</p>
+
+    <div class="rg-limits">
+      <div class="rg-head"><span></span><span>Daily</span><span>Weekly</span><span>Monthly</span></div>
+      <div class="rg-line" data-kind="deposit">
+        <span class="rg-name">Deposit limit<i>USDT you can add</i></span>
+        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily deposit limit">
+        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly deposit limit">
+        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly deposit limit">
+      </div>
+      <div class="rg-line" data-kind="loss">
+        <span class="rg-name">Loss limit<i>net losses before play stops</i></span>
+        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily loss limit">
+        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly loss limit">
+        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly loss limit">
+      </div>
+      <div class="rg-line" data-kind="wager">
+        <span class="rg-name">Wager limit<i>total staked</i></span>
+        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily wager limit">
+        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly wager limit">
+        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly wager limit">
+      </div>
+    </div>
+    <div class="ch-actions" style="margin-top:12px">
+      <button class="ch-btn" id="rgSave" type="button">Save limits</button>
+    </div>
+    <div class="ch-note" id="rgNote"></div>
+
+    <div class="rg-pending" id="rgPending" hidden></div>
+
+    <div class="rg-split">
+      <div>
+        <div class="kick" style="margin-top:20px">Session reminder</div>
+        <p class="rg-sub">A quiet interruption showing how long you've been playing and where you stand.</p>
+        <div class="rg-chips" id="rgReminder">
+          <button type="button" data-min="">Off</button>
+          <button type="button" data-min="15">15 min</button>
+          <button type="button" data-min="30">30 min</button>
+          <button type="button" data-min="60">60 min</button>
+        </div>
+      </div>
+      <div>
+        <div class="kick" style="margin-top:20px">Take a break</div>
+        <p class="rg-sub">Blocks play and deposits. You can still withdraw. Cannot be shortened.</p>
+        <div class="rg-chips" id="rgCool">
+          <button type="button" data-k="24h">24 hours</button>
+          <button type="button" data-k="7d">7 days</button>
+          <button type="button" data-k="30d">30 days</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rg-danger">
+      <div>
+        <b>Self-exclusion</b>
+        <span>Closes the ward to you for the period you choose. Marketing stops. Any active Booster is
+          forfeited. Your withdrawable balance stays yours. This cannot be reversed.</span>
+      </div>
+      <div class="rg-chips" id="rgExclude">
+        <button type="button" data-k="6mo">6 months</button>
+        <button type="button" data-k="1yr">1 year</button>
+        <button type="button" data-k="permanent">Permanent</button>
+      </div>
+    </div>
+
+    <p class="rg-help">If gambling stops being fun, help is free and confidential:
+      <a href="https://www.begambleaware.org" target="_blank" rel="noopener">BeGambleAware.org</a> &middot;
+      <a href="https://www.gamblersanonymous.org" target="_blank" rel="noopener">Gamblers Anonymous</a>.</p>
+  </div>
+  </div>
+
+  <div class="acct-pane" data-pane="activity">
   <div class="pscard" id="chActivity" style="margin-top:16px">
     <div class="ch-actrow"><div class="kick">Game activity</div><span class="meta">Casino rounds · this patient record</span></div>
     <table class="ch-comtbl">
@@ -2849,6 +3792,31 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     </table>
   </div>
 
+  </div>
+
+  <div class="acct-pane" data-pane="wallet">
+    <div class="pscard" id="pwCard" hidden>
+      <div class="ch-actrow"><div class="kick">In flight</div><span class="meta">Cancel any time before it's signed</span></div>
+      <div class="pw-list" id="pwList"></div>
+    </div>
+
+    <div class="pscard" style="margin-top:16px">
+      <div class="ch-actrow"><div class="kick">Withdrawal addresses</div><span class="meta">Saved &amp; whitelisted</span></div>
+      <p class="rg-sub">Save the wallets you cash out to so you never paste an address under pressure. A saved
+        address can be used straight from the Discharge screen.</p>
+      <div class="addr-list" id="addrList"></div>
+      <div class="addr-add">
+        <input type="text" id="addrLabel" placeholder="Label — e.g. Ledger cold" aria-label="Address label">
+        <select id="addrCoin" aria-label="Address coin">
+          <option>USDT</option><option>BTC</option><option>ETH</option>
+          <option>USDC</option><option>BNB</option><option>TRX</option><option>TON</option>
+        </select>
+        <input type="text" id="addrValue" placeholder="Wallet address" spellcheck="false" aria-label="Wallet address">
+        <button class="ch-btn" id="addrSave" type="button">Save</button>
+      </div>
+      <div class="ch-note" id="addrNote"></div>
+    </div>
+
   <div class="pscard" id="chTxSection" style="margin-top:16px">
     <div class="ch-actrow"><div class="kick">Transactions</div><span class="meta">Deposits &amp; withdrawals</span></div>
     <table class="ch-comtbl">
@@ -2860,6 +3828,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
         <tr><td>11 Jul</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>USDT</td><td class="r amt">-240.00</td><td class="r"><span class="ch-pill win">Confirmed</span></td></tr>
       </tbody>
     </table>
+  </div>
   </div>
 </section>
 
@@ -3417,7 +4386,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
           <span>I am at least 18 years old and I accept the <a>Terms</a> and <a>Privacy Policy</a>. I confirm online gambling is legal in my jurisdiction.</span>
         </div>
       </div>
-      <div class="forgot" id="forgotRow" style="display:none">Forgot password?</div>
+      <div class="forgot" id="forgotRow" style="display:none"><a href="javascript:void(0)" id="forgotLink">Forgot password?</a></div>
 
       <button class="go" id="admGo" type="submit" disabled>Admit me</button>
     </form>
@@ -3655,7 +4624,8 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       <h5>Policy</h5>
       Deposits and withdrawals are monitored on-chain. Structuring, mixing-service proximity, and sanctioned-address exposure trigger review.
       <h5>Verification threshold</h5>
-      Play below the threshold requires no KYC. Cumulative withdrawals above it trigger a one-time verification.
+      Play below the threshold requires no KYC. Once your cumulative withdrawals pass 2,000 USDT a one-time
+      verification is required; your progress toward it is shown in your account under Verification.
       <h5>Reporting</h5>
       Suspicious activity is reported to the licensing authority as required by law.
     </div>
@@ -3663,7 +4633,9 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       <h5>18+ only</h5>
       Gambling involves risk. Only play with what you can afford to lose.
       <h5>Your tools</h5>
-      Deposit limits, loss limits, session reminders, cool-off, and permanent self-exclusion are available in your account, effective immediately.
+      Deposit limits, loss limits, wager limits, session reminders, cool-off and self-exclusion are in your account,
+      under Limits &amp; breaks. Lowering a limit takes effect immediately; raising one takes 24 hours. Breaks and
+      self-exclusion cannot be shortened once set, by you or by us. Withdrawing stays available throughout.
       <h5>Help</h5>
       If gambling stops being fun, reach out: BeGambleAware.org, Gamblers Anonymous, or your local support line. Support can enable self-exclusion for you at any time.
     </div>
@@ -3678,6 +4650,195 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
         <span>Pragmatic Play</span><span>Evolution</span><span>Hacksaw</span><span>Nolimit City</span><span>Push Gaming</span><span>BGaming</span><span>Relax Gaming</span><span>Play'n GO</span><span>Big Time Gaming</span><span>Thunderkick</span><span>ELK Studios</span><span>Red Tiger</span><span>NetEnt</span><span>Wazdan</span><span>PG Soft</span><span>Spinomenal</span><span>3 Oaks</span><span>Playson</span>
       </div>
       <div class="mnote">132 providers integrated at launch. Full catalogue lands with the platform build.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="rc-modal">
+  <div class="modal" role="dialog" aria-label="Session reminder" style="max-width:400px">
+    <div class="mhead"><h3>You've been playing a while</h3></div>
+    <div class="mbody">
+      <p class="pf-lead">You asked us to check in. Here's where you are — no judgement, just the numbers.</p>
+      <div class="rc-stats">
+        <div class="rc-stat"><b id="rcTime">0m</b><span>This session</span></div>
+        <div class="rc-stat"><b id="rcNet">0.00</b><span>Net this session · USDT</span></div>
+        <div class="rc-stat"><b id="rcWagered">0</b><span>Wagered · USDT</span></div>
+        <div class="rc-stat"><b id="rcBal">0</b><span>Balance · USDT</span></div>
+      </div>
+      <div class="rc-acts">
+        <button class="btn btn-red" id="rcContinue" type="button">Keep playing</button>
+        <button class="btn" id="rcBreak" type="button"
+                style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#e8eaee">Take a break</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="recover-modal">
+  <div class="modal" role="dialog" aria-label="Recover your account" style="max-width:440px">
+    <div class="mhead"><h3 id="recTitle">Recover access</h3><button class="x" onclick="closeModal('recover-modal')">✕</button></div>
+    <div class="mbody">
+
+      <div id="recStep1">
+        <p class="pf-lead">Tell us the email on the account and we'll send a reset link. It's valid for 30 minutes
+          and can only be used once.</p>
+        <label class="tfa-lab" for="recEmail">Email</label>
+        <input class="rec-in" id="recEmail" type="email" autocomplete="email" placeholder="you@example.com">
+        <div class="tfa-err" id="recErr" hidden></div>
+        <button class="btn btn-red" id="recSend" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">Send reset link</button>
+        <div class="rec-alt">
+          <span>Lost your authenticator too?</span>
+          <a href="javascript:void(0)" id="recLost2fa">Recover a locked account</a>
+        </div>
+      </div>
+
+      <div id="recStep2" hidden>
+        <div class="tfa-done">Link sent</div>
+        <p class="pf-lead">If <b id="recSentTo">that address</b> is on an account, a reset link is on its way.
+          Check spam before asking us — it's usually there.</p>
+        <p class="kyc-fine">We don't confirm whether an email is registered. That's deliberate: it stops someone
+          using this form to find out who has an account here.</p>
+        <button class="btn btn-red" id="recDemo" type="button"
+                style="width:100%;margin-top:6px;border-radius:var(--r-md)">Open the link (demo)</button>
+      </div>
+
+      <div id="recStep3" hidden>
+        <p class="pf-lead">Choose a new password. This signs out every other device.</p>
+        <label class="tfa-lab" for="recNew">New password</label>
+        <input class="rec-in" id="recNew" type="password" autocomplete="new-password"
+               placeholder="Minimum 8 characters, one number">
+        <div class="meter" id="recMeterWrap"><i id="recMeter"></i></div>
+        <div class="tfa-err" id="recNewErr" hidden></div>
+        <button class="btn btn-red" id="recSave" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">Set password and sign in</button>
+      </div>
+
+      <div id="recStep4" hidden>
+        <p class="pf-lead">If you've lost both your password and your authenticator, we have to verify you're the
+          account holder before we can unlock it. That means identity documents, and it is deliberately slower
+          than the normal route.</p>
+        <div class="rec-steps">
+          <div><b>1</b><span>Write to Triage from the email on the account</span></div>
+          <div><b>2</b><span>Send a government ID and a selfie holding it</span></div>
+          <div><b>3</b><span>We reset 2FA once verified — usually within a day</span></div>
+        </div>
+        <a class="btn btn-red" href="mailto:support@painbet.com?subject=Locked%20account%20recovery"
+           style="display:block;text-align:center;width:100%;margin-top:14px;border-radius:var(--r-md);text-decoration:none">Write to Triage</a>
+        <button class="rec-back" id="recBack" type="button">← Back</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="login2fa-modal">
+  <div class="modal" role="dialog" aria-label="Two-factor required" style="max-width:400px">
+    <div class="mhead"><h3>Two-factor</h3><button class="x" onclick="closeModal('login2fa-modal')">✕</button></div>
+    <div class="mbody">
+      <p class="pf-lead" id="l2fWhy">Enter the 6-digit code from your authenticator to finish signing in.</p>
+      <input class="tfa-code" id="l2fCode" inputmode="numeric" autocomplete="one-time-code"
+             maxlength="9" placeholder="000000">
+      <div class="tfa-err" id="l2fErr" hidden></div>
+      <button class="btn btn-red" id="l2fGo" type="button"
+              style="width:100%;margin-top:14px;border-radius:var(--r-md)">Sign in</button>
+      <div class="rec-alt">
+        <a href="javascript:void(0)" id="l2fBackup">Use a backup code</a>
+        <a href="javascript:void(0)" id="l2fLost">Lost both?</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="tfa-modal">
+  <div class="modal" role="dialog" aria-label="Set up two-factor authentication">
+    <div class="mhead"><h3>Two-factor</h3><button class="x" onclick="closeModal('tfa-modal')">✕</button></div>
+    <div class="mbody">
+      <div id="tfaStep1">
+        <p class="pf-lead">Add pain.bet to an authenticator app — Google Authenticator, Authy, 1Password, any of
+          them. You'll then need a 6-digit code to withdraw.</p>
+
+        <!-- DEVS: render a QR of the otpauth URI here with your preferred lib.
+             Manual key entry below is the accessible fallback and works in every app. -->
+        <div class="tfa-qr" id="tfaQrMount">
+          <span>QR renders here</span>
+          <i>Use the setup key below meanwhile</i>
+        </div>
+
+        <label class="tfa-lab">Setup key</label>
+        <div class="tfa-key"><code id="tfaSecret">—</code>
+          <button type="button" id="tfaCopy">Copy</button></div>
+
+        <label class="tfa-lab" for="tfaCode">Enter the 6-digit code to confirm</label>
+        <input class="tfa-code" id="tfaCode" inputmode="numeric" autocomplete="one-time-code"
+               maxlength="6" placeholder="000000">
+        <div class="tfa-err" id="tfaErr" hidden></div>
+        <button class="btn btn-red" id="tfaConfirm" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">Confirm and enable</button>
+      </div>
+
+      <div id="tfaStep2" hidden>
+        <div class="tfa-done">Two-factor is on</div>
+        <p class="pf-lead">Save these backup codes somewhere safe. Each one works once, and they are the only way
+          back in if you lose the authenticator.</p>
+        <div class="tfa-backup" id="tfaBackup"></div>
+        <button class="btn btn-red" id="tfaFinish" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">I've saved them</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="tfa-challenge">
+  <div class="modal" role="dialog" aria-label="Confirm with two-factor" style="max-width:400px">
+    <div class="mhead"><h3>Confirm</h3><button class="x" onclick="closeModal('tfa-challenge')">✕</button></div>
+    <div class="mbody">
+      <p class="pf-lead" id="tfaChallengeWhy">Enter the 6-digit code from your authenticator to approve this
+        withdrawal.</p>
+      <input class="tfa-code" id="tfaChallengeCode" inputmode="numeric" autocomplete="one-time-code"
+             maxlength="6" placeholder="000000">
+      <div class="tfa-err" id="tfaChallengeErr" hidden></div>
+      <button class="btn btn-red" id="tfaChallengeGo" type="button"
+              style="width:100%;margin-top:14px;border-radius:var(--r-md)">Approve</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="fair-modal">
+  <div class="modal" role="dialog" aria-label="Provably fair verifier" style="max-width:560px">
+    <div class="mhead"><h3>Verify a round</h3><button class="x" onclick="closeModal('fair-modal')">✕</button></div>
+    <div class="mbody">
+      <p class="pf-lead">Every Pain Original is derived from three values. Paste them below and this page will
+        recompute the outcome in your own browser — nothing is sent to us. You do not need an account.</p>
+
+      <div class="pf-grid">
+        <div><label for="pfServer">Server seed <span>revealed after rotation</span></label>
+          <input id="pfServer" type="text" spellcheck="false" placeholder="e.g. 8f14e45fceea167a…"></div>
+        <div><label for="pfClient">Client seed <span>yours, editable</span></label>
+          <input id="pfClient" type="text" spellcheck="false" placeholder="e.g. wardrat-77"></div>
+        <div><label for="pfNonce">Nonce <span>bet number</span></label>
+          <input id="pfNonce" type="number" min="0" step="1" value="0"></div>
+        <div><label for="pfHash">Published hash <span>optional — proves commitment</span></label>
+          <input id="pfHash" type="text" spellcheck="false" placeholder="SHA-256 of the server seed"></div>
+      </div>
+
+      <button class="btn btn-red" id="pfRun" type="button" style="width:100%;margin-top:16px;border-radius:var(--r-md)">Recompute outcome</button>
+
+      <div class="pf-out" id="pfOut" hidden>
+        <div class="pf-row"><span class="k">HMAC-SHA256</span><span class="v mono" id="pfDigest">—</span></div>
+        <div class="pf-row"><span class="k">Roll <i>0.00 – 99.99</i></span><span class="v big" id="pfRoll">—</span></div>
+        <div class="pf-commit" id="pfCommit" hidden></div>
+      </div>
+
+      <details class="pf-how">
+        <summary>How this is calculated</summary>
+        <p>The server seed is generated before you play and we publish only its SHA-256 hash, so it cannot be
+          changed afterwards. Your client seed is yours to set. The nonce counts up by one with every bet.</p>
+        <pre>result = HMAC_SHA256(server_seed, client_seed + ":" + nonce)
+roll   = (first 8 hex digits of result) mod 10000 / 100</pre>
+        <p>When you rotate your seed pair we reveal the old server seed. Hash it here and compare it against the
+          hash we published beforehand — if they match, every outcome under that seed was fixed before you bet.</p>
+      </details>
     </div>
   </div>
 </div>
@@ -4191,8 +5352,18 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
         veil.classList.remove('neuron-mode');
         if(window.markSignedIn) window.markSignedIn({id: pid, email: email.value.trim()});
       } else {
-        if(window.markSignedIn) window.markSignedIn({email: email.value.trim()});
-        close();
+        // If this account has 2FA, possession must be proved before the
+        // session is issued — otherwise the second factor is decoration.
+        var finish = function(){
+          if(window.markSignedIn) window.markSignedIn({email: email.value.trim()});
+          close();
+        };
+        if(window.PB && PB.state.twofa.enabled && PB.requireLogin2fa){
+          close();
+          PB.requireLogin2fa().then(function(ok){ if(ok) finish(); });
+        } else {
+          finish();
+        }
       }
     }
     if(window.fireAuthCinematic){
@@ -5324,7 +6495,11 @@ const stage  = canvas ? canvas.parentElement : null;
 const viewEl = document.getElementById('view-synapse');
 if (canvas && stage && viewEl) {
 
-  const TARGET = 50000;                 // bounty + overload threshold
+  const TARGET = 50000;                 // pool size that trips the firing threshold
+  // House-funded prize, split by contribution share when the boss flatlines.
+  // Kept separate from TARGET so the two can be tuned independently — the
+  // margin between them is the house position on the whole mechanic.
+  const BOUNTY = 50000;
   const REST_MV = -70.0, FIRE_MV = -55.0;
   const YOU = { name: 'you', stake: 0, you: true };
   const BOT_NAMES = ['nervend','flatlin','morphi','bonesa','stingr','agonyx','numbsk','dosage','clotshot','tremor','ischemia','venous','ripcord','coldcut','lastrit'];
@@ -5431,9 +6606,12 @@ if (canvas && stage && viewEl) {
   function addStake(r, amt){ r.stake += amt; pool += amt; miniPulse(); if(pool>=TARGET && !firing) flatline(); }
   function flatline(){ firing=true; state=2; actProg=0; material.uniforms.uPulseProgress.value=-10;
     if(stage) stage.classList.add('firing');
-    const total=pool, payout=Math.round(total*(YOU.stake/Math.max(total,1)));
-    // prepend a cleared-raid row to the leaderboard header note
-    const nf=$('syn-nextfire'); if(nf) nf.textContent='cleared · '+fmt(total)+' USDT paid';
+    // The bounty is funded by the house, NOT skimmed from the pool. Paying
+    // `pool × (stake/pool)` cancels down to `stake`, which would hand every
+    // raider back exactly what they put in — no upside, no house position,
+    // and a contradiction of the copy promising a share of the bounty.
+    const total=pool, payout=Math.round(BOUNTY*(YOU.stake/Math.max(total,1)));
+    const nf=$('syn-nextfire'); if(nf) nf.textContent='cleared · '+fmt(BOUNTY)+' USDT bounty paid';
     lastYouPayout=payout;
   }
   let lastYouPayout=0;
@@ -5470,7 +6648,7 @@ if (canvas && stage && viewEl) {
     if($('syn-mv'))       $('syn-mv').textContent = (mv>=0?'+':'−')+Math.abs(mv).toFixed(1)+' mV';
     if($('syn-yourstake'))$('syn-yourstake').textContent = fmt(YOU.stake)+' USDT';
     if($('syn-yourshare'))$('syn-yourshare').textContent = (share*100).toFixed(2)+'%';
-    if($('syn-yourpayout'))$('syn-yourpayout').textContent = fmt(share*TARGET)+' USDT';
+    if($('syn-yourpayout'))$('syn-yourpayout').textContent = fmt(share*BOUNTY)+' USDT';
     const st=$('syn-status'); if(st){ st.textContent = firing?'Flatline':(crit?'Critical':'Raid live'); st.style.color = (firing||crit)?'var(--redhi)':'var(--ink-hi)'; }
     // leaderboard
     if(lb){
@@ -6049,20 +7227,17 @@ document.querySelectorAll('.pgback').forEach(function(b){
   document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeMenu(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
 
-  function goChart(anchorId){
+  function goChart(tab){
     document.querySelectorAll('.side a').forEach(function(a){
       if(a.textContent.trim() === 'The Chart') a.click();
     });
-    if(anchorId){
-      setTimeout(function(){
-        var el = document.getElementById(anchorId);
-        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
-      }, 60);
+    if(tab && window.PB && PB.showAccountTab){
+      setTimeout(function(){ PB.showAccountTab(tab); }, 60);
     }
   }
-  document.getElementById('acctGoChart').addEventListener('click', function(){ closeMenu(); goChart(); });
-  document.getElementById('acctGoActivity').addEventListener('click', function(){ closeMenu(); goChart('chActivity'); });
-  document.getElementById('acctGoTx').addEventListener('click', function(){ closeMenu(); goChart('chTxSection'); });
+  document.getElementById('acctGoChart').addEventListener('click', function(){ closeMenu(); goChart('profile'); });
+  document.getElementById('acctGoActivity').addEventListener('click', function(){ closeMenu(); goChart('activity'); });
+  document.getElementById('acctGoTx').addEventListener('click', function(){ closeMenu(); goChart('wallet'); });
   document.getElementById('acctSupport').addEventListener('click', function(){
     closeMenu();
     document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim() === 'Triage') a.click(); });
@@ -6093,11 +7268,19 @@ document.querySelectorAll('.pgback').forEach(function(b){
     ava2.textContent = ava.textContent;
     fillChart(user);
     try{ sessionStorage.setItem('pb_session', JSON.stringify(user)); }catch(e){}
+    // Drive the platform state layer, then make sure a provably-fair seed
+    // pair is committed before the user can place a single bet.
+    if(window.PB){
+      PB.api.signIn(user).then(function(){
+        if(PB.ensureSeeds) return PB.ensureSeeds();
+      });
+    }
   };
 
   window.signOut = function(){
     document.body.classList.remove('signed-in');
     try{ sessionStorage.removeItem('pb_session'); }catch(e){}
+    if(window.PB) PB.api.signOut();
     if(document.body.classList.contains('view-chart')){
       document.body.classList.remove('view-chart');
       document.querySelectorAll('.side a').forEach(function(a){ a.classList.remove('on'); });
@@ -6139,20 +7322,1369 @@ document.querySelectorAll('.pgback').forEach(function(b){
         return;
       }
       var coin = document.getElementById('wdCoin').value.toUpperCase();
-      var tbody = document.getElementById('chTxBody');
-      if(tbody){
-        var row = document.createElement('tr');
-        row.innerHTML = '<td>Just now</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>' + coin + '</td>' +
-          '<td class="r amt">-' + amt.toFixed(amt < 1 ? 6 : 2) + '</td><td class="r"><span class="ch-pill pending">Pending</span></td>';
-        tbody.prepend(row);
+
+      // Run the gate stack (logic spec §03) before anything else.
+      var g = window.PB ? PB.gate('withdraw', {amount: amt}) : {ok:true};
+      if(!g.ok){
+        note.textContent = g.message;
+        note.style.color = (g.code === 'kyc_pending') ? '#e0a13e' : '#ff5c7c';
+        // Route the user to the thing that unblocks them, rather than dead-ending.
+        if(g.code === 'kyc'){
+          note.textContent += ' Opening verification…';
+          setTimeout(function(){
+            if(typeof closeModal === 'function') closeModal('depVeil');
+            var v = document.getElementById('depVeil'); if(v) v.classList.remove('open');
+            document.querySelectorAll('.side a').forEach(function(a){
+              if(a.textContent.trim() === 'The Chart') a.click(); });
+            if(PB.showAccountTab) PB.showAccountTab('verify');
+          }, 900);
+        }
+        if(g.code === '2fa'){
+          note.textContent += ' Enable it on The Chart under Security.';
+        }
+        return;
       }
-      note.textContent = 'Discharge requested — it now shows as pending in Transactions, on The Chart.';
-      note.style.color = '#7FD6E8';
-      wdGo.disabled = true;
-      wdGo.textContent = 'Requested';
-      addrEl.disabled = true; amtEl.disabled = true;
+
+      function commit(){
+        var tbody = document.getElementById('chTxBody');
+        if(tbody){
+          var row = document.createElement('tr');
+          row.innerHTML = '<td>Just now</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>' + coin + '</td>' +
+            '<td class="r amt">-' + amt.toFixed(amt < 1 ? 6 : 2) + '</td><td class="r"><span class="ch-pill pending">Pending</span></td>';
+          tbody.prepend(row);
+        }
+        if(window.PB) PB.api.requestWithdrawal(amt, coin);
+        note.textContent = 'Discharge requested — it now shows as pending in Transactions, on The Chart.';
+        note.style.color = '#7FD6E8';
+        wdGo.disabled = true;
+        wdGo.textContent = 'Requested';
+        addrEl.disabled = true; amtEl.disabled = true;
+      }
+
+      // 2FA challenge is the last step before execution.
+      if(window.PB && PB.state.twofa.enabled && PB.challenge2fa){
+        PB.challenge2fa('Enter the 6-digit code from your authenticator to approve this withdrawal of ' +
+          amt + ' ' + coin + '.').then(function(ok){ if(ok) commit(); });
+      } else {
+        commit();
+      }
     });
   }
+})();
+</script>
+
+<!-- ===================================================================
+     Provably fair — real implementation, not a mock.
+     Uses Web Crypto, so the verifier genuinely recomputes outcomes in the
+     player's own browser with nothing sent to a server.
+
+     DEVS: the only thing that must move server-side is server-seed custody.
+     PB.fair.newServerSeed() below generates the seed client-side purely so
+     the prototype can demonstrate the full commit/reveal cycle. In
+     production the server generates it, stores it, exposes ONLY its hash,
+     and reveals the plaintext at rotation. The maths must not change —
+     result = HMAC_SHA256(server_seed, client_seed + ":" + nonce).
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var enc = new TextEncoder();
+  var subtle = (window.crypto && window.crypto.subtle) || null;
+
+  function toHex(buf){
+    return Array.prototype.map.call(new Uint8Array(buf), function(b){
+      return b.toString(16).padStart(2,'0'); }).join('');
+  }
+  function sha256Hex(str){
+    if(!subtle) return Promise.reject(new Error('Web Crypto unavailable'));
+    return subtle.digest('SHA-256', enc.encode(str)).then(toHex);
+  }
+  function hmacSha256Hex(key, msg){
+    if(!subtle) return Promise.reject(new Error('Web Crypto unavailable'));
+    return subtle.importKey('raw', enc.encode(key), {name:'HMAC', hash:'SHA-256'}, false, ['sign'])
+      .then(function(k){ return subtle.sign('HMAC', k, enc.encode(msg)); })
+      .then(toHex);
+  }
+  function randomHex(bytes){
+    var a = new Uint8Array(bytes);
+    (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a)
+      : a.forEach(function(_,i){ a[i] = Math.floor(Math.random()*256); });
+    return toHex(a.buffer);
+  }
+  // Standard conversion: take the first 8 hex digits of the digest as a
+  // 32-bit integer and map it into 0.00–99.99. Documented in the verifier
+  // so a player can follow it by hand.
+  function digestToRoll(hex){
+    return (parseInt(hex.slice(0,8), 16) % 10000) / 100;
+  }
+
+  window.PB = window.PB || {};
+  PB.fair = {
+    sha256Hex: sha256Hex,
+    hmacSha256Hex: hmacSha256Hex,
+    randomHex: randomHex,
+    digestToRoll: digestToRoll,
+    newServerSeed: function(){ return randomHex(32); },
+    // Resolve a round the way the server will.
+    roll: function(serverSeed, clientSeed, nonce){
+      return hmacSha256Hex(serverSeed, clientSeed + ':' + nonce)
+        .then(function(hex){ return { digest: hex, roll: digestToRoll(hex) }; });
+    }
+  };
+
+  // ---- seed custody for the prototype -------------------------------
+  // Held in localStorage under a separate key to make the point that the
+  // plaintext seed is NOT part of PB.state (which the UI can read freely).
+  var SEED_KEY = 'pb_serverseed_v1';
+  function currentServerSeed(){
+    var s = null;
+    try{ s = localStorage.getItem(SEED_KEY); }catch(e){}
+    return s;
+  }
+  function stashServerSeed(seed){
+    try{ localStorage.setItem(SEED_KEY, seed); }catch(e){}
+  }
+
+  // Make sure a signed-in user always has a committed seed pair.
+  function ensureSeeds(){
+    var st = PB.state;
+    if(st.account === 'anonymous') return Promise.resolve();
+    if(st.seeds.serverSeedHash && currentServerSeed()) return Promise.resolve();
+    var seed = PB.fair.newServerSeed();
+    stashServerSeed(seed);
+    if(!st.seeds.clientSeed) st.seeds.clientSeed = randomHex(8);
+    return sha256Hex(seed).then(function(h){ return PB.api.rotateSeeds(h, null); });
+  }
+  PB.ensureSeeds = ensureSeeds;
+
+  // ---- The Chart seed panel -----------------------------------------
+  var elHash = document.getElementById('sdHash');
+  var elNonce = document.getElementById('sdNonce');
+  var elClient = document.getElementById('sdClient');
+  var elNote = document.getElementById('sdNote');
+
+  function paintSeeds(){
+    if(!elHash) return;
+    var s = PB.state.seeds;
+    elHash.textContent = s.serverSeedHash || '—';
+    elNonce.textContent = s.nonce;
+    if(elClient && document.activeElement !== elClient) elClient.value = s.clientSeed || '';
+  }
+  if(window.PB && PB.onChange) PB.onChange(paintSeeds);
+  paintSeeds();
+
+  var save = document.getElementById('sdSave');
+  if(save) save.addEventListener('click', function(){
+    var v = (elClient.value || '').trim();
+    if(!v){ note('Client seed cannot be empty.', true); return; }
+    PB.api.setClientSeed(v).then(function(){
+      note('Client seed updated. Nonce reset to 0.', false);
+    });
+  });
+
+  var rotate = document.getElementById('sdRotate');
+  if(rotate) rotate.addEventListener('click', function(){
+    var old = currentServerSeed();
+    var next = PB.fair.newServerSeed();
+    stashServerSeed(next);
+    sha256Hex(next).then(function(h){
+      return PB.api.rotateSeeds(h, old);
+    }).then(function(){
+      if(old){
+        note('Previous server seed revealed: ' + old + ' — verify any past round with it.', false);
+        // pre-fill the verifier so the next step is obvious
+        var f = document.getElementById('pfServer'); if(f) f.value = old;
+        var c = document.getElementById('pfClient'); if(c) c.value = PB.state.seeds.clientSeed || '';
+      } else {
+        note('Seed pair created.', false);
+      }
+    });
+  });
+
+  var openV = document.getElementById('sdVerify');
+  if(openV) openV.addEventListener('click', function(){
+    var c = document.getElementById('pfClient');
+    if(c && !c.value) c.value = PB.state.seeds.clientSeed || '';
+    if(typeof openModal === 'function') openModal('fair-modal');
+  });
+
+  function note(msg, bad){
+    if(!elNote) return;
+    elNote.textContent = msg;
+    elNote.style.color = bad ? '#ff6b86' : '#7FD6E8';
+    elNote.classList.add('show');
+  }
+
+  // ---- verifier modal ------------------------------------------------
+  var run = document.getElementById('pfRun');
+  if(run) run.addEventListener('click', function(){
+    var server = (document.getElementById('pfServer').value || '').trim();
+    var client = (document.getElementById('pfClient').value || '').trim();
+    var nonce  = document.getElementById('pfNonce').value || '0';
+    var claim  = (document.getElementById('pfHash').value || '').trim().toLowerCase();
+    var out    = document.getElementById('pfOut');
+    var commit = document.getElementById('pfCommit');
+
+    if(!server || !client){
+      out.hidden = false;
+      document.getElementById('pfDigest').textContent = 'Enter both a server seed and a client seed.';
+      document.getElementById('pfRoll').textContent = '—';
+      commit.hidden = true;
+      return;
+    }
+
+    PB.fair.roll(server, client, nonce).then(function(r){
+      out.hidden = false;
+      document.getElementById('pfDigest').textContent = r.digest;
+      document.getElementById('pfRoll').textContent = r.roll.toFixed(2);
+      if(claim){
+        return sha256Hex(server).then(function(h){
+          commit.hidden = false;
+          var match = h === claim;
+          commit.className = 'pf-commit ' + (match ? 'ok' : 'bad');
+          commit.textContent = match
+            ? 'Commitment verified — this server seed hashes to the published value, so the outcome was fixed before the bet.'
+            : 'Hash mismatch. This server seed does not match the hash provided (' + h + ').';
+        });
+      }
+      commit.hidden = true;
+    }).catch(function(e){
+      out.hidden = false;
+      document.getElementById('pfDigest').textContent = 'Could not compute: ' + e.message;
+    });
+  });
+
+  // Footer "Provably fair" link used to open proof-of-reserves, which is a
+  // different guarantee. Point it at the actual fairness verifier.
+  document.querySelectorAll('footer .links a').forEach(function(a){
+    if(a.textContent.trim().toLowerCase() === 'provably fair'){
+      a.removeAttribute('onclick');
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        if(typeof openModal === 'function') openModal('fair-modal');
+      });
+    }
+  });
+})();
+</script>
+
+<!-- ===================================================================
+     Responsible gambling — logic spec §12.
+     Licence-required, and previously promised in the footer and legal
+     modal without existing. The asymmetry rule (decrease instant, increase
+     delayed 24h) lives in PB.api.setLimit; this file is the UI over it.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var panel = document.getElementById('chRG');
+  if(!panel || !window.PB) return;
+
+  var note = document.getElementById('rgNote');
+  var pendBox = document.getElementById('rgPending');
+
+  function say(msg, bad){
+    note.textContent = msg;
+    note.style.color = bad ? '#ff6b86' : '#7FD6E8';
+    note.classList.add('show');
+  }
+
+  // ---- limits -------------------------------------------------------
+  function paintLimits(){
+    panel.querySelectorAll('.rg-line').forEach(function(line){
+      var kind = line.dataset.kind;
+      line.querySelectorAll('input').forEach(function(inp){
+        if(document.activeElement === inp) return;
+        var v = (PB.state.rg.limits[kind] || {})[inp.dataset.period];
+        inp.value = (v == null ? '' : v);
+      });
+    });
+    paintPending();
+  }
+
+  function paintPending(){
+    var p = PB.state.rg.pending || [];
+    if(!p.length){ pendBox.hidden = true; pendBox.innerHTML = ''; return; }
+    pendBox.hidden = false;
+    pendBox.innerHTML = '<div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;' +
+      'text-transform:uppercase;margin-bottom:6px">Pending increases · old limit still applies</div>' +
+      p.map(function(x){
+        return '<div class="pr"><span>' + x.kind + ' · ' + x.period + ' → ' +
+          x.value.toLocaleString() + ' USDT, live ' + PB.fmtDate(x.effectiveAt) + '</span>' +
+          '<button type="button" data-cancel="' + x.kind + '|' + x.period + '">Cancel</button></div>';
+      }).join('');
+  }
+
+  pendBox.addEventListener('click', function(e){
+    var b = e.target.closest('[data-cancel]');
+    if(!b) return;
+    var parts = b.dataset.cancel.split('|');
+    PB.api.cancelPendingLimit(parts[0], parts[1]).then(function(){
+      say('Pending increase cancelled.', false);
+    });
+  });
+
+  document.getElementById('rgSave').addEventListener('click', function(){
+    var jobs = [], queued = 0, instant = 0;
+    panel.querySelectorAll('.rg-line').forEach(function(line){
+      var kind = line.dataset.kind;
+      line.querySelectorAll('input').forEach(function(inp){
+        var raw = inp.value.trim();
+        var val = raw === '' ? null : Math.max(0, Number(raw));
+        var cur = (PB.state.rg.limits[kind] || {})[inp.dataset.period];
+        if(val === (cur == null ? null : cur)) return;   // unchanged
+        jobs.push(PB.api.setLimit(kind, inp.dataset.period, val).then(function(r){
+          r.applied === 'queued' ? queued++ : instant++;
+        }));
+      });
+    });
+    if(!jobs.length){ say('Nothing changed.', false); return; }
+    Promise.all(jobs).then(function(){
+      var bits = [];
+      if(instant) bits.push(instant + ' applied now');
+      if(queued) bits.push(queued + ' scheduled for 24 hours from now');
+      say(bits.join(' · ') + '.', false);
+      paintLimits();
+    });
+  });
+
+  // ---- session reminder ---------------------------------------------
+  var remBox = document.getElementById('rgReminder');
+  remBox.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var min = b.dataset.min === '' ? null : Number(b.dataset.min);
+    PB.api.setSessionReminder(min).then(function(){
+      paintReminder();
+      say(min ? 'Reminder every ' + min + ' minutes.' : 'Session reminder off.', false);
+    });
+  });
+  function paintReminder(){
+    var cur = PB.state.rg.sessionReminderMin;
+    remBox.querySelectorAll('button').forEach(function(b){
+      var v = b.dataset.min === '' ? null : Number(b.dataset.min);
+      b.classList.toggle('on', v === cur);
+    });
+  }
+
+  // ---- cool-off and self-exclusion ----------------------------------
+  var LABEL = { '24h':'24 hours', '7d':'7 days', '30d':'30 days',
+                '6mo':'6 months', '1yr':'1 year', 'permanent':'permanently' };
+
+  document.getElementById('rgCool').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var k = b.dataset.k;
+    if(!confirm('Take a break for ' + LABEL[k] + '?\n\nYou will not be able to play or deposit until it ends. ' +
+                'You can still withdraw. This cannot be shortened.')) return;
+    PB.api.coolOff(k).then(function(){
+      say('Break started. The ward reopens ' + PB.fmtDate(PB.state.rg.lockUntil) + '.', false);
+      applyLock();
+    });
+  });
+
+  document.getElementById('rgExclude').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var k = b.dataset.k;
+    // Two-step, because this one is irreversible.
+    if(!confirm('Self-exclude for ' + LABEL[k] + '?\n\nThis blocks play and deposits, stops all marketing, ' +
+                'and forfeits any active Booster. Your withdrawable balance stays yours.')) return;
+    if(!confirm('Last check.\n\nThis cannot be undone — not by you, and not by support. Continue?')) return;
+    PB.api.selfExclude(k).then(function(){
+      say('Self-excluded ' + (k === 'permanent' ? 'permanently' : 'until ' + PB.fmtDate(PB.state.rg.lockUntil)) + '.', false);
+      applyLock();
+    });
+  });
+
+  // ---- site-wide lock enforcement -----------------------------------
+  var bar = document.createElement('div');
+  bar.className = 'rg-lockbar';
+  // The bar promises withdrawals stay open, so it has to offer the route.
+  bar.innerHTML = '<b id="rgLockKind">On a break</b><span id="rgLockMsg"></span>' +
+    '<button type="button" id="rgLockWd">Withdraw my balance</button>';
+  document.body.appendChild(bar);
+
+  function applyLock(){
+    var locked = PB.isLocked();
+    document.body.classList.toggle('pb-locked', locked);
+    if(locked){
+      var excl = PB.state.rg.lockKind === 'exclusion';
+      document.getElementById('rgLockKind').textContent = excl ? 'Self-excluded' : 'On a break';
+      document.getElementById('rgLockMsg').textContent =
+        (PB.state.rg.lockUntil === Infinity
+          ? 'Play and deposits are closed permanently.'
+          : 'Play and deposits are closed until ' + PB.fmtDate(PB.state.rg.lockUntil) + '.') +
+        ' Withdrawals stay open.';
+    }
+  }
+
+  // Intercept the money entry points while locked. The gate stack is the
+  // source of truth — this is the UI honouring it.
+  function guard(selector, action){
+    document.addEventListener('click', function(e){
+      var t = e.target.closest(selector);
+      if(!t) return;
+      var g = PB.gate(action, {});
+      if(!g.ok && (g.code === 'locked' || g.code === 'limit')){
+        e.preventDefault(); e.stopImmediatePropagation();
+        alert(g.message);
+      }
+    }, true);   // capture, so it runs before the feature's own handler
+  }
+  guard('.topbar .btn.red', 'deposit');       // Deposit
+  guard('[data-game]', 'bet');                // any game tile once the launch seam is live
+
+  PB.onChange(function(){ paintLimits(); paintReminder(); applyLock(); });
+  paintLimits(); paintReminder(); applyLock();
+})();
+</script>
+
+<!-- ===================================================================
+     Verification — logic spec §13.
+     Threshold model: play and withdraw freely until cumulative lifetime
+     withdrawals cross PB.CONST.KYC_THRESHOLD_USDT, then Tier 1 is required.
+     The gate itself lives in PB.gate('withdraw'); this is the UI and the
+     document-submission flow.
+
+     DEVS: PB.api.submitVerification currently just flips state. Wire it to
+     a real upload + provider (Sumsub, Veriff, etc). The __approveVerification
+     button is a demo affordance and must be deleted before production —
+     approval is a backend decision, never a client one.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var card = document.getElementById('chKyc');
+  if(!card || !window.PB) return;
+
+  var badge = document.getElementById('kycBadge');
+  var blurb = document.getElementById('kycBlurb');
+  var note  = document.getElementById('kycNote');
+  var submit = document.getElementById('kycSubmit');
+  var files = { id:null, selfie:null };
+
+  function paint(){
+    var v = PB.state.verification;
+    var cap = PB.CONST.KYC_THRESHOLD_USDT;
+    var used = v.cumulativeWithdrawn || 0;
+    var pct = Math.min(100, cap ? (used / cap) * 100 : 0);
+
+    document.getElementById('kycUsed').textContent = Math.round(used).toLocaleString();
+    document.getElementById('kycCap').textContent = cap.toLocaleString();
+    var fill = document.getElementById('kycBarFill');
+    fill.style.width = pct + '%';
+    fill.className = pct >= 100 ? 'full' : (pct >= PB.CONST.KYC_WARN_AT * 100 ? 'warn' : '');
+
+    var warn = document.getElementById('kycWarn');
+    if(v.tier > 0 || pct < PB.CONST.KYC_WARN_AT * 100){
+      warn.hidden = true;
+    } else {
+      warn.hidden = false;
+      warn.textContent = pct >= 100
+        ? 'You have reached the threshold. Verify to withdraw any further.'
+        : 'You are close to the threshold. Verifying now means your next withdrawal is not interrupted.';
+    }
+
+    var upload = document.getElementById('kycUpload');
+    document.getElementById('kycTierLabel').textContent =
+      v.tier > 0 ? 'Tier 1 · identified' : (v.submittedAt ? 'Tier 0 · in review' : 'Tier 0 · unverified');
+
+    if(v.tier > 0){
+      badge.className = 'kyc-badge ok'; badge.textContent = 'Verified';
+      blurb.innerHTML = 'Your identity is confirmed. Withdrawals are no longer capped by the threshold.';
+      upload.hidden = true;
+    } else if(v.rejectedReason){
+      badge.className = 'kyc-badge bad'; badge.textContent = 'Needs attention';
+      blurb.innerHTML = 'We could not verify these documents: <b>' + v.rejectedReason + '</b> — please resubmit.';
+      upload.hidden = false;
+    } else if(v.submittedAt){
+      badge.className = 'kyc-badge pending'; badge.textContent = 'In review';
+      blurb.innerHTML = 'Submitted ' + PB.fmtDate(v.submittedAt) + '. Withdrawals above the threshold are ' +
+        '<b>queued, not refused</b> — they release automatically once you are approved.';
+      upload.hidden = true;
+    } else {
+      badge.className = 'kyc-badge'; badge.textContent = 'Unverified';
+      blurb.innerHTML = 'You can deposit, play and withdraw without verifying. Verification is only required ' +
+        'once your <b>lifetime withdrawals</b> pass the threshold below.';
+      upload.hidden = false;
+    }
+  }
+
+  function wireFile(inputId, nameId, key){
+    var inp = document.getElementById(inputId);
+    inp.addEventListener('change', function(){
+      var f = inp.files && inp.files[0];
+      files[key] = f || null;
+      document.getElementById(nameId).textContent = f ? f.name : '';
+      inp.closest('.kyc-doc').classList.toggle('filled', !!f);
+      submit.disabled = !(files.id && files.selfie);
+    });
+  }
+  wireFile('kycId','kycIdName','id');
+  wireFile('kycSelfie','kycSelfieName','selfie');
+
+  submit.addEventListener('click', function(){
+    submit.disabled = true;
+    PB.api.submitVerification(files).then(function(){
+      note.textContent = 'Documents submitted. We will email you when review completes.';
+      note.style.color = '#7FD6E8';
+      note.classList.add('show');
+      paint();
+    });
+  });
+
+  PB.onChange(paint);
+  paint();
+})();
+</script>
+
+<!-- ===================================================================
+     Two-factor — real TOTP (RFC 6238), replacing the cosmetic toggle.
+     The code the user types is genuinely validated against the generated
+     secret before 2FA is enabled, so the enrolment flow is testable
+     end-to-end rather than mocked.
+
+     DEVS: secret generation and code validation must both move server-side.
+     A client-validated TOTP proves nothing to the server. Keep the flow and
+     the UI; replace PB.totp.verify() with a backend call, and store the
+     secret and backup codes hashed, never in localStorage as here.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  if(!window.PB) return;
+  var subtle = (window.crypto && window.crypto.subtle) || null;
+  var B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
+  function randomSecret(len){
+    var a = new Uint8Array(len || 20);
+    crypto.getRandomValues(a);
+    var s = '';
+    for(var i=0;i<a.length;i++) s += B32[a[i] % 32];
+    return s;
+  }
+  function b32decode(s){
+    s = s.replace(/=+$/,'').toUpperCase();
+    var bits = 0, value = 0, out = [], i;
+    for(i=0;i<s.length;i++){
+      var idx = B32.indexOf(s[i]);
+      if(idx < 0) continue;
+      value = (value << 5) | idx; bits += 5;
+      if(bits >= 8){ out.push((value >>> (bits - 8)) & 255); bits -= 8; }
+    }
+    return new Uint8Array(out);
+  }
+  // TOTP: HMAC-SHA1 over the 30-second counter, dynamically truncated to 6 digits.
+  function totp(secretB32, forCounter){
+    if(!subtle) return Promise.reject(new Error('Web Crypto unavailable'));
+    var counter = forCounter != null ? forCounter : Math.floor(Date.now() / 1000 / 30);
+    var buf = new ArrayBuffer(8);
+    var view = new DataView(buf);
+    view.setUint32(0, Math.floor(counter / 4294967296));
+    view.setUint32(4, counter >>> 0);
+    return subtle.importKey('raw', b32decode(secretB32), {name:'HMAC', hash:'SHA-1'}, false, ['sign'])
+      .then(function(k){ return subtle.sign('HMAC', k, buf); })
+      .then(function(sig){
+        var h = new Uint8Array(sig);
+        var off = h[h.length - 1] & 0x0f;
+        var bin = ((h[off] & 0x7f) << 24) | (h[off+1] << 16) | (h[off+2] << 8) | h[off+3];
+        return String(bin % 1000000).padStart(6, '0');
+      });
+  }
+  // Accept the neighbouring windows so a slightly-skewed clock still works.
+  function verify(secretB32, code){
+    code = String(code || '').trim();
+    if(!/^\d{6}$/.test(code)) return Promise.resolve(false);
+    var now = Math.floor(Date.now() / 1000 / 30);
+    return Promise.all([totp(secretB32, now-1), totp(secretB32, now), totp(secretB32, now+1)])
+      .then(function(codes){ return codes.indexOf(code) !== -1; });
+  }
+  function backupCodes(n){
+    var out = [];
+    for(var i=0;i<(n||8);i++){
+      var a = new Uint8Array(4); crypto.getRandomValues(a);
+      out.push(Array.prototype.map.call(a, function(b){
+        return b.toString(16).padStart(2,'0'); }).join('').toUpperCase().replace(/(.{4})/,'$1-'));
+    }
+    return out;
+  }
+  PB.totp = { generate: totp, verify: verify, randomSecret: randomSecret, backupCodes: backupCodes };
+
+  // ---- enrolment -----------------------------------------------------
+  var pending = null;   // secret being enrolled, not yet confirmed
+  var sw = document.getElementById('ch2fa');
+  var label = document.getElementById('ch2faLabel');
+
+  function paint(){
+    if(!sw) return;
+    var on = PB.state.twofa.enabled;
+    sw.classList.toggle('on', on);
+    label.textContent = 'Two-factor · ' + (on ? 'on' : 'off');
+  }
+
+  if(sw) sw.addEventListener('click', function(){
+    if(PB.state.twofa.enabled){
+      if(!confirm('Turn off two-factor?\n\nWithdrawals will no longer require a code.')) return;
+      PB.api.disable2fa().then(paint);
+      return;
+    }
+    pending = randomSecret(20);
+    document.getElementById('tfaSecret').textContent = pending.replace(/(.{4})/g,'$1 ').trim();
+    var user = (PB.state.user && (PB.state.user.email || PB.state.user.id)) || 'patient';
+    // The otpauth URI a QR would encode — devs render this as a QR.
+    document.getElementById('tfaQrMount').dataset.otpauth =
+      'otpauth://totp/pain.bet:' + encodeURIComponent(user) + '?secret=' + pending + '&issuer=pain.bet';
+    document.getElementById('tfaStep1').hidden = false;
+    document.getElementById('tfaStep2').hidden = true;
+    document.getElementById('tfaCode').value = '';
+    document.getElementById('tfaErr').hidden = true;
+    if(typeof openModal === 'function') openModal('tfa-modal');
+  });
+
+  var copy = document.getElementById('tfaCopy');
+  if(copy) copy.addEventListener('click', function(){
+    if(!pending) return;
+    var done = function(){ copy.textContent = 'Copied';
+      setTimeout(function(){ copy.textContent = 'Copy'; }, 1500); };
+    if(navigator.clipboard) navigator.clipboard.writeText(pending).then(done, done); else done();
+  });
+
+  var confirmBtn = document.getElementById('tfaConfirm');
+  if(confirmBtn) confirmBtn.addEventListener('click', function(){
+    var code = document.getElementById('tfaCode').value;
+    var err = document.getElementById('tfaErr');
+    confirmBtn.disabled = true;
+    verify(pending, code).then(function(ok){
+      confirmBtn.disabled = false;
+      if(!ok){
+        err.hidden = false;
+        err.textContent = 'That code is not right. Check the clock on your phone and try the current code.';
+        return;
+      }
+      var codes = backupCodes(8);
+      PB.api.enable2fa(pending, codes).then(function(){
+        document.getElementById('tfaBackup').innerHTML =
+          codes.map(function(c){ return '<code>' + c + '</code>'; }).join('');
+        document.getElementById('tfaStep1').hidden = true;
+        document.getElementById('tfaStep2').hidden = false;
+        paint();
+      });
+    });
+  });
+
+  var finish = document.getElementById('tfaFinish');
+  if(finish) finish.addEventListener('click', function(){
+    if(typeof closeModal === 'function') closeModal('tfa-modal');
+  });
+
+  // ---- challenge (used by withdrawal) --------------------------------
+  var resolver = null;
+  PB.challenge2fa = function(why){
+    if(!PB.state.twofa.enabled) return Promise.resolve(false);
+    document.getElementById('tfaChallengeCode').value = '';
+    document.getElementById('tfaChallengeErr').hidden = true;
+    if(why) document.getElementById('tfaChallengeWhy').textContent = why;
+    if(typeof openModal === 'function') openModal('tfa-challenge');
+    return new Promise(function(res){ resolver = res; });
+  };
+  var chGo = document.getElementById('tfaChallengeGo');
+  if(chGo) chGo.addEventListener('click', function(){
+    var code = document.getElementById('tfaChallengeCode').value;
+    var err = document.getElementById('tfaChallengeErr');
+    var backups = PB.state.twofa.backupCodes || [];
+    var asBackup = backups.indexOf(String(code).trim().toUpperCase()) !== -1;
+    chGo.disabled = true;
+    (asBackup ? Promise.resolve(true) : verify(PB.state.twofa.secret, code)).then(function(ok){
+      chGo.disabled = false;
+      if(!ok){
+        err.hidden = false; err.textContent = 'Incorrect code.';
+        return;
+      }
+      if(asBackup){
+        PB.state.twofa.backupCodes = backups.filter(function(c){
+          return c !== String(code).trim().toUpperCase(); });
+      }
+      if(typeof closeModal === 'function') closeModal('tfa-challenge');
+      if(resolver){ resolver(true); resolver = null; }
+    });
+  });
+
+  PB.onChange(paint);
+  paint();
+})();
+</script>
+
+<!-- ===================================================================
+     Account area — tabs plus the settings that previously had no home.
+     Every control here exists so a user is never stranded: they can stop
+     marketing, revoke a session, unlink a provider, change a password,
+     save a payout address, pick an odds format, and close the account.
+
+     DEVS: preferences persist to PB.state.prefs via PB.api.setPrefs.
+     Sessions, linked accounts and the address book are seeded with
+     representative data and are read/written through PB.api.* stubs —
+     swap those for real endpoints; the UI reads only from PB.state.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  if(!window.PB) return;
+
+  // prefs / linked / addresses / sessions all live in PB defaults(), so a
+  // reset or a stale saved payload can never leave them undefined here.
+  PB.api.setPrefs = function(next){
+    PB.state.prefs = next;
+    return Promise.resolve(next).then(function(v){ PB.onChange && bump(); return v; });
+  };
+  PB.api.revokeSession = function(id){
+    PB.state.sessions = PB.state.sessions.filter(function(s){ return s.id !== id; });
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.revokeAllOthers = function(){
+    PB.state.sessions = PB.state.sessions.filter(function(s){ return s.current; });
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.linkProvider = function(kind, handle){
+    PB.state.linked[kind] = handle;
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.unlinkProvider = function(kind){
+    PB.state.linked[kind] = null;
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.saveAddress = function(entry){
+    PB.state.addresses.push(entry);
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.deleteAddress = function(i){
+    PB.state.addresses.splice(i,1);
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  PB.api.changePassword = function(current, next){
+    // Stub: a real backend verifies `current` and enforces its own policy.
+    if(!current) return Promise.reject({ code:'current', message:'Enter your current password.' });
+    if(!(next && next.length >= 8 && /\d/.test(next)))
+      return Promise.reject({ code:'weak', message:'Use at least 8 characters including a number.' });
+    return Promise.resolve(true);
+  };
+  PB.api.closeAccount = function(){
+    PB.state.account = 'closed';
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
+  function bump(){ try{ localStorage.setItem('pb_state_v1', JSON.stringify(PB.state)); }catch(e){}
+    PB.api.signIn && 0; repaintAll(); }
+
+  // ---- tabs ---------------------------------------------------------
+  var tabs = document.getElementById('acctTabs');
+  if(tabs){
+    tabs.addEventListener('click', function(e){
+      var b = e.target.closest('button[data-tab]'); if(!b) return;
+      showTab(b.dataset.tab);
+    });
+  }
+  function showTab(name){
+    document.querySelectorAll('.acct-tabs button').forEach(function(b){
+      b.classList.toggle('on', b.dataset.tab === name);
+      b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false');
+    });
+    document.querySelectorAll('.acct-pane').forEach(function(p){
+      p.classList.toggle('on', p.dataset.pane === name);
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  PB.showAccountTab = showTab;
+
+  function say(id, msg, bad){
+    var el = document.getElementById(id); if(!el) return;
+    el.textContent = msg;
+    el.style.color = bad ? '#ff6b86' : '#7FD6E8';
+    el.classList.add('show');
+  }
+
+  // ---- notifications -------------------------------------------------
+  var notifGrid = document.getElementById('notifGrid');
+  if(notifGrid) notifGrid.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-ch]'); if(!b) return;
+    if(b.classList.contains('locked')){
+      say('notifNote', 'Security alerts by email stay on — they are how you find out if someone else gets in.', true);
+      return;
+    }
+    var row = b.closest('.pref-row').dataset.n;
+    var ch = b.dataset.ch;
+    var next = JSON.parse(JSON.stringify(PB.state.prefs));
+    next.notif[row][ch] = !next.notif[row][ch];
+    PB.api.setPrefs(next).then(function(){
+      say('notifNote', 'Saved.', false);
+    });
+  });
+
+  // ---- display + betting ---------------------------------------------
+  var prefSave = document.getElementById('prefSave');
+  if(prefSave) prefSave.addEventListener('click', function(){
+    var next = JSON.parse(JSON.stringify(PB.state.prefs));
+    next.display.currency = document.getElementById('prefCcy').value;
+    next.display.odds     = document.getElementById('prefOdds').value;
+    next.display.tz       = document.getElementById('prefTz').value;
+    next.betting.oddsChange  = document.getElementById('prefOddsChange').value;
+    next.betting.defaultStake = Math.max(0, Number(document.getElementById('prefStake').value) || 0);
+    PB.api.setPrefs(next).then(function(){
+      say('prefNote', 'Preferences saved. The bet slip and odds display use them from now on.', false);
+    });
+  });
+
+  // ---- linked accounts ------------------------------------------------
+  var lkList = document.getElementById('lkList');
+  if(lkList) lkList.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-act]'); if(!b) return;
+    var kind = b.closest('.lk').dataset.lk;
+    var linked = PB.state.linked[kind];
+    if(linked){
+      // Never let someone strand themselves without a way back in.
+      var others = Object.keys(PB.state.linked).filter(function(k){ return PB.state.linked[k]; });
+      var hasEmail = !!(PB.state.user && PB.state.user.email);
+      if(others.length === 1 && !hasEmail){
+        say('lkNote', 'This is your only way to sign in. Add an email and password first.', true);
+        return;
+      }
+      if(!confirm('Unlink ' + kind + '? You will no longer be able to sign in with it.')) return;
+      PB.api.unlinkProvider(kind).then(function(){ say('lkNote', kind + ' unlinked.', false); });
+    } else {
+      // Stub: a real flow hands off to the provider's OAuth screen.
+      var demo = { telegram:'@wardrat77', google:'wardrat@gmail.com', wallet:'0x71C…9e4b' }[kind];
+      PB.api.linkProvider(kind, demo).then(function(){ say('lkNote', kind + ' linked.', false); });
+    }
+  });
+
+  // ---- sessions --------------------------------------------------------
+  var sessList = document.getElementById('sessList');
+  if(sessList) sessList.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-sess]'); if(!b) return;
+    PB.api.revokeSession(b.dataset.sess).then(function(){
+      say('sessNote', 'Signed out on that device.', false);
+    });
+  });
+  var sessAll = document.getElementById('sessAll');
+  if(sessAll) sessAll.addEventListener('click', function(){
+    if(!confirm('Sign out everywhere except this device?')) return;
+    PB.api.revokeAllOthers().then(function(){
+      say('sessNote', 'All other sessions ended.', false);
+    });
+  });
+
+  // ---- password ---------------------------------------------------------
+  var pwSave = document.getElementById('pwSave');
+  if(pwSave) pwSave.addEventListener('click', function(){
+    PB.api.changePassword(
+      document.getElementById('pwCurrent').value,
+      document.getElementById('pwNew').value
+    ).then(function(){
+      document.getElementById('pwCurrent').value = '';
+      document.getElementById('pwNew').value = '';
+      say('pwNote', 'Password changed. Other sessions have been signed out.', false);
+      PB.api.revokeAllOthers();
+    }).catch(function(err){ say('pwNote', err.message, true); });
+  });
+
+  // ---- address book ------------------------------------------------------
+  var addrSave = document.getElementById('addrSave');
+  if(addrSave) addrSave.addEventListener('click', function(){
+    var label = document.getElementById('addrLabel').value.trim();
+    var coin  = document.getElementById('addrCoin').value;
+    var val   = document.getElementById('addrValue').value.trim();
+    if(!label || !val){ say('addrNote', 'Give it a label and an address.', true); return; }
+    PB.api.saveAddress({ label:label, coin:coin, value:val }).then(function(){
+      document.getElementById('addrLabel').value = '';
+      document.getElementById('addrValue').value = '';
+      say('addrNote', 'Saved. It will appear on the Discharge screen.', false);
+    });
+  });
+  var addrList = document.getElementById('addrList');
+  if(addrList) addrList.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-addr]'); if(!b) return;
+    PB.api.deleteAddress(Number(b.dataset.addr)).then(function(){
+      say('addrNote', 'Address removed.', false);
+    });
+  });
+
+  // ---- data export + close account ----------------------------------------
+  var exp = document.getElementById('chExport');
+  if(exp) exp.addEventListener('click', function(){
+    // Real implementation queues a server-side export and emails a link.
+    var blob = new Blob([JSON.stringify(PB.state, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'painbet-account-data.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    say('chCloseNote', 'Your data has been downloaded.', false);
+  });
+  var closeBtn = document.getElementById('chClose');
+  if(closeBtn) closeBtn.addEventListener('click', function(){
+    if(PB.state.balance.real > 0){
+      say('chCloseNote', 'Withdraw your ' + PB.state.balance.real.toFixed(2) +
+        ' USDT balance before closing — we cannot return it afterwards.', true);
+      return;
+    }
+    if(!confirm('Close this account permanently?\n\nThis is not a break. It cannot be undone and the account ' +
+                'cannot be recovered.')) return;
+    if(!confirm('Final confirmation. Close the account?')) return;
+    PB.api.closeAccount().then(function(){
+      say('chCloseNote', 'Account closed. You will be signed out.', false);
+      setTimeout(function(){ if(window.signOut) window.signOut(); }, 1400);
+    });
+  });
+
+  // ---- painting -------------------------------------------------------------
+  function repaintAll(){ paintNotif(); paintSelects(); paintLinked(); paintSessions(); paintAddresses(); }
+
+  function paintNotif(){
+    if(!notifGrid || !PB.state.prefs) return;
+    var n = PB.state.prefs.notif;
+    notifGrid.querySelectorAll('.pref-row').forEach(function(row){
+      var key = row.dataset.n;
+      row.querySelectorAll('button[data-ch]').forEach(function(b){
+        if(b.classList.contains('locked')) return;
+        b.classList.toggle('on', !!(n[key] && n[key][b.dataset.ch]));
+      });
+    });
+  }
+  function paintSelects(){
+    if(!PB.state.prefs) return;
+    var d = PB.state.prefs.display, bt = PB.state.prefs.betting;
+    var set = function(id, v){ var el = document.getElementById(id); if(el) el.value = v; };
+    set('prefCcy', d.currency); set('prefOdds', d.odds); set('prefTz', d.tz);
+    set('prefOddsChange', bt.oddsChange); set('prefStake', bt.defaultStake);
+  }
+  function paintLinked(){
+    if(!lkList || !PB.state.linked) return;
+    var cap = function(s){ return s.charAt(0).toUpperCase() + s.slice(1); };
+    lkList.querySelectorAll('.lk').forEach(function(row){
+      var kind = row.dataset.lk;
+      var v = PB.state.linked[kind];
+      row.classList.toggle('linked', !!v);
+      var val = document.getElementById('lk' + cap(kind) + 'Val');
+      if(val) val.textContent = v || 'Not linked';
+      var btn = row.querySelector('button[data-act]');
+      if(btn) btn.textContent = v ? 'Unlink' : 'Link';
+    });
+  }
+  function paintSessions(){
+    if(!sessList || !PB.state.sessions) return;
+    sessList.innerHTML = PB.state.sessions.map(function(s){
+      return '<div class="sess' + (s.current ? ' current' : '') + '">' +
+        '<div><b>' + s.device + '</b><i>' + s.where + ' · ' +
+        (s.current ? 'now' : PB.fmtDate(s.when)) + '</i></div>' +
+        (s.current ? '<span class="tag">This device</span>'
+                   : '<button type="button" data-sess="' + s.id + '">Sign out</button>') +
+        '</div>';
+    }).join('');
+  }
+  function paintAddresses(){
+    if(!addrList || !PB.state.addresses) return;
+    var a = PB.state.addresses;
+    if(!a.length){
+      addrList.innerHTML = '<div class="addr-empty">No saved addresses yet.</div>';
+      return;
+    }
+    addrList.innerHTML = a.map(function(x, i){
+      return '<div class="addr"><span class="coin">' + x.coin + '</span>' +
+        '<div><b>' + x.label + '</b><i>' + x.value + '</i></div>' +
+        '<button type="button" data-addr="' + i + '">Remove</button></div>';
+    }).join('');
+  }
+
+  PB.onChange(repaintAll);
+  repaintAll();
+})();
+</script>
+
+<!-- ===================================================================
+     Game launch seam + search.
+
+     DEVS: this is the one function to fill in. Every tile in the lobby now
+     carries data-game (unique — the duplicated Live titles are
+     disambiguated), data-cat and data-provider. One delegated listener
+     resolves a click to launchGame(); replace the body of PB.launchGame
+     with the provider mount and nothing else in the lobby has to change.
+
+     The gate stack already runs before it: anonymous users get the intake
+     modal, locked accounts are told why, and limits are enforced — so the
+     provider integration never has to think about eligibility.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+
+  // ---- the seam ------------------------------------------------------
+  window.PB = window.PB || {};
+  PB.launchGame = function(game){
+    // game = { id, title, category, provider, mode: 'real' | 'demo' }
+    console.info('[PB] launchGame', game);
+    var msg = game.mode === 'demo'
+      ? 'Demo mode for "' + game.title + '" mounts here.'
+      : 'Real-money round for "' + game.title + '" mounts here.';
+    alert(msg + '\n\nid: ' + game.id +
+          '\ncategory: ' + game.category +
+          '\nprovider: ' + (game.provider || '(unassigned — set data-provider)') +
+          '\n\nDEVS: replace PB.launchGame() with the provider mount.');
+  };
+
+  function tileTitle(el){
+    return (el.getAttribute('title') || '').split('·')[0].trim();
+  }
+
+  document.addEventListener('click', function(e){
+    var tile = e.target.closest('[data-game]');
+    if(!tile) return;
+
+    var game = {
+      id: tile.dataset.game,
+      title: tileTitle(tile),
+      category: tile.dataset.cat,
+      provider: tile.dataset.provider || null,
+      mode: 'real'
+    };
+
+    // Eligibility first — logic spec §03/§07.
+    if(window.PB && PB.gate){
+      var g = PB.gate('bet', { amount: 0 });
+      if(!g.ok){
+        if(g.code === 'anonymous'){
+          // Send them to intake rather than a dead end.
+          document.querySelectorAll('.topbar .btn').forEach(function(b){
+            if(b.textContent.trim().toLowerCase() === 'sign in') b.click(); });
+          return;
+        }
+        if(g.code === 'locked'){ alert(g.message); return; }
+        // Limits and balance are per-stake, so they're checked at stake
+        // entry inside the game rather than blocking launch.
+      }
+    }
+    PB.launchGame(game);
+  });
+
+  // ---- search --------------------------------------------------------
+  var input = document.getElementById('gameSearch');
+  if(!input) return;
+  var tiles = null;
+
+  function collect(){
+    tiles = Array.prototype.map.call(document.querySelectorAll('[data-game]'), function(el){
+      return { el: el, hay: (tileTitle(el) + ' ' + (el.dataset.cat || '') + ' ' +
+                             (el.dataset.provider || '')).toLowerCase() };
+    });
+  }
+
+  var t;
+  input.addEventListener('input', function(){
+    clearTimeout(t);
+    t = setTimeout(run, 90);
+  });
+  input.addEventListener('search', run);   // fires on the native clear button
+
+  function run(){
+    if(!tiles) collect();
+    var q = input.value.trim().toLowerCase();
+    document.body.classList.toggle('searching', !!q);
+    if(!q){
+      tiles.forEach(function(x){ x.el.hidden = false; });
+      markEmpty(false);
+      return;
+    }
+    var hits = 0;
+    tiles.forEach(function(x){
+      var match = x.hay.indexOf(q) !== -1;
+      x.el.hidden = !match;
+      if(match) hits++;
+    });
+    markEmpty(hits === 0, q);
+  }
+
+  var empty = null;
+  function markEmpty(show, q){
+    if(!empty){
+      empty = document.createElement('div');
+      empty.className = 'search-empty';
+      var host = document.querySelector('.rail');
+      if(host && host.parentNode) host.parentNode.insertBefore(empty, host);
+    }
+    empty.classList.toggle('on', !!show);
+    if(show) empty.textContent = 'Nothing matches "' + q + '". Try a provider or a category.';
+  }
+})();
+</script>
+
+<!-- ===================================================================
+     Dead ends — the routes a user needs when something has gone wrong.
+     Everything here exists because without it somebody is stuck: locked
+     out with no reset, no authenticator and no way back, on a break with
+     no visible route to their own money, or waiting on a withdrawal they
+     can't cancel.
+
+     DEVS: recovery, email confirmation and withdrawal cancellation all go
+     through PB.api.* stubs. The 2FA login challenge is validated on the
+     client here only so the flow is demonstrable — it must be enforced
+     server-side before a session is ever issued.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  if(!window.PB) return;
+
+  // emailVerified / withdrawals / session live in PB defaults(), so reset
+  // and stale saved payloads can never leave them undefined here.
+  PB.api.requestPasswordReset = function(email){
+    // Always resolves — never reveal whether an address is registered.
+    return Promise.resolve({ sent: true });
+  };
+  PB.api.completePasswordReset = function(next){
+    if(!(next && next.length >= 8 && /\d/.test(next)))
+      return Promise.reject({ message:'Use at least 8 characters including a number.' });
+    return Promise.resolve(true);
+  };
+  PB.api.resendVerificationEmail = function(){ return Promise.resolve(true); };
+  PB.api.confirmEmail = function(){
+    PB.state.emailVerified = true;
+    return persist();
+  };
+  PB.api.cancelWithdrawal = function(id){
+    var w = PB.state.withdrawals.filter(function(x){ return x.id === id; })[0];
+    if(!w || w.status !== 'pending') return Promise.reject({ message:'Already on its way — too late to cancel.' });
+    w.status = 'cancelled';
+    // Funds return clean: out of locked, back to withdrawable. No re-wagering.
+    PB.state.balance.locked = Math.max(0, PB.state.balance.locked - w.amount);
+    PB.state.balance.real += w.amount;
+    PB.state.verification.cumulativeWithdrawn =
+      Math.max(0, PB.state.verification.cumulativeWithdrawn - w.amount);
+    return persist();
+  };
+  function persist(){
+    try{ localStorage.setItem('pb_state_v1', JSON.stringify(PB.state)); }catch(e){}
+    repaint();
+    return Promise.resolve(true);
+  }
+
+  function show(id){ if(typeof openModal === 'function') openModal(id); }
+  function hide(id){ if(typeof closeModal === 'function') closeModal(id); }
+  function step(n){
+    ['recStep1','recStep2','recStep3','recStep4'].forEach(function(s, i){
+      var el = document.getElementById(s); if(el) el.hidden = (i + 1) !== n;
+    });
+    var t = document.getElementById('recTitle');
+    if(t) t.textContent = n === 3 ? 'New password' : (n === 4 ? 'Locked out' : 'Recover access');
+  }
+
+  // ---- forgot password -------------------------------------------------
+  var forgot = document.getElementById('forgotLink');
+  if(forgot) forgot.addEventListener('click', function(){
+    var typed = (document.getElementById('admEmail') || {}).value || '';
+    var f = document.getElementById('recEmail'); if(f) f.value = typed.trim();
+    step(1);
+    document.getElementById('recErr').hidden = true;
+    // close the admissions modal so they aren't stacked
+    var veil = document.getElementById('admVeil'); if(veil) veil.classList.remove('open');
+    show('recover-modal');
+  });
+
+  var recSend = document.getElementById('recSend');
+  if(recSend) recSend.addEventListener('click', function(){
+    var email = (document.getElementById('recEmail').value || '').trim();
+    var err = document.getElementById('recErr');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+      err.hidden = false; err.textContent = 'Enter a valid email address.';
+      return;
+    }
+    err.hidden = true;
+    PB.api.requestPasswordReset(email).then(function(){
+      document.getElementById('recSentTo').textContent = email;
+      step(2);
+    });
+  });
+
+  // Stands in for arriving from the emailed link.
+  var recDemo = document.getElementById('recDemo');
+  if(recDemo) recDemo.addEventListener('click', function(){ step(3); });
+
+  var recNew = document.getElementById('recNew');
+  if(recNew) recNew.addEventListener('input', function(){
+    var v = recNew.value, s = 0;
+    if(v.length >= 8) s++; if(/\d/.test(v)) s++; if(/[A-Z]/.test(v)) s++; if(/[^A-Za-z0-9]/.test(v)) s++;
+    var m = document.getElementById('recMeter');
+    m.style.width = (s * 25) + '%';
+    m.style.background = s <= 1 ? '#e0163c' : s === 2 ? '#e08a16' : '#3ecf6a';
+  });
+
+  var recSave = document.getElementById('recSave');
+  if(recSave) recSave.addEventListener('click', function(){
+    var err = document.getElementById('recNewErr');
+    PB.api.completePasswordReset(recNew.value).then(function(){
+      err.hidden = true;
+      hide('recover-modal');
+      if(PB.api.revokeAllOthers) PB.api.revokeAllOthers();
+      var email = (document.getElementById('recEmail').value || '').trim();
+      if(window.markSignedIn) window.markSignedIn({ email: email });
+    }).catch(function(e){ err.hidden = false; err.textContent = e.message; });
+  });
+
+  var lost = document.getElementById('recLost2fa');
+  if(lost) lost.addEventListener('click', function(){ step(4); });
+  var back = document.getElementById('recBack');
+  if(back) back.addEventListener('click', function(){ step(1); });
+
+  // ---- 2FA at sign-in ---------------------------------------------------
+  // PB.requireLogin2fa() resolves true once the user proves possession.
+  var l2fResolve = null, usingBackup = false;
+  PB.requireLogin2fa = function(){
+    if(!PB.state.twofa.enabled) return Promise.resolve(true);
+    usingBackup = false;
+    var code = document.getElementById('l2fCode');
+    code.value = ''; code.maxLength = 6; code.placeholder = '000000';
+    document.getElementById('l2fWhy').textContent =
+      'Enter the 6-digit code from your authenticator to finish signing in.';
+    document.getElementById('l2fErr').hidden = true;
+    show('login2fa-modal');
+    return new Promise(function(res){ l2fResolve = res; });
+  };
+
+  var l2fBackup = document.getElementById('l2fBackup');
+  if(l2fBackup) l2fBackup.addEventListener('click', function(){
+    usingBackup = !usingBackup;
+    var code = document.getElementById('l2fCode');
+    code.value = '';
+    code.maxLength = usingBackup ? 9 : 6;
+    code.placeholder = usingBackup ? 'XXXX-XXXX' : '000000';
+    document.getElementById('l2fWhy').textContent = usingBackup
+      ? 'Enter one of the backup codes you saved when you turned 2FA on. Each works once.'
+      : 'Enter the 6-digit code from your authenticator to finish signing in.';
+    l2fBackup.textContent = usingBackup ? 'Use my authenticator' : 'Use a backup code';
+  });
+
+  var l2fLost = document.getElementById('l2fLost');
+  if(l2fLost) l2fLost.addEventListener('click', function(){
+    hide('login2fa-modal');
+    step(4); show('recover-modal');
+  });
+
+  var l2fGo = document.getElementById('l2fGo');
+  if(l2fGo) l2fGo.addEventListener('click', function(){
+    var val = (document.getElementById('l2fCode').value || '').trim().toUpperCase();
+    var err = document.getElementById('l2fErr');
+    var codes = PB.state.twofa.backupCodes || [];
+    l2fGo.disabled = true;
+    var check = usingBackup
+      ? Promise.resolve(codes.indexOf(val) !== -1)
+      : PB.totp.verify(PB.state.twofa.secret, val);
+    check.then(function(ok){
+      l2fGo.disabled = false;
+      if(!ok){
+        err.hidden = false;
+        err.textContent = usingBackup ? 'That backup code is not valid or has been used.' : 'Incorrect code.';
+        return;
+      }
+      if(usingBackup){
+        PB.state.twofa.backupCodes = codes.filter(function(c){ return c !== val; });
+        persist();
+      }
+      hide('login2fa-modal');
+      if(l2fResolve){ l2fResolve(true); l2fResolve = null; }
+    });
+  });
+
+  // ---- locked account: route to the money -------------------------------
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('#rgLockWd')) return;
+    var dep = document.getElementById('depVeil');
+    if(dep) dep.classList.add('open');
+    var wd = document.getElementById('dtWd');
+    if(wd) wd.click();
+  });
+
+  // ---- email verification ------------------------------------------------
+  function paintEmail(){
+    var signedIn = PB.state.account !== 'anonymous' && PB.state.account !== 'closed';
+    document.body.classList.toggle('email-unverified', signedIn && !PB.state.emailVerified);
+  }
+  var evResend = document.getElementById('evResend');
+  if(evResend) evResend.addEventListener('click', function(){
+    PB.api.resendVerificationEmail().then(function(){
+      evResend.textContent = 'Sent — check your inbox';
+      setTimeout(function(){ evResend.textContent = 'Resend the email'; }, 3500);
+    });
+  });
+  var evDemo = document.getElementById('evDemo');
+  if(evDemo) evDemo.addEventListener('click', function(){ PB.api.confirmEmail(); });
+
+  // ---- pending withdrawals -----------------------------------------------
+  function paintWithdrawals(){
+    var card = document.getElementById('pwCard');
+    var list = document.getElementById('pwList');
+    if(!card || !list || !PB.state.withdrawals) return;
+    var live = PB.state.withdrawals.filter(function(w){
+      return w.status === 'pending' || w.status === 'rejected'; });
+    card.hidden = live.length === 0;
+    list.innerHTML = live.map(function(w){
+      var rejected = w.status === 'rejected';
+      return '<div class="pw' + (rejected ? ' rejected' : '') + '">' +
+        '<div><b>' + w.amount.toFixed(2) + ' ' + w.coin + '</b><i>' +
+        (rejected ? ('Declined — ' + (w.reason || 'contact Triage')) :
+          ('Awaiting signing · requested ' + PB.fmtDate(w.at))) + '</i></div>' +
+        (rejected ? '' : '<button type="button" data-cancelwd="' + w.id + '">Cancel</button>') +
+        '</div>';
+    }).join('');
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-cancelwd]'); if(!b) return;
+    PB.api.cancelWithdrawal(b.dataset.cancelwd).catch(function(err){ alert(err.message); });
+  });
+
+  // ---- live balance in the topbar -----------------------------------------
+  function paintBalance(){
+    var el = document.querySelector('.topbar .bal');
+    if(!el || !PB.state.balance) return;
+    if(PB.state.account === 'anonymous') return;   // keep the marketing figure while logged out
+    var b = PB.state.balance;
+    var ccy = (PB.state.prefs && PB.state.prefs.display.currency) || 'USDT';
+    var total = b.real + b.bonus;
+    el.innerHTML = ccy + ' ' + total.toLocaleString(undefined, {maximumFractionDigits:2}) +
+      (b.bonus > 0 ? ' <span style="color:#e0a13e">(+' + b.bonus.toFixed(0) + ' bonus)</span>' : '') +
+      ' · <b>PK 1,250</b>';
+    el.title = 'Withdrawable ' + b.real.toFixed(2) + ' · bonus ' + b.bonus.toFixed(2) +
+               ' · in play ' + b.locked.toFixed(2);
+  }
+
+  // ---- reality check --------------------------------------------------------
+  var rcTimer = null;
+  function armReminder(){
+    if(rcTimer){ clearInterval(rcTimer); rcTimer = null; }
+    var mins = PB.state.rg.sessionReminderMin;
+    if(!mins || PB.state.account === 'anonymous') return;
+    rcTimer = setInterval(fireReminder, mins * 60 * 1000);
+  }
+  function fireReminder(){
+    if(PB.isLocked()) return;
+    var s = PB.state.session;
+    var mins = Math.round((Date.now() - s.startedAt) / 60000);
+    document.getElementById('rcTime').textContent =
+      mins >= 60 ? Math.floor(mins/60) + 'h ' + (mins%60) + 'm' : mins + 'm';
+    var net = document.getElementById('rcNet');
+    net.textContent = (s.net >= 0 ? '+' : '') + s.net.toFixed(2);
+    net.className = s.net > 0 ? 'up' : (s.net < 0 ? 'down' : '');
+    document.getElementById('rcWagered').textContent = Math.round(s.wagered).toLocaleString();
+    document.getElementById('rcBal').textContent = Math.round(PB.state.balance.real).toLocaleString();
+    show('rc-modal');
+  }
+  PB.fireReminder = fireReminder;   // exposed so it can be triggered in testing
+  var rcContinue = document.getElementById('rcContinue');
+  if(rcContinue) rcContinue.addEventListener('click', function(){ hide('rc-modal'); });
+  var rcBreak = document.getElementById('rcBreak');
+  if(rcBreak) rcBreak.addEventListener('click', function(){
+    hide('rc-modal');
+    document.querySelectorAll('.side a').forEach(function(a){
+      if(a.textContent.trim() === 'The Chart') a.click(); });
+    if(PB.showAccountTab) PB.showAccountTab('limits');
+  });
+
+  function repaint(){ paintEmail(); paintWithdrawals(); paintBalance(); }
+  PB.onChange(function(){ repaint(); armReminder(); });
+  repaint(); armReminder();
 })();
 </script>
 
