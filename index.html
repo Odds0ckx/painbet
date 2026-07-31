@@ -2173,6 +2173,167 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     border:1px solid rgba(127,214,232,.35);background:rgba(127,214,232,.07);border-radius:12px;padding:13px 15px}
   .ch-unpaid b{font-family:var(--mono);font-size:16px;color:#fff}
   .ch-unpaid span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#9aa0aa;display:block}
+  /* ===== two-factor ===== */
+  .tfa-qr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    height:150px;border:1px dashed rgba(255,255,255,.2);border-radius:12px;margin-bottom:16px;
+    background:rgba(255,255,255,.03)}
+  .tfa-qr span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6b7078}
+  .tfa-qr i{font-style:normal;font-size:11px;color:#5b6069}
+  .tfa-lab{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:#9aa0aa;margin:14px 0 6px}
+  .tfa-key{display:flex;gap:8px;align-items:stretch}
+  .tfa-key code{flex:1;min-width:0;background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:11px 13px;font-family:var(--mono);font-size:12.5px;color:#a8e4f2;
+    letter-spacing:.09em;word-break:break-all}
+  .tfa-key button{flex:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:#c3c8d1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+    border-radius:9px;padding:0 14px;cursor:pointer}
+  .tfa-key button:hover{color:#fff;border-color:rgba(255,255,255,.34)}
+  .tfa-code{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);
+    border-radius:10px;padding:14px;color:#fff;font-family:var(--mono);font-size:24px;
+    letter-spacing:.5em;text-align:center;text-indent:.5em}
+  .tfa-code:focus{outline:none;border-color:rgba(224,22,60,.6)}
+  .tfa-err{margin-top:10px;border-radius:9px;padding:10px 13px;font-size:12px;
+    background:rgba(224,22,60,.12);border:1px solid rgba(224,22,60,.42);color:#ff6b86}
+  .tfa-done{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+    color:#3ecf6a;background:rgba(62,207,106,.12);border:1px solid rgba(62,207,106,.4);
+    border-radius:999px;padding:7px 13px;display:inline-block;margin-bottom:14px}
+  .tfa-backup{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .tfa-backup code{background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.1);border-radius:8px;
+    padding:9px 11px;font-family:var(--mono);font-size:12px;color:#e8eaee;text-align:center;letter-spacing:.09em}
+
+  /* ===== verification (KYC) ===== */
+  .kyc-state{display:flex;align-items:flex-start;gap:14px;margin-top:12px;flex-wrap:wrap}
+  .kyc-badge{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    padding:6px 11px;border-radius:999px;flex:none;
+    background:rgba(255,255,255,.07);color:#9aa0aa;border:1px solid rgba(255,255,255,.16)}
+  .kyc-badge.pending{background:rgba(224,161,62,.14);color:#e0a13e;border-color:rgba(224,161,62,.5)}
+  .kyc-badge.ok{background:rgba(62,207,106,.13);color:#3ecf6a;border-color:rgba(62,207,106,.5)}
+  .kyc-badge.bad{background:rgba(224,22,60,.13);color:#ff6b86;border-color:rgba(224,22,60,.5)}
+  .kyc-state p{font-size:12.5px;color:#a8aeb8;line-height:1.65;margin:0;flex:1;min-width:220px}
+  .kyc-state p b{color:#e8eaee}
+  .kyc-meter{margin-top:16px}
+  .kyc-meter-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a}
+  .kyc-meter-top .mono{color:#c3c8d1;letter-spacing:.04em}
+  .kyc-meter-top b{color:#fff}
+  .kyc-bar{height:6px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:8px}
+  .kyc-bar i{display:block;height:100%;width:0;border-radius:4px;
+    background:linear-gradient(90deg,#7FD6E8,#5bb9cf);transition:width .35s ease}
+  .kyc-bar i.warn{background:linear-gradient(90deg,#e0a13e,#c9871f)}
+  .kyc-bar i.full{background:linear-gradient(90deg,#8f0e26,var(--blood))}
+  .kyc-warn{margin-top:10px;border-radius:9px;padding:10px 13px;font-size:12px;
+    background:rgba(224,161,62,.1);border:1px solid rgba(224,161,62,.42);color:#e0a13e}
+  .kyc-docs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:600px){.kyc-docs{grid-template-columns:1fr}}
+  .kyc-doc{position:relative;display:block;border:1px dashed rgba(255,255,255,.2);border-radius:12px;
+    padding:16px;cursor:pointer;transition:border-color .2s,background .2s;text-align:center}
+  .kyc-doc:hover{border-color:rgba(224,22,60,.5);background:rgba(255,255,255,.03)}
+  .kyc-doc input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .kyc-doc .ic{display:block;font-size:19px;color:#6b7078;margin-bottom:6px}
+  .kyc-doc b{display:block;font-size:12.5px;color:#e8eaee}
+  .kyc-doc i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:3px}
+  .kyc-doc em{display:block;font-style:normal;font-family:var(--mono);font-size:10px;color:#7FD6E8;margin-top:7px;
+    word-break:break-all}
+  .kyc-doc.filled{border-style:solid;border-color:rgba(127,214,232,.5)}
+  .kyc-fine{font-size:11px;color:#6b7078;margin-top:11px;line-height:1.6}
+
+  /* ===== responsible gambling panel ===== */
+  .rg-lead{font-size:12.5px;color:#a8aeb8;line-height:1.65;margin:10px 0 16px;max-width:76ch}
+  .rg-limits{border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+  .rg-head,.rg-line{display:grid;grid-template-columns:minmax(150px,1.5fr) repeat(3,minmax(72px,1fr));
+    gap:10px;align-items:center;padding:10px 14px}
+  .rg-head{background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.1)}
+  .rg-head span{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a}
+  .rg-line{border-bottom:1px solid rgba(255,255,255,.06)}
+  .rg-line:last-child{border-bottom:0}
+  .rg-name{font-size:12.5px;color:#e8eaee}
+  .rg-name i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:2px}
+  .rg-line input{width:100%;min-width:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:8px;padding:8px 10px;color:#e8eaee;font-family:var(--mono);font-size:11.5px}
+  .rg-line input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+  @media(max-width:700px){
+    .rg-head{display:none}
+    .rg-line{grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .rg-name{grid-column:1/-1}
+    .rg-line input::placeholder{color:#5b6069}
+  }
+  .rg-pending{margin-top:12px;border:1px dashed rgba(224,161,62,.5);background:rgba(224,161,62,.08);
+    border-radius:10px;padding:11px 14px;font-size:12px;color:#e0a13e}
+  .rg-pending .pr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 0}
+  .rg-pending button{background:none;border:0;color:#ff6b86;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:2px 6px}
+  .rg-pending button:hover{text-decoration:underline}
+  .rg-split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:700px){.rg-split{grid-template-columns:1fr;gap:4px}}
+  .rg-sub{font-size:11.5px;color:#8b909a;margin:6px 0 10px;line-height:1.6}
+  .rg-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .rg-chips button{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:#c3c8d1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:8px;padding:9px 13px;cursor:pointer;transition:border-color .2s,color .2s,background .2s}
+  .rg-chips button:hover{border-color:rgba(255,255,255,.34);color:#fff}
+  .rg-chips button.on{background:rgba(127,214,232,.14);border-color:#7FD6E8;color:#7FD6E8}
+  .rg-danger{margin-top:22px;border:1px solid rgba(224,22,60,.4);background:rgba(224,22,60,.07);
+    border-radius:12px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;
+    gap:18px;flex-wrap:wrap}
+  .rg-danger b{display:block;font-size:13px;color:#ff6b86;margin-bottom:4px}
+  .rg-danger span{display:block;font-size:11.5px;color:#a8aeb8;line-height:1.6;max-width:52ch}
+  .rg-danger .rg-chips button{border-color:rgba(224,22,60,.45);color:#ff8fa3}
+  .rg-danger .rg-chips button:hover{background:rgba(224,22,60,.18);border-color:#e0163c;color:#fff}
+  .rg-help{font-size:11.5px;color:#6b7078;margin-top:16px}
+  .rg-help a{color:#7FD6E8;text-decoration:none}
+  .rg-help a:hover{text-decoration:underline}
+
+  /* lock banner shown site-wide while a break or exclusion is active */
+  .rg-lockbar{position:fixed;left:0;right:0;bottom:0;z-index:220;background:#2a0a12;
+    border-top:1px solid rgba(224,22,60,.55);padding:13px 20px;display:none;
+    align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center}
+  body.pb-locked .rg-lockbar{display:flex}
+  .rg-lockbar b{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#ff6b86}
+  .rg-lockbar span{font-size:12.5px;color:#e8eaee}
+
+  /* ===== provably fair verifier ===== */
+  .pf-lead{font-size:12.5px;color:#a8aeb8;line-height:1.65;margin:0 0 16px}
+  .pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.pf-grid{grid-template-columns:1fr}}
+  .pf-grid label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:#9aa0aa;margin-bottom:6px}
+  .pf-grid label span{text-transform:none;letter-spacing:.02em;color:#6b7078;font-size:9.5px}
+  .pf-grid input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:10px 12px;color:#e8eaee;font-family:var(--mono);font-size:12px}
+  .pf-grid input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+  .pf-out{margin-top:16px;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
+  .pf-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;
+    border-bottom:1px solid rgba(255,255,255,.07)}
+  .pf-row:last-child{border-bottom:0}
+  .pf-row .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a;flex:none}
+  .pf-row .k i{font-style:normal;color:#5b6069;letter-spacing:.02em;text-transform:none}
+  .pf-row .v{font-size:12px;color:#e8eaee;text-align:right;min-width:0;word-break:break-all}
+  .pf-row .v.mono{font-family:var(--mono);font-size:10.5px;color:#a8e4f2}
+  .pf-row .v.big{font-family:var(--mono);font-size:20px;color:#fff;font-weight:700}
+  .pf-commit{padding:11px 14px;font-size:11.5px;border-top:1px solid rgba(255,255,255,.07)}
+  .pf-commit.ok{background:rgba(62,207,106,.1);color:#3ecf6a}
+  .pf-commit.bad{background:rgba(224,22,60,.12);color:#ff6b86}
+  .pf-how{margin-top:14px;border-top:1px solid rgba(255,255,255,.08);padding-top:12px}
+  .pf-how summary{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8b909a;cursor:pointer}
+  .pf-how summary:hover{color:#e8eaee}
+  .pf-how p{font-size:12px;color:#9aa0aa;line-height:1.65;margin:11px 0 0}
+  .pf-how pre{background:rgba(0,0,0,.32);border-radius:8px;padding:11px 13px;margin:11px 0 0;
+    font-family:var(--mono);font-size:10.5px;color:#a8e4f2;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+
+  /* ===== seed panel (The Chart) ===== */
+  .sd-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;
+    border-bottom:1px solid rgba(255,255,255,.06)}
+  .sd-row:last-of-type{border-bottom:0}
+  .sd-row .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a;flex:none}
+  .sd-row .v{font-family:var(--mono);font-size:11px;color:#e8eaee;text-align:right;word-break:break-all;min-width:0}
+  .sd-row .v.hash{color:#a8e4f2;font-size:10px}
+  .sd-seedin{display:flex;gap:8px;margin-top:4px}
+  .sd-seedin input{flex:1;min-width:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+    border-radius:9px;padding:9px 11px;color:#e8eaee;font-family:var(--mono);font-size:11.5px}
+  .sd-seedin input:focus{outline:none;border-color:rgba(224,22,60,.55)}
+
   .ch-pill{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
     padding:3px 8px;border-radius:999px;display:inline-block;white-space:nowrap}
   .ch-pill.win{background:rgba(62,207,106,.14);color:#3ecf6a}
@@ -2260,6 +2421,319 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2.5-2.5A8 8 0 1 1 21 12z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
+<!-- ===================================================================
+     PB — platform state layer and backend seams.
+     Everything the casino needs to know about "who is this user and what
+     are they allowed to do" lives here. The UI reads PB.state and calls
+     PB.api.*; nothing else touches persistence directly.
+
+     DEVS: PB.api is the seam. Every function in it is a stub that fakes a
+     backend round-trip against localStorage. Replace each body with a real
+     call — the signatures and return shapes are the contract, and the UI
+     will not need to change.
+     =================================================================== -->
+<script>
+window.PB = (function(){
+  'use strict';
+  var KEY = 'pb_state_v1';
+
+  // Business constants. See the logic spec §15 — these are the open
+  // decisions; they are gathered here so they can be changed in one place.
+  var CONST = {
+    KYC_THRESHOLD_USDT: 2000,   // cumulative lifetime withdrawals before Tier 1 is required
+    KYC_WARN_AT: 0.8,           // warn the user at 80% of the threshold
+    LIMIT_INCREASE_DELAY_MS: 24*60*60*1000,  // increases take 24h; decreases are instant
+    COOLOFF: { '24h': 864e5, '7d': 6048e5, '30d': 2592e6 },
+    EXCLUSION: { '6mo': 15552e6, '1yr': 31536e6, 'permanent': Infinity }
+  };
+
+  function defaults(){
+    return {
+      account: 'anonymous',
+      user: null,
+      balance: { real: 0, bonus: 0, locked: 0 },
+      verification: { tier: 0, submittedAt: null, rejectedReason: null, cumulativeWithdrawn: 0 },
+      twofa: { enabled: false, secret: null, backupCodes: [] },
+      seeds: { serverSeedHash: null, clientSeed: null, nonce: 0, previous: [] },
+      rg: {
+        limits: { deposit: {}, loss: {}, wager: {} },  // {daily,weekly,monthly} in USDT
+        pending: [],            // queued increases: {kind, period, value, effectiveAt}
+        sessionReminderMin: null,
+        lockUntil: null,        // epoch ms, or Infinity for permanent
+        lockKind: null          // 'cooloff' | 'exclusion'
+      },
+      counters: { day: null, deposit: 0, loss: 0, wager: 0 }
+    };
+  }
+
+  var state = defaults();
+  var listeners = [];
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){
+        var saved = JSON.parse(raw);
+        // shallow-merge so new fields in defaults() survive an old payload
+        Object.keys(saved).forEach(function(k){ state[k] = saved[k]; });
+      }
+    }catch(e){}
+    rollDay();
+    applyDueChanges();
+  }
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function emit(){
+    save();
+    listeners.forEach(function(fn){ try{ fn(state); }catch(e){ console.error(e); } });
+  }
+  function onChange(fn){ listeners.push(fn); return function(){
+    listeners = listeners.filter(function(f){ return f !== fn; }); }; }
+
+  // Daily counters reset on a UTC calendar day boundary.
+  function rollDay(){
+    var today = new Date().toISOString().slice(0,10);
+    if(state.counters.day !== today){
+      state.counters = { day: today, deposit: 0, loss: 0, wager: 0 };
+    }
+  }
+  // Any queued limit increase whose delay has elapsed becomes live.
+  function applyDueChanges(){
+    var now = Date.now(), due = [], keep = [];
+    (state.rg.pending || []).forEach(function(p){
+      (p.effectiveAt <= now ? due : keep).push(p);
+    });
+    due.forEach(function(p){ state.rg.limits[p.kind][p.period] = p.value; });
+    state.rg.pending = keep;
+    if(due.length) save();
+    return due.length;
+  }
+
+  function isLocked(){
+    applyDueChanges();
+    if(!state.rg.lockUntil) return false;
+    if(state.rg.lockUntil === null) return false;
+    if(Date.now() >= state.rg.lockUntil){
+      // a cool-off that has run its course releases itself; an exclusion
+      // requires an explicit opt-in, so it is NOT auto-cleared here
+      if(state.rg.lockKind === 'cooloff'){
+        state.rg.lockUntil = null; state.rg.lockKind = null;
+        if(state.account === 'cooling_off') state.account = state.verification.tier > 0 ? 'verified' : 'active';
+        emit();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // ---------------------------------------------------------------
+  // The gate stack — logic spec §03. Every money action runs through
+  // this before it executes. Returns {ok:true} or {ok:false, code, message}.
+  // Order is deliberate: the user should hit the most explanatory
+  // failure first, not the most technical one.
+  // ---------------------------------------------------------------
+  function gate(action, ctx){
+    ctx = ctx || {};
+    var amount = +ctx.amount || 0;
+
+    if(state.account === 'suspended')
+      return no('suspended', 'This account is on hold. Please contact Triage.');
+
+    if(state.account === 'anonymous' && action !== 'verify')
+      return no('anonymous', 'Sign in to continue.');
+
+    // A lock blocks play and deposits, but never withdrawals — a
+    // self-imposed break must not trap the user's money.
+    if(isLocked() && action !== 'withdraw'){
+      var until = state.rg.lockUntil === Infinity ? 'permanently' : 'until ' + fmtDate(state.rg.lockUntil);
+      return no('locked', (state.rg.lockKind === 'exclusion' ? 'Self-excluded ' : 'On a break ') + until + '.');
+    }
+
+    if(action === 'deposit'){
+      var dl = effectiveLimit('deposit');
+      if(dl !== null && state.counters.deposit + amount > dl)
+        return no('limit', 'Deposit limit reached. Resets ' + nextResetLabel() + '.');
+    }
+
+    if(action === 'bet'){
+      var wl = effectiveLimit('wager');
+      if(wl !== null && state.counters.wager + amount > wl)
+        return no('limit', 'Wager limit reached. Resets ' + nextResetLabel() + '.');
+      var ll = effectiveLimit('loss');
+      if(ll !== null && state.counters.loss >= ll)
+        return no('limit', 'Loss limit reached. Resets ' + nextResetLabel() + '.');
+      if(amount > state.balance.real + state.balance.bonus)
+        return no('funds', 'Not enough balance.');
+    }
+
+    if(action === 'withdraw'){
+      if(!state.twofa.enabled && ctx.requires2fa !== false)
+        return no('2fa', 'Two-factor authentication is required to withdraw.');
+      if(amount > state.balance.real)
+        return no('funds', 'Withdrawable balance is ' + state.balance.real.toFixed(2) + ' USDT. Bonus funds cannot be withdrawn until wagering clears.');
+      var after = state.verification.cumulativeWithdrawn + amount;
+      if(after > CONST.KYC_THRESHOLD_USDT && state.verification.tier < 1){
+        if(state.verification.submittedAt)
+          return no('kyc_pending', 'Verification is in review. This withdrawal will be queued and released on approval.');
+        return no('kyc', 'This takes you past the ' + CONST.KYC_THRESHOLD_USDT.toLocaleString() + ' USDT verification threshold. Verify your identity to continue.');
+      }
+    }
+    return { ok: true };
+  }
+  function no(code, message){ return { ok:false, code:code, message:message }; }
+
+  // Tightest of the three periods wins.
+  function effectiveLimit(kind){
+    var l = state.rg.limits[kind] || {};
+    var vals = ['daily','weekly','monthly'].map(function(p){ return l[p]; })
+      .filter(function(v){ return typeof v === 'number' && v > 0; });
+    return vals.length ? Math.min.apply(null, vals) : null;
+  }
+  function nextResetLabel(){ return 'at 00:00 UTC'; }
+  function fmtDate(ts){
+    if(ts === Infinity) return 'permanently';
+    return new Date(ts).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+  }
+
+  // ---------------------------------------------------------------
+  // PB.api — THE BACKEND SEAM.
+  // Each of these fakes a round-trip against localStorage and resolves
+  // with the shape the UI expects. Swap the bodies for real calls.
+  // ---------------------------------------------------------------
+  var api = {
+    // --- session ---
+    signIn: function(user){
+      state.account = 'active';
+      state.user = user;
+      if(!state.balance.real) state.balance.real = 2840;   // demo float
+      return Promise.resolve(state).then(tap);
+    },
+    signOut: function(){
+      state.account = 'anonymous'; state.user = null;
+      return Promise.resolve(state).then(tap);
+    },
+
+    // --- responsible gambling (logic spec §12) ---
+    // Decreases apply instantly. Increases queue for 24h, during which the
+    // old limit still holds and the pending change is cancellable.
+    setLimit: function(kind, period, value){
+      var current = state.rg.limits[kind][period];
+      var isIncrease = current != null && value != null && value > current;
+      if(value == null || current == null || !isIncrease){
+        state.rg.limits[kind][period] = value;
+        state.rg.pending = state.rg.pending.filter(function(p){
+          return !(p.kind === kind && p.period === period); });
+        return Promise.resolve({ applied:'immediately' }).then(tap);
+      }
+      state.rg.pending = state.rg.pending.filter(function(p){
+        return !(p.kind === kind && p.period === period); });
+      var eff = Date.now() + CONST.LIMIT_INCREASE_DELAY_MS;
+      state.rg.pending.push({ kind:kind, period:period, value:value, effectiveAt:eff });
+      return Promise.resolve({ applied:'queued', effectiveAt:eff }).then(tap);
+    },
+    cancelPendingLimit: function(kind, period){
+      state.rg.pending = state.rg.pending.filter(function(p){
+        return !(p.kind === kind && p.period === period); });
+      return Promise.resolve(true).then(tap);
+    },
+    setSessionReminder: function(minutes){
+      state.rg.sessionReminderMin = minutes;
+      return Promise.resolve(true).then(tap);
+    },
+    // Irreversible by design. Support must not be able to lift these early.
+    coolOff: function(key){
+      state.rg.lockUntil = Date.now() + CONST.COOLOFF[key];
+      state.rg.lockKind = 'cooloff';
+      state.account = 'cooling_off';
+      return Promise.resolve(state).then(tap);
+    },
+    selfExclude: function(key){
+      var span = CONST.EXCLUSION[key];
+      state.rg.lockUntil = span === Infinity ? Infinity : Date.now() + span;
+      state.rg.lockKind = 'exclusion';
+      state.account = 'self_excluded';
+      state.balance.bonus = 0;             // active Boosters are forfeited
+      return Promise.resolve(state).then(tap);
+    },
+
+    // --- verification (logic spec §13) ---
+    submitVerification: function(files){
+      state.verification.submittedAt = Date.now();
+      state.verification.rejectedReason = null;
+      state.account = 'verify_pending';
+      return Promise.resolve({ status:'pending' }).then(tap);
+    },
+    // Demo affordance only — a real backend decides this, never the client.
+    __approveVerification: function(){
+      state.verification.tier = 1;
+      state.account = 'verified';
+      return Promise.resolve(true).then(tap);
+    },
+
+    // --- two-factor (logic spec §04 gate) ---
+    enable2fa: function(secret, backupCodes){
+      state.twofa = { enabled:true, secret:secret, backupCodes:backupCodes };
+      return Promise.resolve(true).then(tap);
+    },
+    disable2fa: function(){
+      state.twofa = { enabled:false, secret:null, backupCodes:[] };
+      return Promise.resolve(true).then(tap);
+    },
+
+    // --- provably fair (logic spec §09) ---
+    // The server seed itself never reaches the client until rotation; only
+    // its hash does. This stub keeps the seed in memory to emulate that.
+    rotateSeeds: function(newHash, revealedPrevious){
+      if(revealedPrevious) state.seeds.previous.unshift(revealedPrevious);
+      state.seeds.serverSeedHash = newHash;
+      state.seeds.nonce = 0;
+      return Promise.resolve(state.seeds).then(tap);
+    },
+    setClientSeed: function(seed){
+      state.seeds.clientSeed = seed;
+      state.seeds.nonce = 0;             // changing the client seed resets the nonce
+      return Promise.resolve(state.seeds).then(tap);
+    },
+
+    // --- money + play ---
+    recordWager: function(amount, netLoss){
+      state.counters.wager += amount;
+      if(netLoss > 0) state.counters.loss += netLoss;
+      state.seeds.nonce += 1;
+      return Promise.resolve(state.counters).then(tap);
+    },
+    recordDeposit: function(amount){
+      state.counters.deposit += amount;
+      state.balance.real += amount;
+      return Promise.resolve(state.balance).then(tap);
+    },
+    requestWithdrawal: function(amount){
+      state.balance.real -= amount;
+      state.balance.locked += amount;
+      state.verification.cumulativeWithdrawn += amount;
+      return Promise.resolve({ status:'pending' }).then(tap);
+    }
+  };
+  function tap(v){ emit(); return v; }
+
+  load();
+
+  return {
+    CONST: CONST,
+    get state(){ return state; },
+    gate: gate,
+    onChange: onChange,
+    api: api,
+    isLocked: isLocked,
+    effectiveLimit: effectiveLimit,
+    fmtDate: fmtDate,
+    applyDueChanges: applyDueChanges,
+    reset: function(){ state = defaults(); emit(); }
+  };
+})();
+</script>
+
 <div class="ambient"></div>
 
 
@@ -2795,6 +3269,22 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
         <button class="sw" id="ch2fa" type="button" aria-label="Toggle 2FA"><i></i></button>
         <span id="ch2faLabel">Two-factor · off</span>
       </div>
+
+      <div class="kick" style="margin-top:22px">Provably fair &middot; your seeds</div>
+      <div class="sd-row"><span class="k">Server seed hash</span><span class="v hash" id="sdHash">—</span></div>
+      <div class="sd-row"><span class="k">Nonce</span><span class="v" id="sdNonce">0</span></div>
+      <div style="margin-top:12px">
+        <span class="k" style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#8b909a">Client seed</span>
+        <div class="sd-seedin">
+          <input id="sdClient" type="text" spellcheck="false" aria-label="Client seed">
+          <button class="ch-btn alt" id="sdSave" type="button">Save</button>
+        </div>
+      </div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn alt" id="sdRotate" type="button">Rotate &amp; reveal</button>
+        <button class="ch-btn alt" id="sdVerify" type="button">Open verifier</button>
+      </div>
+      <div class="ch-note" id="sdNote"></div>
     </div>
 
     <div class="pscard ch-sec">
@@ -2824,6 +3314,119 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
       </div>
       <div class="ch-note" id="chPaid">Sent. Watch your wallet, it will not take long.</div>
     </div>
+  </div>
+
+  <div class="pscard" id="chKyc" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Verification</div><span class="meta" id="kycTierLabel">Tier 0 &middot; unverified</span></div>
+
+    <div class="kyc-state" id="kycState">
+      <div class="kyc-badge" id="kycBadge">Unverified</div>
+      <p id="kycBlurb">You can deposit, play and withdraw without verifying. Verification is only required once
+        your <b>lifetime withdrawals</b> pass the threshold below.</p>
+    </div>
+
+    <div class="kyc-meter">
+      <div class="kyc-meter-top">
+        <span>Withdrawn to date</span>
+        <span class="mono"><b id="kycUsed">0</b> / <span id="kycCap">2,000</span> USDT</span>
+      </div>
+      <div class="kyc-bar"><i id="kycBarFill"></i></div>
+      <div class="kyc-warn" id="kycWarn" hidden></div>
+    </div>
+
+    <div class="kyc-upload" id="kycUpload">
+      <div class="kick" style="margin-top:18px">Verify now</div>
+      <p class="rg-sub">Doing this early means nothing interrupts you later. Two documents, one time.</p>
+      <div class="kyc-docs">
+        <label class="kyc-doc"><input type="file" accept="image/*,.pdf" id="kycId">
+          <span class="ic">＋</span><b>Government ID</b><i>Passport, licence or national ID</i>
+          <em id="kycIdName"></em></label>
+        <label class="kyc-doc"><input type="file" accept="image/*" id="kycSelfie">
+          <span class="ic">＋</span><b>Selfie</b><i>Holding the same document</i>
+          <em id="kycSelfieName"></em></label>
+      </div>
+      <div class="ch-actions" style="margin-top:12px">
+        <button class="ch-btn" id="kycSubmit" type="button" disabled>Submit for review</button>
+      </div>
+      <p class="kyc-fine">Documents are used only to satisfy our licence obligations and are never shared for
+        marketing. Review usually completes within a few hours.</p>
+    </div>
+
+    <div class="ch-note" id="kycNote"></div>
+  </div>
+
+  <div class="pscard" id="chRG" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Responsible gambling</div><span class="meta">Your tools &middot; effective immediately</span></div>
+    <p class="rg-lead">Lowering a limit takes effect the moment you save it. Raising one takes 24 hours, so a
+      decision made in the moment can't undo one made calmly. Breaks and self-exclusion cannot be lifted early —
+      not by you, and not by support.</p>
+
+    <div class="rg-limits">
+      <div class="rg-head"><span></span><span>Daily</span><span>Weekly</span><span>Monthly</span></div>
+      <div class="rg-line" data-kind="deposit">
+        <span class="rg-name">Deposit limit<i>USDT you can add</i></span>
+        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily deposit limit">
+        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly deposit limit">
+        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly deposit limit">
+      </div>
+      <div class="rg-line" data-kind="loss">
+        <span class="rg-name">Loss limit<i>net losses before play stops</i></span>
+        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily loss limit">
+        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly loss limit">
+        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly loss limit">
+      </div>
+      <div class="rg-line" data-kind="wager">
+        <span class="rg-name">Wager limit<i>total staked</i></span>
+        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily wager limit">
+        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly wager limit">
+        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly wager limit">
+      </div>
+    </div>
+    <div class="ch-actions" style="margin-top:12px">
+      <button class="ch-btn" id="rgSave" type="button">Save limits</button>
+    </div>
+    <div class="ch-note" id="rgNote"></div>
+
+    <div class="rg-pending" id="rgPending" hidden></div>
+
+    <div class="rg-split">
+      <div>
+        <div class="kick" style="margin-top:20px">Session reminder</div>
+        <p class="rg-sub">A quiet interruption showing how long you've been playing and where you stand.</p>
+        <div class="rg-chips" id="rgReminder">
+          <button type="button" data-min="">Off</button>
+          <button type="button" data-min="15">15 min</button>
+          <button type="button" data-min="30">30 min</button>
+          <button type="button" data-min="60">60 min</button>
+        </div>
+      </div>
+      <div>
+        <div class="kick" style="margin-top:20px">Take a break</div>
+        <p class="rg-sub">Blocks play and deposits. You can still withdraw. Cannot be shortened.</p>
+        <div class="rg-chips" id="rgCool">
+          <button type="button" data-k="24h">24 hours</button>
+          <button type="button" data-k="7d">7 days</button>
+          <button type="button" data-k="30d">30 days</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rg-danger">
+      <div>
+        <b>Self-exclusion</b>
+        <span>Closes the ward to you for the period you choose. Marketing stops. Any active Booster is
+          forfeited. Your withdrawable balance stays yours. This cannot be reversed.</span>
+      </div>
+      <div class="rg-chips" id="rgExclude">
+        <button type="button" data-k="6mo">6 months</button>
+        <button type="button" data-k="1yr">1 year</button>
+        <button type="button" data-k="permanent">Permanent</button>
+      </div>
+    </div>
+
+    <p class="rg-help">If gambling stops being fun, help is free and confidential:
+      <a href="https://www.begambleaware.org" target="_blank" rel="noopener">BeGambleAware.org</a> &middot;
+      <a href="https://www.gamblersanonymous.org" target="_blank" rel="noopener">Gamblers Anonymous</a>.</p>
   </div>
 
   <div class="pscard" id="chActivity" style="margin-top:16px">
@@ -3678,6 +4281,99 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
         <span>Pragmatic Play</span><span>Evolution</span><span>Hacksaw</span><span>Nolimit City</span><span>Push Gaming</span><span>BGaming</span><span>Relax Gaming</span><span>Play'n GO</span><span>Big Time Gaming</span><span>Thunderkick</span><span>ELK Studios</span><span>Red Tiger</span><span>NetEnt</span><span>Wazdan</span><span>PG Soft</span><span>Spinomenal</span><span>3 Oaks</span><span>Playson</span>
       </div>
       <div class="mnote">132 providers integrated at launch. Full catalogue lands with the platform build.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="tfa-modal">
+  <div class="modal" role="dialog" aria-label="Set up two-factor authentication">
+    <div class="mhead"><h3>Two-factor</h3><button class="x" onclick="closeModal('tfa-modal')">✕</button></div>
+    <div class="mbody">
+      <div id="tfaStep1">
+        <p class="pf-lead">Add pain.bet to an authenticator app — Google Authenticator, Authy, 1Password, any of
+          them. You'll then need a 6-digit code to withdraw.</p>
+
+        <!-- DEVS: render a QR of the otpauth URI here with your preferred lib.
+             Manual key entry below is the accessible fallback and works in every app. -->
+        <div class="tfa-qr" id="tfaQrMount">
+          <span>QR renders here</span>
+          <i>Use the setup key below meanwhile</i>
+        </div>
+
+        <label class="tfa-lab">Setup key</label>
+        <div class="tfa-key"><code id="tfaSecret">—</code>
+          <button type="button" id="tfaCopy">Copy</button></div>
+
+        <label class="tfa-lab" for="tfaCode">Enter the 6-digit code to confirm</label>
+        <input class="tfa-code" id="tfaCode" inputmode="numeric" autocomplete="one-time-code"
+               maxlength="6" placeholder="000000">
+        <div class="tfa-err" id="tfaErr" hidden></div>
+        <button class="btn btn-red" id="tfaConfirm" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">Confirm and enable</button>
+      </div>
+
+      <div id="tfaStep2" hidden>
+        <div class="tfa-done">Two-factor is on</div>
+        <p class="pf-lead">Save these backup codes somewhere safe. Each one works once, and they are the only way
+          back in if you lose the authenticator.</p>
+        <div class="tfa-backup" id="tfaBackup"></div>
+        <button class="btn btn-red" id="tfaFinish" type="button"
+                style="width:100%;margin-top:14px;border-radius:var(--r-md)">I've saved them</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="tfa-challenge">
+  <div class="modal" role="dialog" aria-label="Confirm with two-factor" style="max-width:400px">
+    <div class="mhead"><h3>Confirm</h3><button class="x" onclick="closeModal('tfa-challenge')">✕</button></div>
+    <div class="mbody">
+      <p class="pf-lead" id="tfaChallengeWhy">Enter the 6-digit code from your authenticator to approve this
+        withdrawal.</p>
+      <input class="tfa-code" id="tfaChallengeCode" inputmode="numeric" autocomplete="one-time-code"
+             maxlength="6" placeholder="000000">
+      <div class="tfa-err" id="tfaChallengeErr" hidden></div>
+      <button class="btn btn-red" id="tfaChallengeGo" type="button"
+              style="width:100%;margin-top:14px;border-radius:var(--r-md)">Approve</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="fair-modal">
+  <div class="modal" role="dialog" aria-label="Provably fair verifier" style="max-width:560px">
+    <div class="mhead"><h3>Verify a round</h3><button class="x" onclick="closeModal('fair-modal')">✕</button></div>
+    <div class="mbody">
+      <p class="pf-lead">Every Pain Original is derived from three values. Paste them below and this page will
+        recompute the outcome in your own browser — nothing is sent to us. You do not need an account.</p>
+
+      <div class="pf-grid">
+        <div><label for="pfServer">Server seed <span>revealed after rotation</span></label>
+          <input id="pfServer" type="text" spellcheck="false" placeholder="e.g. 8f14e45fceea167a…"></div>
+        <div><label for="pfClient">Client seed <span>yours, editable</span></label>
+          <input id="pfClient" type="text" spellcheck="false" placeholder="e.g. wardrat-77"></div>
+        <div><label for="pfNonce">Nonce <span>bet number</span></label>
+          <input id="pfNonce" type="number" min="0" step="1" value="0"></div>
+        <div><label for="pfHash">Published hash <span>optional — proves commitment</span></label>
+          <input id="pfHash" type="text" spellcheck="false" placeholder="SHA-256 of the server seed"></div>
+      </div>
+
+      <button class="btn btn-red" id="pfRun" type="button" style="width:100%;margin-top:16px;border-radius:var(--r-md)">Recompute outcome</button>
+
+      <div class="pf-out" id="pfOut" hidden>
+        <div class="pf-row"><span class="k">HMAC-SHA256</span><span class="v mono" id="pfDigest">—</span></div>
+        <div class="pf-row"><span class="k">Roll <i>0.00 – 99.99</i></span><span class="v big" id="pfRoll">—</span></div>
+        <div class="pf-commit" id="pfCommit" hidden></div>
+      </div>
+
+      <details class="pf-how">
+        <summary>How this is calculated</summary>
+        <p>The server seed is generated before you play and we publish only its SHA-256 hash, so it cannot be
+          changed afterwards. Your client seed is yours to set. The nonce counts up by one with every bet.</p>
+        <pre>result = HMAC_SHA256(server_seed, client_seed + ":" + nonce)
+roll   = (first 8 hex digits of result) mod 10000 / 100</pre>
+        <p>When you rotate your seed pair we reveal the old server seed. Hash it here and compare it against the
+          hash we published beforehand — if they match, every outcome under that seed was fixed before you bet.</p>
+      </details>
     </div>
   </div>
 </div>
@@ -6093,11 +6789,19 @@ document.querySelectorAll('.pgback').forEach(function(b){
     ava2.textContent = ava.textContent;
     fillChart(user);
     try{ sessionStorage.setItem('pb_session', JSON.stringify(user)); }catch(e){}
+    // Drive the platform state layer, then make sure a provably-fair seed
+    // pair is committed before the user can place a single bet.
+    if(window.PB){
+      PB.api.signIn(user).then(function(){
+        if(PB.ensureSeeds) return PB.ensureSeeds();
+      });
+    }
   };
 
   window.signOut = function(){
     document.body.classList.remove('signed-in');
     try{ sessionStorage.removeItem('pb_session'); }catch(e){}
+    if(window.PB) PB.api.signOut();
     if(document.body.classList.contains('view-chart')){
       document.body.classList.remove('view-chart');
       document.querySelectorAll('.side a').forEach(function(a){ a.classList.remove('on'); });
@@ -6139,20 +6843,692 @@ document.querySelectorAll('.pgback').forEach(function(b){
         return;
       }
       var coin = document.getElementById('wdCoin').value.toUpperCase();
-      var tbody = document.getElementById('chTxBody');
-      if(tbody){
-        var row = document.createElement('tr');
-        row.innerHTML = '<td>Just now</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>' + coin + '</td>' +
-          '<td class="r amt">-' + amt.toFixed(amt < 1 ? 6 : 2) + '</td><td class="r"><span class="ch-pill pending">Pending</span></td>';
-        tbody.prepend(row);
+
+      // Run the gate stack (logic spec §03) before anything else.
+      var g = window.PB ? PB.gate('withdraw', {amount: amt}) : {ok:true};
+      if(!g.ok){
+        note.textContent = g.message;
+        note.style.color = (g.code === 'kyc_pending') ? '#e0a13e' : '#ff5c7c';
+        // Route the user to the thing that unblocks them, rather than dead-ending.
+        if(g.code === 'kyc'){
+          note.textContent += ' Opening verification…';
+          setTimeout(function(){
+            if(typeof closeModal === 'function') closeModal('depVeil');
+            var v = document.getElementById('depVeil'); if(v) v.classList.remove('open');
+            document.querySelectorAll('.side a').forEach(function(a){
+              if(a.textContent.trim() === 'The Chart') a.click(); });
+            var k = document.getElementById('chKyc');
+            if(k) k.scrollIntoView({behavior:'smooth', block:'start'});
+          }, 900);
+        }
+        if(g.code === '2fa'){
+          note.textContent += ' Enable it on The Chart under Security.';
+        }
+        return;
       }
-      note.textContent = 'Discharge requested — it now shows as pending in Transactions, on The Chart.';
-      note.style.color = '#7FD6E8';
-      wdGo.disabled = true;
-      wdGo.textContent = 'Requested';
-      addrEl.disabled = true; amtEl.disabled = true;
+
+      function commit(){
+        var tbody = document.getElementById('chTxBody');
+        if(tbody){
+          var row = document.createElement('tr');
+          row.innerHTML = '<td>Just now</td><td><span class="ch-pill withdraw">Withdrawal</span></td><td>' + coin + '</td>' +
+            '<td class="r amt">-' + amt.toFixed(amt < 1 ? 6 : 2) + '</td><td class="r"><span class="ch-pill pending">Pending</span></td>';
+          tbody.prepend(row);
+        }
+        if(window.PB) PB.api.requestWithdrawal(amt);
+        note.textContent = 'Discharge requested — it now shows as pending in Transactions, on The Chart.';
+        note.style.color = '#7FD6E8';
+        wdGo.disabled = true;
+        wdGo.textContent = 'Requested';
+        addrEl.disabled = true; amtEl.disabled = true;
+      }
+
+      // 2FA challenge is the last step before execution.
+      if(window.PB && PB.state.twofa.enabled && PB.challenge2fa){
+        PB.challenge2fa('Enter the 6-digit code from your authenticator to approve this withdrawal of ' +
+          amt + ' ' + coin + '.').then(function(ok){ if(ok) commit(); });
+      } else {
+        commit();
+      }
     });
   }
+})();
+</script>
+
+<!-- ===================================================================
+     Provably fair — real implementation, not a mock.
+     Uses Web Crypto, so the verifier genuinely recomputes outcomes in the
+     player's own browser with nothing sent to a server.
+
+     DEVS: the only thing that must move server-side is server-seed custody.
+     PB.fair.newServerSeed() below generates the seed client-side purely so
+     the prototype can demonstrate the full commit/reveal cycle. In
+     production the server generates it, stores it, exposes ONLY its hash,
+     and reveals the plaintext at rotation. The maths must not change —
+     result = HMAC_SHA256(server_seed, client_seed + ":" + nonce).
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var enc = new TextEncoder();
+  var subtle = (window.crypto && window.crypto.subtle) || null;
+
+  function toHex(buf){
+    return Array.prototype.map.call(new Uint8Array(buf), function(b){
+      return b.toString(16).padStart(2,'0'); }).join('');
+  }
+  function sha256Hex(str){
+    if(!subtle) return Promise.reject(new Error('Web Crypto unavailable'));
+    return subtle.digest('SHA-256', enc.encode(str)).then(toHex);
+  }
+  function hmacSha256Hex(key, msg){
+    if(!subtle) return Promise.reject(new Error('Web Crypto unavailable'));
+    return subtle.importKey('raw', enc.encode(key), {name:'HMAC', hash:'SHA-256'}, false, ['sign'])
+      .then(function(k){ return subtle.sign('HMAC', k, enc.encode(msg)); })
+      .then(toHex);
+  }
+  function randomHex(bytes){
+    var a = new Uint8Array(bytes);
+    (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a)
+      : a.forEach(function(_,i){ a[i] = Math.floor(Math.random()*256); });
+    return toHex(a.buffer);
+  }
+  // Standard conversion: take the first 8 hex digits of the digest as a
+  // 32-bit integer and map it into 0.00–99.99. Documented in the verifier
+  // so a player can follow it by hand.
+  function digestToRoll(hex){
+    return (parseInt(hex.slice(0,8), 16) % 10000) / 100;
+  }
+
+  window.PB = window.PB || {};
+  PB.fair = {
+    sha256Hex: sha256Hex,
+    hmacSha256Hex: hmacSha256Hex,
+    randomHex: randomHex,
+    digestToRoll: digestToRoll,
+    newServerSeed: function(){ return randomHex(32); },
+    // Resolve a round the way the server will.
+    roll: function(serverSeed, clientSeed, nonce){
+      return hmacSha256Hex(serverSeed, clientSeed + ':' + nonce)
+        .then(function(hex){ return { digest: hex, roll: digestToRoll(hex) }; });
+    }
+  };
+
+  // ---- seed custody for the prototype -------------------------------
+  // Held in localStorage under a separate key to make the point that the
+  // plaintext seed is NOT part of PB.state (which the UI can read freely).
+  var SEED_KEY = 'pb_serverseed_v1';
+  function currentServerSeed(){
+    var s = null;
+    try{ s = localStorage.getItem(SEED_KEY); }catch(e){}
+    return s;
+  }
+  function stashServerSeed(seed){
+    try{ localStorage.setItem(SEED_KEY, seed); }catch(e){}
+  }
+
+  // Make sure a signed-in user always has a committed seed pair.
+  function ensureSeeds(){
+    var st = PB.state;
+    if(st.account === 'anonymous') return Promise.resolve();
+    if(st.seeds.serverSeedHash && currentServerSeed()) return Promise.resolve();
+    var seed = PB.fair.newServerSeed();
+    stashServerSeed(seed);
+    if(!st.seeds.clientSeed) st.seeds.clientSeed = randomHex(8);
+    return sha256Hex(seed).then(function(h){ return PB.api.rotateSeeds(h, null); });
+  }
+  PB.ensureSeeds = ensureSeeds;
+
+  // ---- The Chart seed panel -----------------------------------------
+  var elHash = document.getElementById('sdHash');
+  var elNonce = document.getElementById('sdNonce');
+  var elClient = document.getElementById('sdClient');
+  var elNote = document.getElementById('sdNote');
+
+  function paintSeeds(){
+    if(!elHash) return;
+    var s = PB.state.seeds;
+    elHash.textContent = s.serverSeedHash || '—';
+    elNonce.textContent = s.nonce;
+    if(elClient && document.activeElement !== elClient) elClient.value = s.clientSeed || '';
+  }
+  if(window.PB && PB.onChange) PB.onChange(paintSeeds);
+  paintSeeds();
+
+  var save = document.getElementById('sdSave');
+  if(save) save.addEventListener('click', function(){
+    var v = (elClient.value || '').trim();
+    if(!v){ note('Client seed cannot be empty.', true); return; }
+    PB.api.setClientSeed(v).then(function(){
+      note('Client seed updated. Nonce reset to 0.', false);
+    });
+  });
+
+  var rotate = document.getElementById('sdRotate');
+  if(rotate) rotate.addEventListener('click', function(){
+    var old = currentServerSeed();
+    var next = PB.fair.newServerSeed();
+    stashServerSeed(next);
+    sha256Hex(next).then(function(h){
+      return PB.api.rotateSeeds(h, old);
+    }).then(function(){
+      if(old){
+        note('Previous server seed revealed: ' + old + ' — verify any past round with it.', false);
+        // pre-fill the verifier so the next step is obvious
+        var f = document.getElementById('pfServer'); if(f) f.value = old;
+        var c = document.getElementById('pfClient'); if(c) c.value = PB.state.seeds.clientSeed || '';
+      } else {
+        note('Seed pair created.', false);
+      }
+    });
+  });
+
+  var openV = document.getElementById('sdVerify');
+  if(openV) openV.addEventListener('click', function(){
+    var c = document.getElementById('pfClient');
+    if(c && !c.value) c.value = PB.state.seeds.clientSeed || '';
+    if(typeof openModal === 'function') openModal('fair-modal');
+  });
+
+  function note(msg, bad){
+    if(!elNote) return;
+    elNote.textContent = msg;
+    elNote.style.color = bad ? '#ff6b86' : '#7FD6E8';
+    elNote.classList.add('show');
+  }
+
+  // ---- verifier modal ------------------------------------------------
+  var run = document.getElementById('pfRun');
+  if(run) run.addEventListener('click', function(){
+    var server = (document.getElementById('pfServer').value || '').trim();
+    var client = (document.getElementById('pfClient').value || '').trim();
+    var nonce  = document.getElementById('pfNonce').value || '0';
+    var claim  = (document.getElementById('pfHash').value || '').trim().toLowerCase();
+    var out    = document.getElementById('pfOut');
+    var commit = document.getElementById('pfCommit');
+
+    if(!server || !client){
+      out.hidden = false;
+      document.getElementById('pfDigest').textContent = 'Enter both a server seed and a client seed.';
+      document.getElementById('pfRoll').textContent = '—';
+      commit.hidden = true;
+      return;
+    }
+
+    PB.fair.roll(server, client, nonce).then(function(r){
+      out.hidden = false;
+      document.getElementById('pfDigest').textContent = r.digest;
+      document.getElementById('pfRoll').textContent = r.roll.toFixed(2);
+      if(claim){
+        return sha256Hex(server).then(function(h){
+          commit.hidden = false;
+          var match = h === claim;
+          commit.className = 'pf-commit ' + (match ? 'ok' : 'bad');
+          commit.textContent = match
+            ? 'Commitment verified — this server seed hashes to the published value, so the outcome was fixed before the bet.'
+            : 'Hash mismatch. This server seed does not match the hash provided (' + h + ').';
+        });
+      }
+      commit.hidden = true;
+    }).catch(function(e){
+      out.hidden = false;
+      document.getElementById('pfDigest').textContent = 'Could not compute: ' + e.message;
+    });
+  });
+
+  // Footer "Provably fair" link used to open proof-of-reserves, which is a
+  // different guarantee. Point it at the actual fairness verifier.
+  document.querySelectorAll('footer .links a').forEach(function(a){
+    if(a.textContent.trim().toLowerCase() === 'provably fair'){
+      a.removeAttribute('onclick');
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        if(typeof openModal === 'function') openModal('fair-modal');
+      });
+    }
+  });
+})();
+</script>
+
+<!-- ===================================================================
+     Responsible gambling — logic spec §12.
+     Licence-required, and previously promised in the footer and legal
+     modal without existing. The asymmetry rule (decrease instant, increase
+     delayed 24h) lives in PB.api.setLimit; this file is the UI over it.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var panel = document.getElementById('chRG');
+  if(!panel || !window.PB) return;
+
+  var note = document.getElementById('rgNote');
+  var pendBox = document.getElementById('rgPending');
+
+  function say(msg, bad){
+    note.textContent = msg;
+    note.style.color = bad ? '#ff6b86' : '#7FD6E8';
+    note.classList.add('show');
+  }
+
+  // ---- limits -------------------------------------------------------
+  function paintLimits(){
+    panel.querySelectorAll('.rg-line').forEach(function(line){
+      var kind = line.dataset.kind;
+      line.querySelectorAll('input').forEach(function(inp){
+        if(document.activeElement === inp) return;
+        var v = (PB.state.rg.limits[kind] || {})[inp.dataset.period];
+        inp.value = (v == null ? '' : v);
+      });
+    });
+    paintPending();
+  }
+
+  function paintPending(){
+    var p = PB.state.rg.pending || [];
+    if(!p.length){ pendBox.hidden = true; pendBox.innerHTML = ''; return; }
+    pendBox.hidden = false;
+    pendBox.innerHTML = '<div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;' +
+      'text-transform:uppercase;margin-bottom:6px">Pending increases · old limit still applies</div>' +
+      p.map(function(x){
+        return '<div class="pr"><span>' + x.kind + ' · ' + x.period + ' → ' +
+          x.value.toLocaleString() + ' USDT, live ' + PB.fmtDate(x.effectiveAt) + '</span>' +
+          '<button type="button" data-cancel="' + x.kind + '|' + x.period + '">Cancel</button></div>';
+      }).join('');
+  }
+
+  pendBox.addEventListener('click', function(e){
+    var b = e.target.closest('[data-cancel]');
+    if(!b) return;
+    var parts = b.dataset.cancel.split('|');
+    PB.api.cancelPendingLimit(parts[0], parts[1]).then(function(){
+      say('Pending increase cancelled.', false);
+    });
+  });
+
+  document.getElementById('rgSave').addEventListener('click', function(){
+    var jobs = [], queued = 0, instant = 0;
+    panel.querySelectorAll('.rg-line').forEach(function(line){
+      var kind = line.dataset.kind;
+      line.querySelectorAll('input').forEach(function(inp){
+        var raw = inp.value.trim();
+        var val = raw === '' ? null : Math.max(0, Number(raw));
+        var cur = (PB.state.rg.limits[kind] || {})[inp.dataset.period];
+        if(val === (cur == null ? null : cur)) return;   // unchanged
+        jobs.push(PB.api.setLimit(kind, inp.dataset.period, val).then(function(r){
+          r.applied === 'queued' ? queued++ : instant++;
+        }));
+      });
+    });
+    if(!jobs.length){ say('Nothing changed.', false); return; }
+    Promise.all(jobs).then(function(){
+      var bits = [];
+      if(instant) bits.push(instant + ' applied now');
+      if(queued) bits.push(queued + ' scheduled for 24 hours from now');
+      say(bits.join(' · ') + '.', false);
+      paintLimits();
+    });
+  });
+
+  // ---- session reminder ---------------------------------------------
+  var remBox = document.getElementById('rgReminder');
+  remBox.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var min = b.dataset.min === '' ? null : Number(b.dataset.min);
+    PB.api.setSessionReminder(min).then(function(){
+      paintReminder();
+      say(min ? 'Reminder every ' + min + ' minutes.' : 'Session reminder off.', false);
+    });
+  });
+  function paintReminder(){
+    var cur = PB.state.rg.sessionReminderMin;
+    remBox.querySelectorAll('button').forEach(function(b){
+      var v = b.dataset.min === '' ? null : Number(b.dataset.min);
+      b.classList.toggle('on', v === cur);
+    });
+  }
+
+  // ---- cool-off and self-exclusion ----------------------------------
+  var LABEL = { '24h':'24 hours', '7d':'7 days', '30d':'30 days',
+                '6mo':'6 months', '1yr':'1 year', 'permanent':'permanently' };
+
+  document.getElementById('rgCool').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var k = b.dataset.k;
+    if(!confirm('Take a break for ' + LABEL[k] + '?\n\nYou will not be able to play or deposit until it ends. ' +
+                'You can still withdraw. This cannot be shortened.')) return;
+    PB.api.coolOff(k).then(function(){
+      say('Break started. The ward reopens ' + PB.fmtDate(PB.state.rg.lockUntil) + '.', false);
+      applyLock();
+    });
+  });
+
+  document.getElementById('rgExclude').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var k = b.dataset.k;
+    // Two-step, because this one is irreversible.
+    if(!confirm('Self-exclude for ' + LABEL[k] + '?\n\nThis blocks play and deposits, stops all marketing, ' +
+                'and forfeits any active Booster. Your withdrawable balance stays yours.')) return;
+    if(!confirm('Last check.\n\nThis cannot be undone — not by you, and not by support. Continue?')) return;
+    PB.api.selfExclude(k).then(function(){
+      say('Self-excluded ' + (k === 'permanent' ? 'permanently' : 'until ' + PB.fmtDate(PB.state.rg.lockUntil)) + '.', false);
+      applyLock();
+    });
+  });
+
+  // ---- site-wide lock enforcement -----------------------------------
+  var bar = document.createElement('div');
+  bar.className = 'rg-lockbar';
+  bar.innerHTML = '<b id="rgLockKind">On a break</b><span id="rgLockMsg"></span>';
+  document.body.appendChild(bar);
+
+  function applyLock(){
+    var locked = PB.isLocked();
+    document.body.classList.toggle('pb-locked', locked);
+    if(locked){
+      var excl = PB.state.rg.lockKind === 'exclusion';
+      document.getElementById('rgLockKind').textContent = excl ? 'Self-excluded' : 'On a break';
+      document.getElementById('rgLockMsg').textContent =
+        (PB.state.rg.lockUntil === Infinity
+          ? 'Play and deposits are closed permanently.'
+          : 'Play and deposits are closed until ' + PB.fmtDate(PB.state.rg.lockUntil) + '.') +
+        ' Withdrawals stay open.';
+    }
+  }
+
+  // Intercept the money entry points while locked. The gate stack is the
+  // source of truth — this is the UI honouring it.
+  function guard(selector, action){
+    document.addEventListener('click', function(e){
+      var t = e.target.closest(selector);
+      if(!t) return;
+      var g = PB.gate(action, {});
+      if(!g.ok && (g.code === 'locked' || g.code === 'limit')){
+        e.preventDefault(); e.stopImmediatePropagation();
+        alert(g.message);
+      }
+    }, true);   // capture, so it runs before the feature's own handler
+  }
+  guard('.topbar .btn.red', 'deposit');       // Deposit
+  guard('[data-game]', 'bet');                // any game tile once the launch seam is live
+
+  PB.onChange(function(){ paintLimits(); paintReminder(); applyLock(); });
+  paintLimits(); paintReminder(); applyLock();
+})();
+</script>
+
+<!-- ===================================================================
+     Verification — logic spec §13.
+     Threshold model: play and withdraw freely until cumulative lifetime
+     withdrawals cross PB.CONST.KYC_THRESHOLD_USDT, then Tier 1 is required.
+     The gate itself lives in PB.gate('withdraw'); this is the UI and the
+     document-submission flow.
+
+     DEVS: PB.api.submitVerification currently just flips state. Wire it to
+     a real upload + provider (Sumsub, Veriff, etc). The __approveVerification
+     button is a demo affordance and must be deleted before production —
+     approval is a backend decision, never a client one.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var card = document.getElementById('chKyc');
+  if(!card || !window.PB) return;
+
+  var badge = document.getElementById('kycBadge');
+  var blurb = document.getElementById('kycBlurb');
+  var note  = document.getElementById('kycNote');
+  var submit = document.getElementById('kycSubmit');
+  var files = { id:null, selfie:null };
+
+  function paint(){
+    var v = PB.state.verification;
+    var cap = PB.CONST.KYC_THRESHOLD_USDT;
+    var used = v.cumulativeWithdrawn || 0;
+    var pct = Math.min(100, cap ? (used / cap) * 100 : 0);
+
+    document.getElementById('kycUsed').textContent = Math.round(used).toLocaleString();
+    document.getElementById('kycCap').textContent = cap.toLocaleString();
+    var fill = document.getElementById('kycBarFill');
+    fill.style.width = pct + '%';
+    fill.className = pct >= 100 ? 'full' : (pct >= PB.CONST.KYC_WARN_AT * 100 ? 'warn' : '');
+
+    var warn = document.getElementById('kycWarn');
+    if(v.tier > 0 || pct < PB.CONST.KYC_WARN_AT * 100){
+      warn.hidden = true;
+    } else {
+      warn.hidden = false;
+      warn.textContent = pct >= 100
+        ? 'You have reached the threshold. Verify to withdraw any further.'
+        : 'You are close to the threshold. Verifying now means your next withdrawal is not interrupted.';
+    }
+
+    var upload = document.getElementById('kycUpload');
+    document.getElementById('kycTierLabel').textContent =
+      v.tier > 0 ? 'Tier 1 · identified' : (v.submittedAt ? 'Tier 0 · in review' : 'Tier 0 · unverified');
+
+    if(v.tier > 0){
+      badge.className = 'kyc-badge ok'; badge.textContent = 'Verified';
+      blurb.innerHTML = 'Your identity is confirmed. Withdrawals are no longer capped by the threshold.';
+      upload.hidden = true;
+    } else if(v.rejectedReason){
+      badge.className = 'kyc-badge bad'; badge.textContent = 'Needs attention';
+      blurb.innerHTML = 'We could not verify these documents: <b>' + v.rejectedReason + '</b> — please resubmit.';
+      upload.hidden = false;
+    } else if(v.submittedAt){
+      badge.className = 'kyc-badge pending'; badge.textContent = 'In review';
+      blurb.innerHTML = 'Submitted ' + PB.fmtDate(v.submittedAt) + '. Withdrawals above the threshold are ' +
+        '<b>queued, not refused</b> — they release automatically once you are approved.';
+      upload.hidden = true;
+    } else {
+      badge.className = 'kyc-badge'; badge.textContent = 'Unverified';
+      blurb.innerHTML = 'You can deposit, play and withdraw without verifying. Verification is only required ' +
+        'once your <b>lifetime withdrawals</b> pass the threshold below.';
+      upload.hidden = false;
+    }
+  }
+
+  function wireFile(inputId, nameId, key){
+    var inp = document.getElementById(inputId);
+    inp.addEventListener('change', function(){
+      var f = inp.files && inp.files[0];
+      files[key] = f || null;
+      document.getElementById(nameId).textContent = f ? f.name : '';
+      inp.closest('.kyc-doc').classList.toggle('filled', !!f);
+      submit.disabled = !(files.id && files.selfie);
+    });
+  }
+  wireFile('kycId','kycIdName','id');
+  wireFile('kycSelfie','kycSelfieName','selfie');
+
+  submit.addEventListener('click', function(){
+    submit.disabled = true;
+    PB.api.submitVerification(files).then(function(){
+      note.textContent = 'Documents submitted. We will email you when review completes.';
+      note.style.color = '#7FD6E8';
+      note.classList.add('show');
+      paint();
+    });
+  });
+
+  PB.onChange(paint);
+  paint();
+})();
+</script>
+
+<!-- ===================================================================
+     Two-factor — real TOTP (RFC 6238), replacing the cosmetic toggle.
+     The code the user types is genuinely validated against the generated
+     secret before 2FA is enabled, so the enrolment flow is testable
+     end-to-end rather than mocked.
+
+     DEVS: secret generation and code validation must both move server-side.
+     A client-validated TOTP proves nothing to the server. Keep the flow and
+     the UI; replace PB.totp.verify() with a backend call, and store the
+     secret and backup codes hashed, never in localStorage as here.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  if(!window.PB) return;
+  var subtle = (window.crypto && window.crypto.subtle) || null;
+  var B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
+  function randomSecret(len){
+    var a = new Uint8Array(len || 20);
+    crypto.getRandomValues(a);
+    var s = '';
+    for(var i=0;i<a.length;i++) s += B32[a[i] % 32];
+    return s;
+  }
+  function b32decode(s){
+    s = s.replace(/=+$/,'').toUpperCase();
+    var bits = 0, value = 0, out = [], i;
+    for(i=0;i<s.length;i++){
+      var idx = B32.indexOf(s[i]);
+      if(idx < 0) continue;
+      value = (value << 5) | idx; bits += 5;
+      if(bits >= 8){ out.push((value >>> (bits - 8)) & 255); bits -= 8; }
+    }
+    return new Uint8Array(out);
+  }
+  // TOTP: HMAC-SHA1 over the 30-second counter, dynamically truncated to 6 digits.
+  function totp(secretB32, forCounter){
+    if(!subtle) return Promise.reject(new Error('Web Crypto unavailable'));
+    var counter = forCounter != null ? forCounter : Math.floor(Date.now() / 1000 / 30);
+    var buf = new ArrayBuffer(8);
+    var view = new DataView(buf);
+    view.setUint32(0, Math.floor(counter / 4294967296));
+    view.setUint32(4, counter >>> 0);
+    return subtle.importKey('raw', b32decode(secretB32), {name:'HMAC', hash:'SHA-1'}, false, ['sign'])
+      .then(function(k){ return subtle.sign('HMAC', k, buf); })
+      .then(function(sig){
+        var h = new Uint8Array(sig);
+        var off = h[h.length - 1] & 0x0f;
+        var bin = ((h[off] & 0x7f) << 24) | (h[off+1] << 16) | (h[off+2] << 8) | h[off+3];
+        return String(bin % 1000000).padStart(6, '0');
+      });
+  }
+  // Accept the neighbouring windows so a slightly-skewed clock still works.
+  function verify(secretB32, code){
+    code = String(code || '').trim();
+    if(!/^\d{6}$/.test(code)) return Promise.resolve(false);
+    var now = Math.floor(Date.now() / 1000 / 30);
+    return Promise.all([totp(secretB32, now-1), totp(secretB32, now), totp(secretB32, now+1)])
+      .then(function(codes){ return codes.indexOf(code) !== -1; });
+  }
+  function backupCodes(n){
+    var out = [];
+    for(var i=0;i<(n||8);i++){
+      var a = new Uint8Array(4); crypto.getRandomValues(a);
+      out.push(Array.prototype.map.call(a, function(b){
+        return b.toString(16).padStart(2,'0'); }).join('').toUpperCase().replace(/(.{4})/,'$1-'));
+    }
+    return out;
+  }
+  PB.totp = { generate: totp, verify: verify, randomSecret: randomSecret, backupCodes: backupCodes };
+
+  // ---- enrolment -----------------------------------------------------
+  var pending = null;   // secret being enrolled, not yet confirmed
+  var sw = document.getElementById('ch2fa');
+  var label = document.getElementById('ch2faLabel');
+
+  function paint(){
+    if(!sw) return;
+    var on = PB.state.twofa.enabled;
+    sw.classList.toggle('on', on);
+    label.textContent = 'Two-factor · ' + (on ? 'on' : 'off');
+  }
+
+  if(sw) sw.addEventListener('click', function(){
+    if(PB.state.twofa.enabled){
+      if(!confirm('Turn off two-factor?\n\nWithdrawals will no longer require a code.')) return;
+      PB.api.disable2fa().then(paint);
+      return;
+    }
+    pending = randomSecret(20);
+    document.getElementById('tfaSecret').textContent = pending.replace(/(.{4})/g,'$1 ').trim();
+    var user = (PB.state.user && (PB.state.user.email || PB.state.user.id)) || 'patient';
+    // The otpauth URI a QR would encode — devs render this as a QR.
+    document.getElementById('tfaQrMount').dataset.otpauth =
+      'otpauth://totp/pain.bet:' + encodeURIComponent(user) + '?secret=' + pending + '&issuer=pain.bet';
+    document.getElementById('tfaStep1').hidden = false;
+    document.getElementById('tfaStep2').hidden = true;
+    document.getElementById('tfaCode').value = '';
+    document.getElementById('tfaErr').hidden = true;
+    if(typeof openModal === 'function') openModal('tfa-modal');
+  });
+
+  var copy = document.getElementById('tfaCopy');
+  if(copy) copy.addEventListener('click', function(){
+    if(!pending) return;
+    var done = function(){ copy.textContent = 'Copied';
+      setTimeout(function(){ copy.textContent = 'Copy'; }, 1500); };
+    if(navigator.clipboard) navigator.clipboard.writeText(pending).then(done, done); else done();
+  });
+
+  var confirmBtn = document.getElementById('tfaConfirm');
+  if(confirmBtn) confirmBtn.addEventListener('click', function(){
+    var code = document.getElementById('tfaCode').value;
+    var err = document.getElementById('tfaErr');
+    confirmBtn.disabled = true;
+    verify(pending, code).then(function(ok){
+      confirmBtn.disabled = false;
+      if(!ok){
+        err.hidden = false;
+        err.textContent = 'That code is not right. Check the clock on your phone and try the current code.';
+        return;
+      }
+      var codes = backupCodes(8);
+      PB.api.enable2fa(pending, codes).then(function(){
+        document.getElementById('tfaBackup').innerHTML =
+          codes.map(function(c){ return '<code>' + c + '</code>'; }).join('');
+        document.getElementById('tfaStep1').hidden = true;
+        document.getElementById('tfaStep2').hidden = false;
+        paint();
+      });
+    });
+  });
+
+  var finish = document.getElementById('tfaFinish');
+  if(finish) finish.addEventListener('click', function(){
+    if(typeof closeModal === 'function') closeModal('tfa-modal');
+  });
+
+  // ---- challenge (used by withdrawal) --------------------------------
+  var resolver = null;
+  PB.challenge2fa = function(why){
+    if(!PB.state.twofa.enabled) return Promise.resolve(false);
+    document.getElementById('tfaChallengeCode').value = '';
+    document.getElementById('tfaChallengeErr').hidden = true;
+    if(why) document.getElementById('tfaChallengeWhy').textContent = why;
+    if(typeof openModal === 'function') openModal('tfa-challenge');
+    return new Promise(function(res){ resolver = res; });
+  };
+  var chGo = document.getElementById('tfaChallengeGo');
+  if(chGo) chGo.addEventListener('click', function(){
+    var code = document.getElementById('tfaChallengeCode').value;
+    var err = document.getElementById('tfaChallengeErr');
+    var backups = PB.state.twofa.backupCodes || [];
+    var asBackup = backups.indexOf(String(code).trim().toUpperCase()) !== -1;
+    chGo.disabled = true;
+    (asBackup ? Promise.resolve(true) : verify(PB.state.twofa.secret, code)).then(function(ok){
+      chGo.disabled = false;
+      if(!ok){
+        err.hidden = false; err.textContent = 'Incorrect code.';
+        return;
+      }
+      if(asBackup){
+        PB.state.twofa.backupCodes = backups.filter(function(c){
+          return c !== String(code).trim().toUpperCase(); });
+      }
+      if(typeof closeModal === 'function') closeModal('tfa-challenge');
+      if(resolver){ resolver(true); resolver = null; }
+    });
+  });
+
+  PB.onChange(paint);
+  paint();
 })();
 </script>
 
