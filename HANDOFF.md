@@ -1,13 +1,13 @@
 # pain.bet — Session Handoff
 
-_Last updated: 2026-07-29. Hand this file to a new chat to continue work with full context._
+_Last updated: 2026-08-01. Hand this file to a new chat to continue work with full context._
 
 ## What this project is
 
 **pain.bet** is a crypto-casino concept site. It is a **single-file static site**: everything (markup, CSS, JS) lives in **`index.html`** at the repo root (~2.1 MB, mostly inline base64 image/video assets). It is deployed via **GitHub Pages** from `main`. No build step, no framework — plain HTML/CSS/vanilla JS.
 
 - **Repo:** `Odds0ckx/painbet`
-- **Working branch:** `claude/handoff-documentation-review-vm3mvf` (all work happens here; see Git workflow below)
+- **Working branch:** `claude/design-system-doc` (open as PR #101 as of this handoff — see Git workflow below; the older `claude/handoff-documentation-review-vm3mvf` is merged history, don't reuse it)
 - **Default branch:** `main`
 - **Live URL:** `https://odds0ckx.github.io/painbet/`
 
@@ -22,6 +22,7 @@ Two page systems coexist in the same file:
 - `painbet-arcade.html` — The Arcade's 9 playable Originals, loaded via iframe (`?embed=1`) from the "Arcade" nav. Has its own `:root` token set; was restyled this session to match the main site (see changelog).
 - `painbet-paintracker.html` — PainTracker drawer content, loaded via iframe (`?embed=1`).
 - `painbet-synapse.html`, `concepts-pk-anesthesia.html`, `painbet-intake-11-v2.html`, `painbet-intake-scroll.html`, `painbet-design-system.html` — older standalone concept pages, not wired into the live site.
+- `painbet-design-system-v2.html` — **new (this handoff, PR #101).** The real design-system reference doc, built per `DESIGN_SYSTEM_PROMPT.md` from `USER_JOURNEYS.md` + `index.html` via the Hallmark skill: full component/modal/flow inventory, resolved token conflicts, WCAG contrast audit, responsive down to 390px. `painbet-design-system.html` (no `-v2`) is a different, older artifact — a raw Figma-export extraction — left untouched per the never-delete-overwrite rule. Open in a browser directly, no build step.
 - `index-depreciated.html` — the pre-mockup version of the site (kept for reference; had the neuron WebGL sign-in cinematic that got ported back into the new `index.html`).
 
 ## Brand rules (non-negotiable — apply to everything)
@@ -74,6 +75,24 @@ Starting point: user uploaded a newer, more complete mockup file (`painbet_brand
 11. **Mobile menu was fully broken, then redesigned** (PR #92, #93) — discovered the hamburger was `display:none` on mobile with nothing replacing it, AND all 5 bottom nav links were dead placeholders: **the entire sidebar (Slots, Promotions, Threshold Raid, PainKillers, Anesthesia, The Chart, Affiliate, Triage, Sports…) was unreachable on mobile.** Built a slide-in drawer + wired the bottom nav (PR #92), added a Sports entry point (also PR #92). Then, per follow-up feedback that a plain-text "Sports betting" link didn't read as a control, replaced the hamburger entirely with the Casino/Sports segmented toggle described in Architecture notes above (PR #93) — the drawer is still there, just now opened via "More" instead of a hamburger icon.
 12. **Written report delivered as an Artifact** — a build-log style document explaining everything found broken/fixed vs. the raw mockup, for the user to show why the rebuild took as long as it did. Not part of the codebase; mentioned here in case a similar report is wanted for this later batch of work (items 1–11 above, i.e. the mobile-focused pass) — it wasn't generated for that half yet.
 
+## Session changelog (2026-08-01, this thread, PR #101)
+
+Starting point: user asked to resume "the design system task" — `DESIGN_SYSTEM_PROMPT.md` and `USER_JOURNEYS.md` had been added in PR #100 but the actual generation was never run.
+
+1. **Generated `painbet-design-system-v2.html`** via a background agent running the Documents-scoped Hallmark skill (`Documents:hallmark`), reading `USER_JOURNEYS.md` + `index.html` as spec/ground-truth. Took three session-limit/stream-stall interruptions to complete (resumed each time from the same agent transcript, not restarted) — final file is 179KB, one self-contained page. Covers: foundations with real WCAG contrast numbers, every §11 component in every interaction state, all 15 modals (+1 undocumented one found in code) with bottom-sheet decisions, nav/layout, journeys J1–J23 as flow diagrams including the full gate-stack and a dedicated blocked-states section, breakpoints consolidated 12→4/5, content/voice rules, a full copyable token table.
+2. **Resolved real token conflicts** found in the live code, documented inline with rationale rather than silently picked: duplicate `--red` values (`#e0163c` vs `#E10600`), `--r-lg` (16px vs 18px), `--bg` token vs the actual visible `#101114` ground colour, `--card`/`--glass` overlap.
+3. **Local review caught a real bug** (Playwright, desktop 1440px + mobile 390px) before anything was shipped: `.doc-card{overflow:hidden}` was silently clipping wide component demos (topbar, sidebar) on mobile — the search box and sign-in button were invisible, not just visually cramped. Fixed by adding `overflow-x:auto` to `.doc-demo` so wide demos scroll within their own card instead of being clipped. Re-verified: mobile `body.scrollWidth` now matches viewport exactly (was 706px against a 390px viewport before the fix).
+4. **Opened PR #101** (`claude/design-system-doc` → `main`), still **open, not merged** as of this handoff.
+5. **Walked the doc's own "Open questions" section with the user and got real decisions**, then pushed a second commit recording them in the doc itself (so a future session doesn't re-litigate):
+   - Drops promo dead end → confirmed, stays a documented dead end, no page planned
+   - Sign-in → account routing → confirmed, stays on current page, no post-auth redirect
+   - Demo mode → left unresolved, not currently planned
+   - PainKillers redemption → left intentionally undefined pending a loyalty-economy decision
+   - Support escalation → confirmed leave as-is, blocked on support tooling that doesn't exist yet
+   - Hover-red button contrast (3.74:1, below 4.5:1 body-text AA) → confirmed gap accepted, treated as large text (clears 3:1)
+   - Mobile balance pill wrap → confirmed leave as-is, cosmetic only
+   - Breakpoint consolidation → not actually a question; already correctly scoped in the doc as future engineering work, not a completed migration
+
 ## Known gaps / things intentionally left alone
 
 - **`drops` promo has no destination page.** Its Go button just closes the modal — there's genuinely no "Dispensary/Drops" feature page built anywhere in the site. Either build one or leave as-is; not treated as a bug.
@@ -93,6 +112,7 @@ Starting point: user uploaded a newer, more complete mockup file (`painbet_brand
 
 ## Current state at handoff
 
-- Working tree clean. Branch `claude/handoff-documentation-review-vm3mvf` currently sits exactly at `origin/main` (PR #93 merged, no unmerged local commits) as of this handoff.
-- No open PRs, no open tasks. This `HANDOFF.md` update itself is the only uncommitted change — commit and push it (new PR, per standing instruction) if you want it tracked on `main`.
-- Local dev loop used throughout: `python3 -m http.server 8931` from the repo root, Playwright via `/opt/node22/lib/node_modules/playwright`, Chromium at `/opt/pw-browsers/chromium`.
+- **PR #101 is open, not merged.** Branch `claude/design-system-doc`, 3 commits: add `painbet-design-system-v2.html`, record the open-questions decisions, this `HANDOFF.md` update. Check `gh pr view 101 --json state,mergedAt` before assuming it's live — the repo owner tends to merge fast but it may still be sitting there.
+- No other open PRs, no open tasks. Nothing else uncommitted beyond what's on this branch.
+- `index.html` (the live site) was **not touched** this session — this was a documentation-only pass. No changes to verify against the live URL.
+- Local dev loop used this session: `python3 -m http.server 8093` from the `July 2026` parent folder (matches the "Painbet July" launch config), Playwright via the Homebrew `/usr/local/bin/python3` (not the sandboxed node/playwright path used in some earlier sessions), Chromium via `channel='chrome'`.
