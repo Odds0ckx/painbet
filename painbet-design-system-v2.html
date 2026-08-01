@@ -2167,35 +2167,35 @@ box-shadow: 0 14px 34px rgba(0,0,0,.55),
 <section class="doc-section" id="open-questions">
   <div class="doc-eyebrow">09 Appendix</div>
   <h2 class="doc-h2">Open questions</h2>
-  <p class="doc-p">Genuinely ambiguous items the source material left unresolved. These are flagged, not answered — several are business decisions, not design ones.</p>
+  <p class="doc-p">Items the source material left genuinely ambiguous, reviewed with the client on 2026-08-01. Most are confirmed "leave as-is" — recorded here as decisions, not left as open ambiguity, so a future pass doesn't re-litigate them.</p>
   <div class="doc-grid g2">
     <div class="doc-card"><div class="doc-card-body">
-      <div class="doc-h4" style="margin-top:0">Drops promo dead end</div>
-      <p class="doc-p" style="margin-bottom:0">HANDOFF.md confirms the <code>drops</code> promo's Go button just closes the modal — no Dispensary/Drops page exists anywhere in the site. Not a bug, but not designed here either: building a destination page would be inventing a feature, not documenting one.</p>
+      <div class="doc-h4" style="margin-top:0">Drops promo dead end <span class="tag" style="color:var(--success)">Decided</span></div>
+      <p class="doc-p" style="margin-bottom:0">HANDOFF.md confirms the <code>drops</code> promo's Go button just closes the modal — no Dispensary/Drops page exists anywhere in the site. <b>Confirmed 2026-08-01: leave as a documented dead end.</b> No page is planned; building one here would be inventing a feature, not documenting one.</p>
     </div></div>
     <div class="doc-card"><div class="doc-card-body">
-      <div class="doc-h4" style="margin-top:0">Sign-in → account routing gap</div>
-      <p class="doc-p" style="margin-bottom:0">HANDOFF.md notes <code>markSignedIn()</code>'s topbar swap has never been re-verified against The Chart's current build — whether sign-in should route somewhere specific post-auth is an open question from the original team, not something this document can settle without a product decision.</p>
+      <div class="doc-h4" style="margin-top:0">Sign-in → account routing <span class="tag" style="color:var(--success)">Decided</span></div>
+      <p class="doc-p" style="margin-bottom:0">HANDOFF.md notes <code>markSignedIn()</code>'s topbar swap was never re-verified against a specific post-auth destination. <b>Confirmed 2026-08-01: stays on the current page.</b> Sign-in swaps the topbar button for the wallet chip only — no redirect to The Chart or any other view.</p>
     </div></div>
     <div class="doc-card"><div class="doc-card-body">
-      <div class="doc-h4" style="margin-top:0">Demo mode</div>
-      <p class="doc-p" style="margin-bottom:0">J1 and the Game launch modal both flag demo mode as unresolved. If it ships, it needs a persistent DEMO marker and must never touch balance, loyalty or history — a constraint stated here, not a shipped design.</p>
+      <div class="doc-h4" style="margin-top:0">Demo mode <span class="tag" style="color:var(--warning)">Left unresolved</span></div>
+      <p class="doc-p" style="margin-bottom:0">J1 and the Game launch modal both flag demo mode as unresolved. <b>Confirmed 2026-08-01: left unresolved, not currently planned.</b> If it's ever built, the constraint stands — persistent DEMO marker, must never touch balance, loyalty or history.</p>
     </div></div>
     <div class="doc-card"><div class="doc-card-body">
-      <div class="doc-h4" style="margin-top:0">PainKillers redemption</div>
-      <p class="doc-p" style="margin-bottom:0">PK accrue with no spend surface. A currency that only accumulates isn't a currency yet — this is a product/economy decision (what does PK buy, at what rate) that a design system can't invent on its behalf.</p>
+      <div class="doc-h4" style="margin-top:0">PainKillers redemption <span class="tag" style="color:var(--warning)">Left unresolved</span></div>
+      <p class="doc-p" style="margin-bottom:0">PK accrue with no spend surface. <b>Confirmed 2026-08-01: left intentionally undefined.</b> What PK buys and at what rate is a loyalty-economy decision, not something a design system should invent — revisit once that decision exists.</p>
     </div></div>
     <div class="doc-card"><div class="doc-card-body">
-      <div class="doc-h4" style="margin-top:0">Support escalation</div>
-      <p class="doc-p" style="margin-bottom:0">No ticket history or escalation path exists (J23). A user with an ongoing issue has nowhere to check status — flagged, not designed, since it depends on what support tooling actually exists behind Triage.</p>
+      <div class="doc-h4" style="margin-top:0">Support escalation <span class="tag" style="color:var(--success)">Decided</span></div>
+      <p class="doc-p" style="margin-bottom:0">No ticket history or escalation path exists (J23). <b>Confirmed 2026-08-01: leave as-is.</b> Building one depends on support tooling that doesn't exist yet behind Triage — not a call this document should make blind.</p>
     </div></div>
     <div class="doc-card"><div class="doc-card-body">
-      <div class="doc-h4" style="margin-top:0">Contrast on the hover-red button state</div>
-      <p class="doc-p" style="margin-bottom:0">White text on <code>--redhi</code> measures 3.74:1 — below 4.5:1, though the small bold uppercase button text sits under the "large text" AA threshold either way. A product call is needed: lighten the hover red, or accept the gap on a transient two-state interaction. See §01 Colour.</p>
+      <div class="doc-h4" style="margin-top:0">Hover-red button contrast <span class="tag" style="color:var(--success)">Decided</span></div>
+      <p class="doc-p" style="margin-bottom:0">White text on <code>--redhi</code> measures 3.74:1 — below 4.5:1 body-text AA, though the bold uppercase button label clears the 3:1 large-text threshold. <b>Confirmed 2026-08-01: gap accepted.</b> It's a transient two-state hover interaction, reasonably classed as large text — no token change. See §01 Colour.</p>
     </div></div>
     <div class="doc-card"><div class="doc-card-body">
-      <div class="doc-h4" style="margin-top:0">Mobile balance pill wrap</div>
-      <p class="doc-p" style="margin-bottom:0">HANDOFF.md notes the 147px balance pill ("USDT 2,840 · PK 1,250") sometimes wraps to two lines on narrow phones — not overflow, not broken, just not tight. Left as a known minor gap rather than silently "fixed" without seeing it rendered.</p>
+      <div class="doc-h4" style="margin-top:0">Mobile balance pill wrap <span class="tag" style="color:var(--success)">Decided</span></div>
+      <p class="doc-p" style="margin-bottom:0">HANDOFF.md notes the 147px balance pill ("USDT 2,840 · PK 1,250") sometimes wraps to two lines on narrow phones. <b>Confirmed 2026-08-01: leave as-is.</b> Cosmetic, not broken — not worth a layout change right now.</p>
     </div></div>
     <div class="doc-card"><div class="doc-card-body">
       <div class="doc-h4" style="margin-top:0">Breakpoint consolidation is a target, not a completed migration</div>
