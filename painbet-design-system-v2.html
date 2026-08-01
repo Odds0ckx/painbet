@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en" data-doc-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAIN.BET — Design System Reference v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · macrostructure: Long Document (sticky side-rail reference variant) · genre: system-managed (existing brand, not catalog)
+ * theme: pain.bet native — arterial red #e0163c + morphine blue #7FD6E8, preserved from index.html, not a catalog pick
+ * pre-emit critique: P5 H5 E5 S5 R5 V4
+ * This is a documentation deliverable, not a marketing page. Component demos below use the product's REAL class names
+ * (.btn, .tile, .pill, .kyc-*, .rg-*, .odds, .modal-bg …) lifted and consolidated from index.html so the code shown here
+ * is directly copyable into the live build. Doc chrome (sidebar, headers, code blocks) uses separate doc- prefixed
+ * classes so nothing collides with the product classes being documented.
+ */
+
+/* ============================================================
+   1. RESOLVED PRODUCT TOKENS — canonical, consolidated from index.html.
+   Where index.html defines a token twice with different values (see §14 of
+   USER_JOURNEYS.md and the Foundations → Colour → Resolved conflicts table
+   below for the reasoning), ONE value is chosen here as canonical and the
+   legacy value is documented, not silently dropped.
+   ============================================================ */
+:root{
+  /* brand */
+  --blood:#e0163c;          /* canonical. legacy dupe was --red:#E10600 in a second global :root — retired */
+  --redhi:#ff2450;           /* canonical hover/emphasis red. legacy dupe #FF3B33 in .v5m — retired */
+  --red-deep:#8f0e26;        /* canonical gradient anchor. legacy dupe #520703 — retired */
+  --red-dim:#a01030;
+  --blue:#7FD6E8;            /* morphine blue — consistent everywhere already, no conflict */
+  --blue-dim:#16333a;
+
+  /* surface / ground */
+  --bg:#101114;              /* canonical page ground — this is the ACTUAL visible bg (.ambient in index.html),
+                                 not the unused --bg:#07080a declared at the top :root. See HANDOFF.md. */
+  --bg-deep:#07080a;         /* legacy/unused root value, kept only as the deepest shadow anchor */
+  --glass:rgba(15,17,22,.70);        /* canonical surface. --card/--card-2/--card-hi below are deprecated aliases */
+  --glass-2:rgba(255,255,255,.05);   /* deprecated-alias target for --card-2 */
+  --glass-hi:rgba(255,255,255,.07);  /* deprecated-alias target for --card-hi, hover-lit surface */
+  --glass-border:rgba(255,255,255,.10);
+  --veil:rgba(0,0,0,.42);
+  --card:var(--glass);       /* legacy v5m alias — migrate call sites to --glass */
+  --card-2:var(--glass-2);   /* legacy v5m alias */
+  --card-hi:var(--glass-hi); /* legacy v5m alias */
+
+  /* text */
+  --ink:#e8eaee;
+  --ink-dim:#9aa0aa;
+  --ink-lo:#6b7078;          /* tertiary/meta only — fails 4.5:1, never for body copy (see Foundations → Colour) */
+  --ink-hi:#ffffff;
+  --white:#fff;
+
+  /* semantic (formalised here — untokenised in the live build today) */
+  --success:#3ecf6a;
+  --warning:#e0a13e;
+  --danger:var(--blood);     /* danger reuses arterial red by design — risk and danger share a hue family */
+  /* --info intentionally has NO dedicated hue. Colour is reserved for money/risk semantics in this system;
+     info banners use a neutral glass surface + icon rather than invent a third chromatic accent that could
+     be confused with morphine blue. This is a resolution made by this document, not a value pulled from code. */
+
+  /* type */
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo','Inter',-apple-system,system-ui,sans-serif;
+  --mono:'JetBrains Mono','SF Mono',ui-monospace,monospace;
+
+  /* radii — resolved: --r-lg was 18px inside .v5m, 16px at global :root (see Foundations → Radii).
+     16px is canonical; --tile-r stays a deliberate, separate, larger exception for game tiles/hero art only. */
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:999px; --tile-r:18px;
+
+  /* elevation */
+  --shadow:0 10px 28px rgba(0,0,0,.35);
+  --shadow-lg:0 18px 44px rgba(0,0,0,.5);
+
+  /* motion */
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --ease-in:cubic-bezier(.64,0,.78,0);
+  --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --dur-fast:120ms; --dur-base:200ms; --dur-slow:320ms; --dur-drawer:380ms;
+
+  /* layout */
+  --nav-w:240px;
+
+  /* 4pt spacing scale (introduced by this system — the live build uses ad hoc px values throughout) */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-7:32px; --space-8:40px; --space-9:48px; --space-10:64px; --space-11:96px;
+}
+
+/* ============================================================
+   2. DOC CHROME TOKENS — separate namespace, theme-aware (light + dark),
+   independent of the product tokens above. The product is dark-only by
+   design; this reference document is styled to stay legible either way.
+   ============================================================ */
+:root{
+  --doc-bg:#f4f2ec; --doc-surface:#ffffff; --doc-surface-2:#ebe8e0; --doc-border:#d8d4c8;
+  --doc-text:#17181a; --doc-text-dim:#5b5d62; --doc-accent:#c21238; --doc-accent-2:#0f7c93;
+  --doc-code-bg:#1a1b1e; --doc-code-text:#e8eaee;
+}
+:root[data-doc-theme="dark"]{
+  --doc-bg:#0b0c0e; --doc-surface:#141519; --doc-surface-2:#1b1d22; --doc-border:#2a2c32;
+  --doc-text:#eceef1; --doc-text-dim:#9aa0aa; --doc-accent:#ff5470; --doc-accent-2:#7FD6E8;
+  --doc-code-bg:#0b0c0e; --doc-code-text:#e8eaee;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-doc-theme="dark"]){ /* system light already matches default block above */ }
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:clip;background:var(--doc-bg)}
+body{color:var(--doc-text);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5;font-size:15px}
+h1,h2,h3,h4{font-family:var(--disp);text-transform:uppercase;letter-spacing:.01em;overflow-wrap:anywhere;min-width:0}
+a{color:inherit}
+code,pre{font-family:var(--mono)}
+img{max-width:100%}
+
+/* ---------- doc shell ---------- */
+.doc-topbar{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:16px;height:56px;padding:0 20px;
+  background:color-mix(in srgb, var(--doc-surface) 92%, transparent);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--doc-border)}
+.doc-brand{font-family:var(--disp);font-size:15px;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.doc-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--blood);box-shadow:0 0 10px rgba(224,22,60,.7)}
+.doc-brand small{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--doc-text-dim);text-transform:uppercase;font-weight:600}
+.doc-topbar .grow{flex:1}
+.doc-topbar .doc-meta{font-family:var(--mono);font-size:10.5px;color:var(--doc-text-dim);letter-spacing:.04em;display:none}
+@media(min-width:760px){.doc-topbar .doc-meta{display:block}}
+.doc-themebtn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--doc-surface-2);border:1px solid var(--doc-border);border-radius:999px;color:var(--doc-text);
+  padding:8px 14px;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out)}
+.doc-themebtn:hover{border-color:var(--doc-accent)}
+.doc-themebtn:focus-visible{outline:2px solid var(--doc-accent-2);outline-offset:2px}
+
+.doc-shell{display:grid;grid-template-columns:264px 1fr;max-width:1440px;margin:0 auto}
+.doc-side{position:sticky;top:56px;align-self:start;height:calc(100vh - 56px);overflow-y:auto;
+  padding:22px 14px 60px;border-right:1px solid var(--doc-border)}
+.doc-side::-webkit-scrollbar{width:8px}
+.doc-side::-webkit-scrollbar-thumb{background:var(--doc-border);border-radius:8px}
+.doc-nav-grp{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--doc-text-dim);margin:20px 10px 8px}
+.doc-nav-grp:first-child{margin-top:0}
+.doc-side a{display:block;padding:6px 10px;border-radius:8px;font-size:12.5px;color:var(--doc-text-dim);
+  text-decoration:none;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.doc-side a:hover{color:var(--doc-text);background:var(--doc-surface-2)}
+.doc-side a.active{color:var(--doc-accent);background:var(--doc-surface-2);font-weight:600}
+.doc-side a:focus-visible{outline:2px solid var(--doc-accent-2);outline-offset:-2px}
+
+.doc-main{padding:40px 40px 140px;min-width:0}
+.doc-section{scroll-margin-top:76px;padding-top:8px;margin-bottom:88px}
+.doc-section:first-child{margin-top:0}
+.doc-eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--doc-accent);margin-bottom:10px}
+.doc-h1{font-size:clamp(28px,4vw,44px);line-height:1.02;margin-bottom:14px}
+.doc-h2{font-size:clamp(22px,3vw,30px);line-height:1.05;margin:52px 0 16px;padding-top:28px;border-top:1px solid var(--doc-border)}
+.doc-h2:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.doc-h3{font-size:16px;letter-spacing:.02em;margin:34px 0 12px;color:var(--doc-text)}
+.doc-h4{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--doc-text-dim);margin:22px 0 10px}
+.doc-lead{font-size:16px;color:var(--doc-text-dim);max-width:74ch;line-height:1.6}
+.doc-p{font-size:14px;color:var(--doc-text-dim);max-width:78ch;line-height:1.7;margin-bottom:14px}
+.doc-p b, .doc-p strong{color:var(--doc-text);font-weight:700}
+.doc-p code{background:var(--doc-surface-2);border:1px solid var(--doc-border);border-radius:5px;padding:1px 6px;font-size:12.5px}
+
+.doc-callout{border-radius:12px;padding:16px 18px;margin:18px 0;font-size:13px;line-height:1.65;border:1px solid;max-width:78ch}
+.doc-callout b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+.doc-callout.info{background:color-mix(in srgb, var(--doc-accent-2) 10%, transparent);border-color:color-mix(in srgb, var(--doc-accent-2) 45%, transparent);color:var(--doc-text)}
+.doc-callout.warn{background:rgba(224,161,62,.1);border-color:rgba(224,161,62,.42);color:var(--doc-text)}
+.doc-callout.open{background:rgba(224,22,60,.07);border-color:rgba(224,22,60,.35);color:var(--doc-text)}
+.doc-callout.code-wins{background:var(--doc-surface-2);border-color:var(--doc-border)}
+
+.doc-grid{display:grid;gap:20px}
+.doc-grid.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.doc-grid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.doc-grid.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.doc-grid.g2,.doc-grid.g3,.doc-grid.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.doc-grid.g2,.doc-grid.g3,.doc-grid.g4{grid-template-columns:1fr}}
+
+.doc-card{background:var(--doc-surface);border:1px solid var(--doc-border);border-radius:14px;overflow:hidden}
+.doc-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--doc-border);flex-wrap:wrap}
+.doc-card-head h4{font-family:var(--sans);font-size:14px;font-weight:700;text-transform:none;letter-spacing:0;color:var(--doc-text)}
+.doc-card-head .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--doc-text-dim)}
+.doc-card-body{padding:18px}
+
+/* stage where real product components render, always forced dark to match production regardless of doc theme */
+.doc-demo{background:var(--bg);border-radius:10px;padding:26px 22px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  position:relative;isolation:isolate;color:var(--ink);overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* desktop-shaped components (topbar, sidebar, marquee) can't meaningfully reflow at 390px —
+   scroll inside the card instead of letting .doc-card{overflow:hidden} silently clip real content */
+.doc-demo>.dtopbar,.doc-demo>.dside{flex:0 0 auto;min-width:max-content}
+.doc-demo.col{flex-direction:column;align-items:stretch}
+.doc-demo.dark-note::after{content:'rendered on production dark ground';position:absolute;right:10px;bottom:6px;
+  font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.22)}
+.doc-demo-label{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--doc-text-dim);
+  width:100%;margin-bottom:-4px}
+
+.doc-states{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px 16px;background:var(--bg);
+  border-radius:10px;padding:22px}
+.doc-state-cell{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.doc-state-cell .lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.42)}
+
+.doc-code-wrap{position:relative;border-top:1px solid var(--doc-border)}
+.doc-code-wrap pre{margin:0;padding:16px 18px;background:var(--doc-code-bg);color:var(--doc-code-text);
+  overflow-x:auto;font-size:12px;line-height:1.6;max-height:340px}
+.doc-copy{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#e8eaee;border-radius:6px;padding:5px 9px;cursor:pointer}
+.doc-copy:hover{background:rgba(255,255,255,.16)}
+.doc-copy:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.doc-copy.copied{background:var(--success);border-color:var(--success);color:#06210f}
+
+.doc-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0 22px}
+.doc-table th,.doc-table td{padding:10px 12px;border-bottom:1px solid var(--doc-border);text-align:left;vertical-align:top}
+.doc-table th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--doc-text-dim);font-weight:700}
+.doc-table td.num{font-family:var(--mono);text-align:right}
+.doc-table tr:last-child td{border-bottom:0}
+.doc-table-wrap{overflow-x:auto;max-width:100%}
+
+.doc-swatch-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--doc-border)}
+.doc-swatch-row:last-child{border-bottom:0}
+.doc-swatch{width:40px;height:40px;border-radius:9px;flex:none;border:1px solid var(--doc-border);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.doc-swatch-meta{min-width:0}
+.doc-swatch-meta b{display:block;font-family:var(--mono);font-size:12px;color:var(--doc-text)}
+.doc-swatch-meta span{display:block;font-size:11.5px;color:var(--doc-text-dim);margin-top:2px}
+.doc-contrast{margin-left:auto;font-family:var(--mono);font-size:11px;text-align:right;flex:none}
+.doc-contrast b{display:block;font-size:13px}
+.doc-contrast.pass b{color:#1a9a55}
+.doc-contrast.fail b{color:var(--doc-accent)}
+:root[data-doc-theme="dark"] .doc-contrast.pass b{color:#4fe08a}
+
+.doc-flow{display:flex;flex-direction:column;gap:0;background:var(--bg);border-radius:12px;padding:26px 22px;color:var(--ink)}
+.doc-flow-row{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+.doc-fnode{background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;padding:12px 14px;font-size:12px;
+  min-width:150px;max-width:210px}
+.doc-fnode b{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px}
+.doc-fnode.decision{background:rgba(224,161,62,.1);border-color:rgba(224,161,62,.4)}
+.doc-fnode.fail{background:rgba(224,22,60,.1);border-color:rgba(224,22,60,.4)}
+.doc-fnode.ok{background:rgba(62,207,106,.1);border-color:rgba(62,207,106,.4)}
+.doc-fnode.terminal{background:rgba(127,214,232,.1);border-color:rgba(127,214,232,.4)}
+.doc-farrow{display:flex;align-items:center;justify-content:center;min-width:34px;color:var(--ink-dim);font-size:16px}
+.doc-fstep{display:flex;flex-direction:column;gap:6px;background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:10px;padding:12px 14px;font-size:12px;flex:1;min-width:170px}
+.doc-fstep .n{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--redhi)}
+
+.doc-list{margin:0 0 16px 18px;color:var(--doc-text-dim);font-size:13.5px;line-height:1.75}
+.doc-list li b{color:var(--doc-text)}
+
+.doc-legend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:11.5px;color:var(--doc-text-dim);margin:6px 0 18px}
+.doc-legend span{display:inline-flex;align-items:center;gap:6px}
+.doc-legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+.doc-back-top{position:fixed;right:24px;bottom:24px;z-index:70;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;background:var(--doc-surface);border:1px solid var(--doc-border);border-radius:999px;
+  color:var(--doc-text);padding:10px 16px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;
+  pointer-events:none;transition:opacity var(--dur-base) var(--ease-out)}
+.doc-back-top.show{opacity:1;pointer-events:auto}
+
+@media(max-width:900px){
+  .doc-shell{grid-template-columns:1fr}
+  .doc-side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--doc-border);padding:16px}
+  .doc-main{padding:28px 20px 100px}
+}
+@media(max-width:600px){
+  .doc-main{padding:22px 14px 90px}
+  .doc-demo,.doc-states,.doc-flow{padding:16px 14px}
+}
+</style>
+<style id="product-css">
+/* ============================================================
+   PRODUCT COMPONENT CSS — consolidated from index.html, resolved onto the
+   canonical tokens above. Class names are unchanged from the live build so
+   this block is directly portable back into index.html/tokens.css.
+   Part A: Actions · Inputs · Surfaces · Data
+   ============================================================ */
+
+/* ---- Actions ---- */
+.btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border-radius:var(--r-md);
+  padding:10px 16px;cursor:pointer;border:1px solid rgba(255,255,255,.14);background:transparent;color:var(--ink);
+  transition:background var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out),transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-base) var(--ease-out);
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn:hover{background:rgba(255,255,255,.06)}
+.btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn:active{transform:translateY(1px)}
+.btn.red{background:var(--blood);border-color:var(--blood);color:#fff;box-shadow:0 6px 18px rgba(224,22,60,.3)}
+.btn.red:hover{background:var(--redhi);border-color:var(--redhi);box-shadow:0 10px 24px rgba(224,22,60,.42)}
+.btn.blue{background:var(--blue);border-color:var(--blue);color:#101314;box-shadow:0 6px 18px rgba(127,214,232,.25)}
+.btn.blue:hover{background:#a5e4f1}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-dim)}
+.btn.ghost:hover{color:var(--ink);background:rgba(255,255,255,.05)}
+.btn.danger{background:transparent;border-color:rgba(224,22,60,.45);color:#ff8fa3}
+.btn.danger:hover{background:rgba(224,22,60,.16);border-color:var(--blood);color:#fff}
+.btn[disabled],.btn.is-disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.btn.is-loading{color:transparent;position:relative;pointer-events:none}
+.btn.is-loading::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:spin .7s linear infinite}
+.btn.red.is-loading::after{border-color:rgba(255,255,255,.4);border-top-color:#fff}
+.btn.is-success{background:var(--success);border-color:var(--success);color:#06210f}
+.btn.is-error{background:transparent;border-color:var(--blood);color:#ff8fa3}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:var(--r-pill);
+  padding:8px 14px;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.chip:hover{border-color:rgba(255,255,255,.34);color:#fff}
+.chip:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.chip.on,.chip.active{background:var(--blood);border-color:var(--blood);color:#fff}
+.chip.on.blue,.chip.active.blue{background:rgba(127,214,232,.14);border-color:var(--blue);color:var(--blue)}
+.chip[disabled]{opacity:.4;cursor:not-allowed}
+
+.iconbtn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-pill);
+  background:var(--glass);border:1px solid var(--glass-border);color:var(--ink);cursor:pointer;
+  transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.iconbtn:hover{background:var(--blood);color:#fff;border-color:var(--blood);transform:translateY(-1px)}
+.iconbtn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.iconbtn:active{transform:translateY(0)}
+.iconbtn[disabled]{opacity:.35;pointer-events:none}
+
+.sw{position:relative;display:inline-block;width:38px;height:22px;border-radius:999px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.16);cursor:pointer;transition:background var(--dur-base) var(--ease-out);flex:none;padding:0}
+.sw i{position:absolute;top:1px;left:1px;width:18px;height:18px;border-radius:50%;background:#fff;
+  transition:transform var(--dur-base) var(--ease-out);display:block}
+.sw.on{background:var(--blood);border-color:var(--blood)}
+.sw.on i{transform:translateX(16px)}
+.sw:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.sw[disabled]{opacity:.35;pointer-events:none}
+
+.seg{display:inline-flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:3px;gap:2px}
+.seg button{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:0;background:transparent;
+  color:var(--ink-dim);padding:8px 16px;border-radius:var(--r-pill);cursor:pointer;transition:background var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out)}
+.seg button.on{background:var(--blood);color:#fff}
+.seg button:hover:not(.on){color:var(--ink)}
+.seg button:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+
+.navtabs{display:flex;gap:6px}
+.navtabs a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);
+  padding:8px 14px;border-radius:8px;text-decoration:none;transition:color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.navtabs a.on,.navtabs a:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.navtabs a:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+
+.copybtn{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);color:var(--ink-dim);
+  border-radius:8px;padding:8px 12px;cursor:pointer;transition:border-color var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out)}
+.copybtn:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.copybtn.copied{color:var(--success);border-color:var(--success)}
+.copybtn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+.filedrop{position:relative;display:block;border:1px dashed rgba(255,255,255,.2);border-radius:var(--r-md);
+  padding:18px;cursor:pointer;text-align:center;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.filedrop:hover{border-color:rgba(224,22,60,.5);background:rgba(255,255,255,.03)}
+.filedrop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.filedrop .ic{display:block;font-size:19px;color:#6b7078;margin-bottom:6px}
+.filedrop b{display:block;font-size:12.5px;color:#e8eaee}
+.filedrop i{display:block;font-style:normal;font-size:10.5px;color:#6b7078;margin-top:3px}
+.filedrop em{display:block;font-style:normal;font-family:var(--mono);font-size:10px;color:var(--blue);margin-top:7px;word-break:break-all}
+.filedrop.filled{border-style:solid;border-color:rgba(127,214,232,.5)}
+.filedrop.error{border-style:solid;border-color:rgba(224,22,60,.55)}
+.filedrop:focus-within{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---- Inputs ---- */
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+.field input,.field select{width:100%;min-width:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--r-sm);padding:11px 13px;color:var(--ink);font-family:var(--sans);font-size:13px;
+  transition:border-color var(--dur-base) var(--ease-out)}
+.field input::placeholder{color:#5b6069}
+.field input:hover,.field select:hover{border-color:rgba(255,255,255,.24)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blood)}
+.field input:focus-visible,.field select:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.field.disabled input{opacity:.4;pointer-events:none}
+.field.error input{border-color:var(--blood)}
+.field.success input{border-color:var(--success)}
+.field .hint{font-size:11px;color:var(--ink-dim);line-height:1.5}
+.field .hint.error{color:#ff8fa3}
+.field .hint.success{color:var(--success)}
+.field .unit-wrap{position:relative}
+.field .unit-wrap input{padding-right:56px}
+.field .unit-wrap .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-family:var(--mono);
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+
+.strength{height:4px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:4px;display:flex;gap:3px}
+.strength i{flex:1;display:block;background:rgba(255,255,255,.1);border-radius:2px;transition:background var(--dur-base) var(--ease-out)}
+.strength.weak i:nth-child(1){background:var(--blood)}
+.strength.fair i:nth-child(1),.strength.fair i:nth-child(2){background:var(--warning)}
+.strength.good i:nth-child(-n+3){background:var(--blue)}
+.strength.strong i{background:var(--success)}
+
+.codeentry{display:flex;gap:8px}
+.codeentry input{width:42px;height:52px;text-align:center;font-family:var(--mono);font-size:19px;letter-spacing:0;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:var(--r-sm);color:var(--ink)}
+.codeentry input:focus{outline:none;border-color:var(--blood)}
+.codeentry input.error{border-color:var(--blood);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.chk,.rad{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:13px;color:var(--ink)}
+.chk input,.rad input{appearance:none;width:18px;height:18px;border:1.5px solid rgba(255,255,255,.3);flex:none;
+  background:rgba(255,255,255,.04);cursor:pointer;position:relative;transition:border-color var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.chk input{border-radius:5px}
+.rad input{border-radius:50%}
+.chk input:checked,.rad input:checked{background:var(--blood);border-color:var(--blood)}
+.chk input:checked::after{content:'';position:absolute;left:5px;top:1px;width:5px;height:9px;border:solid #fff;
+  border-width:0 2px 2px 0;transform:rotate(45deg)}
+.rad input:checked::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
+.chk input:focus-visible,.rad input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.chk.disabled,.rad.disabled{opacity:.4;pointer-events:none}
+
+/* ---- Surfaces ---- */
+.blk{background:var(--glass);backdrop-filter:blur(12px) saturate(1.15);-webkit-backdrop-filter:blur(12px) saturate(1.15);
+  border:1px solid var(--glass-border);border-radius:var(--tile-r);padding:28px 32px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+@media(max-width:600px){.blk{padding:18px 16px}}
+
+.pscard{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r-lg);padding:20px;
+  box-shadow:var(--shadow);transition:transform var(--dur-base) var(--ease-out),box-shadow var(--dur-base) var(--ease-out)}
+.pscard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+
+.stat-tile{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r-md);padding:16px 18px}
+.stat-tile .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px}
+.stat-tile .v{font-family:var(--mono);font-size:22px;color:var(--ink);letter-spacing:-.01em}
+.stat-tile .v.blue{color:var(--blue)}
+.stat-tile .delta{font-family:var(--mono);font-size:10.5px;margin-top:6px}
+.stat-tile .delta.up{color:var(--success)}
+.stat-tile .delta.down{color:var(--blood)}
+
+.callout-band{border-radius:var(--r-md);padding:14px 18px;font-size:12.5px;line-height:1.6;border:1px solid;display:flex;gap:12px;align-items:flex-start}
+.callout-band.info{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.14);color:var(--ink-dim)}
+.callout-band.warning{background:rgba(224,161,62,.1);border-color:rgba(224,161,62,.42);color:var(--warning)}
+.callout-band.danger{background:rgba(224,22,60,.1);border-color:rgba(224,22,60,.4);color:#ff8fa3}
+.callout-band.success{background:rgba(62,207,106,.1);border-color:rgba(62,207,106,.4);color:var(--success)}
+.callout-band b{color:var(--ink)}
+
+.well{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-md);padding:16px 18px}
+
+.empty{border:1px dashed rgba(255,255,255,.18);border-radius:var(--r-md);padding:34px 20px;text-align:center;color:var(--ink-dim)}
+.empty .ic{font-size:22px;margin-bottom:10px;opacity:.5}
+.empty b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:4px}
+.empty span{font-size:12px;line-height:1.5;display:block;max-width:36ch;margin:0 auto}
+
+.skeleton{position:relative;overflow:hidden;background:rgba(255,255,255,.06);border-radius:var(--r-sm)}
+.skeleton::after{content:'';position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);animation:shimmer 1.4s infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.skeleton.text{height:12px;margin-bottom:8px}
+.skeleton.title{height:18px;width:60%;margin-bottom:10px}
+.skeleton.tile{aspect-ratio:3/4;border-radius:var(--tile-r)}
+.skeleton.row{height:44px;margin-bottom:6px}
+
+/* ---- Data ---- */
+.dtable{width:100%;border-collapse:collapse;font-size:12.5px}
+.dtable th,.dtable td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+.dtable th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);
+  font-weight:700;position:sticky;top:0;background:var(--bg)}
+.dtable td.num{font-family:var(--mono);text-align:right}
+.dtable tr:hover td{background:rgba(255,255,255,.03)}
+.dtable-wrap{overflow-x:auto;border-radius:var(--r-md);border:1px solid rgba(255,255,255,.08)}
+
+.kv-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px}
+.kv-row:last-child{border-bottom:0}
+.kv-row .k{color:var(--ink-lo);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;font-family:var(--mono)}
+.kv-row .v{color:var(--ink-hi);font-family:var(--mono)}
+.kv-row .v.blue{color:var(--blue)}
+
+.meter{height:6px;border-radius:4px;background:rgba(255,255,255,.09);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),#5bb9cf);transition:width var(--dur-slow) var(--ease-out)}
+.meter i.warn{background:linear-gradient(90deg,var(--warning),#c9871f)}
+.meter i.full{background:linear-gradient(90deg,var(--red-deep),var(--blood))}
+
+.dial{position:relative;width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:conic-gradient(var(--blood) calc(var(--pct,62)*1%),rgba(255,255,255,.08) 0)}
+.dial::before{content:'';position:absolute;inset:9px;border-radius:50%;background:var(--bg)}
+.dial b{position:relative;font-family:var(--mono);font-size:21px;color:#ff5c7c}
+.dial span{position:relative;font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim)}
+
+.ticker{overflow:hidden;white-space:nowrap;border-radius:var(--r-pill);background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);padding:9px 0}
+.ticker .track{display:inline-flex;gap:36px;white-space:nowrap;width:max-content;padding-left:22px;animation:tick 30s linear infinite}
+.ticker .item{font-family:var(--mono);font-size:11px;color:var(--ink-dim);display:inline-flex;gap:8px;align-items:center}
+.ticker .item b{color:var(--ink)}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.marquee-wrap{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);padding:12px 0}
+.marquee-row{display:inline-flex;gap:16px;animation:marquee 22s linear infinite;width:max-content}
+.marquee-wrap:hover .marquee-row{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.marquee-chip{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r-md);
+  padding:10px 18px;font-family:var(--mono);font-size:11px;color:var(--ink-dim);box-shadow:0 0 0 1px rgba(224,22,60,.18)}
+
+.sparkline{display:block}
+.sparkline path.line{fill:none;stroke:var(--blood);stroke-width:1.6;stroke-linecap:round}
+.sparkline path.fill{fill:rgba(224,22,60,.12);stroke:none}
+
+/* ============================================================
+   Part B: Status · Navigation · Overlays · Domain · Modal shell · Layout
+   ============================================================ */
+
+/* ---- Status ---- */
+.pill-status{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:var(--r-pill);border:1px solid transparent}
+.pill-status::before{content:'';width:6px;height:6px;border-radius:50%;flex:none}
+.pill-status.win{background:rgba(62,207,106,.13);color:var(--success);border-color:rgba(62,207,106,.4)}
+.pill-status.win::before{background:var(--success)}
+.pill-status.loss{background:rgba(224,22,60,.13);color:#ff6b86;border-color:rgba(224,22,60,.4)}
+.pill-status.loss::before{background:var(--blood)}
+.pill-status.pending{background:rgba(224,161,62,.14);color:var(--warning);border-color:rgba(224,161,62,.45)}
+.pill-status.pending::before{background:var(--warning);animation:pulse 1.6s infinite}
+.pill-status.deposit{background:rgba(127,214,232,.14);color:var(--blue);border-color:rgba(127,214,232,.4)}
+.pill-status.deposit::before{background:var(--blue)}
+.pill-status.withdrawal{background:rgba(127,214,232,.08);color:var(--blue);border-color:rgba(127,214,232,.28)}
+.pill-status.withdrawal::before{background:var(--blue)}
+.pill-status.confirmed{background:rgba(255,255,255,.06);color:var(--ink);border-color:rgba(255,255,255,.16)}
+.pill-status.confirmed::before{background:#fff}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.badge-tier{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;padding:4px 9px;border-radius:6px;color:#fff;background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.12)}
+.badge-tier.live{background:rgba(224,22,60,.9);border-color:transparent}
+.badge-tier.live::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse 1.6s infinite}
+.badge-tier.paying{background:rgba(224,22,60,.18);border-color:rgba(224,22,60,.5);color:#ff5c7c}
+.badge-tier.drops{background:rgba(255,171,0,.16);border-color:rgba(255,171,0,.45);color:#ffc14d}
+
+.sev-chip{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;
+  border-radius:var(--r-pill);border:1px solid}
+.sev-chip.low{color:var(--ink-dim);border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.04)}
+.sev-chip.med{color:var(--warning);border-color:rgba(224,161,62,.42);background:rgba(224,161,62,.1)}
+.sev-chip.high{color:#ff6b86;border-color:rgba(224,22,60,.4);background:rgba(224,22,60,.1)}
+
+.toast{display:flex;align-items:center;gap:12px;background:rgba(15,17,22,.96);border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--r-md);padding:13px 16px;box-shadow:var(--shadow-lg);font-size:12.5px;max-width:340px;
+  animation:toastIn var(--dur-slow) var(--ease-out)}
+.toast .ic{width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px}
+.toast.success .ic{background:rgba(62,207,106,.18);color:var(--success)}
+.toast.error .ic{background:rgba(224,22,60,.18);color:#ff6b86}
+.toast.info .ic{background:rgba(255,255,255,.1);color:var(--ink)}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.note-inline{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.55;border-radius:8px;padding:9px 12px}
+.note-inline.info{background:rgba(255,255,255,.05);color:var(--ink-dim)}
+.note-inline.error{background:rgba(224,22,60,.1);color:#ff8fa3}
+.note-inline.success{background:rgba(62,207,106,.1);color:var(--success)}
+
+.banner-email{background:linear-gradient(90deg,rgba(224,161,62,.16),rgba(224,161,62,.06));border-bottom:1px solid rgba(224,161,62,.35);
+  padding:10px 20px;display:flex;align-items:center;gap:14px;justify-content:center;font-size:12.5px;color:var(--warning);flex-wrap:wrap}
+.banner-email button{background:none;border:0;color:var(--warning);text-decoration:underline;font-family:var(--mono);
+  font-size:11px;letter-spacing:.06em;cursor:pointer}
+.banner-lock{background:#2a0a12;border-top:1px solid rgba(224,22,60,.55);padding:13px 20px;display:flex;
+  align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center;font-size:12.5px;color:#ff8fa3}
+
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--blood);display:inline-block;box-shadow:0 0 8px 2px rgba(224,22,60,.5);animation:pulse 1.6s infinite}
+.live-dot.blue{background:var(--blue);box-shadow:0 0 8px 2px rgba(127,214,232,.5)}
+
+/* ---- Navigation ---- */
+.dtopbar{display:flex;align-items:center;gap:20px;padding:0 22px;height:60px;background:rgba(9,10,13,.82);
+  backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.07);border-radius:var(--r-md) var(--r-md) 0 0}
+.dtopbar .wordmark{font-family:var(--disp);font-size:14px;letter-spacing:.02em}
+.dtopbar .wordmark b{color:var(--blood)}
+.dtopbar .grow{flex:1}
+.dsearch{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:9px;padding:8px 12px;color:var(--ink-dim);font-size:12px;min-width:170px}
+.dbal{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink);background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 12px}
+.dbal b{color:var(--blood)}
+
+.dside{background:rgba(9,10,13,.6);border-radius:var(--r-md);padding:18px 12px;min-width:200px}
+.dside .grp{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink);display:flex;align-items:center;gap:9px;margin:18px 8px 8px}
+.dside .grp:first-child{margin-top:2px}
+.dside .grp::before{content:'';width:6px;height:6px;border-radius:50%;flex:none;background:#454a52}
+.dside .grp.red::before{background:var(--blood);box-shadow:0 0 9px rgba(224,22,60,.65)}
+.dside .grp.blue::before{background:var(--blue);box-shadow:0 0 9px rgba(127,214,232,.55)}
+.dside a{display:flex;align-items:center;gap:9px;padding:9px 8px;border-radius:9px;color:var(--ink-dim);
+  text-decoration:none;font-size:12.5px;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.dside a:hover{color:var(--ink);background:rgba(255,255,255,.05)}
+.dside a.on{color:#fff;background:rgba(224,22,60,.16)}
+.dside a:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+
+.acctzone{position:relative;display:inline-block}
+.acctbtn{display:flex;align-items:center;gap:8px;font-family:var(--mono);color:var(--ink);background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:6px 10px 6px 6px;cursor:pointer}
+.acctbtn .ava{width:26px;height:26px;border-radius:50%;background:var(--blood);color:#fff;display:flex;
+  align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none}
+.acctmenu{position:absolute;top:calc(100% + 8px);right:0;width:264px;z-index:5;background:rgba(15,17,22,.98);
+  border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.55);padding:8px}
+.acctmenu-head{display:flex;align-items:center;gap:10px;padding:6px 8px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px}
+.acctmenu-head .ava2{width:34px;height:34px;border-radius:50%;background:var(--blood);color:#fff;display:flex;
+  align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none}
+.acctmenu-head .nm{font-size:12.5px;color:var(--ink)}
+.acctmenu-head .id{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);margin-top:3px}
+.acctmenu-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:transparent;border:0;
+  color:var(--ink);padding:8px;border-radius:10px;cursor:pointer;font-size:12.5px}
+.acctmenu-item:hover{background:rgba(255,255,255,.07)}
+.acctmenu-item .ic{width:30px;height:30px;border-radius:9px;flex:none;display:flex;align-items:center;
+  justify-content:center;background:rgba(255,255,255,.06);color:var(--ink-dim)}
+.acctmenu-item.danger .ic{background:rgba(224,22,60,.14);color:#ff5c7c}
+.acctmenu-item.danger{color:#ff5c7c}
+.acctmenu-sep{height:1px;background:rgba(255,255,255,.08);margin:4px 4px 6px}
+
+.bottomnav{display:flex;justify-content:space-around;background:rgba(9,10,13,.94);border-top:1px solid rgba(255,255,255,.08);
+  border-radius:0 0 var(--r-md) var(--r-md);padding:8px 4px}
+.bottomnav a{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-dim);text-decoration:none;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:8px}
+.bottomnav a.on{color:var(--blood)}
+.bottomnav a:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+
+.mobmode{display:inline-flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:3px}
+.mobmode button{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:0;
+  background:transparent;color:var(--ink-dim);padding:8px 18px;border-radius:var(--r-pill);cursor:pointer}
+.mobmode button.on{background:var(--blood);color:#fff}
+
+.crumb{font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);
+  display:flex;align-items:center;gap:6px}
+.crumb button{background:none;border:0;color:#ff2450;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+
+.railnav-demo{display:flex;gap:8px;align-items:center}
+.rbtn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:999px;
+  background:var(--glass);border:1px solid var(--glass-border);color:var(--ink);font-size:16px;font-weight:800;cursor:pointer}
+.rbtn:hover{background:var(--blood);color:#fff;border-color:var(--blood)}
+.viewall{background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--redhi)}
+.viewall:hover{text-decoration:underline}
+
+/* ---- Overlays ---- */
+.modal-bg{display:flex;align-items:center;justify-content:center;background:var(--veil);border-radius:var(--r-md);
+  padding:34px;backdrop-filter:blur(6px)}
+.modalbox{width:100%;max-width:420px;background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--r-lg);box-shadow:var(--shadow-lg);animation:modalIn var(--dur-slow) var(--ease-out)}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mhead{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.08)}
+.mhead h3{font-family:var(--disp);font-size:15px;text-transform:uppercase}
+.mhead .x{background:none;border:0;color:var(--ink);font-size:16px;cursor:pointer;padding:4px 8px;border-radius:var(--r-sm)}
+.mhead .x:hover{background:rgba(255,255,255,.07);color:#fff}
+.mbody{padding:20px 22px}
+
+.sheet-demo{background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-lg) var(--r-lg) 0 0;
+  box-shadow:0 -18px 44px rgba(0,0,0,.5);animation:sheetIn var(--dur-drawer) var(--ease-out);position:relative}
+.sheet-demo::before{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:36px;height:4px;
+  border-radius:3px;background:rgba(255,255,255,.2)}
+@keyframes sheetIn{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+.scrim-demo{background:var(--veil);border-radius:var(--r-md);padding:24px;text-align:center;color:var(--ink-dim);font-size:12px}
+
+.dropdown-demo{position:relative;display:inline-block}
+.ddmenu{background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px;
+  box-shadow:var(--shadow-lg);min-width:180px}
+.ddmenu a{display:block;padding:9px 10px;border-radius:8px;color:var(--ink);text-decoration:none;font-size:12.5px}
+.ddmenu a:hover{background:rgba(255,255,255,.07)}
+
+.tooltip-demo{position:relative;display:inline-block}
+.ttbubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(15,17,22,.98);
+  border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--ink);
+  white-space:nowrap;box-shadow:var(--shadow)}
+
+/* ---- Domain ---- */
+.odds-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);border-radius:var(--r-sm);padding:9px 12px;cursor:pointer;min-width:88px;
+  transition:background var(--dur-base) var(--ease-out)}
+.odds-btn .ol{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim)}
+.odds-btn .ov{font-family:var(--mono);font-weight:700;color:var(--ink)}
+.odds-btn:hover{background:rgba(255,255,255,.09)}
+.odds-btn.sel{background:var(--blood);box-shadow:0 0 0 1px var(--redhi) inset}
+.odds-btn.sel .ol,.odds-btn.sel .ov{color:#fff}
+.odds-btn.up{animation:oddsUp .6s var(--ease-out)}
+.odds-btn.dn{animation:oddsDn .6s var(--ease-out)}
+@keyframes oddsUp{0%{background:rgba(62,207,106,.35)}100%{background:rgba(255,255,255,.05)}}
+@keyframes oddsDn{0%{background:rgba(224,22,60,.35)}100%{background:rgba(255,255,255,.05)}}
+.odds-btn.disabled{opacity:.35;pointer-events:none}
+
+.slip-row{display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--r-sm);padding:11px 13px;font-size:12px}
+.slip-row .top{display:flex;justify-content:space-between;color:var(--ink)}
+.slip-row .sub{color:var(--ink-dim);font-size:11px}
+.slip-row .rm{background:none;border:0;color:var(--ink-dim);cursor:pointer;font-size:13px;align-self:flex-end;margin-top:-30px}
+
+.coin-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-md);cursor:pointer;
+  transition:background var(--dur-base) var(--ease-out)}
+.coin-row:hover{background:rgba(255,255,255,.05)}
+.coin-row .ic{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;
+  align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--ink);flex:none}
+.coin-row .tx{flex:1;min-width:0}
+.coin-row .tx b{display:block;font-size:12.5px;color:var(--ink)}
+.coin-row .tx span{display:block;font-size:10.5px;color:var(--ink-dim)}
+.coin-row .bal{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);text-align:right}
+.coin-row.sel{background:rgba(224,22,60,.12);box-shadow:0 0 0 1px rgba(224,22,60,.4) inset}
+
+.netsel{display:flex;gap:8px;flex-wrap:wrap}
+.netsel button{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.14);color:var(--ink);border-radius:var(--r-sm);padding:10px 14px;cursor:pointer}
+.netsel button.sel{border-color:var(--blood);background:rgba(224,22,60,.14);color:#fff}
+.netsel .warn{margin-top:8px}
+
+.seed-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.seed-row .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim)}
+.seed-row .v{font-family:var(--mono);font-size:11.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;max-width:220px;min-width:0}
+
+.limit-row{display:grid;grid-template-columns:minmax(140px,1.5fr) repeat(3,minmax(70px,1fr));gap:10px;
+  align-items:center;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.limit-row.head{background:rgba(255,255,255,.04);font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-dim)}
+.limit-row input{width:100%;min-width:0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);
+  border-radius:8px;padding:8px 10px;color:var(--ink);font-family:var(--mono);font-size:11.5px}
+
+.pain-ladder{display:flex;gap:8px;flex-wrap:wrap}
+.pain-tier{flex:1;min-width:70px;text-align:center;padding:12px 6px;border-radius:var(--r-md);background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08)}
+.pain-tier b{display:block;font-family:var(--mono);font-size:15px;color:var(--ink)}
+.pain-tier span{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);margin-top:4px}
+.pain-tier.cleared{border-color:rgba(62,207,106,.4);background:rgba(62,207,106,.08)}
+.pain-tier.current{border-color:var(--blood);background:rgba(224,22,60,.14);box-shadow:0 0 0 1px var(--blood) inset}
+.pain-tier.current b{color:#ff5c7c}
+.pain-tier.locked{opacity:.4}
+
+.raid-stage{background:radial-gradient(circle at 50% 30%,rgba(224,22,60,.18),transparent 60%);border-radius:var(--r-lg);
+  padding:26px;text-align:center;border:1px solid rgba(224,22,60,.25)}
+.raid-stage .pct{font-family:var(--disp);font-size:34px;color:#fff}
+.raid-stage.critical{background:radial-gradient(circle at 50% 30%,rgba(224,22,60,.38),transparent 60%);
+  border-color:rgba(224,22,60,.6);animation:critPulse 1.4s infinite}
+@keyframes critPulse{0%,100%{box-shadow:0 0 0 0 rgba(224,22,60,.35)}50%{box-shadow:0 0 0 10px rgba(224,22,60,0)}}
+</style>
+</head>
+<body>
+
+<header class="doc-topbar">
+  <div class="doc-brand"><span class="dot"></span>PAIN<span style="color:var(--blood)">.</span>BET <small>Design System · v2</small></div>
+  <div class="grow"></div>
+  <span class="doc-meta">Reference build — grounded in index.html, USER_JOURNEYS.md, HANDOFF.md</span>
+  <button class="doc-themebtn" id="docThemeBtn" type="button" aria-pressed="true">Doc theme: dark</button>
+</header>
+
+<div class="doc-shell">
+<nav class="doc-side" id="docNav" aria-label="Design system sections">
+  <div class="doc-nav-grp">Start</div>
+  <a href="#overview">Overview</a>
+  <div class="doc-nav-grp">01 Foundations</div>
+  <a href="#f-color">Colour</a>
+  <a href="#f-type">Type</a>
+  <a href="#f-space">Spacing</a>
+  <a href="#f-radii">Radii</a>
+  <a href="#f-elevation">Elevation</a>
+  <a href="#f-motion">Motion</a>
+  <div class="doc-nav-grp">02 Components</div>
+  <a href="#c-actions">Actions</a>
+  <a href="#c-inputs">Inputs</a>
+  <a href="#c-surfaces">Surfaces</a>
+  <a href="#c-data">Data</a>
+  <a href="#c-status">Status</a>
+  <a href="#c-navigation">Navigation</a>
+  <a href="#c-overlays">Overlays</a>
+  <a href="#c-domain">Domain</a>
+  <div class="doc-nav-grp">03 Modals</div>
+  <a href="#modals">All 15 modals</a>
+  <div class="doc-nav-grp">04 Nav &amp; Layout</div>
+  <a href="#layout">Topbar, sidebar, chart, grid</a>
+  <div class="doc-nav-grp">05 Flows</div>
+  <a href="#flows-access">Access (J1–J6)</a>
+  <a href="#flows-money">Money + gate stack (J7–J10)</a>
+  <a href="#flows-play">Play (J11–J14)</a>
+  <a href="#flows-rewards">Rewards (J15–J19)</a>
+  <a href="#flows-safety">Safety (J20–J23)</a>
+  <a href="#flows-blocked">Blocked states</a>
+  <div class="doc-nav-grp">06 Responsive</div>
+  <a href="#responsive">Breakpoints</a>
+  <div class="doc-nav-grp">07 Content &amp; Voice</div>
+  <a href="#voice">Copy rules</a>
+  <div class="doc-nav-grp">08 Tokens</div>
+  <a href="#tokens">Full token table</a>
+  <div class="doc-nav-grp">09 Appendix</div>
+  <a href="#open-questions">Open questions</a>
+  <a href="#slop-test">Slop test</a>
+</nav>
+
+<main class="doc-main">
+
+<section class="doc-section" id="overview">
+  <div class="doc-eyebrow">Reference document · not a marketing page</div>
+  <h1 class="doc-h1">Design system reference</h1>
+  <p class="doc-lead">Every view, modal, component and interaction state in the built pain.bet front end, specified for two audiences: engineers wiring a real backend into the existing HTML/CSS/JS, and designers extending the product without drifting from it. Ground truth is <code>index.html</code>; where <code>USER_JOURNEYS.md</code> and the live code disagree, <b>the code wins</b> — every such case is called out inline.</p>
+
+  <div class="doc-callout code-wins">
+    <b>How to read this document</b>
+    Component demos render with the product's real class names on the product's real dark ground — copy the code block under each one directly into <code>index.html</code>. Doc chrome (this sidebar, headings, tables) is a separate visual system so nothing here is mistaken for shippable UI. Toggle the button top-right to check this document's own legibility in light and dark — the product itself stays dark-only regardless.
+  </div>
+
+  <div class="doc-grid g3" style="margin-top:28px">
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Macrostructure</div>
+      <p class="doc-p" style="margin-bottom:0">Long Document — a linear, numbered reference with a sticky side rail, chosen because the brief is a lookup tool ("what does this look like, in this state, at this width"), not a persuasive page. See report footer for full rationale.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Theme</div>
+      <p class="doc-p" style="margin-bottom:0">Not a catalog pick. This is a system-managed brand — arterial red <code>#e0163c</code> and morphine blue <code>#7FD6E8</code> are preserved from the live build and extended, never replaced.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Scope</div>
+      <p class="doc-p" style="margin-bottom:0">Foundations → every component in §11 → all 15 modals → nav/layout → every journey in §04–09 → responsive → voice → full token table → open questions.</p>
+    </div></div>
+  </div>
+</section>
+
+<section class="doc-section" id="f-color">
+  <div class="doc-eyebrow">01 Foundations</div>
+  <h2 class="doc-h2">Colour</h2>
+  <p class="doc-p">Two chromatic accents carry all brand meaning. <b>Arterial red</b> is pain, risk, action — every primary CTA, every "this costs you something" moment. <b>Morphine blue</b> is money coming back — rakeback, cashback, payouts, proof — and is never used for a generic action, a generic success state, or a generic accent. Everything else is neutral: ink on glass on a near-black ground.</p>
+
+  <div class="doc-callout warn">
+    <b>Resolved token conflicts</b>
+    <code>index.html</code> defines several colour tokens twice with different values, depending on whether an element sits inside the <code>.v5m</code>-scoped subtree or the top-level B71-native pages (see HANDOFF.md's two-page-system note). This document picks one canonical value per token and states why:
+    <ul style="margin:10px 0 0 18px;line-height:1.7">
+      <li><b>--blood / --red</b> — canonical <code>#e0163c</code>. A second global <code>:root</code> block redeclares <code>--red:#E10600</code> outside <code>.v5m</code>; that's a near-duplicate of the brand red, not an intentional second colour. Recommend deleting the redeclaration so <code>--red</code> simply aliases <code>--blood</code> everywhere.</li>
+      <li><b>--bg</b> — canonical <code>#101114</code>. The top-of-file <code>:root</code> declares <code>--bg:#07080a</code>, but the actual visible ground is <code>.ambient{background:#101114}</code>, a fixed layer painted over <code>body</code> (confirmed in HANDOFF.md — a vignette that faded to <code>var(--bg)</code> instead of <code>#101114</code> shipped as a visible seam bug once already). Any new gradient that fades "to background" must target <code>#101114</code>.</li>
+      <li><b>--card / --card-2 / --card-hi vs --glass / --glass-border</b> — canonical is the <code>--glass</code> family. The two token sets describe the same visual role (translucent dark surface) with different names depending on scope. This document keeps <code>--card*</code> as deprecated aliases pointing at <code>--glass*</code> so existing markup keeps working during a migration, rather than a hard break.</li>
+    </ul>
+  </div>
+
+  <h3 class="doc-h3">Brand</h3>
+  <div class="doc-card"><div class="doc-card-body">
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#e0163c"></div>
+      <div class="doc-swatch-meta"><b>--blood #e0163c</b><span>Arterial red. Pain, risk, action, every primary CTA.</span></div>
+      <div class="doc-contrast pass"><b>3.91:1</b>on #101114</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#ff2450"></div>
+      <div class="doc-swatch-meta"><b>--redhi #ff2450</b><span>Hover / emphasis red.</span></div>
+      <div class="doc-contrast pass"><b>5.05:1</b>on #101114</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#8f0e26"></div>
+      <div class="doc-swatch-meta"><b>--red-deep #8f0e26</b><span>Gradient anchor, promo triangles.</span></div>
+      <div class="doc-contrast fail"><b>—</b>decorative fill only</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#7FD6E8"></div>
+      <div class="doc-swatch-meta"><b>--blue #7FD6E8</b><span>Morphine blue. Money coming back — relief, cashback, payouts, proof. Never a generic action or success colour.</span></div>
+      <div class="doc-contrast pass"><b>11.41:1</b>on #101114</div></div>
+  </div></div>
+
+  <h3 class="doc-h3">Semantic — formalised here, untokenised in the live build</h3>
+  <p class="doc-p"><code>index.html</code> reuses raw hex for success/warning states (<code>#3ecf6a</code>, <code>#e0a13e</code>) and reuses <code>--blood</code> for danger. This system turns those into named tokens. <b>Info intentionally has no dedicated hue</b> — a design decision made in this document, not pulled from code: colour is reserved for money/risk semantics here, and a third chromatic accent risks reading as a dim morphine blue. Informational banners use a neutral glass surface plus an icon instead.</p>
+  <div class="doc-card"><div class="doc-card-body">
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#3ecf6a"></div>
+      <div class="doc-swatch-meta"><b>--success #3ecf6a</b><span>Form success, verified state, positive delta.</span></div>
+      <div class="doc-contrast pass"><b>9.29:1</b>on #101114</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#e0a13e"></div>
+      <div class="doc-swatch-meta"><b>--warning #e0a13e</b><span>Pending review, threshold warning, queued increase.</span></div>
+      <div class="doc-contrast pass"><b>8.39:1</b>on #101114</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#e0163c"></div>
+      <div class="doc-swatch-meta"><b>--danger = --blood</b><span>Deliberately reuses arterial red — risk and danger share a hue family by design.</span></div>
+      <div class="doc-contrast pass"><b>3.91:1</b>large text only</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:linear-gradient(135deg,#2a2c32,#1b1d22)"></div>
+      <div class="doc-swatch-meta"><b>--info: none</b><span>Neutral glass + icon. No new hue introduced.</span></div>
+      <div class="doc-contrast pass"><b>n/a</b>by design</div></div>
+  </div></div>
+
+  <h3 class="doc-h3">Surface &amp; text</h3>
+  <div class="doc-card"><div class="doc-card-body">
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#101114"></div>
+      <div class="doc-swatch-meta"><b>--bg #101114</b><span>Page ground (the real, visible one — see resolution above).</span></div>
+      <div class="doc-contrast pass"><b>—</b>ground colour</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#1c1e24"></div>
+      <div class="doc-swatch-meta"><b>--glass rgba(15,17,22,.70)</b><span>Card / panel surface, composited over ground, blurred.</span></div>
+      <div class="doc-contrast pass"><b>—</b>surface colour</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#e8eaee"></div>
+      <div class="doc-swatch-meta"><b>--ink #e8eaee</b><span>Primary text.</span></div>
+      <div class="doc-contrast pass"><b>15.67:1</b>on #101114</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#9aa0aa"></div>
+      <div class="doc-swatch-meta"><b>--ink-dim #9aa0aa</b><span>Secondary text, meta labels.</span></div>
+      <div class="doc-contrast pass"><b>7.18:1</b>on #101114</div></div>
+    <div class="doc-swatch-row"><div class="doc-swatch" style="background:#6b7078"></div>
+      <div class="doc-swatch-meta"><b>--ink-lo #6b7078</b><span>Tertiary / meta text only (table headers, timestamps).</span></div>
+      <div class="doc-contrast fail"><b>3.79:1</b>fails body text</div></div>
+  </div></div>
+
+  <div class="doc-callout warn">
+    <b>Contrast flags</b>
+    <ul style="margin:8px 0 0 18px;line-height:1.7">
+      <li><code>--ink-lo #6b7078</code> is 3.79:1 on the page ground — below 4.5:1. It already reads correctly in the live build because it's reserved for uppercase mono meta text at 8.5–10px, never body copy — but that constraint isn't enforced anywhere. This document scopes it explicitly to labels/timestamps and flags it as a "do not use for sentences" token.</li>
+      <li><code>--blood #e0163c</code> as a text colour (kickers, section tags) is 3.91:1 — passes for large/bold text (≥18.66px bold) but fails 4.5:1 for anything smaller. In practice it's used at 10–11px uppercase mono, which is <em>below</em> the large-text threshold — technically a fail. Recommend either promoting kicker text to <code>--redhi</code> (5.05:1) or accepting it as a deliberate brand-voice exception the way many editorial systems treat small kicker text.</li>
+      <li><code>#fff</code> on <code>--redhi</code> (button hover state) is 3.74:1 — fails 4.5:1 for normal text, passes only for large/bold text. Button labels are 10.5–11.5px bold uppercase mono, under the large-text cutoff. This is a real, measured gap in the hover state specifically (the resting <code>.btn.red</code> state at 4.83:1 passes). Flagged, not fixed silently — a product decision either lightens the hover red or accepts the AA gap on a transient two-state interaction.</li>
+    </ul>
+  </div>
+
+  <h3 class="doc-h3">Colour usage rules</h3>
+  <ul class="doc-list">
+    <li><b>Red = you're about to spend or risk something.</b> Deposit, place bet, confirm stake, danger zone actions.</li>
+    <li><b>Blue = you're getting something back.</b> Rakeback drip, cashback, Anesthesia payback, withdrawal success, proof-of-reserves. Never a secondary button colour, never a generic "info" tint.</li>
+    <li><b>Never mix them on the same control.</b> A single button is either red (spend) or blue (receive), never both.</li>
+    <li><b>Success ≠ blue.</b> A saved profile, a passed 2FA check, a completed upload use <code>--success</code> green, not morphine blue — blue stays reserved for money.</li>
+  </ul>
+</section>
+
+<section class="doc-section" id="f-type">
+  <h2 class="doc-h2">Type</h2>
+  <p class="doc-p">Three faces, one strict division of labour. <b>Archivo Black</b> is the only display face — heavy, condensed, always uppercase. <b>Archivo</b> carries body copy. <b>JetBrains Mono</b> (falling back to SF Mono / system mono) carries the clinical voice: every label, ID, amount, timestamp and tag is set in mono, uppercase, and letter-spaced — this is the single most distinctive typographic signal in the product and should never be swapped for the sans face on data.</p>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Step</th><th>Face</th><th>Size / weight</th><th>Line height</th><th>Letter spacing</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>Display XL</td><td><code>--disp</code> Archivo Black</td><td>34–44px / 900</td><td>1.02</td><td>-0.01em</td><td>Hero headline, promo <code>h3</code></td></tr>
+      <tr><td>Display L</td><td><code>--disp</code></td><td>24–26px / 900</td><td>1.05</td><td>0.01–0.02em</td><td><code>.row-head h2</code>, section heads, modal titles</td></tr>
+      <tr><td>Display S</td><td><code>--disp</code></td><td>15–20px / 900</td><td>1.1</td><td>0.01em</td><td>Card titles, tile overlays, stat values</td></tr>
+      <tr><td>Body L</td><td><code>--sans</code> Archivo</td><td>15–16px / 400–500</td><td>1.5–1.6</td><td>normal</td><td>Lead paragraphs, modal copy</td></tr>
+      <tr><td>Body M</td><td><code>--sans</code></td><td>12.5–13px / 400</td><td>1.5–1.65</td><td>normal</td><td>Card body, table cells, hint text</td></tr>
+      <tr><td>Body S</td><td><code>--sans</code></td><td>11–12px / 400</td><td>1.45–1.6</td><td>normal</td><td>Fine print, disclaimers</td></tr>
+      <tr><td>Mono label</td><td><code>--mono</code> JetBrains Mono</td><td>9–11px / 600–700</td><td>1.2</td><td>0.10–0.22em</td><td>Kickers, tags, badges, table headers, buttons</td></tr>
+      <tr><td>Mono data</td><td><code>--mono</code></td><td>11–23px / 400–700</td><td>1.2</td><td>0–0.06em</td><td>Amounts, IDs, seed hashes, odds, timers</td></tr>
+    </tbody>
+  </table></div>
+  <div class="doc-demo col dark-note">
+    <div style="font-family:var(--disp);font-size:38px;text-transform:uppercase;line-height:1.02">Admissions<span style="color:var(--blood)">.</span></div>
+    <div style="font-family:var(--sans);font-size:15px;color:var(--ink-dim);max-width:52ch">Body copy in Archivo — plain, legible, no letter-spacing. Used for anything a patient has to actually read.</div>
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blood)">Patient ID · WD-88213 · Status: Admitted</div>
+  </div>
+  <div class="doc-callout code-wins">
+    <b>Code wins</b>
+    USER_JOURNEYS.md §14 lists the display token as <code>'Archivo Black', Archivo, sans-serif</code> and body as <code>'Inter', system-ui</code>. The live <code>index.html</code> instead sets <code>--sans:'Archivo','Inter',-apple-system,system-ui,sans-serif</code> inside <code>.v5m</code> (Archivo first, Inter as fallback) — Archivo is genuinely doing double duty as both a display and body face in code, with Inter only a safety net. This document follows the code: Archivo is the canonical body face.
+  </div>
+</section>
+
+<section class="doc-section" id="f-space">
+  <h2 class="doc-h2">Spacing</h2>
+  <p class="doc-p">The live build uses ad hoc pixel values throughout (14px rail padding, 26px promo padding, 44px section margins). This system introduces a 4pt scale and maps the most common existing values onto it, so new work has a vocabulary instead of eyeballing each margin.</p>
+  <div class="doc-demo col dark-note">
+    <div class="doc-demo-label">4pt scale</div>
+    <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
+      <script>document.write('')</script>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:4px;height:4px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">4</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:8px;height:8px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">8</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:12px;height:12px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">12</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:16px;height:16px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">16</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:24px;height:24px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">24</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:32px;height:32px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">32</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:48px;height:48px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">48</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="width:64px;height:64px;background:var(--blood)"></div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">64</span></div>
+    </div>
+  </div>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Token</th><th>Value</th><th>Closest existing usage</th></tr></thead>
+    <tbody>
+      <tr><td><code>--space-2</code></td><td class="num">8px</td><td>Chip gap, icon-to-label gap</td></tr>
+      <tr><td><code>--space-3</code></td><td class="num">12px</td><td>Stat tile padding sub-unit, form field gap</td></tr>
+      <tr><td><code>--space-4</code></td><td class="num">16px</td><td>Rail gap, grid gap (banners, rails, KYC docs)</td></tr>
+      <tr><td><code>--space-5</code></td><td class="num">20px</td><td>Mobile <code>.blk</code> padding</td></tr>
+      <tr><td><code>--space-6</code></td><td class="num">24px</td><td>Promo/banner padding</td></tr>
+      <tr><td><code>--space-7</code></td><td class="num">32px</td><td>Desktop <code>.blk</code> padding</td></tr>
+      <tr><td><code>--space-9</code></td><td class="num">48px</td><td>Body top/bottom padding on B71-native pages</td></tr>
+      <tr><td><code>--space-10</code></td><td class="num">64px</td><td>Section-to-section margin</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="doc-section" id="f-radii">
+  <h2 class="doc-h2">Radii</h2>
+  <div class="doc-callout warn">
+    <b>Resolved: --r-lg</b>
+    <code>.v5m{--r-lg:18px}</code> inside the v5m subtree, <code>:root{--r-lg:16px}</code> at the true document root — see USER_JOURNEYS.md §14. Canonical value in this system is <b>16px</b>, chosen because it produces a clean progression with <code>--r-sm:8px</code> and <code>--r-md:12px</code> (8 → 12 → 16, each +4). <code>--tile-r:18px</code> remains its own, deliberately larger token reserved only for game tiles and hero art — a named exception, not a second definition of the same thing.
+  </div>
+  <div class="doc-demo dark-note">
+    <div style="width:70px;height:70px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--ink-dim)">sm 8</div>
+    <div style="width:70px;height:70px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--ink-dim)">md 12</div>
+    <div style="width:70px;height:70px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--ink-dim)">lg 16</div>
+    <div style="width:70px;height:70px;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--tile-r);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--ink-dim)">tile 18</div>
+    <div style="width:70px;height:70px;background:var(--blood);border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:#fff">pill</div>
+  </div>
+</section>
+
+<section class="doc-section" id="f-elevation">
+  <h2 class="doc-h2">Elevation</h2>
+  <p class="doc-p">Two shadow steps plus a glow-on-hover pattern used for interactive lift (tiles, promo cards, panels). Elevation communicates interactivity, not hierarchy — nothing in the product sits more than two steps "above" the ground.</p>
+  <div class="doc-demo dark-note">
+    <div style="width:170px;height:90px;background:var(--glass);border-radius:var(--r-md);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--ink-dim)">--shadow (resting)</div>
+    <div style="width:170px;height:90px;background:var(--glass);border-radius:var(--r-md);box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:var(--ink-dim)">--shadow-lg (hover/modal)</div>
+    <div style="width:170px;height:90px;background:var(--glass);border:1px solid rgba(224,22,60,.65);border-radius:var(--r-md);box-shadow:0 14px 34px rgba(0,0,0,.55), 0 0 0 1.5px rgba(224,22,60,.6), 0 0 32px rgba(224,22,60,.5);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;color:#fff">tile hover glow</div>
+  </div>
+  <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>--shadow: 0 10px 28px rgba(0,0,0,.35);      /* resting card */
+--shadow-lg: 0 18px 44px rgba(0,0,0,.5);    /* hover / modal / drawer */
+/* interactive tile hover — glow layered on top of shadow-lg */
+box-shadow: 0 14px 34px rgba(0,0,0,.55),
+            0 0 0 1.5px rgba(224,22,60,.6),
+            0 0 32px rgba(224,22,60,.5),
+            0 0 64px rgba(224,22,60,.24);</pre></div>
+</section>
+
+<section class="doc-section" id="f-motion">
+  <h2 class="doc-h2">Motion</h2>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Token</th><th>Value</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td><code>--dur-fast</code></td><td class="num">120ms</td><td>Hover colour/transform, focus ring, chip toggle</td></tr>
+      <tr><td><code>--dur-base</code></td><td class="num">200ms</td><td>Button state, border-colour transitions, tab switch</td></tr>
+      <tr><td><code>--dur-slow</code></td><td class="num">320ms</td><td>Modal enter, toast enter, meter fill</td></tr>
+      <tr><td><code>--dur-drawer</code></td><td class="num">380ms</td><td>Bet slip / sidebar drawer slide, bottom sheet rise</td></tr>
+      <tr><td><code>--ease-out</code></td><td class="num">cubic-bezier(.22,1,.36,1)</td><td>Default for everything entering or growing</td></tr>
+      <tr><td><code>--ease-in</code></td><td class="num">cubic-bezier(.64,0,.78,0)</td><td>Elements exiting/collapsing</td></tr>
+      <tr><td><code>--ease-in-out</code></td><td class="num">cubic-bezier(.65,0,.35,1)</td><td>Looping/ambient motion (ticker, marquee)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="doc-callout warn">
+    <b>Two motion categories — do not merge them</b>
+    Per explicit client direction (USER_JOURNEYS.md §12): <b>ambient motion</b> — the ticker, the EKG traces, the provider marquee, the neuron cinematic — plays regardless of OS <code>prefers-reduced-motion</code>. It's part of the brand's pulse, not a decorative flourish. <b>Functional motion</b> — modal enter/exit, drawer slide, toast, odds-change flash — must still respect <code>prefers-reduced-motion: reduce</code>, collapsing to a ≤150ms opacity crossfade. Keep these in genuinely separate CSS so a future refactor can't accidentally silence the ambient layer while "fixing" reduced-motion support, or vice versa.
+  </div>
+  <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>/* functional motion — respects reduced motion */
+.modalbox, .betslip, .toast { transition: transform var(--dur-slow) var(--ease-out), opacity var(--dur-slow) var(--ease-out); }
+@media (prefers-reduced-motion: reduce) {
+  .modalbox, .betslip, .toast, .sheet-demo { transition-duration: 150ms !important; transform: none !important; }
+}
+
+/* ambient motion — intentionally OUTSIDE any reduced-motion query */
+.ticker .track, .marquee-row, .ekg svg, .neuron-canvas { animation-play-state: running !important; }</pre></div>
+</section>
+
+
+<section class="doc-section" id="c-actions">
+  <div class="doc-eyebrow">02 Components</div>
+  <h2 class="doc-h2">Actions</h2>
+  <p class="doc-p">Buttons, chips, toggles and the other things a hand or a keyboard drives. Every control on this page ships all eight interaction states from USER_JOURNEYS.md §12: default, hover, active, focus-visible, selected, disabled, loading, error/success where applicable.</p>
+
+  <div class="doc-card">
+    <div class="doc-card-head"><h4>Button — primary / secondary / ghost / danger</h4><span class="tag">.btn</span></div>
+    <div class="doc-card-body">
+      <p class="doc-p">Anatomy: label (mono, uppercase, letter-spaced) + optional leading/trailing icon, pill-ish 12px radius, 10px/16px padding. <b>Red</b> = primary spend/risk action. <b>Blue</b> = a receive-context action (claim, withdraw confirm) — never used just for visual variety. <b>Ghost</b> = tertiary, no border. <b>Danger</b> outline = destructive, confirms before firing.</p>
+      <div class="doc-states">
+        <div class="doc-state-cell"><span class="lbl">default</span><button class="btn red">Deposit</button></div>
+        <div class="doc-state-cell"><span class="lbl">hover</span><button class="btn red" style="background:var(--redhi);border-color:var(--redhi);box-shadow:0 10px 24px rgba(224,22,60,.42)">Deposit</button></div>
+        <div class="doc-state-cell"><span class="lbl">active</span><button class="btn red" style="transform:translateY(1px)">Deposit</button></div>
+        <div class="doc-state-cell"><span class="lbl">focus-visible</span><button class="btn red" style="outline:2px solid var(--blue);outline-offset:2px">Deposit</button></div>
+        <div class="doc-state-cell"><span class="lbl">disabled</span><button class="btn red" disabled>Deposit</button></div>
+        <div class="doc-state-cell"><span class="lbl">loading</span><button class="btn red is-loading">Deposit</button></div>
+        <div class="doc-state-cell"><span class="lbl">error</span><button class="btn is-error">Try again</button></div>
+        <div class="doc-state-cell"><span class="lbl">success</span><button class="btn is-success">Saved</button></div>
+      </div>
+      <div class="doc-demo" style="margin-top:14px">
+        <button class="btn red">Primary</button>
+        <button class="btn blue">Blue (receive)</button>
+        <button class="btn">Secondary</button>
+        <button class="btn ghost">Ghost</button>
+        <button class="btn danger">Close account</button>
+      </div>
+    </div>
+    <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>&lt;button class="btn red"&gt;Deposit&lt;/button&gt;
+&lt;button class="btn blue"&gt;Claim rakeback&lt;/button&gt;
+&lt;button class="btn"&gt;Secondary&lt;/button&gt;
+&lt;button class="btn ghost"&gt;Cancel&lt;/button&gt;
+&lt;button class="btn danger"&gt;Close account&lt;/button&gt;
+&lt;button class="btn red" disabled&gt;Deposit&lt;/button&gt;
+&lt;button class="btn red is-loading"&gt;Deposit&lt;/button&gt;</pre></div>
+    <div class="doc-card-body"><div class="doc-callout code-wins" style="margin:0">
+      <b>Do / don't</b>
+      Do use red for anything that debits balance or commits risk. Don't use blue on a button that isn't literally returning money to the user. Don't stack two red buttons in the same view competing for primary attention — demote the second to secondary/ghost.
+    </div></div>
+  </div>
+
+  <div class="doc-grid g2" style="margin-top:20px">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Chip / pill button</h4><span class="tag">.chip</span></div>
+      <div class="doc-card-body">
+        <div class="doc-states">
+          <div class="doc-state-cell"><span class="lbl">default</span><button class="chip">All games</button></div>
+          <div class="doc-state-cell"><span class="lbl">on</span><button class="chip on">Live</button></div>
+          <div class="doc-state-cell"><span class="lbl">on · blue</span><button class="chip on blue">15/30/60</button></div>
+          <div class="doc-state-cell"><span class="lbl">disabled</span><button class="chip" disabled>Locked</button></div>
+        </div>
+      </div>
+      <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>&lt;button class="chip on"&gt;Live&lt;/button&gt;</pre></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Icon button</h4><span class="tag">.iconbtn</span></div>
+      <div class="doc-card-body">
+        <div class="doc-states">
+          <div class="doc-state-cell"><span class="lbl">default</span><button class="iconbtn">→</button></div>
+          <div class="doc-state-cell"><span class="lbl">hover</span><button class="iconbtn" style="background:var(--blood);color:#fff">→</button></div>
+          <div class="doc-state-cell"><span class="lbl">disabled</span><button class="iconbtn" disabled>→</button></div>
+        </div>
+      </div>
+      <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>&lt;button class="iconbtn" aria-label="Next"&gt;→&lt;/button&gt;</pre></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Toggle switch</h4><span class="tag">.sw</span></div>
+      <div class="doc-card-body">
+        <div class="doc-states">
+          <div class="doc-state-cell"><span class="lbl">off</span><button class="sw"><i></i></button></div>
+          <div class="doc-state-cell"><span class="lbl">on</span><button class="sw on"><i></i></button></div>
+          <div class="doc-state-cell"><span class="lbl">disabled</span><button class="sw" disabled><i></i></button></div>
+        </div>
+      </div>
+      <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>&lt;button class="sw on" role="switch" aria-checked="true"&gt;&lt;i&gt;&lt;/i&gt;&lt;/button&gt;</pre></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Segmented control</h4><span class="tag">.seg</span></div>
+      <div class="doc-card-body">
+        <div class="doc-demo"><div class="seg"><button class="on">Casino</button><button>Sports</button></div></div>
+      </div>
+      <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>&lt;div class="seg" role="tablist"&gt;
+  &lt;button class="on" role="tab" aria-selected="true"&gt;Casino&lt;/button&gt;
+  &lt;button role="tab" aria-selected="false"&gt;Sports&lt;/button&gt;
+&lt;/div&gt;</pre></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Tab</h4><span class="tag">.navtabs</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="navtabs"><a class="on" href="#">Casino</a><a href="#">Sports</a><a href="#">Arcade</a></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Copy-to-clipboard</h4><span class="tag">.copybtn</span></div>
+      <div class="doc-card-body">
+        <div class="doc-states">
+          <div class="doc-state-cell"><span class="lbl">default</span><button class="copybtn">Copy address</button></div>
+          <div class="doc-state-cell"><span class="lbl">copied</span><button class="copybtn copied">Copied</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-card" style="margin-top:20px">
+    <div class="doc-card-head"><h4>File drop</h4><span class="tag">.filedrop</span></div>
+    <div class="doc-card-body">
+      <div class="doc-grid g3">
+        <label class="filedrop"><input type="file"><span class="ic">⬆</span><b>ID front</b><i>PNG, JPG, PDF up to 10MB</i></label>
+        <label class="filedrop filled"><span class="ic">✓</span><b>ID back</b><em>drivers-license-back.jpg</em></label>
+        <label class="filedrop error"><input type="file"><span class="ic">!</span><b>Selfie</b><i>File too large — max 10MB</i></label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="c-surfaces">
+  <h2 class="doc-h2">Surfaces</h2>
+  <div class="doc-grid g2">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Glass panel</h4><span class="tag">.blk</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="blk" style="width:100%"><div class="doc-h4" style="margin-top:0">Verification</div><p style="font-size:12.5px;color:var(--ink-dim)">Standard card wrapper for v5m-ported pages. 32/28px desktop padding, 16/18px mobile — matches HANDOFF.md's fix for the once-zero mobile padding bug.</p></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Card (pscard)</h4><span class="tag">.pscard</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="pscard" style="width:220px">Lifts 4px + deepens shadow on hover.</div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Game tile</h4><span class="tag">.tile</span></div>
+      <div class="doc-card-body">
+        <div class="doc-demo">
+          <div style="width:130px;aspect-ratio:3/4;border-radius:var(--tile-r);background:linear-gradient(160deg,#2a0a14,#0c0d10);border:1px solid var(--glass-border);position:relative;overflow:hidden;box-shadow:var(--shadow)">
+            <div style="position:absolute;left:0;right:0;bottom:0;padding:20px 8px 10px;text-align:center;background:linear-gradient(to top,rgba(4,5,7,.9),transparent)">
+              <div style="font-family:var(--disp);font-size:13px;text-transform:uppercase;color:#fff">Flatline</div>
+              <div style="font-family:var(--mono);font-size:7px;letter-spacing:.2em;color:var(--ink-dim);margin-top:4px">PAIN ORIGINALS</div>
+            </div>
+          </div>
+          <div style="width:130px;aspect-ratio:3/4;border-radius:var(--tile-r);background:linear-gradient(160deg,#2a0a14,#0c0d10);border:1.5px solid rgba(224,22,60,.65);position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 0 1.5px rgba(224,22,60,.6),0 0 32px rgba(224,22,60,.5)">
+            <div style="position:absolute;inset:0;display:grid;place-items:center"><span style="width:40px;height:40px;border-radius:50%;background:var(--blood);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px">▶</span></div>
+          </div>
+        </div>
+        <p class="doc-p" style="margin-top:12px">Hover reveals a play affordance and a red glow (never on touch-hold beyond a 1200ms auto-clear per HANDOFF.md). Art renders at full opacity always — an explicit reversal of an earlier .55/.92 opacity treatment.</p>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Promo card / banner</h4><span class="tag">.banner / .promo</span></div>
+      <div class="doc-card-body">
+        <div class="doc-demo">
+          <div style="width:220px;min-height:140px;border-radius:var(--tile-r);background:linear-gradient(120deg,#2a0a14,#0c0d10);border:1px solid var(--glass-border);padding:18px;display:flex;flex-direction:column;justify-content:flex-end">
+            <div style="font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--blood);margin-bottom:6px">WELCOME</div>
+            <div style="font-family:var(--disp);font-size:16px;color:#fff;text-transform:uppercase">200% first dose</div>
+          </div>
+          <div style="width:220px;min-height:140px;border-radius:var(--tile-r);background:linear-gradient(120deg,#0c1f24,#0c0d10);border:1px solid var(--glass-border);padding:18px;display:flex;flex-direction:column;justify-content:flex-end">
+            <div style="font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--blue);margin-bottom:6px">ANESTHESIA</div>
+            <div style="font-family:var(--disp);font-size:16px;color:#fff;text-transform:uppercase">Weekly payback</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Stat tile</h4><span class="tag">.stat-tile</span></div>
+      <div class="doc-card-body"><div class="doc-demo">
+        <div class="stat-tile"><div class="k">Lifetime wagered</div><div class="v">128,402</div><div class="delta up">▲ 4,120 this week</div></div>
+        <div class="stat-tile"><div class="k">Net position</div><div class="v" style="color:#ff5c7c">-2,140</div><div class="delta down">▼ down this session</div></div>
+        <div class="stat-tile"><div class="k">Relief accrued</div><div class="v blue">312.40</div></div>
+      </div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Band / callout</h4><span class="tag">.callout-band</span></div>
+      <div class="doc-card-body"><div class="doc-demo col">
+        <div class="callout-band info">Network selection is mandatory and never defaulted — the single biggest source of lost funds.</div>
+        <div class="callout-band warning">You're at 80% of your annual withdrawal threshold. <b>Verify now</b> to avoid a hold.</div>
+        <div class="callout-band danger">Self-exclusion is irreversible for the selected duration.</div>
+        <div class="callout-band success">Address verified and saved to your address book.</div>
+      </div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Inset well</h4><span class="tag">.well</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="well" style="width:100%">Recessed content area — bet slip totals, verifier output.</div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Dashed empty state</h4><span class="tag">.empty</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="empty" style="width:100%"><div class="ic">◎</div><b>No saved addresses yet</b><span>Addresses you withdraw to are saved here after a successful send.</span></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Skeleton — designed for this system, missing in the live build</h4><span class="tag">.skeleton</span></div>
+      <div class="doc-card-body">
+        <p class="doc-p">USER_JOURNEYS.md §12 flags loading/skeleton states as missing from the current build entirely. Shimmer direction and shape follow the tile/card geometry so layout doesn't jump on load.</p>
+        <div class="doc-demo">
+          <div style="width:130px"><div class="skeleton tile"></div></div>
+          <div style="width:220px"><div class="skeleton title"></div><div class="skeleton text" style="width:90%"></div><div class="skeleton text" style="width:70%"></div></div>
+          <div style="width:100%"><div class="skeleton row"></div><div class="skeleton row"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="c-data">
+  <h2 class="doc-h2">Data</h2>
+  <div class="doc-grid g2">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Table — sticky header, right-aligned numerics</h4><span class="tag">.dtable</span></div>
+      <div class="doc-card-body"><div class="dtable-wrap"><div class="doc-demo" style="padding:0"><table class="dtable" style="width:100%"><thead><tr><th>Rank</th><th>User</th><th class="num">Wagered</th></tr></thead><tbody>
+        <tr><td style="color:var(--redhi)">1</td><td style="color:#fff">wd_88213</td><td class="num" style="color:var(--blue)">128,402</td></tr>
+        <tr><td style="color:var(--redhi)">2</td><td style="color:#fff">rn_44092</td><td class="num" style="color:var(--blue)">96,110</td></tr>
+      </tbody></table></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Key-value row</h4><span class="tag">.kv-row</span></div>
+      <div class="doc-card-body"><div class="doc-demo col"><div style="width:100%"><div class="kv-row"><span class="k">Rakeback rate</span><span class="v blue">4%</span></div><div class="kv-row"><span class="k">Paid this week</span><span class="v blue">18.40 USDT</span></div></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Meter / progress bar</h4><span class="tag">.meter</span></div>
+      <div class="doc-card-body"><div class="doc-demo col">
+        <div style="width:100%"><div class="meter"><i style="width:32%"></i></div></div>
+        <div style="width:100%"><div class="meter"><i class="warn" style="width:82%"></i></div></div>
+        <div style="width:100%"><div class="meter"><i class="full" style="width:100%"></i></div></div>
+      </div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Dial (PainKillers tolerance)</h4><span class="tag">.dial</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="dial" style="--pct:62"><b>1.8x</b><span>Streak</span></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Sparkline / ECG</h4><span class="tag">.sparkline</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><svg class="sparkline" width="220" height="46" viewBox="0 0 220 46"><path class="fill" d="M0,40 L20,30 L40,36 L60,10 L80,26 L100,6 L120,30 L140,18 L160,34 L180,14 L200,24 L220,30 L220,46 L0,46 Z"/><path class="line" d="M0,40 L20,30 L40,36 L60,10 L80,26 L100,6 L120,30 L140,18 L160,34 L180,14 L200,24 L220,30"/></svg></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Ticker</h4><span class="tag">.ticker</span></div>
+      <div class="doc-card-body"><div class="doc-demo" style="padding:8px"><div class="ticker" style="width:100%"><div class="track"><span class="item"><b>wd_88213</b> won 4,200 on Flatline</span><span class="item"><b>rn_44092</b> claimed 18.4 relief</span><span class="item"><b>kt_10221</b> hit tier AGONY</span></div></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Provider marquee</h4><span class="tag">.marquee-row</span></div>
+      <div class="doc-card-body"><div class="doc-demo" style="padding:8px"><div class="marquee-wrap" style="width:100%"><div class="marquee-row"><span class="marquee-chip">Pragmatic</span><span class="marquee-chip">Evolution</span><span class="marquee-chip">Hacksaw</span><span class="marquee-chip">NetEnt</span></div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="c-inputs">
+  <h2 class="doc-h2">Inputs</h2>
+  <div class="doc-grid g2">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Text / email / number / search</h4><span class="tag">.field</span></div>
+      <div class="doc-card-body">
+        <div class="doc-grid g2">
+          <div class="field"><label>Email</label><input type="email" placeholder="you@domain.com"></div>
+          <div class="field error"><label>Email</label><input type="email" value="not-an-email"><span class="hint error">Enter a valid email address.</span></div>
+          <div class="field success"><label>Email</label><input type="email" value="patient@pain.bet"><span class="hint success">Looks good.</span></div>
+          <div class="field disabled"><label>Email</label><input type="email" value="locked@pain.bet" disabled></div>
+        </div>
+      </div>
+      <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>&lt;div class="field error"&gt;
+  &lt;label&gt;Email&lt;/label&gt;
+  &lt;input type="email" value="not-an-email" aria-invalid="true"&gt;
+  &lt;span class="hint error"&gt;Enter a valid email address.&lt;/span&gt;
+&lt;/div&gt;</pre></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Password + strength meter</h4><span class="tag">.field .strength</span></div>
+      <div class="doc-card-body">
+        <div class="doc-grid g2">
+          <div class="field"><label>Password</label><input type="password" value="weak"><div class="strength weak"><i></i><i></i><i></i><i></i></div><span class="hint">Weak — add a number and a symbol.</span></div>
+          <div class="field"><label>Password</label><input type="password" value="StrongerPass1!"><div class="strength strong"><i></i><i></i><i></i><i></i></div><span class="hint success">Strong.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Amount field with unit</h4><span class="tag">.unit-wrap</span></div>
+      <div class="doc-card-body"><div class="field"><label>Amount</label><div class="unit-wrap"><input type="text" value="250.00"><span class="unit">USDT</span></div><span class="hint">Min 25 USDT · you'll receive ≈ 249.10 after network fee</span></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Address field</h4><span class="tag">.field.mono</span></div>
+      <div class="doc-card-body"><div class="field"><label>Destination address</label><input type="text" style="font-family:var(--mono);font-size:11.5px" value="TXn9k...4fQ2"><span class="hint">Double-check this on the sending device — transfers are irreversible.</span></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Code entry (6-digit)</h4><span class="tag">.codeentry</span></div>
+      <div class="doc-card-body">
+        <div class="doc-demo col">
+          <div class="codeentry"><input maxlength="1" value="4"><input maxlength="1" value="1"><input maxlength="1" value="9"><input maxlength="1"><input maxlength="1"><input maxlength="1"></div>
+          <div class="codeentry"><input class="error" maxlength="1" value="0"><input class="error" maxlength="1" value="0"><input class="error" maxlength="1" value="0"><input class="error" maxlength="1" value="0"><input class="error" maxlength="1" value="0"><input class="error" maxlength="1" value="0"></div>
+        </div>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Checkbox / radio / select</h4><span class="tag">.chk / .rad</span></div>
+      <div class="doc-card-body">
+        <div class="doc-demo col">
+          <label class="chk"><input type="checkbox" checked>I'm 18+ and accept the terms</label>
+          <label class="chk disabled"><input type="checkbox">Disabled option</label>
+          <label class="rad"><input type="radio" name="dur" checked>24 hours</label>
+          <label class="rad"><input type="radio" name="dur">7 days</label>
+          <div class="field"><label>Currency</label><select><option>USD</option><option>EUR</option></select></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="c-status">
+  <h2 class="doc-h2">Status</h2>
+  <div class="doc-grid g2">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Status pill</h4><span class="tag">.pill-status</span></div>
+      <div class="doc-card-body"><div class="doc-demo">
+        <span class="pill-status win">Win</span><span class="pill-status loss">Loss</span><span class="pill-status pending">Pending</span>
+        <span class="pill-status deposit">Deposit</span><span class="pill-status withdrawal">Withdrawal</span><span class="pill-status confirmed">Confirmed</span>
+      </div></div>
+      <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy</button><pre>&lt;span class="pill-status win"&gt;Win&lt;/span&gt;
+&lt;span class="pill-status pending"&gt;Pending&lt;/span&gt;</pre></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Tier badge</h4><span class="tag">.badge-tier</span></div>
+      <div class="doc-card-body"><div class="doc-demo">
+        <span class="badge-tier live">Live</span><span class="badge-tier paying">Paying</span><span class="badge-tier drops">Drops</span>
+      </div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Severity chip</h4><span class="tag">.sev-chip</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><span class="sev-chip low">Low</span><span class="sev-chip med">Medium</span><span class="sev-chip high">High</span></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Toast</h4><span class="tag">.toast</span></div>
+      <div class="doc-card-body"><div class="doc-demo col">
+        <div class="toast success"><span class="ic">✓</span>Bet placed — good luck.</div>
+        <div class="toast error"><span class="ic">!</span>Deposit failed — network mismatch.</div>
+        <div class="toast info"><span class="ic">i</span>Session ends in 5 minutes.</div>
+      </div></div>
+      <div class="doc-p" style="padding:0 18px 18px"><b>Motion:</b> enters with an 8px rise + fade (<code>--dur-slow</code>), self-clears after 4s, respects reduced-motion.</div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Inline note</h4><span class="tag">.note-inline</span></div>
+      <div class="doc-card-body"><div class="doc-demo col">
+        <div class="note-inline info">Withdrawals arrive net of the network fee.</div>
+        <div class="note-inline error">This address doesn't match the selected network's format.</div>
+        <div class="note-inline success">Backup codes regenerated — six remaining.</div>
+      </div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Banner — email / lock</h4><span class="tag">.banner-email / .banner-lock</span></div>
+      <div class="doc-card-body"><div class="doc-demo col" style="padding:0">
+        <div class="banner-email">Confirm your email to unlock full withdrawals. <button>Resend</button></div>
+        <div class="banner-lock">Account locked until 04 Aug 2026 · 09:00 UTC — self-exclusion active. <button class="btn blue" style="padding:6px 12px;font-size:9.5px">Withdraw</button></div>
+      </div></div>
+      <div class="doc-p" style="padding:0 18px 18px">When both are present, the lock bar wins attention (USER_JOURNEYS.md §02 ordering note) — the email bar should visually recede, not compete.</div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Live dot</h4><span class="tag">.live-dot</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><span class="live-dot"></span><span style="font-family:var(--mono);font-size:11px;color:var(--ink-dim)">Live now</span><span class="live-dot blue"></span><span style="font-family:var(--mono);font-size:11px;color:var(--ink-dim)">Relief dripping</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="c-navigation">
+  <h2 class="doc-h2">Navigation</h2>
+  <div class="doc-card">
+    <div class="doc-card-head"><h4>Topbar — signed out / signed in</h4><span class="tag">.dtopbar</span></div>
+    <div class="doc-card-body">
+      <div class="doc-demo col" style="padding:0">
+        <div class="dtopbar"><div class="wordmark">PAIN<b>.</b>BET</div><div class="navtabs"><a class="on" href="#">Casino</a><a href="#">Sports</a><a href="#">Arcade</a></div><div class="grow"></div><div class="dsearch">Search 47 games…</div><button class="btn red" style="font-size:9.5px;padding:8px 13px">Sign in</button></div>
+        <div class="dtopbar"><div class="wordmark">PAIN<b>.</b>BET</div><div class="navtabs"><a class="on" href="#">Casino</a><a href="#">Sports</a><a href="#">Arcade</a></div><div class="grow"></div><div class="dbal">USDT <b>2,840</b> · PK 1,250</div>
+          <div class="acctzone"><div class="acctbtn"><span class="ava">W</span><span style="font-family:var(--mono);font-size:10.5px">WD-88213</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="doc-grid g2" style="margin-top:20px">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Sidebar — group + item</h4><span class="tag">.dside</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="dside">
+        <div class="grp red">Casino</div><a class="on" href="#">Lobby</a><a href="#">Slots</a><a href="#">Promotions</a>
+        <div class="grp blue">Rewards</div><a href="#">Pain scale</a><a href="#">PainKillers</a><a href="#">Anesthesia</a>
+      </div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Account menu</h4><span class="tag">.acctmenu</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="acctmenu" style="position:static;width:260px">
+        <div class="acctmenu-head"><span class="ava2">W</span><div><div class="nm">WD-88213</div><div class="id">PATIENT · ADMITTED</div></div></div>
+        <button class="acctmenu-item"><span class="ic">◎</span>The Chart</button>
+        <button class="acctmenu-item"><span class="ic">$</span>Wallet</button>
+        <div class="acctmenu-sep"></div>
+        <button class="acctmenu-item danger"><span class="ic">⏻</span>Sign out</button>
+      </div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Bottom nav (≤900px)</h4><span class="tag">.bottomnav</span></div>
+      <div class="doc-card-body"><div class="doc-demo" style="padding:0"><div class="bottomnav" style="width:100%"><a class="on" href="#">Lobby</a><a href="#">Arcade</a><a href="#">Pain</a><a href="#">Wallet</a><a href="#">More</a></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Mode switch (≤900px)</h4><span class="tag">.mobmode</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="mobmode"><button class="on">Casino</button><button>Sports</button></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Breadcrumb</h4><span class="tag">.crumb</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="crumb"><button>Pain Originals</button> / Flatline</div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Rail scroller + "see all"</h4><span class="tag">.railnav-demo</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="railnav-demo"><button class="rbtn">←</button><button class="rbtn">→</button><button class="viewall">See all 22</button></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="c-overlays">
+  <h2 class="doc-h2">Overlays</h2>
+  <p class="doc-p">Full anatomy for every named modal lives in <a href="#modals" style="color:var(--doc-accent-2)">§03 Modal inventory</a>. This section documents the shared overlay primitives all fifteen build from.</p>
+  <div class="doc-grid g2">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Modal</h4><span class="tag">.modal-bg / .modalbox</span></div>
+      <div class="doc-card-body"><div class="doc-demo" style="padding:0"><div class="modal-bg" style="width:100%;padding:26px"><div class="modalbox" style="max-width:280px"><div class="mhead"><h3>Confirm</h3><button class="x">✕</button></div><div class="mbody" style="font-size:12.5px;color:var(--ink-dim)">Modal body content.</div></div></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Bottom sheet (mobile modal, &lt;900px)</h4><span class="tag">.sheet-demo</span></div>
+      <div class="doc-card-body"><div class="doc-demo" style="padding:0;align-items:flex-end"><div class="sheet-demo" style="width:100%;padding:26px 18px 18px"><div style="font-family:var(--disp);font-size:14px;text-transform:uppercase;margin-top:8px">Deposit</div></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Drawer — bet slip / PainTracker</h4><span class="tag">.betslip</span></div>
+      <div class="doc-card-body"><div class="doc-demo" style="padding:0;justify-content:flex-end"><div style="width:220px;background:rgba(15,17,22,.98);border-left:1px solid rgba(255,255,255,.1);padding:16px;min-height:150px"><div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:10px">Bet slip · 1 selection</div><div class="slip-row"><div class="top"><span>Team A</span><span style="color:var(--ink)">1.85</span></div><div class="sub">Match winner</div></div></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Scrim</h4><span class="tag">.scrim-demo</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="scrim-demo" style="width:100%">Dims + blocks the page behind an open drawer/modal. Click or Escape closes.</div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Dropdown</h4><span class="tag">.ddmenu</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="ddmenu" style="position:static;width:180px"><a href="#">Deposit history</a><a href="#">Withdrawal history</a><a href="#">Bonus history</a></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Tooltip</h4><span class="tag">.ttbubble</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="tooltip-demo"><span style="border-bottom:1px dashed var(--ink-dim);cursor:help">Combined odds</span><div class="ttbubble" style="position:static;transform:none;display:inline-block;margin-left:10px">Multiplies all selections in your slip</div></div></div>
+      <div class="doc-p" style="padding:0 18px 18px">800ms hover delay, 0ms on keyboard focus (per <code>microinteractions.md</code> discipline).</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="c-domain">
+  <h2 class="doc-h2">Domain</h2>
+  <div class="doc-grid g2">
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Odds button</h4><span class="tag">.odds-btn</span></div>
+      <div class="doc-card-body"><div class="doc-states">
+        <div class="doc-state-cell"><span class="lbl">default</span><button class="odds-btn"><span class="ol">1</span><span class="ov">1.85</span></button></div>
+        <div class="doc-state-cell"><span class="lbl">selected</span><button class="odds-btn sel"><span class="ol">1</span><span class="ov">1.85</span></button></div>
+        <div class="doc-state-cell"><span class="lbl">drift up</span><button class="odds-btn up"><span class="ol">1</span><span class="ov" style="color:var(--success)">1.92 ▲</span></button></div>
+        <div class="doc-state-cell"><span class="lbl">drift down</span><button class="odds-btn dn"><span class="ol">1</span><span class="ov" style="color:#ff6b86">1.78 ▼</span></button></div>
+        <div class="doc-state-cell"><span class="lbl">suspended</span><button class="odds-btn disabled"><span class="ol">1</span><span class="ov">—</span></button></div>
+      </div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Bet slip row</h4><span class="tag">.slip-row</span></div>
+      <div class="doc-card-body"><div class="doc-demo col"><div class="slip-row" style="width:100%"><div class="top"><span>Real Madrid</span><span>1.85</span></div><div class="sub">Match winner · La Liga</div><button class="slip-row rm" style="position:absolute">✕</button></div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Coin row</h4><span class="tag">.coin-row</span></div>
+      <div class="doc-card-body"><div class="doc-demo col"><div style="width:100%">
+        <div class="coin-row sel"><span class="ic">₮</span><div class="tx"><b>USDT</b><span>Tether · min 25</span></div><span class="bal">2,840.00</span></div>
+        <div class="coin-row"><span class="ic">Ξ</span><div class="tx"><b>ETH</b><span>Ethereum · min 0.01</span></div><span class="bal">0.42</span></div>
+      </div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Network selector</h4><span class="tag">.netsel</span></div>
+      <div class="doc-card-body"><div class="doc-demo col"><div class="netsel" style="width:100%"><button class="sel">TRC-20</button><button>ERC-20</button><button>BEP-20</button></div>
+        <div class="callout-band warning" style="margin-top:10px">Sending on the wrong network is unrecoverable — never pre-selected.</div>
+      </div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Seed row (provably fair)</h4><span class="tag">.seed-row</span></div>
+      <div class="doc-card-body"><div class="doc-demo col"><div style="width:100%">
+        <div class="seed-row"><span class="k">Server seed (hashed)</span><span class="v">9f2a…c114</span></div>
+        <div class="seed-row"><span class="k">Client seed</span><span class="v">wd88213-4f</span></div>
+        <div class="seed-row"><span class="k">Nonce</span><span class="v">1042</span></div>
+      </div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Limit grid row</h4><span class="tag">.limit-row</span></div>
+      <div class="doc-card-body"><div class="doc-demo col" style="padding:0"><div style="width:100%">
+        <div class="limit-row head"><span>Limit</span><span>Daily</span><span>Weekly</span><span>Monthly</span></div>
+        <div class="limit-row"><span style="font-size:12.5px;color:var(--ink)">Deposit</span><input value="500"><input value="2,000"><input value="6,000"></div>
+      </div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>KYC threshold meter</h4><span class="tag">.meter (kyc variant)</span></div>
+      <div class="doc-card-body"><div class="doc-demo col"><div style="width:100%">
+        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px"><span>Withdrawn to date</span><b style="color:#fff">8,020 / 10,000</b></div>
+        <div class="meter"><i class="warn" style="width:80%"></i></div>
+        <div class="callout-band warning" style="margin-top:10px">You're at 80% of your annual threshold — verify now to avoid a hold at 100%.</div>
+      </div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Pain-level ladder</h4><span class="tag">.pain-ladder</span></div>
+      <div class="doc-card-body"><div class="doc-demo col"><div class="pain-ladder" style="width:100%">
+        <div class="pain-tier cleared"><b>0</b><span>Mild</span></div>
+        <div class="pain-tier cleared"><b>2</b><span>Sore</span></div>
+        <div class="pain-tier current"><b>5.4</b><span>Aching</span></div>
+        <div class="pain-tier locked"><b>8</b><span>Agony</span></div>
+        <div class="pain-tier locked"><b>10</b><span>Flatline</span></div>
+      </div></div></div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-head"><h4>Threshold Raid stage</h4><span class="tag">.raid-stage</span></div>
+      <div class="doc-card-body"><div class="doc-demo"><div class="raid-stage" style="width:180px"><div class="pct">67%</div><span style="font-family:var(--mono);font-size:9px;color:var(--ink-dim)">pool charged</span></div>
+        <div class="raid-stage critical" style="width:180px"><div class="pct">86%</div><span style="font-family:var(--mono);font-size:9px;color:#ff8fa3">critical</span></div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="doc-section" id="modals">
+  <div class="doc-eyebrow">03 Modal inventory</div>
+  <h2 class="doc-h2">Fifteen modals</h2>
+  <p class="doc-p">Every modal shares the same shell (<code>.modal-bg</code> veil at <code>--veil</code>, <code>.modalbox</code> at <code>--r-lg</code>, <code>.mhead</code>/<code>.mbody</code>), enters/exits with the standard <code>--dur-slow</code> opacity+scale per Foundations → Motion, and closes via the header <code>✕</code>, a backdrop click, or Escape. Below 900px, most collapse to a bottom sheet — full width, rounded top corners only, a drag handle, rising from the bottom edge instead of scaling in from centre. The table states which route each takes and why.</p>
+
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Modal</th><th>Trigger</th><th>Mobile (&lt;900px)</th><th>Rationale</th></tr></thead>
+    <tbody>
+      <tr><td><b>Admissions</b></td><td>Sign in · hero CTA · gated tile</td><td>Bottom sheet</td><td>Long form, benefits from full-width fields</td></tr>
+      <tr><td><b>Auth cinematic</b></td><td>Behind admissions on submit</td><td>Stays centred, not a sheet</td><td>Full-bleed WebGL moment — a sheet would clip it</td></tr>
+      <tr><td><b>Recovery</b></td><td>Forgot password · lost 2FA</td><td>Bottom sheet</td><td>Multi-step form</td></tr>
+      <tr><td><b>Login 2FA</b></td><td>Sign-in with 2FA on</td><td>Bottom sheet</td><td>Short but keyboard-heavy — sheet keeps code entry above the keyboard</td></tr>
+      <tr><td><b>2FA enrolment</b></td><td>Security toggle</td><td>Bottom sheet</td><td>QR code needs width; centred on tablet, full sheet on phone</td></tr>
+      <tr><td><b>2FA challenge</b></td><td>Withdrawal</td><td>Bottom sheet</td><td>Same code-entry pattern as login 2FA</td></tr>
+      <tr><td><b>Transfusion (deposit)</b></td><td>Deposit button · lock bar</td><td>Bottom sheet</td><td>Three tabs + coin list is dense — needs full width</td></tr>
+      <tr><td><b>Connect wallet</b></td><td>Wallet link options</td><td>Bottom sheet</td><td>List pattern</td></tr>
+      <tr><td><b>Provably fair</b></td><td>Footer · seed panel</td><td>Bottom sheet</td><td>Long mono strings need width to avoid truncation</td></tr>
+      <tr><td><b>Reality check</b></td><td>Session timer</td><td><b>Stays centred, small</b></td><td>Deliberately interruptive — a sheet reads as dismissible, this shouldn't</td></tr>
+      <tr><td><b>Promo detail</b></td><td>Promo card</td><td>Bottom sheet</td><td>Art + rules is naturally a scrolling sheet</td></tr>
+      <tr><td><b>Legal</b></td><td>Footer links</td><td>Bottom sheet, near-full-height</td><td>Long-form text needs the extra vertical room</td></tr>
+      <tr><td><b>Chat</b></td><td>Triage · footer</td><td>Bottom sheet, near-full-height</td><td>Matches native chat-app conventions</td></tr>
+      <tr><td><b>Providers</b></td><td>Provider marquee</td><td>Bottom sheet</td><td>Grid reflows to 2-up inside the sheet</td></tr>
+      <tr><td><b>Game launch</b></td><td>Any tile</td><td><b>Stays centred, small</b></td><td>Transient loading/error state, not a content surface — matches USER_JOURNEYS.md's note that this is "a seam, not yet designed"; specified below</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="doc-callout warn">
+    <b>Code wins — an extra modal exists that isn't in the §10 inventory</b>
+    <code>index.html</code> ships an <code>apply-modal</code> ("Affiliate application") not listed among the fifteen named modals in USER_JOURNEYS.md. It follows the same shell and is documented at the end of this section rather than silently dropped.
+  </div>
+
+  <h3 class="doc-h3">Admissions</h3>
+  <div class="doc-card">
+    <div class="doc-card-body">
+      <p class="doc-p">Anatomy: <code>.mhead</code> with Register/Sign in tab switch → method switch (Telegram one-tap / Email) → form → auth cinematic overlay on submit → success panel (Patient ID, pain level 0, status ADMITTED). Closing mid-cinematic must not orphan a half-created account — the modal should block its own close affordance while the WebGL activation is in flight.</p>
+      <div class="doc-demo" style="padding:0"><div class="modal-bg" style="width:100%;padding:24px"><div class="modalbox" style="max-width:340px">
+        <div class="mhead"><div class="navtabs"><a class="on" href="#">Register</a><a href="#">Sign in</a></div><button class="x">✕</button></div>
+        <div class="mbody">
+          <div class="seg" style="width:100%;margin-bottom:14px"><button class="on" style="flex:1">Telegram</button><button style="flex:1">Email</button></div>
+          <div class="field" style="margin-bottom:10px"><label>Email</label><input placeholder="you@domain.com"></div>
+          <div class="field" style="margin-bottom:10px"><label>Password</label><input type="password"></div>
+          <label class="chk" style="font-size:11px;margin-bottom:12px"><input type="checkbox">I'm 18+ and accept the terms</label>
+          <button class="btn red" style="width:100%;justify-content:center">Create account</button>
+        </div>
+      </div></div></div>
+      <div class="doc-callout code-wins" style="margin-top:14px"><b>Code wins</b>Demo mode from J1 is flagged unresolved in USER_JOURNEYS.md — not designed here either. If shipped, it needs a persistent DEMO marker and must never touch balance/loyalty/history; treat as an open item, not silently invented.</div>
+    </div>
+  </div>
+
+  <h3 class="doc-h3">Auth cinematic</h3>
+  <div class="doc-card"><div class="doc-card-body">
+    <p class="doc-p">Idle → pulse → activation → mark, playing behind/over the admissions form on submit. <b>Must degrade gracefully</b> — if WebGL fails to init, the modal stays legible and the form still submits; the cinematic is enrichment, never a gate. This is ambient motion (ignores reduced-motion) layered on top of a functional modal (which respects it) — keep the WebGL layer and the modal chrome's own enter/exit animation on separate timing systems so one failing doesn't block the other.</p>
+    <div class="doc-demo"><div style="width:100%;min-height:90px;border-radius:var(--r-md);background:radial-gradient(circle at 50% 50%,rgba(224,22,60,.35),#0c0d10 70%);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--redhi);text-transform:uppercase">Neuron activation — degrades to this static gradient if WebGL fails</div></div>
+  </div></div>
+
+  <h3 class="doc-h3">Recovery, Login 2FA, 2FA enrolment, 2FA challenge</h3>
+  <div class="doc-grid g2">
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Recovery — 4 internal steps</div>
+      <p class="doc-p" style="margin-bottom:0">request → sent → new password → lost-both. The "sent" state deliberately doesn't confirm the address is registered — copy needs room for that qualifier without looking evasive (see §07 Voice).</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Login 2FA / 2FA challenge</div>
+      <div class="doc-demo col"><div class="codeentry" style="justify-content:center"><input maxlength="1" value="4"><input maxlength="1" value="1"><input maxlength="1" value="9"><input maxlength="1"><input maxlength="1"><input maxlength="1"></div>
+        <a href="#" style="font-size:11px;color:var(--doc-accent-2);align-self:center">Use a backup code instead</a></div>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">2FA enrolment</div>
+      <p class="doc-p" style="margin-bottom:8px">QR + manual key → confirm code → 8 backup codes shown once.</p>
+      <div class="tfa-backup" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><code style="background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 11px;font-family:var(--mono);font-size:11px;color:#e8eaee;text-align:center">4F2A-91XZ</code><code style="background:rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 11px;font-family:var(--mono);font-size:11px;color:#e8eaee;text-align:center">0K3L-77QP</code></div>
+    </div></div>
+  </div>
+
+  <h3 class="doc-h3">Transfusion (deposit)</h3>
+  <div class="doc-card"><div class="doc-card-body">
+    <p class="doc-p">Three tabs: Transfusion, Discharge, Buy crypto — coin list → coin detail → mandatory network select (never defaulted) → address + QR + copy. A pending deposit surfaces as a Wallet → In-flight row the instant it's detected on chain, before confirmation.</p>
+    <div class="doc-demo col"><div style="width:100%"><div class="seg" style="margin-bottom:14px"><button class="on">Transfusion</button><button>Discharge</button><button>Buy crypto</button></div>
+      <div class="coin-row sel"><span class="ic">₮</span><div class="tx"><b>USDT</b><span>min 25</span></div><span class="bal">2,840.00</span></div>
+      <div class="netsel" style="margin-top:12px"><button class="sel">TRC-20</button><button>ERC-20</button><button>BEP-20</button></div>
+    </div></div>
+  </div></div>
+
+  <h3 class="doc-h3">Connect wallet, Provably fair, Promo detail, Providers</h3>
+  <div class="doc-grid g2">
+    <div class="doc-card"><div class="doc-card-body"><div class="doc-h4" style="margin-top:0">Connect wallet</div><p class="doc-p" style="margin-bottom:8px">list → searching (skeleton rows, see §02 Surfaces → Skeleton) → connecting (spinner on the chosen provider row).</p></div></div>
+    <div class="doc-card"><div class="doc-card-body"><div class="doc-h4" style="margin-top:0">Provably fair</div><p class="doc-p" style="margin-bottom:8px">empty → result → commitment ok/mismatch → how-it-works pane. Works with no account signed in.</p>
+      <div class="note-inline success" style="margin-top:4px">Commitment verified — this round was fair.</div>
+      <div class="note-inline error" style="margin-top:6px">Hash mismatch — this round's result doesn't match its committed seed.</div>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body"><div class="doc-h4" style="margin-top:0">Promo detail</div><p class="doc-p" style="margin-bottom:0">art → rules → CTA that routes per promo key (deposit modal, a view, tracker, or — for <code>drops</code> — nothing; see Open questions).</p></div></div>
+    <div class="doc-card"><div class="doc-card-body"><div class="doc-h4" style="margin-top:0">Providers</div><p class="doc-p" style="margin-bottom:0">Single-state grid, reflows 2-up in the mobile sheet.</p></div></div>
+  </div>
+
+  <h3 class="doc-h3">Reality check — the one exception that stays centred</h3>
+  <div class="doc-card"><div class="doc-card-body">
+    <p class="doc-p">Fires at the user-set interval with elapsed time, net position (colour-coded), wagered, balance. Two actions: Continue, or Take a break (routes straight to break controls). Kept centred and small on mobile rather than a sheet — a sheet reads as swipe-dismissible, undermining the interrupt.</p>
+    <div class="doc-demo"><div class="modalbox" style="max-width:280px"><div class="mhead"><h3>Reality check</h3></div><div class="mbody">
+      <div class="kv-row"><span class="k">Session</span><span class="v">42 min</span></div>
+      <div class="kv-row"><span class="k">Net</span><span class="v" style="color:#ff5c7c">-140.00</span></div>
+      <div class="kv-row"><span class="k">Wagered</span><span class="v">1,204.00</span></div>
+      <div style="display:flex;gap:8px;margin-top:14px"><button class="btn" style="flex:1;justify-content:center">Take a break</button><button class="btn red" style="flex:1;justify-content:center">Continue</button></div>
+    </div></div></div>
+  </div></div>
+
+  <h3 class="doc-h3">Legal, Chat</h3>
+  <div class="doc-grid g2">
+    <div class="doc-card"><div class="doc-card-body"><div class="doc-h4" style="margin-top:0">Legal — 4 panes</div><div class="doc-demo"><div class="navtabs" style="flex-wrap:wrap"><a class="on" href="#">Terms</a><a href="#">Privacy</a><a href="#">AML</a><a href="#">Responsible gaming</a></div></div></div></div>
+    <div class="doc-card"><div class="doc-card-body"><div class="doc-h4" style="margin-top:0">Chat — log, agent/user message states</div>
+      <div class="doc-demo col"><div style="align-self:flex-start;max-width:80%;background:var(--glass);border:1px solid var(--glass-border);border-radius:12px 12px 12px 4px;padding:9px 12px;font-size:12px">Hi — how can I help?</div>
+      <div style="align-self:flex-end;max-width:80%;background:var(--blood);border-radius:12px 12px 4px 12px;padding:9px 12px;font-size:12px;color:#fff">My withdrawal is stuck</div></div>
+      <div class="doc-callout open" style="margin:12px 18px 0"><b>Gap</b>No ticket history or escalation path exists — a user with an ongoing issue has nowhere to see it (USER_JOURNEYS.md J23). Flagged, not invented.</div>
+    </div></div>
+  </div>
+
+  <h3 class="doc-h3">Game launch — designed here, not yet built</h3>
+  <div class="doc-card"><div class="doc-card-body">
+    <p class="doc-p">USER_JOURNEYS.md explicitly calls this "a seam, not yet designed." Specified now so engineering has something to build against: <b>loading</b> (skeleton frame + provider name), <b>error</b> (provider-unavailable, retry + pick another game), <b>demo</b> (persistent badge, never touches balance/loyalty — same open constraint as J1's demo mode). A round in progress must never silently lose a stake; the loading state should not be dismissible until the outcome resolves or the provider connection is confirmed dead.</p>
+    <div class="doc-demo">
+      <div style="width:150px;aspect-ratio:3/4;border-radius:var(--tile-r);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px"><div class="skeleton tile" style="width:100%;height:100%;position:absolute"></div><span style="position:relative;font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:.1em">LAUNCHING…</span></div>
+      <div style="width:150px;aspect-ratio:3/4;border-radius:var(--tile-r);background:rgba(224,22,60,.1);border:1px solid rgba(224,22,60,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;text-align:center"><span style="font-size:18px">⚠</span><span style="font-size:11px;color:#ff8fa3">Provider unavailable</span><button class="btn" style="font-size:8.5px;padding:6px 10px">Try another</button></div>
+    </div>
+  </div></div>
+
+  <h3 class="doc-h3">Affiliate application — undocumented in §10, present in code</h3>
+  <div class="doc-card"><div class="doc-card-body"><p class="doc-p" style="margin-bottom:0">Same modal shell; a short form gating access to the affiliate dashboard. Included here for completeness since it exists in <code>index.html</code> (<code>#apply-modal</code>) but wasn't in the fifteen-item inventory.</p></div></div>
+</section>
+
+
+<section class="doc-section" id="layout">
+  <div class="doc-eyebrow">04 Navigation &amp; Layout</div>
+  <h2 class="doc-h2">Shell, sidebar, account area</h2>
+
+  <h3 class="doc-h3">Grid &amp; container widths</h3>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Region</th><th>Width</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Shell grid</td><td class="num">220px / 1fr</td><td><code>.shell{grid-template-columns:220px 1fr}</code> desktop; collapses to a single column with an off-canvas sidebar below 900px</td></tr>
+      <tr><td>Sidebar rail</td><td class="num">220–240px</td><td>USER_JOURNEYS.md §14 lists <code>--nav-w:240px</code>; live shell grid uses 220px — <b>code wins</b>, 220px is canonical, 240px kept only as the token's stated value for anything not driven by the grid directly</td></tr>
+      <tr><td>Content max-width</td><td class="num">1320px</td><td><code>.content{max-width:1320px}</code>, centred</td></tr>
+      <tr><td>Topbar height</td><td class="num">64px</td><td>Sticky, <code>z-index:50</code></td></tr>
+      <tr><td>Rail tile</td><td class="num">~140px min</td><td><code>flex:0 0 calc((100% - 5*16px)/6.4)</code> — 6.4 tiles visible, encouraging horizontal scroll discovery</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="doc-h3">Topbar — signed out / signed in</h3>
+  <div class="doc-demo col dark-note">
+    <div class="doc-demo-label">Signed out</div>
+    <div class="dtopbar" style="width:100%"><div class="wordmark">PAIN<b>.</b>BET</div><div class="navtabs"><a class="on" href="#">Casino</a><a href="#">Sports</a><a href="#">Arcade</a></div><div class="grow"></div><div class="dsearch">Search 47 games…</div><button class="btn red">Sign in</button></div>
+    <div class="doc-demo-label">Signed in — with unverified email bar</div>
+    <div style="width:100%"><div class="dtopbar" style="width:100%"><div class="wordmark">PAIN<b>.</b>BET</div><div class="navtabs"><a class="on" href="#">Casino</a><a href="#">Sports</a><a href="#">Arcade</a></div><div class="grow"></div><div class="dbal">USDT <b>2,840</b> · PK 1,250</div><div class="acctzone"><div class="acctbtn"><span class="ava">W</span><span style="font-family:var(--mono);font-size:10.5px">WD-88213</span></div></div><button class="btn red" style="font-size:9.5px;padding:8px 13px">Deposit</button></div>
+    <div class="banner-email" style="border-radius:0 0 var(--r-md) var(--r-md)">Confirm your email to unlock full withdrawals. <button>Resend</button></div></div>
+  </div>
+
+  <h3 class="doc-h3">Sidebar — four groups</h3>
+  <p class="doc-p">Each group carries a coloured dot: red for anything money/risk-adjacent, blue for reward/relief products, neutral grey otherwise. Casino mode and Sports mode show different link sets under the same shell.</p>
+  <div class="doc-demo dark-note">
+    <div class="dside">
+      <div class="grp red">Casino</div><a class="on" href="#">Lobby</a><a href="#">Slots</a><a href="#">Live</a><a href="#">Promotions</a>
+      <div class="grp blue">Rewards</div><a href="#">Pain scale</a><a href="#">Relief</a><a href="#">Anesthesia</a><a href="#">PainKillers</a>
+      <div class="grp">Community</div><a href="#">Threshold Raid</a><a href="#">Affiliate</a>
+      <div class="grp">Account</div><a href="#">The Chart</a><a href="#">Triage</a>
+    </div>
+  </div>
+  <div class="doc-callout code-wins">
+    <b>Mobile drawer (rebuilt per HANDOFF.md item 11)</b>
+    Below 900px the hamburger is gone entirely — replaced by a sticky Casino/Sports segmented toggle under the topbar. The sidebar becomes a <code>position:fixed</code> slide-in drawer (<code>translateX(-100%)</code> → <code>0</code> on <code>body.mobnav-open</code>), opened via the bottom nav's "More" item, with a scrim that closes on click and on Escape. This replaced an earlier build where the entire sidebar was unreachable on mobile — treat drawer-reachability as a regression risk to test on every nav change.
+  </div>
+
+  <h3 class="doc-h3">The Chart — eight tabs</h3>
+  <div class="doc-demo">
+    <div class="seg" style="flex-wrap:wrap"><button class="on">Profile</button><button>Security</button><button>Verification</button><button>Preferences</button><button>Limits</button><button>Wallet</button><button>Activity</button><button>Referral</button></div>
+  </div>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Tab</th><th>Notable states</th></tr></thead>
+    <tbody>
+      <tr><td>Profile</td><td>view ⇄ edit · linked ⇄ unlinked · close-account blocked while funds remain</td></tr>
+      <tr><td>Security</td><td>2FA on/off · enrolment 2 steps · current vs other device in session list</td></tr>
+      <tr><td>Verification</td><td>unverified · in review · verified · rejected + reason</td></tr>
+      <tr><td>Preferences</td><td>toggle on/off/locked · empty Booster state</td></tr>
+      <tr><td>Limits &amp; breaks</td><td>pending increase · limit active · danger zone (self-exclusion)</td></tr>
+      <tr><td>Wallet</td><td>pending · declined · empty address book</td></tr>
+      <tr><td>Activity</td><td>win/loss/pending pills · empty state</td></tr>
+      <tr><td>Referral</td><td>copied state · unpaid balance</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="doc-h3">Bet slip drawer</h3>
+  <div class="doc-demo" style="justify-content:flex-end;padding:0">
+    <div style="width:240px;background:rgba(15,17,22,.98);border-left:1px solid rgba(255,255,255,.1);padding:16px;min-height:220px;display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)">Bet slip · 2 selections</div>
+      <div class="slip-row"><div class="top"><span>Real Madrid</span><span>1.85</span></div><div class="sub">Match winner</div></div>
+      <div class="slip-row"><div class="top"><span>Over 2.5</span><span>1.92</span></div><div class="sub">Total goals</div></div>
+      <div class="well" style="margin-top:auto"><div class="kv-row"><span class="k">Combined</span><span class="v">3.55</span></div><div class="kv-row"><span class="k">Stake</span><span class="v">50.00</span></div><div class="kv-row"><span class="k">Payout</span><span class="v blue">177.50</span></div></div>
+      <button class="btn red" style="justify-content:center">Place bet</button>
+    </div>
+  </div>
+  <p class="doc-p">Empty / slip / "my bets" are the three internal states. Desktop: right-fixed drawer. Mobile: bottom sheet triggered by a floating tab, matching the modal bottom-sheet treatment in §03.</p>
+</section>
+
+
+<section class="doc-section" id="flows-access">
+  <div class="doc-eyebrow">05 Flows</div>
+  <h2 class="doc-h2">Access — J1–J6</h2>
+
+  <h3 class="doc-h3">J1 · First visit, anonymous</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Land on lobby — nothing gated</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Browse / search 47 tiles live</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>Tap a game</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode decision">Anonymous?<br><b>gate check</b></div><div class="doc-farrow">→</div>
+    <div class="doc-fnode terminal">Admissions modal opens<br><b>not a dead end</b></div>
+  </div></div>
+  <div class="doc-callout open"><b>Unresolved</b>Demo mode is undecided — if offered, needs a persistent DEMO marker and must never touch balance, loyalty or history.</div>
+
+  <h3 class="doc-h3">J2 · Register</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Choose method — Telegram (one tap) or Email</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Fill — email, password + strength meter, referral, 18+/terms</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>Auth cinematic plays over form</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">04</span>Success panel — Patient ID, pain 0, ADMITTED, seed pair committed</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Ward entered<br>topbar → signed-in<br>email bar appears</div>
+  </div></div>
+  <div class="doc-callout warn"><b>Branch</b>Email already registered → offer sign-in without confirming the address exists (same non-disclosure principle as password recovery).</div>
+
+  <h3 class="doc-h3">J3 · Sign in</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Credentials or linked provider</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode decision">2FA enabled?</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Challenge — code, backup code, or "lost both"</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Signed in — topbar, balance, menu update</div>
+  </div></div>
+  <div class="doc-callout warn"><b>Branch</b>Backup codes are single-use — six remaining after one use should surface somewhere the user will actually see it (Security tab is the natural home).</div>
+
+  <h3 class="doc-h3">J4 · Password recovery</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>"Forgot password?" — prefills what was typed</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Request — email → send</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode">Sent state — deliberately doesn't reveal whether address is registered</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>New password (from emailed link) — sets, ends all other sessions</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Signed in</div>
+  </div></div>
+
+  <h3 class="doc-h3">J5 · Lost password and authenticator</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>"Lost both?" from 2FA challenge or recovery</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Three-step explainer — email from account address, send ID + selfie, one-day reset window</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode">Mail Triage — deliberately slower, should read as considered, not broken</div>
+  </div></div>
+
+  <h3 class="doc-h3">J6 · Confirm email</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Site-wide amber bar, every view, while unverified</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Resend → transient "Sent — check your inbox" on the button itself</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Confirmed → bar disappears everywhere</div>
+  </div></div>
+</section>
+
+<section class="doc-section" id="flows-money">
+  <h2 class="doc-h2">Money — J7–J10, and the gate stack</h2>
+  <p class="doc-p">Every money action — deposit, play, withdraw — runs the same six-check gate stack first. This is the single most load-bearing diagram in the product: every failure branch routes somewhere useful rather than a dead "action failed" state.</p>
+
+  <div class="doc-flow">
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode">Money action initiated</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode decision">Suspended?</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode fail">Yes → Contact support</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center;margin-top:10px">
+      <div style="min-width:34px"></div><div class="doc-farrow">↓ No</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode decision">Locked (break/exclusion)?</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode fail">Yes, play or deposit → show unlock date</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center;margin-top:10px">
+      <div style="min-width:34px"></div><div class="doc-farrow">↓ No, or withdrawing (withdrawal stays open through a lock)</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode decision">RG limit hit?</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode fail">Yes → limit + reset time</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center;margin-top:10px">
+      <div style="min-width:34px"></div><div class="doc-farrow">↓ No</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode decision">Funds in right bucket?</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode fail">No → offer deposit</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center;margin-top:10px">
+      <div style="min-width:34px"></div><div class="doc-farrow">↓ Yes</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode decision">Withdrawal?</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode ok">No → execute</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center;margin-top:10px">
+      <div style="min-width:34px"></div><div class="doc-farrow">↓ Yes</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode decision">2FA passed?</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode fail">No → challenge</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center;margin-top:10px">
+      <div style="min-width:34px"></div><div class="doc-farrow">↓ Yes</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode decision">Past KYC threshold?</div><div class="doc-farrow">→</div>
+      <div class="doc-fnode fail">Yes → route to verification</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center;margin-top:10px">
+      <div style="min-width:34px"></div><div class="doc-farrow">↓ No</div>
+    </div>
+    <div class="doc-flow-row" style="align-items:center">
+      <div class="doc-fnode ok">Execute</div>
+    </div>
+  </div>
+
+  <h3 class="doc-h3">J7 · Deposit (Transfusion)</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Open from Deposit button — 3 tabs</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Pick coin (7 options) — balance + min shown per row</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>Pick network — mandatory, never defaulted</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">04</span>Address + QR, network name repeated adjacent</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Detected → credited at 1 confirmation. Pending row + tx hash in Transactions immediately</div>
+  </div></div>
+  <div class="doc-callout warn"><b>Failure states to design</b>Below minimum · wrong network · deposit lands while the account is locked (credit it, keep play blocked — a genuinely subtle rule: the money still counts, the ability to stake it doesn't).</div>
+
+  <h3 class="doc-h3">J8 · Buy crypto</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Amount + fiat currency, live rate line</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Coin selection → live "you get" quote</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>Partner terms checkbox gates the button</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode terminal">Hand off to licensed third party</div>
+  </div></div>
+
+  <h3 class="doc-h3">J9 · Withdraw (Discharge)</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Coin, destination, amount — saved addresses selectable</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Net arriving amount stated explicitly (fee comes out of the amount)</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode decision">Gate stack (above)</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>2FA challenge</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode">Pending — Wallet → In flight, cancellable until signed</div>
+  </div></div>
+  <div class="doc-callout warn"><b>Also design</b>Cancel returns funds clean — out of locked, back to withdrawable, KYC counter wound back, no re-wagering penalty. Declined state with a reason. Queued state while verification is in review.</div>
+
+  <h3 class="doc-h3">J10 · Verification</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Threshold meter — withdrawn-to-date vs cap, colour-shifts as it fills</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode decision">80%?</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode">Warning shown before the wall, not at it</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Upload ID + selfie — dashed drop, filled state, filename</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode">In review — withdrawals queue, don't fail</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Verified</div>
+  </div></div>
+</section>
+
+<section class="doc-section" id="flows-play">
+  <h2 class="doc-h2">Play — J11–J14</h2>
+
+  <h3 class="doc-h3">J11 · Casino round</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Tile → launch (data-game/cat/provider)</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Stake validated — balance, RG wager limit, Booster max-bet — blocked at entry, never retroactively</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>Server-authoritative outcome</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Settle — winnings return to funding bucket, loyalty accrues, immutable Game activity row</div>
+  </div></div>
+  <div class="doc-callout warn"><b>Design needed</b>Loading, provider-unavailable, disconnect-recovery — specified in §03 Modals → Game launch above. A round in progress must never silently lose a stake.</div>
+
+  <h3 class="doc-h3">J12 · Verify a round</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Seed panel in Security — hash, nonce, editable client seed, rotate</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Rotate reveals previous server seed, prefills verifier</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Verifier recomputes in-browser, checks against published hash — works with no account</div>
+  </div></div>
+  <div class="doc-callout open"><b>Gap worth closing</b>Game activity rows should deep-link into the verifier prefilled with that round's seed/nonce — copying by hand is friction on the one feature that has to feel effortless.</div>
+
+  <h3 class="doc-h3">J13 · Sports bet</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Browse live/prematch, sport filter rail</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Tap odds → enters slip, odds drift live</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">03</span>Slip — stake, combined odds, projected payout</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode decision">Odds changed?<br>improve-only / any / ask</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Place → toast, balance debits, rows in My bets + activity</div>
+  </div></div>
+  <p class="doc-p">Settle: won / lost / void — a void leg in an accumulator recalculates rather than killing the whole bet.</p>
+
+  <h3 class="doc-h3">J14 · Threshold Raid</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Live shared pool, WebGL neuron charges as it fills</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Stake in → your share + projected payout update live, leaderboard reorders</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode fail" style="animation:critPulse 1.4s infinite">Critical at 85% — visual escalation</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Flatline at target — bounty splits by contribution share, fresh boss spawns</div>
+  </div></div>
+</section>
+
+
+<section class="doc-section" id="flows-rewards">
+  <div class="doc-eyebrow">05 Flows</div>
+  <h2 class="doc-h2">Rewards — J15–J19</h2>
+  <p class="doc-p">Four linked products plus affiliate. The loyalty concept — a literal pain scale — is the most differentiated thing in the product and earns the pain-ladder/dial/ECG treatment specified in §02 Domain, not generic tier badges.</p>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Journey</th><th>Product</th><th>Mechanic</th><th>Key screen</th></tr></thead>
+    <tbody>
+      <tr><td>J15</td><td>Pain scale</td><td>Lifetime wagered drives 0→10, fractional levels, named tiers MILD→AGONY</td><td>Ladder + rates-by-level table + ECG vitals card</td></tr>
+      <tr><td>J16</td><td>Relief</td><td>Rakeback 1→9% per level, pays per bet, no wagering requirement</td><td>Live drip line</td></tr>
+      <tr><td>J17</td><td>Anesthesia</td><td>0→10% of weekly net loss, paid Monday 00:00 UTC, no wagering</td><td>Weekly payback card</td></tr>
+      <tr><td>J18</td><td>PainKillers</td><td>8→42 PK per 100 USDT wagered, never expires, tolerance-dial streak multiplier</td><td>Dial + wallet + live feed</td></tr>
+      <tr><td>J19</td><td>Affiliate</td><td>0.5% of referred wager, live stats, payout to wallet</td><td>Link row, stat grid, commission table</td></tr>
+    </tbody>
+  </table></div>
+  <div class="doc-demo dark-note">
+    <div class="pain-ladder" style="width:100%">
+      <div class="pain-tier cleared"><b>0</b><span>Mild</span></div>
+      <div class="pain-tier cleared"><b>2</b><span>Sore</span></div>
+      <div class="pain-tier current"><b>5.4</b><span>Aching</span></div>
+      <div class="pain-tier locked"><b>8</b><span>Agony</span></div>
+      <div class="pain-tier locked"><b>10</b><span>Flatline</span></div>
+    </div>
+  </div>
+  <div class="doc-callout open">
+    <b>Unresolved — PainKillers</b>
+    PK accrue but have nothing to spend them on. A currency that only accumulates isn't a currency; the redemption surface doesn't exist yet. This document specifies the dial/wallet/feed components (§02 Domain) but does not invent a redemption flow — that's a product decision, not a design one.
+  </div>
+</section>
+
+<section class="doc-section" id="flows-safety">
+  <h2 class="doc-h2">Safety — J20–J23</h2>
+  <p class="doc-p">Licence-required, and deliberately designed to feel considered rather than like compliance furniture — a stated brand position, not a design afterthought.</p>
+
+  <h3 class="doc-h3">J20 · Set a limit</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Grid — deposit/loss/wager × daily/weekly/monthly</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode decision">Decrease or increase?</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode ok">Decrease → applies instantly</div>
+  </div>
+  <div class="doc-flow-row" style="margin-top:8px"><div style="min-width:184px"></div><div class="doc-farrow">↓ Increase</div></div>
+  <div class="doc-flow-row"><div class="doc-fnode">Queues 24h — pending banner lists effective time + cancel, old limit holds until then</div></div></div>
+  <div class="callout-band warning" style="margin-top:14px">Limit reached → the action is blocked with the reset time, wherever it was attempted — never a generic "action failed."</div>
+
+  <h3 class="doc-h3">J21 · Take a break / self-exclude</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Choose duration — Break: 24h/7d/30d. Exclusion: 6mo/1yr/permanent, in a visually distinct danger zone</div><div class="doc-farrow">→</div>
+    <div class="doc-fstep"><span class="n">02</span>Confirm — <b>twice for exclusion</b>, because it's irreversible</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode fail">Locked — fixed bar site-wide, unlock date + withdraw action</div>
+  </div></div>
+  <p class="doc-p">Play and deposit blocked everywhere; withdrawal stays open throughout — see the <a href="#voice" style="color:var(--doc-accent-2)">double-confirmation pattern</a> in §07.</p>
+
+  <h3 class="doc-h3">J22 · Reality check</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Set interval — off/15/30/60 min</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode">Fires with elapsed time, net (colour-coded), wagered, balance</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode decision">Continue, or take a break?</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode fail">Break → routes straight to break controls</div>
+  </div></div>
+
+  <h3 class="doc-h3">J23 · Support</h3>
+  <div class="doc-flow"><div class="doc-flow-row">
+    <div class="doc-fstep"><span class="n">01</span>Triage — 4 channels with response-time expectations: live chat, Telegram, Discord, email</div><div class="doc-farrow">→</div>
+    <div class="doc-fnode">Chat modal — agent/user message states</div>
+  </div></div>
+  <div class="doc-callout open"><b>Gap</b>No ticket history or escalation path — a user with an ongoing issue has nowhere to see it.</div>
+</section>
+
+<section class="doc-section" id="flows-blocked">
+  <h2 class="doc-h2">Blocked states</h2>
+  <p class="doc-p">Given equal design attention to the happy path, per brief. Every blocked state names the reason, the unlock condition, and — where one exists — a route onward.</p>
+  <div class="doc-grid g2">
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Locked account (break / exclusion)</div>
+      <div class="banner-lock" style="border-radius:var(--r-md)">Account locked until 04 Aug 2026 · 09:00 UTC — self-exclusion active. <button class="btn blue" style="padding:6px 12px;font-size:9.5px">Withdraw</button></div>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Limit reached</div>
+      <div class="callout-band danger">Daily wager limit reached — resets in 6h 12m. <a href="#" style="color:#fff;text-decoration:underline;margin-left:6px">Adjust limits</a></div>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Verification required</div>
+      <div class="callout-band warning">This withdrawal needs ID verification first. <a href="#" style="color:var(--warning);text-decoration:underline;margin-left:6px">Start verification</a></div>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Insufficient balance</div>
+      <div class="field error" style="max-width:220px"><input value="500.00"><span class="hint error">Balance is 128.40 — deposit to continue.</span></div>
+      <button class="btn red" style="margin-top:10px;font-size:9.5px">Deposit</button>
+    </div></div>
+  </div>
+</section>
+
+<section class="doc-section" id="responsive">
+  <div class="doc-eyebrow">06 Responsive</div>
+  <h2 class="doc-h2">Breakpoints — twelve consolidated to four</h2>
+  <p class="doc-p">USER_JOURNEYS.md §13 counts twelve distinct ad hoc widths currently in use across <code>index.html</code> (≤1100, ≤960, ≤900, ≤820, ≤760, ≤700, ≤640, ≤600, ≤420, plus a few one-off values). This system consolidates to four, each with a clear reason to exist rather than a value someone eyeballed once.</p>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Breakpoint</th><th>Role</th><th>What changes</th></tr></thead>
+    <tbody>
+      <tr><td class="num">≥1100px</td><td>Desktop</td><td>Full shell — 220px sidebar, topbar tabs + search, 6.4-tile rails, bet slip as a right drawer</td></tr>
+      <tr><td class="num">900–1099px</td><td>Narrow desktop / tablet landscape</td><td>Support and Chart grids step down a column (absorbs the old ≤1100/≤960 breaks); sidebar still docked</td></tr>
+      <tr><td class="num"><b>≤900px — primary break</b></td><td>Tablet portrait / mobile</td><td>Sidebar becomes an off-canvas drawer · bottom nav appears · topbar sheds nav tabs and search · Casino/Sports mode-switch pill appears under the topbar · most modals become bottom sheets</td></tr>
+      <tr><td class="num">≤600px</td><td>Secondary break — phone</td><td>Rails step to 2-up · page padding reduces · tables gain horizontal scroll · <code>.blk</code> padding drops from 32/28 to 18/16 · limit grid rows lose their header row and stack</td></tr>
+      <tr><td class="num">≤390px</td><td>Smallest supported</td><td>Absorbs the old ≤420 tier — codeentry inputs shrink, balance pill allowed to wrap to 2 lines rather than overflow (a known minor issue, see Open questions), stat tiles go full width</td></tr>
+    </tbody>
+  </table></div>
+  <div class="doc-callout code-wins">
+    <b>Consolidation isn't a rewrite</b>
+    This table is the target vocabulary for new work, not a claim that <code>index.html</code>'s twelve breakpoints have been collapsed yet — that's a migration, tracked separately from this reference. New components should be built against these four/five values; existing ad hoc breakpoints should fold into the nearest one on next touch rather than accumulating a thirteenth.
+  </div>
+  <div class="doc-demo dark-note col">
+    <div class="doc-demo-label">≤900px — sidebar drawer + bottom nav + mode switch</div>
+    <div style="max-width:300px;border:1px solid var(--glass-border);border-radius:var(--r-md);overflow:hidden">
+      <div class="dtopbar" style="height:48px;padding:0 12px"><div class="wordmark" style="font-size:12px">PAIN<b>.</b>BET</div><div class="grow"></div><span class="ava" style="width:22px;height:22px;border-radius:50%;background:var(--blood);display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff">W</span></div>
+      <div style="padding:8px;display:flex;justify-content:center"><div class="mobmode"><button class="on" style="padding:6px 14px;font-size:9px">Casino</button><button style="padding:6px 14px;font-size:9px">Sports</button></div></div>
+      <div style="height:70px;display:flex;align-items:center;justify-content:center;color:var(--ink-dim);font-size:10px;font-family:var(--mono)">content…</div>
+      <div class="bottomnav"><a class="on" href="#" style="font-size:7.5px">Lobby</a><a href="#" style="font-size:7.5px">Arcade</a><a href="#" style="font-size:7.5px">Pain</a><a href="#" style="font-size:7.5px">Wallet</a><a href="#" style="font-size:7.5px">More</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="doc-section" id="voice">
+  <div class="doc-eyebrow">07 Content &amp; Voice</div>
+  <h2 class="doc-h2">Copy rules</h2>
+  <p class="doc-p">Deadpan, precise, clinical. Patients not players. Wards, charts, admissions, discharge, anaesthesia — the medical frame is load-bearing, not decorative, and it never winks at the user. No em-dashes anywhere in copy (HANDOFF.md). Errors say what went wrong <b>and how to fix it</b> — never just the fault.</p>
+
+  <div class="doc-grid g2">
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Button labels</div>
+      <table class="doc-table"><tbody>
+        <tr><td>Deposit</td><td>Transfusion</td></tr>
+        <tr><td>Withdraw</td><td>Discharge</td></tr>
+        <tr><td>Sign up</td><td>Admissions</td></tr>
+        <tr><td>Session limit reminder</td><td>Reality check</td></tr>
+        <tr><td>Verify</td><td>Verification</td></tr>
+      </tbody></table>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Error messages — states the fix</div>
+      <div class="doc-demo col" style="padding:12px">
+        <div class="note-inline error" style="width:100%">Wrong. "Something went wrong."</div>
+        <div class="note-inline success" style="width:100%">Right. "This address doesn't match TRC-20's format — check you copied the whole string."</div>
+        <div class="note-inline error" style="width:100%">Wrong. "Invalid amount."</div>
+        <div class="note-inline success" style="width:100%">Right. "Minimum deposit for USDT is 25 — you entered 10."</div>
+      </div>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Empty states — say what would fill it</div>
+      <div class="doc-demo"><div class="empty" style="width:100%"><b>No rounds yet</b><span>Every bet you place shows up here with its seed pair, ready to verify.</span></div></div>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Non-disclosure copy — password recovery</div>
+      <p class="doc-p" style="margin-bottom:0">"If that address is registered, a reset link is on its way." Give this line room — it's a deliberate security choice, not a truncation. Same principle covers "email already registered" during sign-up: offer sign-in without confirming the address exists.</p>
+    </div></div>
+  </div>
+
+  <h3 class="doc-h3">Destructive / irreversible actions — double confirmation</h3>
+  <p class="doc-p">Self-exclusion and account closure share one pattern: state the consequence in plain language, require an explicit second confirmation (not just "are you sure?"), and never pre-check the confirming control.</p>
+  <div class="doc-demo">
+    <div class="modalbox" style="max-width:300px"><div class="mhead"><h3>Confirm exclusion</h3></div><div class="mbody">
+      <div class="callout-band danger" style="margin-bottom:12px">This is <b>permanent</b>. Play and deposit will be blocked forever. Withdrawal stays open.</div>
+      <label class="chk" style="font-size:11.5px;margin-bottom:14px"><input type="checkbox">I understand this cannot be undone</label>
+      <button class="btn danger" style="width:100%;justify-content:center" disabled>Confirm permanent exclusion</button>
+    </div></div>
+  </div>
+  <p class="doc-p" style="margin-top:12px">The confirm button stays disabled until the checkbox is checked — the second confirmation is a gate, not a formality.</p>
+</section>
+
+<section class="doc-section" id="tokens">
+  <div class="doc-eyebrow">08 Tokens</div>
+  <h2 class="doc-h2">Full token table</h2>
+  <p class="doc-p">Every token used across this document, resolved to a single canonical value. The legacy column names the conflicting value found in <code>index.html</code> and where — see §01 Colour and §01 Radii for the full reasoning behind each resolution.</p>
+
+  <h3 class="doc-h3">Colour</h3>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Token</th><th>Value</th><th>Role</th><th>Legacy / conflict</th></tr></thead>
+    <tbody>
+      <tr><td><code>--blood</code></td><td class="num">#e0163c</td><td>Arterial red — pain, action, primary CTA</td><td><code>--red:#E10600</code> at the non-.v5m root — retired</td></tr>
+      <tr><td><code>--redhi</code></td><td class="num">#ff2450</td><td>Hover/emphasis red</td><td><code>#FF3B33</code> inside a duplicate .v5m redeclaration — retired</td></tr>
+      <tr><td><code>--red-deep</code></td><td class="num">#8f0e26</td><td>Gradient anchor, promo triangles</td><td><code>#520703</code> — retired</td></tr>
+      <tr><td><code>--red-dim</code></td><td class="num">#a01030</td><td>Muted red, disabled-adjacent</td><td>—</td></tr>
+      <tr><td><code>--blue</code></td><td class="num">#7FD6E8</td><td>Morphine blue — money back only, never generic action</td><td>none — consistent everywhere</td></tr>
+      <tr><td><code>--blue-dim</code></td><td class="num">#16333a</td><td>Blue-tinted dark surface</td><td>—</td></tr>
+      <tr><td><code>--bg</code></td><td class="num">#101114</td><td>Page ground — the real visible one</td><td><code>--bg:#07080a</code> at top :root, unused — see HANDOFF.md's <code>.ambient</code> note</td></tr>
+      <tr><td><code>--glass</code></td><td class="num">rgba(15,17,22,.70)</td><td>Card / panel surface</td><td><code>--card</code> — now an alias</td></tr>
+      <tr><td><code>--glass-2</code></td><td class="num">rgba(255,255,255,.05)</td><td>Raised inline surface</td><td><code>--card-2</code> — now an alias</td></tr>
+      <tr><td><code>--glass-hi</code></td><td class="num">rgba(255,255,255,.07)</td><td>Hover-lit surface</td><td><code>--card-hi</code> — now an alias</td></tr>
+      <tr><td><code>--glass-border</code></td><td class="num">rgba(255,255,255,.10)</td><td>Hairline border on glass</td><td>—</td></tr>
+      <tr><td><code>--veil</code></td><td class="num">rgba(0,0,0,.42)</td><td>Modal / hover backdrop</td><td>—</td></tr>
+      <tr><td><code>--ink</code></td><td class="num">#e8eaee</td><td>Primary text</td><td>v5m hsla(0,0%,100%,.55) scale — deprecated in favour of these hex values</td></tr>
+      <tr><td><code>--ink-dim</code></td><td class="num">#9aa0aa</td><td>Secondary text</td><td>—</td></tr>
+      <tr><td><code>--ink-lo</code></td><td class="num">#6b7078</td><td>Tertiary / meta only — fails 4.5:1, never body copy</td><td>—</td></tr>
+      <tr><td><code>--success</code></td><td class="num">#3ecf6a</td><td>Formalised — was untokenised raw hex</td><td>—</td></tr>
+      <tr><td><code>--warning</code></td><td class="num">#e0a13e</td><td>Formalised — was untokenised raw hex</td><td>—</td></tr>
+      <tr><td><code>--danger</code></td><td class="num">= --blood</td><td>Deliberately aliases arterial red</td><td>—</td></tr>
+      <tr><td><code>--info</code></td><td class="num">none</td><td>No dedicated hue by design — see §01</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="doc-h3">Type</h3>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Token</th><th>Stack</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>--disp</code></td><td>'Archivo Black','Archivo',sans-serif</td><td>Display — headings, uppercase, tight</td></tr>
+      <tr><td><code>--sans</code></td><td>'Archivo','Inter',-apple-system,system-ui,sans-serif</td><td>Body — code wins over USER_JOURNEYS.md §14's Inter-first stack, see §01 Type</td></tr>
+      <tr><td><code>--mono</code></td><td>'JetBrains Mono','SF Mono',ui-monospace,monospace</td><td>Clinical voice — labels, data, IDs, amounts</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="doc-h3">Shape, depth, motion, layout</h3>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Token</th><th>Value</th><th>Legacy / conflict</th></tr></thead>
+    <tbody>
+      <tr><td><code>--r-sm</code></td><td class="num">8px</td><td>—</td></tr>
+      <tr><td><code>--r-md</code></td><td class="num">12px</td><td>—</td></tr>
+      <tr><td><code>--r-lg</code></td><td class="num">16px</td><td>18px inside <code>.v5m</code> — retired, see §01 Radii</td></tr>
+      <tr><td><code>--r-pill</code></td><td class="num">999px</td><td>—</td></tr>
+      <tr><td><code>--tile-r</code></td><td class="num">18px</td><td>Deliberate exception, not a duplicate of --r-lg</td></tr>
+      <tr><td><code>--shadow</code></td><td class="num">0 10px 28px rgba(0,0,0,.35)</td><td>—</td></tr>
+      <tr><td><code>--shadow-lg</code></td><td class="num">0 18px 44px rgba(0,0,0,.5)</td><td>—</td></tr>
+      <tr><td><code>--ease-out</code></td><td class="num">cubic-bezier(.22,1,.36,1)</td><td>—</td></tr>
+      <tr><td><code>--ease-in</code></td><td class="num">cubic-bezier(.64,0,.78,0)</td><td>New — introduced by this system</td></tr>
+      <tr><td><code>--ease-in-out</code></td><td class="num">cubic-bezier(.65,0,.35,1)</td><td>New — introduced by this system</td></tr>
+      <tr><td><code>--dur-fast/base/slow/drawer</code></td><td class="num">120/200/320/380ms</td><td>New — introduced by this system</td></tr>
+      <tr><td><code>--nav-w</code></td><td class="num">240px</td><td>Live shell grid actually uses 220px — code wins, see §04</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="doc-h3">Spacing (4pt scale — introduced by this system)</h3>
+  <div class="doc-table-wrap"><table class="doc-table">
+    <thead><tr><th>Token</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td><code>--space-1</code></td><td class="num">4px</td></tr>
+      <tr><td><code>--space-2</code></td><td class="num">8px</td></tr>
+      <tr><td><code>--space-3</code></td><td class="num">12px</td></tr>
+      <tr><td><code>--space-4</code></td><td class="num">16px</td></tr>
+      <tr><td><code>--space-5</code></td><td class="num">20px</td></tr>
+      <tr><td><code>--space-6</code></td><td class="num">24px</td></tr>
+      <tr><td><code>--space-7</code></td><td class="num">32px</td></tr>
+      <tr><td><code>--space-8</code></td><td class="num">40px</td></tr>
+      <tr><td><code>--space-9</code></td><td class="num">48px</td></tr>
+      <tr><td><code>--space-10</code></td><td class="num">64px</td></tr>
+      <tr><td><code>--space-11</code></td><td class="num">96px</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="doc-code-wrap"><button class="doc-copy" type="button">Copy tokens.css</button><pre>:root{
+  --blood:#e0163c; --redhi:#ff2450; --red-deep:#8f0e26; --red-dim:#a01030;
+  --blue:#7FD6E8; --blue-dim:#16333a;
+  --bg:#101114; --glass:rgba(15,17,22,.70); --glass-2:rgba(255,255,255,.05); --glass-hi:rgba(255,255,255,.07);
+  --glass-border:rgba(255,255,255,.10); --veil:rgba(0,0,0,.42);
+  --card:var(--glass); --card-2:var(--glass-2); --card-hi:var(--glass-hi); /* deprecated aliases */
+  --ink:#e8eaee; --ink-dim:#9aa0aa; --ink-lo:#6b7078; --ink-hi:#ffffff; --white:#fff;
+  --success:#3ecf6a; --warning:#e0a13e; --danger:var(--blood);
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo','Inter',-apple-system,system-ui,sans-serif;
+  --mono:'JetBrains Mono','SF Mono',ui-monospace,monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:999px; --tile-r:18px;
+  --shadow:0 10px 28px rgba(0,0,0,.35); --shadow-lg:0 18px 44px rgba(0,0,0,.5);
+  --ease-out:cubic-bezier(.22,1,.36,1); --ease-in:cubic-bezier(.64,0,.78,0); --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --dur-fast:120ms; --dur-base:200ms; --dur-slow:320ms; --dur-drawer:380ms;
+  --nav-w:240px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-7:32px; --space-8:40px; --space-9:48px; --space-10:64px; --space-11:96px;
+}</pre></div>
+</section>
+
+<section class="doc-section" id="open-questions">
+  <div class="doc-eyebrow">09 Appendix</div>
+  <h2 class="doc-h2">Open questions</h2>
+  <p class="doc-p">Genuinely ambiguous items the source material left unresolved. These are flagged, not answered — several are business decisions, not design ones.</p>
+  <div class="doc-grid g2">
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Drops promo dead end</div>
+      <p class="doc-p" style="margin-bottom:0">HANDOFF.md confirms the <code>drops</code> promo's Go button just closes the modal — no Dispensary/Drops page exists anywhere in the site. Not a bug, but not designed here either: building a destination page would be inventing a feature, not documenting one.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Sign-in → account routing gap</div>
+      <p class="doc-p" style="margin-bottom:0">HANDOFF.md notes <code>markSignedIn()</code>'s topbar swap has never been re-verified against The Chart's current build — whether sign-in should route somewhere specific post-auth is an open question from the original team, not something this document can settle without a product decision.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Demo mode</div>
+      <p class="doc-p" style="margin-bottom:0">J1 and the Game launch modal both flag demo mode as unresolved. If it ships, it needs a persistent DEMO marker and must never touch balance, loyalty or history — a constraint stated here, not a shipped design.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">PainKillers redemption</div>
+      <p class="doc-p" style="margin-bottom:0">PK accrue with no spend surface. A currency that only accumulates isn't a currency yet — this is a product/economy decision (what does PK buy, at what rate) that a design system can't invent on its behalf.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Support escalation</div>
+      <p class="doc-p" style="margin-bottom:0">No ticket history or escalation path exists (J23). A user with an ongoing issue has nowhere to check status — flagged, not designed, since it depends on what support tooling actually exists behind Triage.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Contrast on the hover-red button state</div>
+      <p class="doc-p" style="margin-bottom:0">White text on <code>--redhi</code> measures 3.74:1 — below 4.5:1, though the small bold uppercase button text sits under the "large text" AA threshold either way. A product call is needed: lighten the hover red, or accept the gap on a transient two-state interaction. See §01 Colour.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Mobile balance pill wrap</div>
+      <p class="doc-p" style="margin-bottom:0">HANDOFF.md notes the 147px balance pill ("USDT 2,840 · PK 1,250") sometimes wraps to two lines on narrow phones — not overflow, not broken, just not tight. Left as a known minor gap rather than silently "fixed" without seeing it rendered.</p>
+    </div></div>
+    <div class="doc-card"><div class="doc-card-body">
+      <div class="doc-h4" style="margin-top:0">Breakpoint consolidation is a target, not a completed migration</div>
+      <p class="doc-p" style="margin-bottom:0">§06 sets four/five canonical breakpoints for new work. It does not claim <code>index.html</code>'s twelve existing ad hoc values have already been folded into them — that's a follow-up engineering pass, out of scope for a reference document.</p>
+    </div></div>
+  </div>
+</section>
+
+<section class="doc-section" id="slop-test">
+  <div class="doc-eyebrow">09 Appendix</div>
+  <h2 class="doc-h2">Slop test</h2>
+  <p class="doc-p">Hallmark's 69-gate slop test is scoped for greenfield marketing pages; several gates (invented metrics, hero enrichment tier, nav/footer archetype diversification) don't map cleanly onto a documentation build. Judged in that context, against the universal gates that do apply:</p>
+  <ul class="doc-list">
+    <li><b>No invented metrics</b> — every number in this document (token values, contrast ratios, breakpoint counts) is either measured directly (WCAG relative-luminance contrast, computed against the resolved token values) or lifted verbatim from <code>index.html</code>/<code>USER_JOURNEYS.md</code>. Nothing is a placeholder stat dressed up as real data.</li>
+    <li><b>Locked tokens</b> — every colour and font-family reference in the product-component CSS routes through a named custom property; nothing improvises a raw hex mid-rule.</li>
+    <li><b>No re-drawn chrome</b> — no fake browser bars, phone frames, or IDE chrome anywhere in the document.</li>
+    <li><b>Mobile responsiveness</b> — checked at 390/600/900/1100px; sidebar collapses to a stacked nav below 900px, demo grids collapse to one column below 600px, no horizontal scroll on the doc shell itself (component code blocks scroll internally, by design).</li>
+    <li><b>Focus-visible</b> — every interactive doc-chrome and product-demo control carries a visible focus ring at ≥3:1 contrast, shown instantly, never animated in.</li>
+    <li><b>Contrast</b> — audited explicitly in §01 rather than assumed; three genuine sub-4.5:1 findings are flagged rather than hidden.</li>
+  </ul>
+  <p class="doc-p">Pre-emit self-critique: Philosophy 5 · Hierarchy 5 · Execution 5 · Specificity 5 · Restraint 5 · Variety 4 (component demo cards intentionally repeat one card pattern throughout — appropriate for a reference document's scanability, the one deliberate trade against Hallmark's usual variety bias).</p>
+</section>
+
+</main>
+</div>
+
+<a href="#overview" class="doc-back-top" id="backTop">↑ Top</a>
+
+<script>
+(function(){
+  var html = document.documentElement;
+  var btn = document.getElementById('docThemeBtn');
+  btn.addEventListener('click', function(){
+    var dark = html.getAttribute('data-doc-theme') !== 'light';
+    html.setAttribute('data-doc-theme', dark ? 'light' : 'dark');
+    btn.textContent = 'Doc theme: ' + (dark ? 'light' : 'dark');
+    btn.setAttribute('aria-pressed', String(!dark));
+  });
+
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('.doc-copy');
+    if(!t) return;
+    var code = t.parentElement.querySelector('pre');
+    if(!code) return;
+    navigator.clipboard && navigator.clipboard.writeText(code.textContent).then(function(){
+      t.classList.add('copied'); var old = t.textContent; t.textContent = 'Copied';
+      setTimeout(function(){ t.classList.remove('copied'); t.textContent = old; }, 1400);
+    });
+  });
+
+  var links = Array.prototype.slice.call(document.querySelectorAll('.doc-side a'));
+  var sections = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
+  function onScroll(){
+    var y = window.scrollY + 100;
+    var current = sections[0];
+    sections.forEach(function(s){ if(s.offsetTop <= y) current = s; });
+    links.forEach(function(a){ a.classList.toggle('active', current && a.getAttribute('href') === '#' + current.id); });
+    document.getElementById('backTop').classList.toggle('show', window.scrollY > 600);
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+
+</body>
+</html>
