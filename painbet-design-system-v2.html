@@ -2777,7 +2777,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 
     </div>
   </div>
-  <div class="figframe" style="width:920px">
+  <div class="figframe" style="width:1000px">
     <div class="figframe-label">Topbar</div>
     <div class="figframe-note">Shown signed-out (default state): Sign in button visible, account menu hidden. See the dedicated Account menu frame for the signed-in dropdown.</div>
     <div class="figframe-inner pad">
@@ -2835,7 +2835,8 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
   </div>
   <div class="figframe" style="width:300px">
     <div class="figframe-label">Account menu (open)</div>
-    <div class="figframe-inner pad">
+    <div class="figframe-note">.acctmenu is position:absolute in the live product, so it never grows its own container's height -- min-height added here only so the open dropdown stays inside this frame's border instead of bleeding into the row below it.</div>
+    <div class="figframe-inner pad" style="min-height:420px">
     <div class="acctzone open" id="acctZone" style="position:relative;display:block">
       <button class="acctbtn" id="acctBtn" type="button" aria-haspopup="true" aria-expanded="false">
         <span class="ava" id="acctAva">P</span>
@@ -2944,7 +2945,7 @@ html,body.figboard-doc{background:#0e0f10;margin:0}
 <div class="rg-lockbar" style="position:relative;left:auto;right:auto;bottom:auto;display:flex"><b id="rgLockKind">On a break</b><span id="rgLockMsg">Locked until 14 Aug 2026, 00:00 UTC. Withdrawals stay open.</span><button type="button" id="rgLockWd">Withdraw my balance</button></div>
     </div>
   </div>
-  <div class="figframe" style="width:1320px">
+  <div class="figframe" style="width:1360px">
     <div class="figframe-label">View — home</div>
     <div class="figframe-note">Comprehensive lobby frame: hero, the bolt/withdrawals panel, pain chip, live relief ticker, the three home rails (Pain Originals / Pick your poison / Live) and the provider marquee, in the order they sit in index.html.</div>
     <div class="figframe-inner">
