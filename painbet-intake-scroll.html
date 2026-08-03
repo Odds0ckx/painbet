@@ -646,7 +646,7 @@ SCENES.forEach(s=>{ if(s.type==='scrub') s.vh=runVh(s.from,s.to); });
 /* ============================================================================
    2. STATE + capture logic — ported from intake_7 (validation kept verbatim).
    ========================================================================== */
-const ST = { chain:'BTC', entries:0, hashes:{}, ENTRY_CAP:100,
+const ST = { chain:'BTC', entries:0, esrc:{}, hashes:{}, ENTRY_CAP:100,
   i:0, score:0, picks:[], dx:null, pno:6412,
   chan:'Telegram', vip:false, pw:null, handle:null, sent:false,
   pried:false, pkWon:null,
@@ -997,7 +997,18 @@ const PK=[
  {pk:50000,usd:250,w:0.025,n:'1 in 40. Very few of these.'},
  {pk:200000,usd:1000,w:0.005,n:'1 in 200. The full drop. Screenshot it.'}
 ];
-function addEntries(n){var room=Math.max(0,ST.ENTRY_CAP-ST.entries),g=Math.min(room,n);ST.entries+=g;return g;}
+/* Entry sources. Every grant is attributed to one of these labels so the
+   dashboard can show WHERE a patient's entries came from rather than a bare
+   total. Order here is the order the ledger renders in. */
+const ESRC=['Wallets logged','Daily wheel','Brought in','Approved in the Ward'];
+function addEntries(n,src){
+  var room=Math.max(0,ST.ENTRY_CAP-ST.entries),g=Math.min(room,n);
+  if(g<=0)return 0;
+  ST.entries+=g;
+  var key=ESRC.indexOf(src)>=0?src:ESRC[0];   // never let a grant fall into an unlabelled bucket
+  ST.esrc[key]=(ST.esrc[key]||0)+g;
+  return g;
+}
 
 /* Drop codes: first 40 in, each a roll not a payout, roughly 1 in 3 pays
    (spec §12/S12). A real deployment enforces "first 40 across everyone" and
@@ -1025,12 +1036,12 @@ const DROP_CODES=new Set(Array.from({length:40},(_,i)=>'PAIN-'+String(i+1).padSt
 const WHEEL=[
  {t:'+2 entries',s:"Straight into Sunday's draw.",p:0.15,kind:'ent',ent:2},
  {t:'Nothing',s:'Back tomorrow. The wheel resets at midnight UTC.',p:null,kind:'none'},
- {t:'1,000 PK',s:'Lands in your account in October.',p:0.01,kind:'pk',pk:1000},
+ {t:'1,000 PK',s:'Lands in your account on 1 November.',p:0.01,kind:'pk',pk:1000},
  {t:'500 USDT',s:'The whole jackpot. Paid on verification.',p:1/50000,kind:'jack',usd:500},
  {t:'+1 entry',s:"Straight into Sunday's draw.",p:0.30,kind:'ent',ent:1},
- {t:'500 PK',s:'Lands in your account in October.',p:0.02,kind:'pk',pk:500},
+ {t:'500 PK',s:'Lands in your account on 1 November.',p:0.02,kind:'pk',pk:500},
  {t:'50 USDT',s:'Paid to your wallet on verification.',p:1/10000,kind:'cash',usd:50},
- {t:'5,000 PK',s:'Lands in your account in October.',p:1/500,kind:'pk',pk:5000},
+ {t:'5,000 PK',s:'Lands in your account on 1 November.',p:1/500,kind:'pk',pk:5000},
  {t:'+5 entries',s:"Straight into Sunday's draw.",p:0.08,kind:'ent',ent:5},
  {t:'10 USDT',s:'Paid to your wallet on verification.',p:1/2000,kind:'cash',usd:10}
 ];
@@ -1039,7 +1050,7 @@ const GIVE=[
  {id:'sun',n:'Sunday draw',pool:'$400',meta:'14 winners. 1 x $150, 3 x $50, 10 x $10. Drawn 15:00 CET.',open:true,wallet:true},
  {id:'splash',n:'Build the Flatline splash',pool:'$400',meta:'Design the loading screen for our first Original. Winner is credited in the game.',open:true},
  {id:'clip',n:'Clip war',pool:'$400',meta:'Best clip of the month. Ten shortlisted, drawn at random.',open:false,when:'Opens 1 September'},
- {id:'name',n:'Name the next three',pool:'$400',meta:'Three unnamed Originals. Community votes on the shortlist.',open:false,when:'Opens 1 October'}
+ {id:'name',n:'Name the next three',pool:'$400',meta:'Three unnamed Originals. Community votes on the shortlist.',open:false,when:'Opens 1 November'}
 ];
 let FEED=[['@saline','$35','2h ago'],['@coldturkey','$10','5h ago'],['@bagholder99','$50','9h ago'],
   ['@nurse_ratchet','$15','14h ago'],['@flatlined','$25','1d ago']];
@@ -1047,7 +1058,7 @@ const PROMOS=[
  ['Sunday giveaway','$400 drawn every week, 14 winners','live'],
  ['Build the Flatline splash','$400 design pool, closes 31 August','live'],
  ['Clip war','$400 pool, opens 1 September','soon'],
- ['October doors','First group in, ahead of everyone','inn']
+ ['1 November doors','First group in, thirty days early','inn']
 ];
 let wPot=48210;
 function p2(n){return (n<10?'0':'')+n;}
@@ -1145,7 +1156,7 @@ function buildWallet(card){
     const amt=parseFloat(a.replace(/[^0-9.]/g,''));
     if(!amt||amt<=0){note.className='note warn';note.textContent='Put the amount in so we can match it against the chain.';$('w_amt',card).focus();return;}
     if(c.length<2){note.className='note warn';note.textContent='Which casino was it? Any crypto casino counts.';$('w_casino',card).focus();return;}
-    ST.hashes[key]=true;addEntries(1);
+    ST.hashes[key]=true;addEntries(1,'Wallets logged');
     $('w_ent',card).textContent=ST.entries;
     txh.value='';$('w_amt',card).value='';$('w_casino',card).value='';
     note.className='note ok';
@@ -1238,7 +1249,7 @@ function buildQuiz(card){
 function buildDischarge(card){
   card.innerHTML=`
     <p class="kicker">DISCHARGE · WHERE DO WE SEND IT?</p>
-    <h2>Your chart, your drop, your October access.</h2>
+    <h2>Your chart, your drop, your 1 November access.</h2>
     <p>One message. No list, no spam.</p>
     <div class="chips" id="d_chan">
       <button class="chip on" data-c="Telegram">Telegram</button>
@@ -1327,7 +1338,7 @@ const Pry=(function(){
     document.getElementById('pryTitle').textContent='CONTAINMENT BREACHED';
     document.getElementById('prySub').textContent='LOGGED TO PATIENT #'+String(ST.pno).padStart(5,'0');
     document.getElementById('pryVal').textContent=p.pk.toLocaleString('en-US')+' PK';
-    document.getElementById('prySubv').textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
+    document.getElementById('prySubv').textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account on 1 November.';
     document.getElementById('pryPrize').hidden=false;
     toast('Logged to patient #'+String(ST.pno).padStart(5,'0')+'.');
   }
@@ -1372,7 +1383,7 @@ function buildReveal(card){
       $('r_p',card).style.display='none';
       $('r_out',card).style.display='block';
       $('r_val',card).textContent=p.pk.toLocaleString('en-US')+' PK';
-      $('r_sub',card).textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account in October.';
+      $('r_sub',card).textContent='Worth $'+p.usd.toLocaleString('en-US')+'. '+p.n+' Lands in your account on 1 November.';
       go.textContent='Continue';
       stationDone();
     });
@@ -1576,7 +1587,7 @@ function buildDispensary(card){
       wTurning=false;ST.spun=true;wPot++;
       res.className='wres'+(w.kind==='jack'?' jack':(w.kind==='none'?'':' win'));
       res.textContent=w.kind==='none'?'Nothing today':w.t;sub.textContent=w.s;
-      if(w.ent)addEntries(w.ent);if(w.usd)ST.usd+=w.usd;
+      if(w.ent)addEntries(w.ent,'Daily wheel');if(w.usd)ST.usd+=w.usd;
       btn.textContent='Come back tomorrow';
       badge.textContent='Spun';badge.className='badge';
       toast(w.kind==='none'?'No luck. Resets at midnight UTC.':(w.t+' logged to your chart.'));
@@ -1608,6 +1619,22 @@ function renderPromos(card){const el=$('d_promos',card);el.innerHTML='';
     const d=document.createElement('div');d.className='row2';
     d.innerHTML=`<div><div class="rt">${p[0]}</div><div class="rm">${p[1]}</div></div><span class="pstate ${p[2]}">${state}</span>`;
     el.appendChild(d);});}
+/* Entries ledger: one row per ESRC label that actually granted something, plus
+   a total row that must reconcile with ST.entries. Uses the same .row2/.rt/.rm
+   /.rr idiom as the giveaway and promo lists. */
+function renderLedger(card){const el=$('d_ledger',card);if(!el)return;el.innerHTML='';
+  let sum=0;
+  ESRC.forEach(src=>{const n=ST.esrc[src]||0;if(!n)return;sum+=n;
+    const d=document.createElement('div');d.className='row2';
+    d.innerHTML=`<div><div class="rt">${src}</div><div class="rm">${n===1?'1 entry':n+' entries'}</div></div>`
+      +`<span class="rr">${n}</span>`;
+    el.appendChild(d);});
+  if(!sum){const d=document.createElement('div');d.className='row2';
+    d.innerHTML=`<div><div class="rt">Nothing logged yet</div><div class="rm">Log a wallet or spin the wheel and it shows up here.</div></div><span class="rr">0</span>`;
+    el.appendChild(d);}
+  const t=document.createElement('div');t.className='row2';
+  t.innerHTML=`<div><div class="rt">Total</div><div class="rm">In Sunday's draw</div></div><span class="rr">${sum}</span>`;
+  el.appendChild(t);}
 function buildDashboard(card){
   card.innerHTML=`
     <p class="kicker">RECORDS · YOUR CHART</p>
@@ -1615,9 +1642,10 @@ function buildDashboard(card){
     <div class="dash-grid">
       <div class="dcell"><div class="dv" id="d_dx">--</div><div class="dl" id="d_tier">Diagnosis</div></div>
       <div class="dcell"><div class="dv" id="d_ent">0</div><div class="dl">Entries in Sunday's draw</div></div>
-      <div class="dcell"><div class="dv" id="d_pk">Not opened</div><div class="dl">October drop</div></div>
+      <div class="dcell"><div class="dv" id="d_pk">Not opened</div><div class="dl">1 November drop</div></div>
       <div class="dcell"><div class="dv" id="d_cd">--</div><div class="dl">Next Sunday draw</div></div>
     </div>
+    <div class="sub-h">Where your entries came from</div><div id="d_ledger"></div>
     <div class="sub-h">Promotions</div><div id="d_promos"></div>`;
   card._enter=()=>{
     $('dash_who',card).textContent='Patient #'+String(ST.pno).padStart(5,'0');
@@ -1625,6 +1653,7 @@ function buildDashboard(card){
     $('d_ent',card).textContent=ST.entries+' '+(ST.entries===1?'entry':'entries');
     if(ST.pkWon){$('d_pk',card).textContent=ST.pkWon.pk.toLocaleString('en-US')+' PK';}
     else{$('d_pk',card).textContent='Not opened';}
+    renderLedger(card);
     renderPromos(card);
   };
 }
@@ -1691,7 +1720,7 @@ function buildChannels(card){
     <p>Draw results posted publicly every Sunday, 15:00 CET.</p>
     ${CHANS.map(c=>`<div class="chan-row"><div><div class="cn">${c[0]}</div><div class="cm">${c[1]}</div></div>
       <button class="gbtn"${c[2]==='SOON'?' disabled':''}>${c[2]}</button></div>`).join('')}
-    <div class="sub-h">October</div>
+    <div class="sub-h">1 November</div>
     <p>You are in the first group through the doors, ahead of everyone who signs
        up after launch. The whole month runs on promotions, giveaways and drops,
        and you are inside it from day one.</p>`;
@@ -1704,7 +1733,7 @@ const UPGRADES=[
  ['Withdrawals','Your host owns the payout end to end','General queue, documents resubmitted'],
  ['Cashback','Shaped around how you actually play','Fixed rate, same as everyone in your band'],
  ['Terms','Agreed in writing first, then locked for good','Reviewed whenever it suits them'],
- ['October','Through the doors before anyone else','Not on offer anywhere']
+ ['1 November','Through the doors thirty days early','Not on offer anywhere']
 ];
 function buildVip(card){
   card.innerHTML=`
@@ -2160,7 +2189,7 @@ function stationDone(){
   list.innerHTML=items.map(o=>{
     const [no,label]=o.sc.cfg.menu;
     const sub={login:'Been here before. Open your chart.',
-      dashboard:'Diagnosis, entries, October drop',
+      dashboard:'Diagnosis, entries, 1 November drop',
       dispensary:'Wheel, tasks, giveaways, drop codes',
       vip:'Bring your tier. We match it, often better.',
       staff:'We are hiring. Paid weekly on results.',
