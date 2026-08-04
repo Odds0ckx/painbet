@@ -668,10 +668,12 @@ const SCENES = [
   { id:'reveal', type:'form', form:'reveal', src:'door3', at:160, tint:'#F2C14E', vh:1.7, gate:'reveal',
     nextLabel:'Collect your meds', nextNote:'The daily wheel, drop codes, and the tasks that earn giveaway entries.', pushMs:2700 },
 
+  /* A beat, not a stop: the door seals, the line is read, and the ward carries
+     on into the dispensary on its own. autoMs is how long it holds here. */
   { id:'lockerclose', type:'scrub', src:'door3', from:160, to:193, tint:'#F2C14E',
     kicker:'THE LOCKER · DISCHARGE', title:'Sealed again.',
     body:'Once a day. Same door, same odds, tomorrow.',
-    reveal:[.1,.2,.7,.86] },
+    reveal:[.1,.2,.7,.86], autoMs:2600 },
 
   { id:'door4', type:'scrub', src:'door4', from:1, to:193, tint:'#5FE3A1',
     kicker:'ROOM 03 · DISPENSARY', title:'The wheel is through here.',
@@ -1493,7 +1495,12 @@ function buildReveal(card){
     if(ST.pried){stationDone();return;}
     Pry.show(p=>{                                   // the crate does the opening
       if(!p) return;
-      $('r_h',card).textContent='Locker 0'+(ST.pno%9+1)+'. Logged to you.';
+      /* 07, not a number derived from the patient. The locker is a prop: it is
+         stencilled 07 in the footage, the crate reads BIOHAZARD · 07 and the
+         ward doors are 07 too - it is the unit's motif, not a per-patient
+         ordinal. Deriving it from ST.pno told people they had opened locker 06
+         while the one on screen plainly said 07. */
+      $('r_h',card).textContent='Locker 07. Logged to you.';
       $('r_p',card).style.display='none';
       $('r_out',card).style.display='block';
       $('r_val',card).textContent=p.pk.toLocaleString('en-US')+' PK';
@@ -2294,6 +2301,7 @@ const Station=(function(){
   }
   function enter(sc){
     if(open) return;
+    cancelDwell();          // a station outranks a beat that was about to resume
     cur=sc; open=true;
     lock(true);
     if(sc.card._enter) sc.card._enter();
@@ -2327,6 +2335,13 @@ const Station=(function(){
       const s=scenes[k];
       if(s.cfg.gate&&!gateDone(s.cfg.gate)) return s._top+s._h*0.45;
     }
+    /* Nothing gated left. Stop at the next ROOM, or at a beat that has asked
+       to be paused on, rather than simply the next scene: the scenes between
+       rooms are connective footage - a door opening, a locker sealing - and
+       ending a walk in the middle of one strands the viewer in a corridor
+       with the door half open. */
+    const stop=scenes.slice(i+1).find(s=>s.cfg.type==='form'||s.cfg.autoMs);
+    if(stop) return stop._top+stop._h*0.55;
     const nxt=scenes[i+1];
     return nxt ? nxt._top+nxt._h*0.55 : document.body.scrollHeight-innerHeight;
   }
@@ -2356,19 +2371,41 @@ const Station=(function(){
       if(open||!playing) {playing=false;return;}          // a popup arrived, stop here
       const e=Math.min(1,(t-t0)/DUR);
       window.scrollTo(0, from+(to-from)*ramp(e));
-      if(e<1) requestAnimationFrame(step); else playing=false;
+      if(e<1) requestAnimationFrame(step); else { playing=false; armDwell(); }
     })(t0);
+  }
+  /* A beat is a line to read, not a place to stand. Landing on one used to end
+     the walk and wait for a scroll, which left the viewer parked on "Sealed
+     again." with the dispensary door never opening. A scene carrying autoMs
+     holds for that long - long enough to read it - and then carries on by
+     itself. A deliberate scroll during the hold cancels it, so taking manual
+     control still works. */
+  let dwell=0, dwellAt=0;
+  function cancelDwell(){ if(dwell){clearTimeout(dwell);dwell=0;} }
+  function armDwell(){
+    cancelDwell();
+    const y=scrollY||pageYOffset;
+    const sc=scenes.find(s=>s.cfg.autoMs&&y>=s._top&&y<s._top+s._h);
+    if(!sc) return;
+    dwellAt=performance.now();
+    dwell=setTimeout(()=>{ dwell=0; if(!open&&!playing) push(sc); }, sc.cfg.autoMs);
   }
   /* A deliberate scroll cancels the auto-play, but a stray notch or leftover
      trackpad momentum must not: those would strand the viewer mid-corridor. */
   let acc=0, since=0;
+  /* the same grace period applies to a hold: the momentum that carried the
+     walk in must not count as a decision to take over from it */
+  const tookOver=()=>performance.now()-dwellAt>400;
   addEventListener('wheel',e=>{
+    if(dwell&&tookOver()) cancelDwell();
     if(!playing) return;
     if(performance.now()-since<500) return;      // ignore momentum right after the press
     acc+=Math.abs(e.deltaY);
     if(acc>160) playing=false;
   },{passive:true});
-  addEventListener('touchmove',()=>{ if(playing&&performance.now()-since>500) playing=false; },{passive:true});
+  addEventListener('touchmove',()=>{
+    if(dwell&&tookOver()) cancelDwell();
+    if(playing&&performance.now()-since>500) playing=false; },{passive:true});
   const markStart=()=>{acc=0;since=performance.now();};
   return { enter, done, advance:push, markStart, get open(){return open;},
            get playing(){return playing;} };
