@@ -12,6 +12,21 @@ It needs a static host that can serve files. That is the whole requirement.
 
 ## Files to ship
 
+Three things, and the folder structure has to survive intact:
+
+```
+painbet-intake-scroll.html
+assets/seq/                 film + door1-4, 2,192 frames   119.7 MB
+assets/wheel/plate.webp     the wheel plate                  1.4 MB
+```
+
+> **`plate.webp` is easy to miss.** Ship only the HTML and `assets/seq/` and
+> everything appears to work right up until the dispensary, where the wheel
+> renders as prize labels floating on nothing. It is the only 404.
+>
+> Equally, **do not copy all of `assets/wheel/`** — the other files in there are
+> superseded artwork, about 12 MB that is never loaded. Copy that one file.
+
 All paths are relative, so the page can live at the domain root or under any
 subpath (`/intake/`, `/admissions/`, …) as long as the `assets` folder sits
 beside the HTML. Verified working from a subdirectory.
