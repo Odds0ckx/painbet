@@ -5045,7 +5045,7 @@ roll   = (first 8 hex digits of result) mod 10000 / 100</pre>
 <aside class="drawer" aria-label="PainTracker">
   <div class="dhead">
     <h3>PainTracker</h3>
-    <span class="streak">Tolerance day 11 · ×1.6</span>
+    <span class="streak">Tolerance day 9 · ×1.6</span>
     <button class="x" onclick="closeTracker()" type="button">✕</button>
   </div>
   <iframe id="trk-frame" title="PainTracker" src="about:blank" loading="lazy"></iframe>
@@ -6261,7 +6261,7 @@ document.querySelectorAll('#view-rails .railc').forEach(function(c){
 <script>
 let trkLoaded = false;
 function openTracker(){
-  if(!trkLoaded){ document.getElementById('trk-frame').src = 'painbet-paintracker.html?embed=1'; trkLoaded = true; }
+  if(!trkLoaded){ document.getElementById('trk-frame').src = 'painbet-paintracker-v2.html?embed=1'; trkLoaded = true; }
   document.body.classList.add('trackeropen');
 }
 function closeTracker(){ document.body.classList.remove('trackeropen'); }
