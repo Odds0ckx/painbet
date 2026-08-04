@@ -391,14 +391,25 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
   color:var(--ink-3)}
 body.gated{overflow:hidden}
 
+/* width:max-content because left:50% leaves only half the viewport to lay out
+   in - the transform shifts it back visually but never widens it, so the
+   subtitle wrapped mid-phrase on a phone. */
 #cue{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:60;
   display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none;
-  transition:opacity .45s ease;text-align:center}
+  transition:opacity .45s ease;text-align:center;width:max-content;max-width:94vw}
 #cue.off{opacity:0}
+/* The cue sits on top of whatever the film happens to be showing, and the
+   corridor floor under it is bright - the subtitle carried no shadow at all
+   and simply disappeared into it. A scrim darkens the bottom of frame behind
+   the whole cue so it stays legible against any frame, rather than relying on
+   the footage being dark there. */
+#cue::before{content:'';position:absolute;left:50%;transform:translateX(-50%);
+  bottom:-22px;width:min(560px,96vw);height:172px;pointer-events:none;z-index:-1;
+  background:radial-gradient(60% 80% at 50% 78%,rgba(0,0,0,.72) 0%,rgba(0,0,0,.45) 45%,rgba(0,0,0,0) 78%)}
 #cue .cue-t{font-family:var(--display);font-size:15px;text-transform:uppercase;letter-spacing:.04em;
-  color:var(--ink);text-shadow:0 2px 14px rgba(0,0,0,.9)}
+  color:var(--ink);text-shadow:0 1px 3px rgba(0,0,0,.95),0 2px 14px rgba(0,0,0,.9)}
 #cue .cue-s{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--ink-3);margin-bottom:4px}
+  color:var(--ink-2);margin-bottom:4px;text-shadow:0 1px 3px rgba(0,0,0,.95),0 2px 10px rgba(0,0,0,.85)}
 #cue .chev{width:15px;height:15px;border-right:2px solid var(--red-hot);
   border-bottom:2px solid var(--red-hot);transform:rotate(45deg);
   animation:cuefall 1.5s ease-in-out infinite}
@@ -2181,11 +2192,21 @@ function render(){
      back on close - both looked like the page glitching. Leaving it in place
      means entry and exit are just the same continuous scroll-driven fade
      already used to bring it on screen, so there is nothing to jump between. */
-  if(!Station.open){
+  /* ST.roam is set when somebody uses the directory to jump past a station on
+     purpose - that is browsing, and it is left alone. Everything else is held. */
+  if(!Station.open&&!ST.roam){
     for(const sc of scenes){
       if(!sc.cfg.gate||gateDone(sc.cfg.gate)) continue;
       const p=(y-sc._top)/sc._h;
-      if(p>=0.34&&p<=1) { Station.enter(sc); break; }
+      /* The window used to close at p=1, which assumed the page could never
+         move more than one scene between two scroll events. A hard swipe on a
+         phone clears several, so a flick could carry you past a station - or
+         off the end of the film - without it ever arming. There is no upper
+         bound now: overshoot the station and it pulls you back to it. */
+      if(p>=0.34){
+        if(p>1){ y=sc._top+sc._h*0.5; window.scrollTo(0,y); }
+        Station.enter(sc); break;
+      }
     }
   }
   vitals.style.width=Math.max(0,Math.min(1,y/total))*100+'%';
@@ -2277,9 +2298,24 @@ const Station=(function(){
     lock(true);
     if(sc.card._enter) sc.card._enter();
   }
+  /* A card fades in - and becomes clickable - from about p=0.14, but the gate
+     below only arms at p=0.34. Anyone who answered inside that window finished
+     the station while Station had never opened, so done() had no scene to
+     advance from and the confirm button did nothing at all. Falling back to
+     whichever gated scene the page is actually sitting in makes the button
+     work wherever it was pressed. */
+  function currentGated(){
+    const y=scrollY||pageYOffset;
+    return scenes.find(s=>{
+      if(!s.cfg.gate) return false;
+      const p=(y-s._top)/s._h;
+      return p>=-0.15&&p<=1.15;
+    })||null;
+  }
   function done(){
-    if(!open||!cur) return;
-    const sc=cur; open=false; cur=null;
+    const sc=cur||currentGated();
+    if(!sc) return;
+    open=false; cur=null;
     lock(false);
     push(sc);
   }
