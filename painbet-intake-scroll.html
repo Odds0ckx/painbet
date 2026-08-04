@@ -586,9 +586,16 @@ const SCENES = [
      had just been examined in. It is not a second examination room, it is the
      corridor out of it. */
   { id:'quiz', type:'form', form:'quiz', at:710, tint:'#7FD6E8', vh:1.9, gate:'quiz',
-    pushMs:runMs(722,1063) },
+    // matches the walk this push actually covers now: intake, then door1 to wallet's gate
+    pushMs:runMs(722,870)+runMs(1,169) },
 
-  { id:'intake', type:'scrub', from:722, to:1063, tint:'#7FD6E8',
+  /* Ends the instant the first (original) doors have swung open behind her
+     and the second, still-shut door - the one door1 opens - comes into view.
+     The old to:1063 ran past that, all the way into the exam room itself,
+     which meant door1 immediately opened a second identical-looking door
+     with no beat in between. Stopping here gives door1 a closed door to
+     open. */
+  { id:'intake', type:'scrub', from:722, to:870, tint:'#7FD6E8',
     kicker:'THE CORRIDOR', title:'She has seen worse.',
     body:'Admissions is at the end of it, and they will want proof you actually play.',
     reveal:[.14,.30,.66,.86] },
@@ -599,15 +606,20 @@ const SCENES = [
     reveal:[.14,.30,.66,.86] },
 
   { id:'wallet', type:'form', form:'wallet', src:'door1', at:169, tint:'#E10600', vh:1.9, gate:'wallet',
-    pushMs:runMs(1177,1352) },
+    // matches the walk this push actually covers now: ward, then door2 to discharge's gate
+    pushMs:runMs(1177,1310)+runMs(1,193) },
 
   // the film crosses the room to the desk; the chart is the discharge paperwork
-  { id:'ward', type:'scrub', from:1177, to:1352, tint:'#7FD6E8',
+  { id:'ward', type:'scrub', from:1177, to:1310, tint:'#7FD6E8',
     /* Was "They have already looked", which asked the viewer to work out on
        their own that the lit panels were their chest X-ray. It follows the
        wallet room, so it now says what that room just did to them. */
     kicker:'THE WALL', title:'Now you are on it.',
     body:'One address was all it took. Your chart is up there with everyone who came before you.',
+    /* Was to:1352, which ran past the x-ray wall into a stray shot of a
+       latched wall cabinet - a locker-like door with no story reason to be
+       there, right before door2 opens an actual door. Cutting at 1310 ends
+       on the wall and hands straight off to door2. */
     reveal:[.16,.34,.66,.86] },
 
   /* No pushMs override here on purpose. quiz's and wallet's match the frame
@@ -627,12 +639,25 @@ const SCENES = [
 
   { id:'discharge', type:'form', form:'discharge', src:'door2', at:193, tint:'#7FD6E8', vh:1.9, gate:'discharge' },
 
-  { id:'locker07', type:'scrub', src:'door3', from:1, to:193, tint:'#F2C14E',
+  /* door3 runs the door open + walk-in + settle on locker07 (still open
+     behind you) up to frame 160, then swings the entry door shut over its
+     last ~30 frames, ending on a near-black held frame. That closing tail
+     used to be reveal's background - the pry happened over a shut, unlit
+     door instead of the locker it's pryed open. Splitting here means the
+     pry sits over the locker with the door still open (matching), and the
+     door only closes afterwards, once reveal is done - see 'lockerclose'
+     below. */
+  { id:'locker07', type:'scrub', src:'door3', from:1, to:160, tint:'#F2C14E',
     kicker:'THE LOCKER · DISCHARGE', title:'Pry it open.',
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.16,.32,.62,.82] },
 
-  { id:'reveal', type:'form', form:'reveal', src:'door3', at:193, tint:'#F2C14E', vh:1.7, gate:'reveal',
+  { id:'reveal', type:'form', form:'reveal', src:'door3', at:160, tint:'#F2C14E', vh:1.7, gate:'reveal',
     nextLabel:'Collect your meds', nextNote:'The daily wheel, drop codes, and the tasks that earn giveaway entries.', pushMs:2700 },
+
+  { id:'lockerclose', type:'scrub', src:'door3', from:160, to:193, tint:'#F2C14E',
+    kicker:'THE LOCKER · DISCHARGE', title:'Sealed again.',
+    body:'Once a day. Same door, same odds, tomorrow.',
+    reveal:[.1,.2,.7,.86] },
 
   { id:'door4', type:'scrub', src:'door4', from:1, to:193, tint:'#5FE3A1',
     kicker:'ROOM 03 · DISPENSARY', title:'The wheel is through here.',
@@ -1444,12 +1469,47 @@ let wTurning=false;
    run clockwise from there, matching the plate's own painted order — if the
    WHEEL array order ever changes, the plate has to be regenerated to match,
    the labels are pixels now, not data. -------------------------------- */
-const WHEEL_PLATE=new Image();WHEEL_PLATE.src='assets/wheel/plate_labeled.webp';
+/* plate_labeled.webp baked its ten prize labels straight into the artwork at
+   odd, inconsistent angles - some legible, some sideways, one nearly upside
+   down. Rather than re-photograph it, this draws the labels itself onto the
+   unlabelled plate (assets/wheel/plate.webp, same wedges/colours, no text):
+   one consistent radial orientation per wedge, sized to fit, so every wedge
+   reads the same way relative to the spin. */
+const WHEEL_PLATE=new Image();WHEEL_PLATE.src='assets/wheel/plate.webp';
+// clockwise from 12 o'clock, matching the plate artwork - see the WHEEL comment above
+const WEDGE_BG=['white','black','red','blue','white','black','blue','red','white','blue'];
+// short enough to fit a 36deg wedge at readable size; the full prize text
+// still shows in the result toast and the published-odds list below the wheel
+function wedgeLabel(w){
+  if(w.kind==='none') return 'NOTHING';
+  if(w.kind==='ent') return (w.ent>0?'+':'')+w.ent+' ENT';
+  if(w.kind==='pk') return (w.pk>=1000?(w.pk/1000)+'K':w.pk)+' PK';
+  return '$'+w.usd; // cash / jack (USDT), wedge colour already says money
+}
 function drawWheel(cv,rot){
-  const ctx=cv.getContext('2d'),R=cv.width/2;
+  const ctx=cv.getContext('2d'),R=cv.width/2,step=Math.PI*2/WHEEL.length;
   ctx.clearRect(0,0,cv.width,cv.width);
   ctx.save();ctx.translate(R,R);ctx.rotate(rot);
   if(WHEEL_PLATE.complete&&WHEEL_PLATE.naturalWidth)ctx.drawImage(WHEEL_PLATE,-R,-R,R*2,R*2);
+  const rTxt=R*0.66;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  WHEEL.forEach((w,i)=>{
+    const mid=-Math.PI/2+(i+0.5)*step, bg=WEDGE_BG[i];
+    // wedges on the lower half of the plate get flipped 180deg so their
+    // label still reads upright instead of upside down at rest
+    let textRot=mid+Math.PI/2;
+    const norm=((textRot%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+    const flip=norm>Math.PI/2&&norm<Math.PI*1.5;
+    ctx.save();ctx.rotate(flip?textRot+Math.PI:textRot);
+    ctx.fillStyle=bg==='white'?'#1a1410':'#F7F8F8';
+    let size=Math.round(R*0.084);
+    ctx.font=`700 ${size}px 'JetBrains Mono',monospace`;
+    const label=wedgeLabel(w);
+    const maxW=R*0.56;
+    while(ctx.measureText(label).width>maxW&&size>9){size--;ctx.font=`700 ${size}px 'JetBrains Mono',monospace`;}
+    ctx.fillText(label,0,flip?rTxt:-rTxt);
+    ctx.restore();
+  });
   ctx.restore();
 }
 /* ---- sparks: spawned off the pointer in proportion to how fast the plate
