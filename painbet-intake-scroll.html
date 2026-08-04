@@ -181,7 +181,10 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .btn.blue{background:var(--blue);color:#0e1416;box-shadow:0 10px 26px rgba(127,214,232,.28)}
 .wheelbox{padding:16px;background:var(--sunk);border:1px solid var(--line-soft);border-radius:12px}
 .wmeta{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.1em}
-.wheelwrap{position:relative;width:min(280px,72vw);margin:24px auto 6px}
+/* 72vw measured the viewport, not the parent, so inside the card's own
+   padding the wheel overflowed its box and the labels on the right were
+   cut off. 100% keeps it inside whatever column it is actually in. */
+.wheelwrap{position:relative;width:min(280px,100%);margin:24px auto 6px}
 .wheelwrap canvas{width:100%;height:auto;display:block;pointer-events:none;
   filter:drop-shadow(0 10px 26px rgba(0,0,0,.6))}
 .wpin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:0;height:0;
@@ -1478,36 +1481,67 @@ let wTurning=false;
 const WHEEL_PLATE=new Image();WHEEL_PLATE.src='assets/wheel/plate.webp';
 // clockwise from 12 o'clock, matching the plate artwork - see the WHEEL comment above
 const WEDGE_BG=['white','black','red','blue','white','black','blue','red','white','blue'];
-// short enough to fit a 36deg wedge at readable size; the full prize text
-// still shows in the result toast and the published-odds list below the wheel
+/* Value over unit, on two lines. One line has to fit the whole prize across a
+   36deg wedge, which forces the type down to something you cannot read at the
+   size this canvas actually renders; splitting it means the longest line is
+   about five characters, so both lines can be set much larger in the same
+   space. The full prize wording still appears in the result line under the
+   wheel and in the published-odds list. */
 function wedgeLabel(w){
-  if(w.kind==='none') return 'NOTHING';
-  if(w.kind==='ent') return (w.ent>0?'+':'')+w.ent+' ENT';
-  if(w.kind==='pk') return (w.pk>=1000?(w.pk/1000)+'K':w.pk)+' PK';
-  return '$'+w.usd; // cash / jack (USDT), wedge colour already says money
+  if(w.kind==='none') return ['NOTHING'];
+  if(w.kind==='ent')  return [(w.ent>0?'+':'')+w.ent, w.ent===1?'ENTRY':'ENTRIES'];
+  if(w.kind==='pk')   return [w.pk.toLocaleString('en-US'),'PK'];
+  return ['$'+w.usd.toLocaleString('en-US'),'USDT'];   // cash / jack
 }
+/* Labels run ALONG the spoke, not across it - a wedge is only 36deg wide but
+   it is 0.25R deep, so radial type fits the pizza-slice shape and can be set
+   much larger than tangential type ever could.
+
+   The painted band on plate.webp measures r/R 0.455 -> 0.759, so the text
+   sits just inside that at 0.485 -> 0.735.
+
+   NOTE: the current plate artwork is painted with FOURTEEN wedges while
+   WHEEL holds TEN prizes, so the labels below cannot line up with the paint
+   until the plate is redrawn at ten. Geometry here is the source of truth
+   for that redraw: wedge i is centred i*36deg clockwise from 12 o'clock. */
+const R_IN=0.485, R_OUT=0.735, WEDGE_HALF=Math.PI/WHEEL.length,
+      UNIT_SCALE=0.70, LINE_H=1.12;
 function drawWheel(cv,rot){
   const ctx=cv.getContext('2d'),R=cv.width/2,step=Math.PI*2/WHEEL.length;
   ctx.clearRect(0,0,cv.width,cv.width);
   ctx.save();ctx.translate(R,R);ctx.rotate(rot);
   if(WHEEL_PLATE.complete&&WHEEL_PLATE.naturalWidth)ctx.drawImage(WHEEL_PLATE,-R,-R,R*2,R*2);
-  const rTxt=R*0.66;
-  ctx.textAlign='center';ctx.textBaseline='middle';
+  const rIn=R*R_IN, rOut=R*R_OUT,
+        maxLen=rOut-rIn,                          // room along the spoke
+        maxSpan=2*rIn*Math.tan(WEDGE_HALF)*0.82;  // across it, at the narrow end
+  ctx.textBaseline='middle';
   WHEEL.forEach((w,i)=>{
-    const mid=-Math.PI/2+(i+0.5)*step, bg=WEDGE_BG[i];
-    // wedges on the lower half of the plate get flipped 180deg so their
-    // label still reads upright instead of upside down at rest
-    let textRot=mid+Math.PI/2;
-    const norm=((textRot%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
-    const flip=norm>Math.PI/2&&norm<Math.PI*1.5;
-    ctx.save();ctx.rotate(flip?textRot+Math.PI:textRot);
-    ctx.fillStyle=bg==='white'?'#1a1410':'#F7F8F8';
-    let size=Math.round(R*0.084);
-    ctx.font=`700 ${size}px 'JetBrains Mono',monospace`;
-    const label=wedgeLabel(w);
-    const maxW=R*0.56;
-    while(ctx.measureText(label).width>maxW&&size>9){size--;ctx.font=`700 ${size}px 'JetBrains Mono',monospace`;}
-    ctx.fillText(label,0,flip?rTxt:-rTxt);
+    /* Wedge CENTRE, so the pointer at 12 o'clock sits mid-wedge rather than on
+       a divider. spinWheelTo undoes exactly this offset to land a win. */
+    const mid=-Math.PI/2+i*step, bg=WEDGE_BG[i], lines=wedgeLabel(w);
+    /* Wedges on the left half would read upside down, so they are turned a
+       further 180deg and set from the opposite edge. Every label then reads
+       outward-in along its own spoke. */
+    const norm=((mid%(Math.PI*2))+Math.PI*2)%(Math.PI*2),
+          flip=norm>Math.PI/2&&norm<Math.PI*1.5;
+    ctx.save();ctx.rotate(flip?mid+Math.PI:mid);
+    ctx.textAlign=flip?'left':'right';
+    ctx.fillStyle=bg==='white'?'#14100d':'#F7F8F8';
+    const sizeOf=(s,li)=>Math.round(s*(li?UNIT_SCALE:1)),
+          fontAt=(s,li)=>`700 ${sizeOf(s,li)}px 'JetBrains Mono',monospace`,
+          spanAt=s=>lines.reduce((a,t,li)=>a+sizeOf(s,li)*LINE_H,0),
+          longestAt=s=>lines.reduce((a,t,li)=>{
+            ctx.font=fontAt(s,li);return Math.max(a,ctx.measureText(t).width);},0);
+    let size=Math.round(R*0.115);
+    while(size>8&&(longestAt(size)>maxLen||spanAt(size)>maxSpan)) size--;
+    const x=flip?-rOut:rOut;
+    let y=-spanAt(size)/2;
+    lines.forEach((t,li)=>{
+      const lh=sizeOf(size,li)*LINE_H;
+      ctx.font=fontAt(size,li);
+      ctx.fillText(t,x,y+lh/2);
+      y+=lh;
+    });
     ctx.restore();
   });
   ctx.restore();
