@@ -533,6 +533,16 @@ body.gated{overflow:hidden}
    its form opens. Frames per viewport-height is held constant so the dolly
    speed never changes when the page moves between scenes. */
 const FILM = { dir:'assets/seq/film', count:1444, ext:'webp', fps:24 };
+/* The four door thresholds are separate short clips, each own frame sequence
+   (own room, shot after the master film wrapped) rather than a range spliced
+   into FILM's 1444 frames. A scene opts in with `src:'door1'` (etc); anything
+   without one keeps scrubbing the shared FILM sequence as before. */
+const DOOR_FILMS = {
+  door1: { dir:'assets/seq/door1', count:169, ext:'webp', fps:24 }, // into Room 02 / intakebooth
+  door2: { dir:'assets/seq/door2', count:193, ext:'webp', fps:24 }, // into Discharge
+  door3: { dir:'assets/seq/door3', count:193, ext:'webp', fps:24 }, // into the locker vestibule
+  door4: { dir:'assets/seq/door4', count:193, ext:'webp', fps:24 }, // into the Dispensary
+};
 const FPVH = 56;                       // frames per viewport-height of scroll
 /* ---------------------------------------------------------------------------
    TIMING. Everything that moves the page on its own reads from here. One
@@ -583,7 +593,12 @@ const SCENES = [
     body:'Admissions is at the end of it, and they will want proof you actually play.',
     reveal:[.14,.30,.66,.86] },
 
-  { id:'wallet', type:'form', form:'wallet', at:1120, tint:'#E10600', vh:1.9, gate:'wallet',
+  { id:'door1', type:'scrub', src:'door1', from:1, to:169, tint:'#E10600',
+    kicker:'ROOM 02 · PROVE YOU PLAY', title:'The door only opens once.',
+    body:'Whatever you scan on the other side is what she checks against.',
+    reveal:[.14,.30,.66,.86] },
+
+  { id:'wallet', type:'form', form:'wallet', src:'door1', at:169, tint:'#E10600', vh:1.9, gate:'wallet',
     pushMs:runMs(1177,1352) },
 
   // the film crosses the room to the desk; the chart is the discharge paperwork
@@ -605,21 +620,29 @@ const SCENES = [
      as the page snapping forward with no ease at all. Leaving pushMs unset
      falls back to push()'s own distance-based duration, which measures the
      real distance to wherever the walk actually stops. */
-  { id:'discharge', type:'form', form:'discharge', at:1370, tint:'#7FD6E8', vh:1.9, gate:'discharge' },
+  { id:'door2', type:'scrub', src:'door2', from:1, to:193, tint:'#7FD6E8',
+    kicker:'DISCHARGE', title:'The chart is already waiting.',
+    body:'Everything from the wall follows you through this door.',
+    reveal:[.16,.34,.66,.86] },
 
-  { id:'locker07', type:'scrub', from:1388, to:1414, tint:'#F2C14E',
+  { id:'discharge', type:'form', form:'discharge', src:'door2', at:193, tint:'#7FD6E8', vh:1.9, gate:'discharge' },
+
+  { id:'locker07', type:'scrub', src:'door3', from:1, to:193, tint:'#F2C14E',
     kicker:'THE LOCKER · DISCHARGE', title:'Pry it open.',
     body:'Everyone gets one. 1 in 200 takes the full $1,000.', reveal:[.16,.32,.62,.82] },
 
-  { id:'reveal', type:'form', form:'reveal', at:1430, tint:'#F2C14E', vh:1.7, gate:'reveal',
+  { id:'reveal', type:'form', form:'reveal', src:'door3', at:193, tint:'#F2C14E', vh:1.7, gate:'reveal',
     nextLabel:'Collect your meds', nextNote:'The daily wheel, drop codes, and the tasks that earn giveaway entries.', pushMs:2700 },
 
-  /* Past the locker the film is spent, so the rooms below hold on its last
-     frame. This is what the page already did once the footage ran out. */
-  { id:'channels', type:'form', form:'channels', at:1444, tint:'#7FD6E8', vh:2.2,
+  { id:'door4', type:'scrub', src:'door4', from:1, to:193, tint:'#5FE3A1',
+    kicker:'ROOM 03 · DISPENSARY', title:'The wheel is through here.',
+    body:'One spin a day. Every drop code lands on this counter first.',
+    reveal:[.14,.30,.66,.86] },
+
+  { id:'channels', type:'form', form:'channels', src:'door4', at:193, tint:'#7FD6E8', vh:2.2,
     menu:['--','Channels'], nextLabel:'Collect your meds', pushMs:4200 },
 
-  { id:'dispensary', type:'form', form:'dispensary', at:1444, tint:'#5FE3A1', vh:3.2,
+  { id:'dispensary', type:'form', form:'dispensary', src:'door4', at:193, tint:'#5FE3A1', vh:3.2,
     menu:['08','Dispensary'], pushMs:2500,
     nav:['dashboard','vip'] },
 
@@ -1903,6 +1926,8 @@ class FilmSource{
   }
 }
 const film=new FilmSource(FILM);
+const doorSources={}; Object.keys(DOOR_FILMS).forEach(k=>{ doorSources[k]=new FilmSource(DOOR_FILMS[k]); });
+function srcFor(s){ return s.src ? doorSources[s.src] : film; }
 
 function coverDraw(ctx,img,w,h){const ir=img.naturalWidth/img.naturalHeight,cr=w/h;let dw,dh,dx,dy;
   if(ir>cr){dh=h;dw=h*ir;dx=(w-dw)/2;dy=0;}else{dw=w;dh=w/ir;dx=0;dy=(h-dh)/2;}ctx.drawImage(img,dx,dy,dw,dh);}
@@ -1984,7 +2009,7 @@ SCENES.forEach(s=>{
   el.appendChild(card);stageLayer.appendChild(el);
   const sp=document.createElement('div');sp.className='spacer';
   sp.style.height=((s.vh||3)*100)+'vh';stages.appendChild(sp);
-  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,sized:false});
+  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,sized:false,src:srcFor(s)});
 });
 
 function sizeCanvas(sc){const dpr=Math.min(window.devicePixelRatio||1,2),w=innerWidth,h=innerHeight;
@@ -2030,7 +2055,7 @@ function render(){
     // window the film around this scene rather than preloading all 1444
     if(p>-1.1&&p<1.1){
       const a=sc.cfg.type==='form'?sc.cfg.at:sc.cfg.from, b=sc.cfg.type==='form'?sc.cfg.at:sc.cfg.to;
-      film.ensure(a-24,b+24);
+      sc.src.ensure(a-24,b+24);
     }
     let vis=0;if(p>=0&&p<=1)vis=1;if(p<0&&p>-FADE)vis=1+p/FADE;if(p>1&&p<1+FADE)vis=1-(p-1)/FADE;
     vis=Math.max(0,Math.min(1,vis));sc.el.style.opacity=vis;
@@ -2042,8 +2067,8 @@ function render(){
          where the camera holds still, a run scrubs its range. If the film has
          not loaded yet the old procedural placeholder still covers. */
       const frame = isForm ? sc.cfg.at : sc.cfg.from+fp*(sc.cfg.to-sc.cfg.from);
-      if(!film.draw(sc.ctx,frame,W,H))
-        drawPlaceholder(sc.ctx,fp,W,H,sc.cfg,Math.round(frame),FILM.count);
+      if(!sc.src.draw(sc.ctx,frame,W,H))
+        drawPlaceholder(sc.ctx,fp,W,H,sc.cfg,Math.round(frame),sc.src.count);
     }
     // pointer events only on the active form card
     // NB: coerce — toggle() with undefined flips the class instead of clearing it
