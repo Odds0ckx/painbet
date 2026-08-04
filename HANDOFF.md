@@ -1,6 +1,6 @@
 # pain.bet — Session Handoff
 
-_Last updated: 2026-07-29. Hand this file to a new chat to continue work with full context._
+_Last updated: 2026-08-04. Hand this file to a new chat to continue work with full context._
 
 ## What this project is
 
@@ -19,9 +19,9 @@ Two page systems coexist in the same file:
 - **"v5m ported module" pages** — Threshold Raid, PainKillers, Anesthesia, Affiliate, Triage/Support, Arcade, plus modals (chat, apply/admissions, legal, providers). Marked `class="view v5m syspage"` / `class="modal-bg v5m"`, toggled via `.on`, styled under a **second, `.v5m`-scoped `:root` token set** (`--card`, `--ink-hi`, `--red` remapped to `var(--blood)`). `.v5m .blk` is the card wrapper for these pages — it needs `padding` set explicitly (was `padding:0` for a while, a real bug, now fixed at `28px 32px`).
 
 ### Other files at repo root (not the live site)
-- `painbet-arcade.html` — The Arcade's 9 playable Originals, loaded via iframe (`?embed=1`) from the "Arcade" nav. Has its own `:root` token set; was restyled this session to match the main site (see changelog).
-- `painbet-paintracker.html` — PainTracker drawer content, loaded via iframe (`?embed=1`).
-- `painbet-synapse.html`, `concepts-pk-anesthesia.html`, `painbet-intake-11-v2.html`, `painbet-intake-scroll.html`, `painbet-design-system.html` — older standalone concept pages, not wired into the live site.
+- `painbet-arcade.html` — The Arcade's 9 playable Originals, loaded via iframe (`?embed=1`) from the "Arcade" nav. Has its own `:root` token set; was restyled to match the main site in an earlier session (see changelog).
+- `painbet-paintracker-v2.html` — **live PainTracker drawer content**, loaded via iframe (`?embed=1`), wired at `index.html`'s `openTracker()` (search `trk-frame`). Restyled onto the site's current tokens; see the 2026-08-04 changelog entry. `painbet-paintracker.html` (no `-v2`) is the pre-restyle original, kept only for rollback — not referenced anywhere in `index.html` anymore.
+- `painbet-synapse.html`, `concepts-pk-anesthesia.html`, `painbet-intake-11-v2.html`, `painbet-intake-scroll.html`, `painbet-design-system.html`, `painbet-design-system-v2.html` — older/standalone concept and design-system pages, not wired into the live site.
 - `index-depreciated.html` — the pre-mockup version of the site (kept for reference; had the neuron WebGL sign-in cinematic that got ported back into the new `index.html`).
 
 ## Brand rules (non-negotiable — apply to everything)
@@ -150,7 +150,28 @@ Client actually ran `painbet-design-system-v2.html` through an HTML-to-Figma plu
 
 **Known limitation of this verification:** there is no HTML-to-Figma plugin available in this environment, so the actual Figma import could not be re-run here. The class-rename fix follows the exact documented trap/fix pattern in `.claude/skills/html-to-figma-export/SKILL.md` (written for this same project) and the file now greps clean of every trigger word, but the client should re-run their real plugin import to get final confirmation the modals capture correctly.
 
+## Session changelog (2026-08-04, this thread, branch `claude/paintracker-v2-restyling-2rcmjk`, PRs #111–#112)
+
+Audited `painbet-paintracker.html` (the PainTracker drawer content) on request and found it had not been touched since PR #68, pre-dating the site-wide token pass (#79–#93) and the arcade restyle (#96, #106–#110). Built `painbet-paintracker-v2.html` as a new file rather than overwriting the original, so rollback is one line (`index.html`'s `trk-frame` src).
+
+**Token rebase.** The tracker had its own third, orphaned palette: `--red:#E10600` (a red HANDOFF already documents as retired — "rendered on precisely nothing" — see Brand rules section), `--ground:#232427`, `16px` radii, none of it matching either of `index.html`'s two live token layers. Rebased onto `--blood`/`--redhi`, the glass tokens (`--glass`/`--glass-border`), `18px` radii, and `--ease-out`. The pain-scale bubble's raw `rgba(225,6,0,*)` glow (the literal dead red, not routed through a var) was swept to the arterial-red equivalent.
+
+**Fonts.** The tracker pulled Archivo/Archivo Black/IBM Plex Mono from the Google Fonts CDN — which fails silently in sandboxed/offline contexts and was visibly dropping Archivo Black in testing. Discovered in the process that `index.html` itself does not load Archivo (body) or a mono webfont at all; it only embeds one real font via base64 `@font-face`, for Archivo Black, and lets `--sans`/`--mono` fall through to system fonts. v2 now matches that exactly: same embedded Archivo Black block, no CDN link, mono stack aligned to `'JetBrains Mono','SF Mono',ui-monospace,monospace` to match the arcade's own convention.
+
+**Embed mode.** Previously two rules, one dead (`body.embed .wrap{padding:0 14px}` — no `.wrap` element exists in this file). The drawer is `min(540px,96vw)` wide but `.app` was capped at `max-width:430px` with a `@media(min-width:520px)` phone-frame effect that fired *inside* the drawer, adding padding/radius/shadow — so the tracker rendered as a floating phone card with ~55px of dead gutter per side, plus its own demo header (SIM BET/RESET/SND/countdown) duplicating the drawer's own header, which additionally disagreed on the tolerance day (drawer said day 11, tracker said day 9 — both are hardcoded demo strings, reconciled by editing the drawer's static copy in `index.html` rather than building a live sync mechanism for a prototype where the PK balance itself is also hardcoded). v2's `body.embed` now fills the drawer edge to edge; standalone (no `?embed=1`) keeps the phone-frame look.
+
+**Glass + colour semantics.** `.hub`/`.q`/`.trial`/`.g-card`/`.g-stats`/`.stage`/`.promo-strip`/`.ward`/`.creative` moved from flat `--card` fills to the site's glass recipe (`--glass`/`--glass-border` + `backdrop-filter:blur(12px) saturate(1.15)` + inset highlight), matching hover lift on `--ease-out`. Per explicit decision this session: PK balances, claim buttons, claimable-card states, and PK reward amounts stay morphine blue (relief-flavored); tab notification badges and "ready to claim" section headers/counts — generic UI chrome, not reward figures — moved to arterial red (`.tab .bdg`, `.sec-h.hot .sl`/`.cnt`; note this rule is declared twice, once in the base stylesheet and once in the later "popup redesign" override block that wins the cascade — both had to be fixed or the second silently reverts the first).
+
+**Games tab (`.orig` block).** The tracker's embedded Originals arcade (~340 lines CSS + ~500 lines HTML + JS, the Games tab's mines/crash/plinko-style sub-games) was still on a stale pre-restyle palette (`--bg:#17181B`, `--red:#FF3B33`, `--edge:#3A3D44`) duplicating `painbet-arcade.html` from before its own restyle. Retextured in place onto the current arcade tokens (`#07080a`/`#e0163c`/`#ff2450`, glass panels with the same `backdrop-filter` group-selector rule the real arcade uses) rather than replacing it with an iframe to `painbet-arcade.html` — decision made explicitly to keep the tab self-contained and avoid rewiring the PK wallet adapter across a frame boundary. Also swept scattered raw hex/rgba literals in the game canvas JS (`#FF3B33`→`#ff2450`, `#3A3D44`→`hsla(0,0%,100%,.10)`, `#26282D`→`#14151a`) that were bypassing the CSS vars entirely.
+
+**Carousel art (PR #112, follow-up).** The three `CREATIVE SLOT A` carousel slides (`.slide.c-drip`/FLATLINE, `.slide.c-race`/Race 04, `.slide.c-trial`/Full Course — 3:1 aspect, ~1032×344) were flat CSS gradients. Client commissioned three banner images (`assets/promo/flatline-crash-bg.png`, `race-pk-pool-bg.png`, `full-course-trials-bg.png`, each ~1080×357, void-black-left/art-right composition designed for a text overlay) and wired them in using the same `linear-gradient(90deg, rgba(9,10,12,X)…), url(...)` + `background-size:cover;background-position:right center` pattern `index.html`'s own promo banners already use. Dropped each slide's decorative `::after` radial-glow blob since the artwork bakes in its own glow. Also switched the FLATLINE slide's title/CTA accent from blue to arterial red to match its new red-toned banner — the crash game isn't a money-back surface, so blue there was already off-convention independent of the image swap.
+
+**Verification.** `python3 -m http.server 8931` + Playwright at drawer width (540px, both inside the real `index.html` drawer and standalone), 800px, and mobile widths, in both `?embed=1` and standalone modes. Confirmed zero JS/console errors (one unrelated favicon 404). Exercised claim flow, SIM BET, tab navigation (Doses/Plan/Trials/Games), and opened the FLATLINE game screen to confirm the `.orig` retheme rendered correctly. Screenshotted all three carousel slides to confirm text legibility over the artwork's void-black zone.
+
+Landed as two PRs on the same branch, restarted off `main` between them per the merged-PR-restart rule since #111 merged before the art assets arrived: **#111** (token/layout/glass/`.orig` restyle) and **#112** (carousel art). Both merged. `painbet-paintracker.html` (original) and `index.html`'s other systems untouched apart from the `trk-frame` src and the drawer's static streak copy.
+
 ## Current state at handoff
 
 - Local dev loop used throughout: `python3 -m http.server 8931` from the repo root, Playwright via `/opt/node22/lib/node_modules/playwright`, Chromium at `/opt/pw-browsers/chromium-1194`.
 - Latest work on `painbet-design-system-v2.html` happened on branch `claude/design-system-v2-figma-import` (fresh branch off `main`, not a continuation of the older, fully-merged `claude/design-system-v2-restructure-uw5h1o`).
+- Latest work on the PainTracker happened on branch `claude/paintracker-v2-restyling-2rcmjk` (PRs #111–#112, both merged). The live drawer now loads `painbet-paintracker-v2.html`; the old `painbet-paintracker.html` is unreferenced and kept only for rollback.
