@@ -737,8 +737,19 @@ const SCENES = [
     nextLabel:'Collect your meds', nextNote:'The daily wheel, drop codes, and the tasks that earn giveaway entries.', pushMs:2700 },
 
   /* A beat, not a stop: the door seals, the line is read, and the ward carries
-     on into the dispensary on its own. autoMs is how long it holds here. */
-  { id:'lockerclose', type:'scrub', src:'door3', from:160, to:193, tint:'#F2C14E',
+     on into the dispensary on its own. autoMs is how long it holds here.
+     Was from:160, matching reveal's own held frame exactly - but the door
+     doesn't actually start swinging until ~172: frames 160-171 are static,
+     the same settled locker07 shot reveal was already holding on, repeated
+     for another dozen frames with no visible motion. Scrubbing through that
+     read as the door pausing before it closed rather than closing in one
+     flow. 172 is where the gap first visibly narrows (checked every frame
+     from 169-174), so that's the new from - straight into the swing, no
+     static repeat of what reveal just held. The scroll length this scene
+     gets is unset here, same as before, so it shrinks with the trimmed
+     frame count rather than compressing the same length onto fewer frames -
+     the swing itself was never the slow part, only the dead lead-in was. */
+  { id:'lockerclose', type:'scrub', src:'door3', from:172, to:193, tint:'#F2C14E',
     kicker:'THE LOCKER · DISCHARGE', title:'Sealed again.',
     body:'Once a day. Same door, same odds, tomorrow.',
     reveal:[.1,.2,.7,.86], autoMs:2600 },
