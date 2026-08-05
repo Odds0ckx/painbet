@@ -21,8 +21,8 @@ step, vanilla JS + canvas, in the style of the rest of this repo.
 
 ## Current state — live and working
 
-- **Branch:** `claude/painbet-intake-scroll-21zij3`. No open PR right now —
-  everything through PR #65 is merged to `main`.
+- **Branch:** `claude/intake-enter-button-username-glitch-yf4cv9` (open PR).
+  Everything before it, through PR #65, is merged to `main`.
 - **Live:** `https://odds0ckx.github.io/painbet/painbet-intake-scroll.html`
   (GitHub Pages, source = `main` branch root, redeploys automatically a
   minute or two after every merge to `main`).
@@ -37,9 +37,12 @@ step, vanilla JS + canvas, in the style of the rest of this repo.
 **Film between stations.** The journey is one continuous ~60s film; the forms
 are popups that arm at specific held frames.
 
-1. Lands on a **PAIN.BET title card** with a `Check in` button.
+1. Lands on a **PAIN.BET title card** with an `Enter` button, up and pressable
+   from the very first pixel of scroll. The scroll cue sits under it, so the
+   two ways in are stacked: press it, or walk in yourself.
 2. Pressing it **auto-plays the footage** (scroll position is driven
-   programmatically, eased) forward to the next station.
+   programmatically, eased) forward to the next station, and stops the moment
+   that station's gate arms. About 8s from the title card to the examination.
 3. At a station, its form's card — which has been fading in, centred over the
    held frame, the whole approach — **becomes interactive and scroll locks**.
    The card **does not move or reparent** when this happens; arming the gate
@@ -157,7 +160,91 @@ loads a window around the playhead and caches what it fetches; a draw for a
 frame that has not arrived falls back to the nearest decoded neighbour, so the
 canvas never flashes empty mid-scrub.
 
-## Fixed this session (read before touching the engine again)
+## This session: the Enter button, and the form fields glitching out
+
+Both reported by Nathan against the live Pages site.
+
+**1. Enter, on the first screen.** `admissions` carries `cta:'Enter'`, which is
+the existing "a film scene can carry its own way in" path, so pressing it runs
+the same `Station.advance` -> `push()` walk every station already uses and
+stops when the quiz gate arms. Two supporting changes:
+
+- Its `reveal` is `[0,0,.82,.96]`: the default window's opening ramp taken off,
+  so the card is up at scroll zero instead of fading in at p=0.12. It still
+  leaves on the schedule it always did, and pressing Enter clears it at once.
+- `.card.hero` moved up by the height of the scroll cue (`bottom:calc(5vh +
+  84px)`). The cue is fixed to the bottom of the screen and the card now ends
+  in a button; they were landing on top of each other.
+
+**2. The fields glitching out.** Four separate causes, all of them the page
+moving the film while somebody was typing into it:
+
+- **The page was measured two different ways.** Spacers were sized in CSS `vh`
+  while `render()` measured scenes from `innerHeight`. Those are not the same
+  number on a phone: CSS `vh` is the large viewport, `innerHeight` shrinks when
+  the URL bar returns or the keyboard opens. Every scene then sat at a position
+  computed against a page that was not the length JS thought it was. Both now
+  come off one **`VH`**, declared at the top of the script next to `FPVH`, and
+  `PACE` reads it too.
+- **The keyboard re-measured the page.** `resize` fired `sizeAll()`, which
+  recomputed every scene against the shrunken viewport, so an open station could
+  fade out from under whoever was in it. A same-width resize while a text field
+  holds focus is now treated as the keyboard: canvases still resize, the track
+  keeps its length. `VH` only moves on a real layout change.
+- **Focusing a field scrolled the window.** A native `focus()` scrolls the
+  element into view, and on this page window scroll *is* the film, so focusing
+  the handle field wound the footage forward. All in-card focus calls go through
+  **`softFocus()`** (`preventScroll` plus a scroll of the card's own overflow),
+  and **`Station` pins the window scroll** for as long as a station is open, so
+  nothing the browser does on its own can move the film.
+- **The card sat behind the keyboard.** `--vv` tracks `visualViewport.height`
+  and `body.kb` is set while the keyboard is up; the form card then sits in
+  what is left of the screen. This is the only thing allowed to move a card,
+  and it eases rather than jumping.
+
+**3. The field putting the old value back while you typed in it.** The one that
+actually reads as "I try to enter my username and never get to." `render()`
+called `card._enter()` on **every frame** the card was visible, and the hooks
+that prefill a field with what we already know are written as "if it is empty,
+fill it". So clearing the login field to type a patient number refilled it from
+under you on the very next render, and your first keystroke landed on the end
+of the old value: `@old_handle06413`, which then fails to sign in. Any scroll
+nudge or the keyboard opening was enough to trigger it. Two changes:
+
+- `_enter` now means **on arrival**: once when the card comes on screen, again
+  only if it has been away (`sc._entered`, cleared at `vis<0.4`).
+- The prefills go through **`prefill()`**, which never writes over a field that
+  has been typed in, empty included. A cleared field is a decision, not a gap.
+
+Affected the sign-in card (`li_id`) and the private ward (`v_handle`). The
+discharge handle/email field was never prefilled, so first-time capture was
+only ever hit by the four causes above.
+
+**4. Two auto-plays fighting (found while verifying the above).** A card is
+clickable from the moment it is readable, which is part way through the walk
+still bringing it in. Answering it early called `push()` while the previous
+push's rAF loop was still running: two loops scrolling to different places on
+alternate frames, dragging the film back and forth and never arriving. Each
+walk now takes a number (`pushId`) and stops as soon as a newer one is issued.
+
+**5. The directory could leave the page locked.** Jumping from an open station
+left `Station.open` true, so the scroll lock stayed on at the destination.
+`walkTo()` now calls `Station.leave()` first.
+
+Verified in Chromium at 390x780, 360x640 and 1280x860, driving the page with
+real keystrokes rather than programmatic fills: Enter is visible and pressable
+at scroll zero and walks to the armed quiz gate in ~8s; the hero fades on its
+old schedule when scrolled past and stops taking clicks once it does; a stray
+notch does not cancel the walk and a deliberate scroll does; the full gated run
+(quiz, wallet, discharge, reveal) completes; tapping the handle field, switching
+Telegram/Email and typing move nothing, and typing straight through a viewport
+drop to 400px keeps focus, scroll, card opacity and the track length unchanged
+with the field still on screen; the sign-in and private ward fields prefill once
+and then stay typed, and signing in with a patient number typed over the prefill
+works; the wheel, referral link and diagnosis are unaffected; reloading
+mid-station repaints real film pixels. No page errors.
+
+## Fixed in earlier sessions (read before touching the engine again)
 
 These were all found by the user testing the **live Pages site**, not in
 review — worth remembering that's a real, fast feedback loop for this project.
@@ -243,6 +330,12 @@ been fixed and verified. The page is live.
   See the discharge timing bug above. `push()`'s own distance-based fallback
   is safer than a hand-computed number whenever a scrub-only scene might sit
   between the two gated stations.
+- **Never size the track from `innerHeight`, and never re-measure the page on a
+  keyboard resize.** See this session's notes above. `VH` is the one number the
+  page's length comes from; the keyboard is a viewport change, not a new page.
+- **A card is `live` (clickable) before its gate arms**, because `live` follows
+  visibility and the gate follows scroll position. Anything reachable from a
+  card has to be safe to press mid-walk.
 - **`.scene canvas` must be `.scene > canvas`**, otherwise the rule captures
   canvases inside cards (the wheel) and absolutely-positions them.
 - Auto-play cancel needs a **threshold**, or trackpad momentum strands the

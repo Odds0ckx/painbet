@@ -57,7 +57,18 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 /* keep the way out of a form permanently in reach */
 .card .btn.sticky-go{position:sticky;bottom:-2px;margin-bottom:0;z-index:4;
   background:rgba(19,21,23,.94);backdrop-filter:blur(8px);border-color:var(--line)}
-.scene.form .card{bottom:auto;top:50%;transform:translate(-50%,-46%)}
+.scene.form .card{bottom:auto;top:50%;transform:translate(-50%,-46%);
+  transition:top .2s ease,transform .2s ease,max-height .2s ease}
+/* On a phone the on-screen keyboard covers the bottom half of the screen, and
+   the card is centred in a viewport the keyboard is not part of, so the field
+   being typed into ends up behind it. --vv is the height actually visible
+   (visualViewport), and body.kb is set only while the keyboard is up: the card
+   moves to the top of what is left and caps its height there, then goes back on
+   its own when the keyboard closes. This is the one thing allowed to move the
+   card, and it eases rather than jumping - see the note in render() on why
+   nothing else may. */
+body.kb .scene.form .card{top:8px;transform:translate(-50%,0);
+  max-height:calc(var(--vv,100vh) - 16px)}
 .card.live{pointer-events:auto}
 .card .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ink-3);margin:0 0 10px}
@@ -109,8 +120,11 @@ body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .dxwrap .scale{font-family:var(--display);font-size:44px;color:var(--red-hot);line-height:1;margin:8px 0 2px}
 .dxwrap .scale span{font-size:16px;color:var(--ink-3)}
 .dxwrap .dx{font-family:var(--display);font-size:30px;margin:10px 0 6px}
-/* hero title card */
-.card.hero{text-align:center;bottom:5vh;max-height:58vh}
+/* hero title card. It clears the scroll cue rather than sitting on it: the cue
+   is fixed to the bottom of the screen and the card now ends in a button, and
+   the two were landing on each other. The offset is the cue's own height, so
+   Enter and "Scroll to walk in" read as the two ways in, stacked. */
+.card.hero{text-align:center;bottom:calc(5vh + 84px);max-height:56vh}
 .card.hero h2{font-size:clamp(38px,12vw,72px);letter-spacing:-.03em;line-height:.92;margin:4px 0 12px}
 .card.hero .kicker{color:var(--red-hot);letter-spacing:.34em}
 .card.hero .metric{justify-content:center}
@@ -559,6 +573,23 @@ const DOOR_FILMS = {
 };
 const FPVH = 56;                       // frames per viewport-height of scroll
 /* ---------------------------------------------------------------------------
+   VH — the viewport height the whole page is measured in: every scene's scroll
+   length, and the pace everything auto-moving walks at.
+
+   It is deliberately not innerHeight. The spacers used to be sized in CSS vh
+   while the scroll maths measured scenes from innerHeight, and those are not
+   the same number on a phone: CSS vh is the large viewport and ignores the
+   browser chrome, innerHeight shrinks when the URL bar returns or the on-screen
+   keyboard opens. Whenever the two disagreed, every scene sat at a position
+   computed against a page that was not the length JS thought it was, so the
+   film jumped, cards faded at the wrong moment, and an open station could fade
+   out from under whoever was typing into it.
+
+   VH changes on a real layout change only. A keyboard is a viewport change, not
+   a new page, and must never re-measure the page (see the resize handler).
+   ------------------------------------------------------------------------- */
+let VH = innerHeight, VW = innerWidth;
+/* ---------------------------------------------------------------------------
    TIMING. Everything that moves the page on its own reads from here. One
    viewport height of scroll advances FPVH frames and the film runs at
    FILM.fps, so true walking pace is FPVH/fps seconds per viewport height.
@@ -571,8 +602,8 @@ const PACE = {
      page and nothing drifts out of step with anything else. */
   rate: 1,            // 1 is exactly the speed the film was shot at. Leave it there.
 
-  get pxPerFrame(){ return innerHeight / FPVH; },
-  get pxPerSec(){ return innerHeight * FILM.fps / FPVH * this.rate; },
+  get pxPerFrame(){ return VH / FPVH; },
+  get pxPerSec(){ return VH * FILM.fps / FPVH * this.rate; },
   msFor(px){ return Math.abs(px) / this.pxPerSec * 1000; },
   walkMin: 700,
   walkMax: 3200,
@@ -590,9 +621,17 @@ const SCENES = [
     title:'<span class="wordmark"><span class="mk">P<span class="tri" aria-hidden="true"></span>IN</span><span class="tld">.BET</span></span>',
     body:'The ward is taking patients. Five questions, then we tell you what is wrong with you and what you get for being early.',
     metric:[{v:'$400',k:'Cash, every Sunday'},{v:'14',k:'Winners a week'}],
-    /* No button, and therefore no push. Walking in is the scroll, which is the
-       one thing this page is for. A Check in button did the walk for you and
-       made the opening pointless. */ },
+    /* Enter walks you in: it pushes the film from the title card all the way to
+       the first window (the examination), at the same pace a scroll would have
+       covered it, and stops the moment that station arms. Scrolling still does
+       the same walk by hand, so the opening is not taken away from anyone who
+       would rather drive it themselves.
+       The reveal window is the default one with its opening ramp taken off:
+       every other scrub card fades up as you arrive at it, but a button nobody
+       can see is not a button, so this one is already up at scroll zero. It
+       still leaves on the same schedule it always did, and pressing Enter
+       clears it immediately so the walk is not watched through it. */
+    cta:'Enter', reveal:[0,0,.82,.96] },
 
   /* ONE ROOM. Five questions and the verdict, in the same card, without moving.
      The scene after this used to be captioned ROOM 02 · EXAMINATION, Step
@@ -1236,7 +1275,7 @@ function buildWallet(card){
     [...chains.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');
     ST.chain=b.dataset.ch;
     txh.placeholder=ST.chain==='TRON'?'T…  wallet or hash':((ST.chain==='ETH'||ST.chain==='BNB')?'0x…  wallet or hash':'Wallet address or transaction hash');
-    txh.focus();});
+    softFocus(txh);});
   /* Auto-continue (spec §05): once a first wallet is logged, the room is not
      a trap for hands-off visitors — it moves itself on after 1.5s. Typing or
      focusing a field cancels the pending advance; if the field is mid-entry
@@ -1266,18 +1305,18 @@ function buildWallet(card){
       note.textContent=r.other?`That looks like ${r.other}. Tap ${r.other} above and log it again.`
         :(!r.val?'Paste a wallet address or a transaction hash.'
         :`We do not recognise that as a ${ST.chain} wallet or hash. Paste it straight from your wallet or the explorer.`);
-      txh.focus();return;}
+      softFocus(txh);return;}
     const key=ST.chain+':'+r.val.toLowerCase();
     if(ST.hashes[key]){note.className='note warn';note.textContent='That one is already in. One entry each.';return;}
     const amt=parseFloat(a.replace(/[^0-9.]/g,''));
-    if(!amt||amt<=0){note.className='note warn';note.textContent='Put the amount in so we can match it against the chain.';$('w_amt',card).focus();return;}
-    if(c.length<2){note.className='note warn';note.textContent='Which casino was it? Any crypto casino counts.';$('w_casino',card).focus();return;}
+    if(!amt||amt<=0){note.className='note warn';note.textContent='Put the amount in so we can match it against the chain.';softFocus($('w_amt',card));return;}
+    if(c.length<2){note.className='note warn';note.textContent='Which casino was it? Any crypto casino counts.';softFocus($('w_casino',card));return;}
     ST.hashes[key]=true;addEntries(1,'Wallets logged');
     $('w_ent',card).textContent=ST.entries;
     txh.value='';$('w_amt',card).value='';$('w_casino',card).value='';
     note.className='note ok';
     note.textContent=(r.kind==='wallet'?'Wallet':'Transaction')+' logged. Entry '+ST.entries+'. Add another, or move on.';
-    toast('Entry added. '+ST.entries+" in Sunday's draw."); txh.focus();
+    toast('Entry added. '+ST.entries+" in Sunday's draw."); softFocus(txh);
     // capped at ENTRY_CAP total, but the room stays open until they leave or auto-continue fires
     const skip=$('w_skip',card);
     skip.textContent='Done, send my chart';skip.classList.remove('ghost');
@@ -1387,7 +1426,7 @@ function buildDischarge(card){
     [...chan.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');
     ST.chan=b.dataset.c;
     $('d_hl',card).textContent=ST.chan==='Email'?'Email':'Handle';
-    handle.placeholder=ST.chan==='Email'?'you@email.com':'@yourhandle';handle.focus();});
+    handle.placeholder=ST.chan==='Email'?'you@email.com':'@yourhandle';softFocus(handle);});
   function paintPw(){const v=pw.value,n=pwScore(v),bar=$('d_bar',card),h=$('d_hint',card);
     const cols=['#FF4A42','#FF4A42','#F2C14E','#5FE3A1','#5FE3A1'];
     bar.style.width=(v?Math.max(12,n*25):0)+'%';bar.style.background=cols[n];
@@ -1409,8 +1448,8 @@ function buildDischarge(card){
     const ok=ST.chan==='Email'?/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(v):v.replace(/[^0-9a-zA-Z_]/g,'').length>=4;
     if(!ok){note.className='note warn';
       note.textContent=ST.chan==='Email'?'That email will not reach you. Check it.':'Give us a real '+ST.chan+' handle so we can actually send this.';
-      handle.focus();return;}
-    if(pw.value.length<8){note.className='note warn';note.textContent='Set a password of at least eight characters.';pw.focus();return;}
+      softFocus(handle);return;}
+    if(pw.value.length<8){note.className='note warn';note.textContent='Set a password of at least eight characters.';softFocus(pw);return;}
     ST.pw=pw.value;ST.sent=true;ST.handle=v;
     note.className='note ok';
     note.textContent='Chart sent on '+ST.chan+'. Patient #'+String(ST.pno).padStart(5,'0')+'. Keep scrolling to your locker.';
@@ -1852,7 +1891,7 @@ function buildLogin(card){
         <button class="pweye" id="li_eye">SHOW</button></div></div>
     <div class="note" id="li_note"></div>
     <button class="btn" id="li_go">Open it</button>`;
-  card._enter=()=>{ if(ST.sent&&!$('li_id',card).value) $('li_id',card).value=ST.handle; };
+  card._enter=()=>{ if(ST.sent) prefill($('li_id',card),ST.handle); };
   $('li_eye',card).addEventListener('click',function(){const p=$('li_pw',card);
     p.type=p.type==='password'?'text':'password';this.textContent=p.type==='password'?'SHOW':'HIDE';});
   const normId=v=>(v||'').trim().toLowerCase().replace(/^@/,'');
@@ -1939,14 +1978,14 @@ function buildVip(card){
     </div>
     <div class="note" id="v_note">One host, one message, no list. Nothing here is shared outside the VIP desk and nothing is published.</div>
     <button class="btn" id="v_go">Ask a host to reach out</button>`;
-  card._enter=()=>{ if(ST.handle&&!$('v_handle',card).value) $('v_handle',card).value=ST.handle; };
+  card._enter=()=>{ prefill($('v_handle',card),ST.handle); };
   const vol=$('v_vol',card);
   vol.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
     [...vol.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');ST.vipVol=b.dataset.v;});
   $('v_go',card).addEventListener('click',()=>{
     const v=$('v_handle',card).value.trim(),n=$('v_note',card);
     if(v.replace(/[^0-9a-zA-Z_@.+]/g,'').length<4){n.className='note warn';
-      n.textContent='Leave one way to reach you. A Telegram handle is enough.';$('v_handle',card).focus();return;}
+      n.textContent='Leave one way to reach you. A Telegram handle is enough.';softFocus($('v_handle',card));return;}
     ST.vip=true;n.className='note ok';
     n.textContent='Logged. A host reads this within the day and comes back to you on '+v+' with terms, before you move anything.';
     $('v_go',card).disabled=true;$('v_go',card).textContent='Request sent';
@@ -2020,7 +2059,7 @@ function buildStaff(card){
     if(!ST.track){n.className='note warn';n.textContent='Pick a track first. Any of the four.';return;}
     const contact=ST.sent?ST.handle:$('t_contact',card).value.trim();
     if(!ST.sent&&contact.replace(/[^0-9a-zA-Z_@.+]/g,'').length<4){
-      n.className='note warn';n.textContent='Leave a handle so we can actually reply.';$('t_contact',card).focus();return;}
+      n.className='note warn';n.textContent='Leave a handle so we can actually reply.';softFocus($('t_contact',card));return;}
     const what=TRACKN[ST.track]+(ST.track==='stream'?(ST.excl==='exclusive'?', exclusive':', non exclusive'):'');
     n.className='note ok';
     n.textContent='In. '+what+'. Someone reads this the same week and comes back on '+ST.chan+'.';
@@ -2166,16 +2205,83 @@ SCENES.forEach(s=>{
     }
   }
   el.appendChild(card);stageLayer.appendChild(el);
-  const sp=document.createElement('div');sp.className='spacer';
-  sp.style.height=((s.vh||3)*100)+'vh';stages.appendChild(sp);
-  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,sized:false,src:srcFor(s)});
+  const sp=document.createElement('div');sp.className='spacer';stages.appendChild(sp);
+  scenes.push({cfg:s,el,cv,ctx:cv.getContext('2d'),card,sp,sized:false,src:srcFor(s)});
 });
+
+/* Every scene's scroll length, in pixels, off the one VH declared at the top of
+   this file. The spacers are what actually make the page long, so this is the
+   only place the page's length is decided. */
+function layoutTrack(){ scenes.forEach(sc=>{ sc.sp.style.height=((sc.cfg.vh||3)*VH)+'px'; }); }
+layoutTrack();
 
 function sizeCanvas(sc){const dpr=Math.min(window.devicePixelRatio||1,2),w=innerWidth,h=innerHeight;
   if(w<2||h<2)return false;sc.cv.width=Math.round(w*dpr);sc.cv.height=Math.round(h*dpr);
   sc.ctx.setTransform(dpr,0,0,dpr,0,0);sc.sized=true;return true;}
 function sizeAll(){scenes.forEach(sizeCanvas);render();}
-addEventListener('resize',sizeAll);
+/* A field being typed into is the single most common resize on a phone, and
+   the last moment the page should reflow underneath it. The keyboard leaves the
+   width alone and only takes height, so a same-width resize while a text field
+   holds focus is the keyboard, and the track keeps the length it already had.
+   The canvases still resize, so the film always fills whatever is on screen. */
+const typing=()=>{const a=document.activeElement;
+  return !!a&&(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||a.isContentEditable);};
+addEventListener('resize',()=>{
+  const keyboard = innerWidth===VW && typing();
+  if(!keyboard){ VH=innerHeight; VW=innerWidth; layoutTrack(); }
+  sizeAll();
+});
+
+/* The visible height, which the keyboard does change, so a form card can sit
+   in what is left of the screen instead of behind it. */
+(function(){
+  const vv=window.visualViewport;
+  function paint(){
+    const h=vv?vv.height:innerHeight;
+    document.documentElement.style.setProperty('--vv',Math.round(h)+'px');
+    document.body.classList.toggle('kb', h < innerHeight-140);
+  }
+  if(vv){ vv.addEventListener('resize',paint); vv.addEventListener('scroll',paint); }
+  addEventListener('orientationchange',()=>setTimeout(paint,300));
+  paint();
+})();
+
+/* Put a field in front of somebody without letting the browser scroll the page
+   to do it. A native focus() scrolls the focused element into view, and on this
+   page window scroll is the film: focusing the handle field wound the footage
+   forward, which faded the very card being filled in. preventScroll stops that,
+   and the card scrolls inside itself instead, which is where the field actually
+   is. */
+function bringIntoCard(el){
+  const card=el&&el.closest&&el.closest('.card');
+  if(!card||card.scrollHeight<=card.clientHeight+1) return;
+  const c=card.getBoundingClientRect(), r=el.getBoundingClientRect(), pad=18;
+  if(r.top<c.top+pad) card.scrollTop-=(c.top+pad-r.top);
+  else if(r.bottom>c.bottom-pad) card.scrollTop+=(r.bottom-(c.bottom-pad));
+}
+/* Fill a field in with something we already know, but never over the top of
+   somebody. The moment a field has been typed in it belongs to them, empty
+   included: clearing the handle to put a patient number in is exactly the case
+   that used to get overwritten, so a cleared field is a decision, not a gap to
+   fill. Coming back to a card later must not undo it either. */
+function prefill(el,val){
+  if(!el||!val||el.value||el.dataset.touched) return;
+  el.value=val;
+  if(!el._pf){ el._pf=true; el.addEventListener('input',()=>{el.dataset.touched='1';}); }
+}
+function softFocus(el){
+  if(!el) return;
+  try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); }
+  requestAnimationFrame(()=>bringIntoCard(el));
+}
+/* A field tapped directly rather than sent to gets the same treatment: the
+   window is held where the station opened, and once the keyboard has finished
+   coming up the card brings its own field into view inside itself. */
+document.addEventListener('focusin',e=>{
+  const el=e.target;
+  if(!el||!/^(INPUT|TEXTAREA)$/.test(el.tagName)) return;
+  setTimeout(()=>bringIntoCard(el),300);
+});
 
 function cardOpacity(p,r){const[a,b,c,d]=r||[.12,.28,.82,.96];
   if(p<a||p>d)return 0;if(p<b)return (p-a)/(b-a);if(p>c)return 1-(p-c)/(d-c);return 1;}
@@ -2186,7 +2292,7 @@ const resumeBtn=document.getElementById('resume');
 let current=null;
 resumeBtn.addEventListener('click',()=>{ if(current) Station.advance(current); });
 function render(){
-  const vh=innerHeight;let y=scrollY||pageYOffset;
+  const vh=VH;let y=scrollY||pageYOffset;   // VH, not innerHeight: see layoutTrack
   let top=0,total=0;scenes.forEach(sc=>{sc._top=top;sc._h=(sc.cfg.vh||3)*vh;top+=sc._h;total+=sc._h;});
 
   /* STATION: when the film reaches a capture point, the form's card - already
@@ -2239,32 +2345,49 @@ function render(){
       if(!sc.src.draw(sc.ctx,frame,W,H))
         drawPlaceholder(sc.ctx,fp,W,H,sc.cfg,Math.round(frame),sc.src.count);
     }
-    // pointer events only on the active form card
-    // NB: coerce — toggle() with undefined flips the class instead of clearing it
-    sc.card.classList.toggle('live',Boolean(isForm||sc.cfg.cta)&&vis>0.6);
-    if(vis<=0)return;
+    if(vis<=0){ sc.card.classList.remove('live'); return; }
     const fp=Math.max(0,Math.min(1,p));
+    let cardO;
     if(isForm){
       // card visible across the whole dwell (fade only at the very edges)
       const o=Math.min(1,vis, cardOpacity(fp,[.04,.14,.90,.99])+0.0);
-      sc.card.style.opacity=Math.max(vis>0.6?1:vis,o);
-      if(vis>0.6&&sc.card._enter){sc.card._enter();}
+      cardO=Math.max(vis>0.6?1:vis,o);
+      sc.card.style.opacity=cardO;
+      /* _enter means "on arrival", and it used to run on every single frame the
+         card was visible. The hooks that prefill a field with what we already
+         know about you are written as "if it is empty, fill it", so running
+         them forty times a second meant clearing the field to type something
+         else refilled it from under you on the very next render: your first
+         keystroke then landed on the end of the old value. Any scroll nudge or
+         the keyboard opening was enough to trigger it. It now fires once when
+         the card comes on screen, and again only if the card has been away. */
+      if(vis>0.6){ if(!sc._entered){ sc._entered=true; if(sc.card._enter) sc.card._enter(); } }
+      else if(vis<0.4) sc._entered=false;
     }else{
-      // a call-to-action card holds until it is pressed, then clears out of the
-      // way so the walk it started is not hidden behind it
-      const o=sc.cfg.cta?(Station.playing?0:vis):cardOpacity(fp,sc.cfg.reveal);
-      sc.card.style.opacity=o;
-      sc.card.style.transform='translate(-50%,'+(24-24*o)+'px)';
+      /* A call-to-action card clears the instant the walk it started begins, so
+         the film it set moving is not watched through the title card. Otherwise
+         it fades on its own reveal window like any other scrub card, which is
+         what walks the viewer out from under it when they scroll in by hand
+         instead of pressing it. */
+      cardO=sc.cfg.cta&&Station.playing?0:cardOpacity(fp,sc.cfg.reveal);
+      sc.card.style.opacity=cardO;
+      sc.card.style.transform='translate(-50%,'+(24-24*cardO)+'px)';
     }
+    /* Pointer events only on a card you can actually see. A cta card fades out
+       as the walk passes it while its scene is still on screen, and an
+       invisible card that kept its pointer events would sit there swallowing
+       every press aimed at what is behind it.
+       NB: coerce — toggle() with undefined flips the class instead of clearing it */
+    sc.card.classList.toggle('live',Boolean(isForm||sc.cfg.cta)&&vis>0.6&&cardO>0.35);
     if(vis>0.5){ tag.innerHTML='PAIN.BET <b>//</b> '+sc.cfg.id.toUpperCase(); current=sc; }
   });
 
   /* Safety net: if the film is sitting still between stations with nothing to
-     press, offer a way on so nobody is ever stranded mid-corridor. */
-  /* Not on the opening scene. With the Check in button gone the hero is a
-     scrub with no cta and an unfinished gate ahead of it, so the safety net
-     armed the instant the page opened and sat on top of the scroll cue -
-     offering a way past the one thing the page asks you to do yourself. */
+     press, offer a way on so nobody is ever stranded mid-corridor.
+     Not on the opening scene, and not on any scene carrying its own cta: the
+     hero already ends in Enter, and a second, floating way on stacked over the
+     scroll cue would be three ways to do the same thing on the first screen.
+     Both exclusions are in the condition below. */
   const stranded = current && current!==scenes[0] && !Station.open && !Station.playing
     && current.cfg.type==='scrub' && !current.cfg.cta
     && scenes.some(s=>s.cfg.gate&&!gateDone(s.cfg.gate));
@@ -2293,19 +2416,34 @@ const Station=(function(){
   };
   const blockKeys=e=>{ if([' ','PageDown','PageUp','ArrowDown','ArrowUp','Home','End'].includes(e.key)
     && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) e.preventDefault(); };
+  /* Blocking wheel and touch stops a person scrolling, but not the browser.
+     Focusing a field, an autocomplete bar opening, a keyboard appearing: any of
+     those scroll the window on their own, and on this page window scroll is the
+     film, so the card being filled in would wind out of frame mid-sentence.
+     While a station is open the scroll position is simply held where the
+     station opened. The card scrolls inside itself, which is untouched by this. */
+  let pinned=0;
+  const hold=()=>{ if(!open) return;
+    if(Math.abs((scrollY||pageYOffset)-pinned)>1) window.scrollTo(0,pinned); };
   function lock(v){
     const m=v?'addEventListener':'removeEventListener';
     window[m]('wheel',block,{passive:false});
     window[m]('touchmove',block,{passive:false});
     window[m]('keydown',blockKeys);
+    window[m]('scroll',hold);
   }
   function enter(sc){
     if(open) return;
     cancelDwell();          // a station outranks a beat that was about to resume
     cur=sc; open=true;
+    pinned=scrollY||pageYOffset;
     lock(true);
     if(sc.card._enter) sc.card._enter();
   }
+  /* Leaving a station without answering it: the directory can jump out of an
+     open station, and the lock has to come off with it or the page arrives at
+     the new room unable to scroll. */
+  function leave(){ if(!open) return; open=false; cur=null; lock(false); }
   /* A card fades in - and becomes clickable - from about p=0.14, but the gate
      below only arms at p=0.34. Anyone who answered inside that window finished
      the station while Station had never opened, so done() had no scene to
@@ -2345,9 +2483,17 @@ const Station=(function(){
     const nxt=scenes[i+1];
     return nxt ? nxt._top+nxt._h*0.55 : document.body.scrollHeight-innerHeight;
   }
-  /* auto-play: run the footage forward to the next popup */
+  /* auto-play: run the footage forward to the next popup.
+     Only ever one walk at a time. A card is clickable from the moment it is
+     readable, which is part way through the walk that is still bringing it in,
+     so answering it early started a second walk while the first was still
+     running: two loops, each scrolling to a different place on alternate
+     frames, which dragged the film back and forth and never arrived anywhere.
+     Each walk takes a number and stops the moment a newer one is issued. */
+  let pushId=0;
   function push(sc){
     const from=scrollY||pageYOffset, to=nextStop(sc), dist=Math.abs(to-from);
+    const me=++pushId;
     if(dist<20) return;
     // deliberate pace: the film should feel walked, not skipped through
     /* Filmed pace unless the scene names its own. The old fallback was a flat
@@ -2368,6 +2514,7 @@ const Station=(function(){
       return d/span;
     }
     (function step(t){
+      if(me!==pushId) return;                             // a newer walk owns the page
       if(open||!playing) {playing=false;return;}          // a popup arrived, stop here
       const e=Math.min(1,(t-t0)/DUR);
       window.scrollTo(0, from+(to-from)*ramp(e));
@@ -2407,7 +2554,7 @@ const Station=(function(){
     if(dwell&&tookOver()) cancelDwell();
     if(playing&&performance.now()-since>500) playing=false; },{passive:true});
   const markStart=()=>{acc=0;since=performance.now();};
-  return { enter, done, advance:push, markStart, get open(){return open;},
+  return { enter, done, leave, advance:push, markStart, get open(){return open;},
            get playing(){return playing;} };
 })();
 /* every capture station reports completion the same way */
@@ -2471,7 +2618,7 @@ function walkToScene(id,instant){
   const y=sc._top+sc._h*0.4;
   /* On rails the rooms are destinations. Walking between them is a corridor
      the film does not have, so once past the examination they are cuts. */
-  if(instant||RAILS){ walking=false; window.scrollTo(0,y); render(); return; }
+  if(instant||RAILS){ Station.leave(); walking=false; window.scrollTo(0,y); render(); return; }
   walkTo(y);
 }
 
@@ -2491,6 +2638,10 @@ function routeSegments(from,to){
   return out;
 }
 function walkTo(to){
+  /* Anything that walks somewhere on purpose overrides an open station: the
+     scroll lock has to come off before the walk starts, or it holds the page
+     where the station was. */
+  Station.leave();
   const from=scrollY||pageYOffset, dist=to-from;
   if(Math.abs(dist)<12){ window.scrollTo(0,to); return; }
   const segs=routeSegments(from,to), v=PACE.pxPerSec;
