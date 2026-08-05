@@ -646,10 +646,11 @@ const SCENES = [
        fallback, which caps every un-named walk at a flat 9000ms - at ordinary
        viewport heights this walk's real distance clears that cap, so Enter was
        landing at the ceiling rather than at anything the footage or PACE.rate
-       chose. 9000*1.3 asks for the corridor lead specifically, 30% slower than
-       that ceiling, without moving the shared cap every other unnamed push
-       still relies on. */
-    cta:'Enter', reveal:[0,0,.82,.96], pushMs:9000*1.3 },
+       chose. 9000*1.3 asked for the corridor lead specifically, 30% slower
+       than that ceiling; still read as too fast, so another 30% on top of
+       that - 9000*1.3*1.3, ~15.2s - without moving the shared cap every other
+       unnamed push still relies on. */
+    cta:'Enter', reveal:[0,0,.82,.96], pushMs:9000*1.3*1.3 },
 
   /* ONE ROOM. Five questions and the verdict, in the same card, without moving.
      The scene after this used to be captioned ROOM 02 · EXAMINATION, Step
