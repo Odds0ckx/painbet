@@ -202,26 +202,47 @@ moving the film while somebody was typing into it:
   what is left of the screen. This is the only thing allowed to move a card,
   and it eases rather than jumping.
 
-**3. Two auto-plays fighting (found while verifying the above).** A card is
+**3. The field putting the old value back while you typed in it.** The one that
+actually reads as "I try to enter my username and never get to." `render()`
+called `card._enter()` on **every frame** the card was visible, and the hooks
+that prefill a field with what we already know are written as "if it is empty,
+fill it". So clearing the login field to type a patient number refilled it from
+under you on the very next render, and your first keystroke landed on the end
+of the old value: `@old_handle06413`, which then fails to sign in. Any scroll
+nudge or the keyboard opening was enough to trigger it. Two changes:
+
+- `_enter` now means **on arrival**: once when the card comes on screen, again
+  only if it has been away (`sc._entered`, cleared at `vis<0.4`).
+- The prefills go through **`prefill()`**, which never writes over a field that
+  has been typed in, empty included. A cleared field is a decision, not a gap.
+
+Affected the sign-in card (`li_id`) and the private ward (`v_handle`). The
+discharge handle/email field was never prefilled, so first-time capture was
+only ever hit by the four causes above.
+
+**4. Two auto-plays fighting (found while verifying the above).** A card is
 clickable from the moment it is readable, which is part way through the walk
 still bringing it in. Answering it early called `push()` while the previous
 push's rAF loop was still running: two loops scrolling to different places on
 alternate frames, dragging the film back and forth and never arriving. Each
 walk now takes a number (`pushId`) and stops as soon as a newer one is issued.
 
-**4. The directory could leave the page locked.** Jumping from an open station
+**5. The directory could leave the page locked.** Jumping from an open station
 left `Station.open` true, so the scroll lock stayed on at the destination.
 `walkTo()` now calls `Station.leave()` first.
 
-Verified in Chromium at 390x780, 360x640 and 1280x860: Enter is visible and
-pressable at scroll zero and walks to the armed quiz gate in ~8s; the hero
-fades on its old schedule when scrolled past and stops taking clicks once it
-does; a stray notch does not cancel the walk and a deliberate scroll does; the
-full gated run (quiz, wallet, discharge, reveal) completes; tapping the handle
-field, switching Telegram/Email and typing move nothing; a viewport drop to 400px
-while the field holds focus leaves scroll, card opacity and the track length
-unchanged, with the field still on screen; reloading mid-station repaints real
-film pixels. No page errors.
+Verified in Chromium at 390x780, 360x640 and 1280x860, driving the page with
+real keystrokes rather than programmatic fills: Enter is visible and pressable
+at scroll zero and walks to the armed quiz gate in ~8s; the hero fades on its
+old schedule when scrolled past and stops taking clicks once it does; a stray
+notch does not cancel the walk and a deliberate scroll does; the full gated run
+(quiz, wallet, discharge, reveal) completes; tapping the handle field, switching
+Telegram/Email and typing move nothing, and typing straight through a viewport
+drop to 400px keeps focus, scroll, card opacity and the track length unchanged
+with the field still on screen; the sign-in and private ward fields prefill once
+and then stay typed, and signing in with a patient number typed over the prefill
+works; the wheel, referral link and diagnosis are unaffected; reloading
+mid-station repaints real film pixels. No page errors.
 
 ## Fixed in earlier sessions (read before touching the engine again)
 

@@ -1891,7 +1891,7 @@ function buildLogin(card){
         <button class="pweye" id="li_eye">SHOW</button></div></div>
     <div class="note" id="li_note"></div>
     <button class="btn" id="li_go">Open it</button>`;
-  card._enter=()=>{ if(ST.sent&&!$('li_id',card).value) $('li_id',card).value=ST.handle; };
+  card._enter=()=>{ if(ST.sent) prefill($('li_id',card),ST.handle); };
   $('li_eye',card).addEventListener('click',function(){const p=$('li_pw',card);
     p.type=p.type==='password'?'text':'password';this.textContent=p.type==='password'?'SHOW':'HIDE';});
   const normId=v=>(v||'').trim().toLowerCase().replace(/^@/,'');
@@ -1978,7 +1978,7 @@ function buildVip(card){
     </div>
     <div class="note" id="v_note">One host, one message, no list. Nothing here is shared outside the VIP desk and nothing is published.</div>
     <button class="btn" id="v_go">Ask a host to reach out</button>`;
-  card._enter=()=>{ if(ST.handle&&!$('v_handle',card).value) $('v_handle',card).value=ST.handle; };
+  card._enter=()=>{ prefill($('v_handle',card),ST.handle); };
   const vol=$('v_vol',card);
   vol.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
     [...vol.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');ST.vipVol=b.dataset.v;});
@@ -2259,6 +2259,16 @@ function bringIntoCard(el){
   if(r.top<c.top+pad) card.scrollTop-=(c.top+pad-r.top);
   else if(r.bottom>c.bottom-pad) card.scrollTop+=(r.bottom-(c.bottom-pad));
 }
+/* Fill a field in with something we already know, but never over the top of
+   somebody. The moment a field has been typed in it belongs to them, empty
+   included: clearing the handle to put a patient number in is exactly the case
+   that used to get overwritten, so a cleared field is a decision, not a gap to
+   fill. Coming back to a card later must not undo it either. */
+function prefill(el,val){
+  if(!el||!val||el.value||el.dataset.touched) return;
+  el.value=val;
+  if(!el._pf){ el._pf=true; el.addEventListener('input',()=>{el.dataset.touched='1';}); }
+}
 function softFocus(el){
   if(!el) return;
   try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); }
@@ -2343,7 +2353,16 @@ function render(){
       const o=Math.min(1,vis, cardOpacity(fp,[.04,.14,.90,.99])+0.0);
       cardO=Math.max(vis>0.6?1:vis,o);
       sc.card.style.opacity=cardO;
-      if(vis>0.6&&sc.card._enter){sc.card._enter();}
+      /* _enter means "on arrival", and it used to run on every single frame the
+         card was visible. The hooks that prefill a field with what we already
+         know about you are written as "if it is empty, fill it", so running
+         them forty times a second meant clearing the field to type something
+         else refilled it from under you on the very next render: your first
+         keystroke then landed on the end of the old value. Any scroll nudge or
+         the keyboard opening was enough to trigger it. It now fires once when
+         the card comes on screen, and again only if the card has been away. */
+      if(vis>0.6){ if(!sc._entered){ sc._entered=true; if(sc.card._enter) sc.card._enter(); } }
+      else if(vis<0.4) sc._entered=false;
     }else{
       /* A call-to-action card clears the instant the walk it started begins, so
          the film it set moving is not watched through the title card. Otherwise
