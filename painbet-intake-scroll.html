@@ -578,7 +578,7 @@ const FILM = { dir:'assets/seq/film', count:1444, ext:'webp', fps:24 };
    without one keeps scrubbing the shared FILM sequence as before. */
 const DOOR_FILMS = {
   door1: { dir:'assets/seq/door1', count:169, ext:'webp', fps:24 }, // into Room 02 / intakebooth
-  door2: { dir:'assets/seq/door2', count:193, ext:'webp', fps:24 }, // into Discharge
+  door2: { dir:'assets/seq/door2', count:121, ext:'webp', fps:24 }, // into Discharge
   door3: { dir:'assets/seq/door3', count:193, ext:'webp', fps:24 }, // into the locker vestibule
   door4: { dir:'assets/seq/door4', count:193, ext:'webp', fps:24 }, // into the Dispensary
 };
@@ -679,8 +679,9 @@ const SCENES = [
 
   { id:'wallet', type:'form', form:'wallet', src:'door1', at:169, tint:'#E10600', vh:1.9, gate:'wallet',
     // matches the walk this push actually covers now: ward, then door2 to discharge's gate
+    // door2 is 121 frames (24fps, ~5s)
     // ward's from moved to 1223 (was 1177) - see the note on that scene
-    pushMs:runMs(1223,1310)+runMs(1,193) },
+    pushMs:runMs(1223,1310)+runMs(1,121) },
 
   // the film crosses the room to the desk; the chart is the discharge paperwork
   { id:'ward', type:'scrub', from:1223, to:1310, tint:'#7FD6E8', vh:3.6,
@@ -714,12 +715,12 @@ const SCENES = [
      as the page snapping forward with no ease at all. Leaving pushMs unset
      falls back to push()'s own distance-based duration, which measures the
      real distance to wherever the walk actually stops. */
-  { id:'door2', type:'scrub', src:'door2', from:1, to:193, tint:'#7FD6E8',
+  { id:'door2', type:'scrub', src:'door2', from:1, to:121, tint:'#7FD6E8',
     kicker:'DISCHARGE', title:'The chart is already waiting.',
     body:'Everything from the wall follows you through this door.',
     reveal:[.16,.34,.66,.86] },
 
-  { id:'discharge', type:'form', form:'discharge', src:'door2', at:193, tint:'#7FD6E8', vh:1.9, gate:'discharge' },
+  { id:'discharge', type:'form', form:'discharge', src:'door2', at:121, tint:'#7FD6E8', vh:1.9, gate:'discharge' },
 
   /* door3 runs the door open + walk-in + settle on locker07 (still open
      behind you) up to frame 160, then swings the entry door shut over its
@@ -737,8 +738,19 @@ const SCENES = [
     nextLabel:'Collect your meds', nextNote:'The daily wheel, drop codes, and the tasks that earn giveaway entries.', pushMs:2700 },
 
   /* A beat, not a stop: the door seals, the line is read, and the ward carries
-     on into the dispensary on its own. autoMs is how long it holds here. */
-  { id:'lockerclose', type:'scrub', src:'door3', from:160, to:193, tint:'#F2C14E',
+     on into the dispensary on its own. autoMs is how long it holds here.
+     Was from:160, matching reveal's own held frame exactly - but the door
+     doesn't actually start swinging until ~172: frames 160-171 are static,
+     the same settled locker07 shot reveal was already holding on, repeated
+     for another dozen frames with no visible motion. Scrubbing through that
+     read as the door pausing before it closed rather than closing in one
+     flow. 172 is where the gap first visibly narrows (checked every frame
+     from 169-174), so that's the new from - straight into the swing, no
+     static repeat of what reveal just held. The scroll length this scene
+     gets is unset here, same as before, so it shrinks with the trimmed
+     frame count rather than compressing the same length onto fewer frames -
+     the swing itself was never the slow part, only the dead lead-in was. */
+  { id:'lockerclose', type:'scrub', src:'door3', from:172, to:193, tint:'#F2C14E',
     kicker:'THE LOCKER · DISCHARGE', title:'Sealed again.',
     body:'Once a day. Same door, same odds, tomorrow.',
     reveal:[.1,.2,.7,.86], autoMs:2600 },

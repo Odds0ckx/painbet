@@ -16,9 +16,13 @@ Three things, and the folder structure has to survive intact:
 
 ```
 painbet-intake-scroll.html
-assets/seq/                 film + door1-4, 2,192 frames   119.7 MB
+assets/seq/                 film + door1-4, 2,120 frames   115.2 MB
 assets/wheel/plate.webp     the wheel plate                  1.4 MB
 ```
+
+> **`door2/` was re-cut** (the "into Discharge" clip, 121 frames now instead
+> of 193) — if you've deployed this before, that folder's contents changed
+> under the same path and need re-uploading, not just added to.
 
 > **`plate.webp` is easy to miss.** Ship only the HTML and `assets/seq/` and
 > everything appears to work right up until the dispensary, where the wheel
@@ -36,11 +40,11 @@ beside the HTML. Verified working from a subdirectory.
 | `painbet-intake-scroll.html` | the page itself | 0.1 MB |
 | `assets/seq/film/` | 1,444 frames, the main film | 77.4 MB |
 | `assets/seq/door1/` | 169 frames, into Room 02 | 9.0 MB |
-| `assets/seq/door2/` | 193 frames, into Discharge | 9.7 MB |
+| `assets/seq/door2/` | 121 frames, into Discharge | 5.2 MB |
 | `assets/seq/door3/` | 193 frames, the locker | 8.6 MB |
 | `assets/seq/door4/` | 193 frames, into the Dispensary | 15.0 MB |
 | `assets/wheel/plate.webp` | the daily wheel plate | 1.4 MB |
-| | **total** | **121.2 MB** |
+| | **total** | **116.7 MB** |
 
 Frames are `frame_0001.webp` … numbered from 1, zero-padded to four digits. The
 page builds those filenames itself, so **do not rename, renumber or re-encode
@@ -98,13 +102,14 @@ worth checking on a hand-rolled nginx config.
 
 ## Bandwidth, realistically
 
-The full sequence set is 121 MB, but **nobody downloads all of it.** Frames load
-in a window around the scroll position and stay cached once fetched. Measured on
-a cold open at 390 px wide: **723 frames, 8.6 MB in the first few seconds.**
-A visitor who scrolls the whole way through pulls more, but only the scenes they
-actually reach.
+The full sequence set is 116.7 MB, but **nobody downloads all of it.** Frames
+load in a window around the scroll position and stay cached once fetched.
+Measured on a cold open at 390 px wide: **723 frames, 8.6 MB in the first few
+seconds.** (That cold-open figure is dominated by the admissions scene, well
+before door2, so the door2 re-cut doesn't move it.) A visitor who scrolls the
+whole way through pulls more, but only the scenes they actually reach.
 
-Worth sizing CDN egress against real traffic rather than against the 121 MB
+Worth sizing CDN egress against real traffic rather than against the 116.7 MB
 figure.
 
 ## Before it goes live
