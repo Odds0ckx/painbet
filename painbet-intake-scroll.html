@@ -38,7 +38,18 @@ html,body{margin:0;padding:0;background:#000;color:var(--ink);font-family:var(--
 body{-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
 /* ---- Fixed stage: all scene canvases + cards stack here -------------------- */
-#stages{position:fixed;inset:0;z-index:1;background:#000;overflow:hidden;pointer-events:none}
+/* `fixed` anchors to the layout viewport, not the visual one, and the two stop
+   matching the moment the keyboard is up: the browser's own autofill bar and
+   its "keep the focused field in view" nudge can offset the visual viewport
+   downward inside a layout viewport this page never shrinks (window scroll is
+   the film, so it runs to tens of thousands of px). Without correcting for
+   that offset the whole stage - canvas and card together - stays glued to the
+   top of the layout viewport while the visible screen has panned under it,
+   which reads as the card floating up out of view while typing. --vv-top
+   tracks visualViewport.offsetTop (set alongside --vv below) and translates
+   the stage back onto whatever is actually on screen. */
+#stages{position:fixed;inset:0;z-index:1;background:#000;overflow:hidden;pointer-events:none;
+  transform:translate(var(--vv-left,0px),var(--vv-top,0px))}
 .scene{position:absolute;inset:0;opacity:0;will-change:opacity}
 .scene > canvas{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
 .scene.dim > canvas{filter:brightness(.42) saturate(.9)}
@@ -2233,12 +2244,19 @@ addEventListener('resize',()=>{
 });
 
 /* The visible height, which the keyboard does change, so a form card can sit
-   in what is left of the screen instead of behind it. */
+   in what is left of the screen instead of behind it. Also the visible
+   *offset*: visualViewport.offsetTop/Left track how far the visible screen
+   has panned inside the (keyboard-oblivious) layout viewport - the browser
+   moves this on its own once a field is focused, no scroll event of ours
+   involved. #stages reads --vv-top/--vv-left to stay glued to what is
+   actually on screen instead of drifting off it. */
 (function(){
   const vv=window.visualViewport;
   function paint(){
     const h=vv?vv.height:innerHeight;
     document.documentElement.style.setProperty('--vv',Math.round(h)+'px');
+    document.documentElement.style.setProperty('--vv-top',Math.round(vv?vv.offsetTop:0)+'px');
+    document.documentElement.style.setProperty('--vv-left',Math.round(vv?vv.offsetLeft:0)+'px');
     document.body.classList.toggle('kb', h < innerHeight-140);
   }
   if(vv){ vv.addEventListener('resize',paint); vv.addEventListener('scroll',paint); }
