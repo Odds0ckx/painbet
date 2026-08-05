@@ -641,8 +641,15 @@ const SCENES = [
        every other scrub card fades up as you arrive at it, but a button nobody
        can see is not a button, so this one is already up at scroll zero. It
        still leaves on the same schedule it always did, and pressing Enter
-       clears it immediately so the walk is not watched through it. */
-    cta:'Enter', reveal:[0,0,.82,.96] },
+       clears it immediately so the walk is not watched through it.
+       No pushMs of its own meant this fell through to push()'s generic
+       fallback, which caps every un-named walk at a flat 9000ms - at ordinary
+       viewport heights this walk's real distance clears that cap, so Enter was
+       landing at the ceiling rather than at anything the footage or PACE.rate
+       chose. 9000*1.3 asks for the corridor lead specifically, 30% slower than
+       that ceiling, without moving the shared cap every other unnamed push
+       still relies on. */
+    cta:'Enter', reveal:[0,0,.82,.96], pushMs:9000*1.3 },
 
   /* ONE ROOM. Five questions and the verdict, in the same card, without moving.
      The scene after this used to be captioned ROOM 02 · EXAMINATION, Step
