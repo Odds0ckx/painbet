@@ -680,10 +680,11 @@ const SCENES = [
   { id:'wallet', type:'form', form:'wallet', src:'door1', at:169, tint:'#E10600', vh:1.9, gate:'wallet',
     // matches the walk this push actually covers now: ward, then door2 to discharge's gate
     // door2_v2 is 121 frames (24fps, ~5s), not the original 193 - runMs updated to match
-    pushMs:runMs(1177,1310)+runMs(1,121) },
+    // ward's from moved to 1223 (was 1177) - see the note on that scene
+    pushMs:runMs(1223,1310)+runMs(1,121) },
 
   // the film crosses the room to the desk; the chart is the discharge paperwork
-  { id:'ward', type:'scrub', from:1177, to:1310, tint:'#7FD6E8',
+  { id:'ward', type:'scrub', from:1223, to:1310, tint:'#7FD6E8', vh:3.6,
     /* Was "They have already looked", which asked the viewer to work out on
        their own that the lit panels were their chest X-ray. It follows the
        wallet room, so it now says what that room just did to them. */
@@ -692,7 +693,16 @@ const SCENES = [
     /* Was to:1352, which ran past the x-ray wall into a stray shot of a
        latched wall cabinet - a locker-like door with no story reason to be
        there, right before door2 opens an actual door. Cutting at 1310 ends
-       on the wall and hands straight off to door2. */
+       on the wall and hands straight off to door2.
+       Was from:1177, which opened on the gurney and its clipboard in the
+       foreground before the camera tracked off it onto the wall - the
+       gurney is gone from frame by 1223 (checked every frame from 1214 to
+       1224), so that's where this now starts: straight on the fusebox, no
+       gurney ever in shot. Trimming ~46 frames off the front shortens the
+       scene, so vh goes from the implicit default (3) to 3.6 - more scroll
+       for fewer frames, so the reveal card (still the same [.16,.34,.66,.86]
+       fractions of this scene's own progress) sits on screen longer than it
+       did before the cut, not just as long. */
     reveal:[.16,.34,.66,.86] },
 
   /* No pushMs override here on purpose. quiz's and wallet's match the frame
@@ -763,7 +773,14 @@ const SCENES = [
   { id:'login', type:'form', form:'login', at:1, tint:'#E10600', vh:1.8,
     menu:['--','Sign in'] },
 ];
-SCENES.forEach(s=>{ if(s.type==='scrub') s.vh=runVh(s.from,s.to); });
+/* A scrub scene's scroll length is normally derived straight from its own
+   frame count (runVh, at the site's fixed FPVH pace), so every scrub reads
+   at the same speed and nobody has to hand-tune a vh for each one. ward is
+   the one exception: cutting its front trimmed its frame count, and the
+   ask was for it to run slower than that trim alone would leave it, not
+   just proportionally shorter - so it names its own vh, and only an
+   explicit one is left alone here. */
+SCENES.forEach(s=>{ if(s.type==='scrub'&&s.vh==null) s.vh=runVh(s.from,s.to); });
 
 
 /* ============================================================================
