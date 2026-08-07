@@ -213,6 +213,11 @@
   .notifpanel-head button{background:none;border:0;color:var(--ink-dim);font-family:var(--mono);font-size:9.5px;
     letter-spacing:.05em;text-transform:uppercase;cursor:pointer;padding:2px}
   .notifpanel-head button:hover{color:var(--ink)}
+  .notiftabs{display:flex;gap:4px}
+  .notiftabs button{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+    border-radius:7px;padding:5px 10px}
+  .notiftabs button.on{background:var(--blood);border-color:var(--blood);color:#fff}
+  .notiftabs button.on:hover{color:#fff}
   .notiflist{max-height:340px;overflow-y:auto}
   .notif-empty{padding:22px 10px;text-align:center;font-size:11.5px;color:var(--ink-dim)}
   .notif-item{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;
@@ -3119,7 +3124,10 @@ window.PB = (function(){
       </button>
       <div class="notifpanel" id="notifPanel" role="menu">
         <div class="notifpanel-head">
-          <span class="kick">Notifications</span>
+          <div class="notiftabs" id="notifTabs" role="tablist">
+            <button type="button" class="on" data-filter="all" role="tab" aria-selected="true">All</button>
+            <button type="button" data-filter="unread" role="tab" aria-selected="false">Unread</button>
+          </div>
           <button type="button" id="notifMarkAll">Mark all read</button>
         </div>
         <div class="notiflist" id="notifList"></div>
@@ -7490,6 +7498,8 @@ document.querySelectorAll('.pgback').forEach(function(b){
   var notifBtn = document.getElementById('notifBtn');
   var notifDot = document.getElementById('notifDot');
   var notifList = document.getElementById('notifList');
+  var notifTabs = document.getElementById('notifTabs');
+  var notifFilter = 'all';
   function closeNotif(){ notifZone.classList.remove('open'); notifBtn.setAttribute('aria-expanded','false'); }
   function toggleNotif(){
     closeMenu();
@@ -7515,11 +7525,14 @@ document.querySelectorAll('.pgback').forEach(function(b){
     var unread = list.filter(function(n){ return !n.read; }).length;
     notifZone.classList.toggle('has-unread', unread > 0);
     notifDot.textContent = unread > 9 ? '9+' : String(unread);
-    if(!list.length){
-      notifList.innerHTML = '<div class="notif-empty">Nothing yet. We’ll let you know when something needs you.</div>';
+    var shown = notifFilter === 'unread' ? list.filter(function(n){ return !n.read; }) : list;
+    if(!shown.length){
+      notifList.innerHTML = '<div class="notif-empty">' +
+        (notifFilter === 'unread' ? 'You’re all caught up.' : 'Nothing yet. We’ll let you know when something needs you.') +
+        '</div>';
       return;
     }
-    notifList.innerHTML = list.map(function(n){
+    notifList.innerHTML = shown.map(function(n){
       return '<button type="button" class="notif-item' + (n.read ? '' : ' unread') + '" data-notif="' + n.id + '">' +
         '<span class="ic">' + notifIcon(n.kind) + '</span>' +
         '<span class="tx"><b>' + n.title + '</b><span>' + n.meta + '</span><time>' + PB.fmtDate(n.at) + '</time></span>' +
@@ -7529,6 +7542,16 @@ document.querySelectorAll('.pgback').forEach(function(b){
   notifList.addEventListener('click', function(e){
     var b = e.target.closest('button[data-notif]'); if(!b) return;
     if(window.PB) PB.api.markNotifRead(b.dataset.notif);
+  });
+  notifTabs.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-filter]'); if(!b) return;
+    notifFilter = b.dataset.filter;
+    notifTabs.querySelectorAll('button').forEach(function(t){
+      var on = t === b;
+      t.classList.toggle('on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    paintNotifBell();
   });
   document.getElementById('notifMarkAll').addEventListener('click', function(){
     if(window.PB) PB.api.markAllNotifsRead();
