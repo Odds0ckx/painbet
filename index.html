@@ -2717,9 +2717,10 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   #preloader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
     background:var(--bg);transition:opacity .5s ease;}
   #preloader.done{opacity:0;pointer-events:none}
-  .glitch-container{position:relative;width:140px;height:145px;animation:glitch-distress 2.8s infinite}
+  .glitch-container{position:relative;width:140px;height:145px;overflow:visible;animation:glitch-distress 2.8s infinite}
   @media(min-width:640px){ .glitch-container{width:190px;height:196px} }
   .blood-fill{fill:#c82128}
+  .glitch-container svg{overflow:visible}
   .smooth-drip{transform-box:fill-box;transform-origin:center top;animation-iteration-count:infinite;
     animation-timing-function:cubic-bezier(.895,.03,.685,.22)}
   .drip-1{animation:ultra-flow 3.5s infinite .4s}
@@ -2728,9 +2729,9 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .drip-4{animation:ultra-flow 4.5s infinite .7s}
   @keyframes ultra-flow{
     0%,35%{transform:translateY(0) scale(1,1);opacity:1}
-    65%{transform:translateY(25px) scale(.7,2.2);opacity:1}
-    85%{transform:translateY(65px) scale(.6,2.6);opacity:1}
-    95%,100%{transform:translateY(105px) scale(0,0);opacity:0}
+    65%{transform:translateY(35px) scale(.5,3.2);opacity:1}
+    85%{transform:translateY(160px) scale(.3,4.0);opacity:1}
+    95%,100%{transform:translateY(270px) scale(0,0);opacity:0}
   }
   .fluid-reservoir{animation:fluid-pulse 3s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center bottom}
   @keyframes fluid-pulse{ 0%{transform:scaleY(1)} 100%{transform:scaleY(1.4)} }
@@ -2762,7 +2763,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
           <feComposite in2="blur" operator="in"/>
           <feComposite in="SourceGraphic"/>
         </filter>
-        <filter id="ultra-goo" x="-60%" y="-40%" width="220%" height="320%" color-interpolation-filters="sRGB">
+        <filter id="ultra-goo" x="80" y="370" width="360" height="450" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
           <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -6" result="goo"/>
           <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
