@@ -2536,7 +2536,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .kyc-bar i.warn{background:linear-gradient(90deg,var(--warn),#c9871f)}
   .kyc-bar i.full{background:linear-gradient(90deg,#8f0e26,var(--blood))}
   .kyc-warn{margin-top:10px;border-radius:9px;padding:10px 13px 10px 14px;font-size:12px;
-    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+    background:rgba(15,17,22,.94);border:1px solid rgba(255,255,255,.08);
     border-left:3px solid var(--warn);color:var(--ink-dim)}
   .kyc-docs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
   @media(max-width:600px){.kyc-docs{grid-template-columns:1fr}}
@@ -2573,7 +2573,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     .rg-line input::placeholder{color:#5b6069}
   }
   .rg-pending{margin-top:12px;border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--warn);
-    background:rgba(255,255,255,.03);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--ink-dim)}
+    background:rgba(15,17,22,.94);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--ink-dim)}
   .rg-pending .kick{color:var(--warn)}
   .rg-pending .pr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 0}
   .rg-pending button{background:none;border:0;color:var(--danger-ink);font-family:var(--mono);font-size:9.5px;
@@ -2712,9 +2712,106 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   }
   .v5m .provgrid{display:flex;flex-wrap:wrap;gap:8px}
   .v5m .provgrid span{font-weight:700;font-size:11px;padding:8px 13px;background:var(--card-hi);color:var(--ink-hi);border-radius:var(--r-pill)}
+
+  /* ===== preloader (bleeding-triangle glitch mark, shown until the page is ready) ===== */
+  #preloader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+    background:var(--bg);transition:opacity .5s ease;}
+  #preloader.done{opacity:0;pointer-events:none}
+  .glitch-container{position:relative;width:140px;height:145px;animation:glitch-distress 2.8s infinite}
+  @media(min-width:640px){ .glitch-container{width:190px;height:196px} }
+  .blood-fill{fill:#c82128}
+  .smooth-drip{transform-origin:center top;animation-iteration-count:infinite;
+    animation-timing-function:cubic-bezier(.895,.03,.685,.22)}
+  .drip-1{animation:ultra-flow 3.5s infinite .4s}
+  .drip-2{animation:ultra-flow 4.2s infinite 0s}
+  .drip-3{animation:ultra-flow 3.8s infinite 1.2s}
+  .drip-4{animation:ultra-flow 4.5s infinite .7s}
+  @keyframes ultra-flow{
+    0%,35%{transform:translateY(0) scale(1,1);opacity:1}
+    65%{transform:translateY(35px) scale(.5,3.2);opacity:1}
+    85%{transform:translateY(160px) scale(.3,4.0);opacity:1}
+    95%,100%{transform:translateY(270px) scale(0,0);opacity:0}
+  }
+  .fluid-reservoir{animation:fluid-pulse 3s ease-in-out infinite alternate;transform-origin:center bottom}
+  @keyframes fluid-pulse{ 0%{transform:scaleY(1)} 100%{transform:scaleY(1.4)} }
+  @keyframes glitch-distress{
+    0%,89%,100%{transform:translate(0,0);filter:drop-shadow(0 0 0 transparent)}
+    90%{transform:translate(-5px,2px);filter:url(#scratch-filter) drop-shadow(5px 0 0 #00ffff) drop-shadow(-5px 0 0 #ff00ff)}
+    92%{transform:translate(4px,-3px);filter:url(#scratch-filter)}
+    94%{transform:translate(-3px,-1px);filter:url(#scratch-filter) drop-shadow(-4px 0 0 #00ffff) drop-shadow(4px 0 0 #ff00ff)}
+    96%{transform:translate(2px,3px);filter:url(#scratch-filter)}
+    98%{transform:translate(-1px,-1px)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .glitch-container,.smooth-drip,.fluid-reservoir{animation:none}
+  }
 </style>
 </head>
 <body>
+<div id="preloader">
+  <div class="glitch-container">
+    <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 537.6 556.32">
+      <defs>
+        <style>
+          .cls-1{fill:#c82128;filter:url(#outer-glow-1);stroke:#ee2c31;stroke-miterlimit:10;stroke-width:.5px}
+        </style>
+        <filter id="outer-glow-1" x="0" y="0" width="537.6" height="556.32" filterUnits="userSpaceOnUse">
+          <feOffset dx="0" dy="0"/>
+          <feGaussianBlur result="blur" stdDeviation="42.94"/>
+          <feFlood flood-color="#ed1f24" flood-opacity="1"/>
+          <feComposite in2="blur" operator="in"/>
+          <feComposite in="SourceGraphic"/>
+        </filter>
+        <filter id="ultra-goo" color-interpolation-filters="sRGB">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur"/>
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 32 -15" result="goo"/>
+          <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+        </filter>
+        <filter id="scratch-filter">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9 0.04" numOctaves="4" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+      <g id="Layer_1-2" data-name="Layer 1">
+        <polygon class="cls-1" points="269.79 128.86 128.87 427.27 408.43 427.27 269.79 128.86"/>
+        <g filter="url(#ultra-goo)" class="blood-fill">
+          <rect x="135" y="412" width="270" height="18" class="fluid-reservoir"/>
+          <g class="smooth-drip drip-1">
+            <path d="M 175,420 Q 175,445 175,445 Q 175,445 175,420 Z"/>
+            <circle cx="175" cy="427" r="18"/>
+          </g>
+          <g class="smooth-drip drip-2">
+            <path d="M 240,420 Q 240,448 240,448 Q 240,448 240,420 Z"/>
+            <circle cx="240" cy="427" r="21"/>
+          </g>
+          <g class="smooth-drip drip-3">
+            <path d="M 310,420 Q 310,442 310,442 Q 310,442 310,420 Z"/>
+            <circle cx="310" cy="427" r="16"/>
+          </g>
+          <g class="smooth-drip drip-4">
+            <path d="M 370,420 Q 370,446 370,446 Q 370,446 370,420 Z"/>
+            <circle cx="370" cy="427" r="19"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
+<script>
+(function(){
+  var pre = document.getElementById('preloader');
+  if(!pre) return;
+  var hidden = false;
+  function hide(){
+    if(hidden) return;
+    hidden = true;
+    pre.classList.add('done');
+    setTimeout(function(){ if(pre.parentNode) pre.parentNode.removeChild(pre); }, 550);
+  }
+  window.addEventListener('load', hide);
+  setTimeout(hide, 4000); // safety net: never trap the user behind the preloader
+})();
+</script>
 <svg style="display:none" aria-hidden="true">
   <defs>
     <symbol id="i-lobby" viewBox="0 0 24 24"><path d="M4 11.5l8-7.5 8 7.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.2V19a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-8.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
