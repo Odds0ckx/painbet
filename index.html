@@ -5944,7 +5944,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
 <script>
 (function(){
   const VIEWS = {'threshold raid':'raid','anesthesia':'anes','painkillers':'pk','affiliate':'aff'};
-  const CLEAR = ['lobby','promotions','originals','slots','live casino','pain scale'].concat(Object.keys(VIEWS));
+  const CLEAR = ['lobby','promotions','originals','slots','live casino','pain scale','the chart'].concat(Object.keys(VIEWS));
 
   function nav(cb){ document.querySelectorAll('.side a').forEach(cb); }
   function navText(a){ return a.textContent.trim().toLowerCase().replace(/\s*[\d,]+$/,'').trim(); }
@@ -5958,7 +5958,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   }
   function clearView(){
     document.body.removeAttribute('data-view');
-    nav(function(a){ if(Object.keys(VIEWS).includes(navText(a))) a.classList.remove('on'); });
+    nav(function(a){ if(Object.keys(VIEWS).includes(navText(a)) || navText(a) === 'the chart') a.classList.remove('on'); });
   }
   nav(function(a){
     const t = navText(a);
@@ -6087,7 +6087,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   // Router for the ported v5 modules + my tracker page
   const VIEWS = {'threshold raid':'view-synapse','anesthesia':'view-anesthesia','painkillers':'view-pk','affiliate':'view-affiliate','arcade':'view-arcade','triage':'view-support'};
   const NAMES = Object.keys(VIEWS);
-  const NAVCLR = ['lobby','promotions','originals','slots','live casino','pain scale'].concat(NAMES);
+  const NAVCLR = ['lobby','promotions','originals','slots','live casino','pain scale','the chart'].concat(NAMES);
 
   function nav(cb){ document.querySelectorAll('.side a').forEach(cb); }
   function navText(a){ return a.textContent.trim().toLowerCase().replace(/\s*[\d,]+$/,'').trim(); }
@@ -6116,7 +6116,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   function clearView(){
     document.body.removeAttribute('data-view');
     hideAllPorted();
-    nav(function(a){ if(NAMES.includes(navText(a))) a.classList.remove('on'); });
+    nav(function(a){ if(NAMES.includes(navText(a)) || navText(a) === 'the chart') a.classList.remove('on'); });
     if(typeof syncTabs === 'function') syncTabs(false);
     setMode('casino'); if(window.__syncSports) window.__syncSports(false);
   }
