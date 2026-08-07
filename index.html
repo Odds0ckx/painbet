@@ -189,6 +189,53 @@
   .acctmenu-sep{height:1px;background:rgba(255,255,255,.08);margin:4px 4px 6px}
   @media(max-width:720px){ .acctbtn .acctid{display:none} .acctbtn{padding:6px} }
 
+  /* ===== notification bell (hidden until body.signed-in) ===== */
+  .notifzone{position:relative;display:none}
+  body.signed-in .notifzone{display:block}
+  .notifbtn{position:relative;display:flex;align-items:center;justify-content:center;width:34px;height:34px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;
+    color:var(--ink);cursor:pointer;transition:background .2s}
+  .notifbtn:hover{background:rgba(255,255,255,.09)}
+  .notifbtn svg{width:16px;height:16px}
+  .notifbtn .dot{position:absolute;top:5px;right:5px;min-width:14px;height:14px;padding:0 3px;border-radius:999px;
+    background:var(--blood);color:#fff;font-family:var(--mono);font-size:9px;font-weight:800;line-height:14px;
+    text-align:center;box-shadow:0 0 0 2px #0f1116;display:none}
+  .notifzone.has-unread .notifbtn .dot{display:block}
+  .notifpanel{position:absolute;top:calc(100% + 8px);right:0;width:328px;max-width:calc(100vw - 28px);z-index:60;
+    background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:14px;
+    box-shadow:0 20px 50px rgba(0,0,0,.55);padding:8px;
+    opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
+    transition:opacity .18s,transform .18s,visibility .18s}
+  .notifzone.open .notifpanel{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+  .notifpanel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:6px 8px 10px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:4px}
+  .notifpanel-head .kick{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+  .notifpanel-head button{background:none;border:0;color:var(--ink-dim);font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.05em;text-transform:uppercase;cursor:pointer;padding:2px}
+  .notifpanel-head button:hover{color:var(--ink)}
+  .notiflist{max-height:340px;overflow-y:auto}
+  .notif-empty{padding:22px 10px;text-align:center;font-size:11.5px;color:var(--ink-dim)}
+  .notif-item{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;
+    background:transparent;border:0;color:var(--ink);padding:9px 8px;border-radius:10px;cursor:pointer;position:relative}
+  .notif-item:hover{background:rgba(255,255,255,.07)}
+  .notif-item .ic{width:28px;height:28px;border-radius:9px;flex:none;margin-top:1px;
+    display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:var(--ink-dim)}
+  .notif-item .ic svg{width:14px;height:14px}
+  .notif-item.unread .ic{background:rgba(224,22,60,.14);color:#ff5c7c}
+  .notif-item .tx{min-width:0;flex:1}
+  .notif-item .tx b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;
+    text-transform:uppercase;color:var(--ink);font-weight:600}
+  .notif-item .tx span{display:block;font-size:10.5px;color:var(--ink-dim);margin-top:2px;line-height:1.4}
+  .notif-item .tx time{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink-dim);opacity:.7;margin-top:4px}
+  .notif-item.unread::after{content:'';position:absolute;top:14px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--blood)}
+  .notifpanel-foot{display:flex;padding:8px 4px 2px;margin-top:4px;border-top:1px solid rgba(255,255,255,.08)}
+  .notifpanel-foot button{flex:1;font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-dim);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+    border-radius:8px;padding:8px 6px;cursor:pointer;text-align:center;transition:color .2s,border-color .2s}
+  .notifpanel-foot button:hover{color:var(--ink);border-color:rgba(255,255,255,.22)}
+  @media(max-width:720px){ .notifpanel{width:296px} }
+
   .side{position:sticky;top:64px;align-self:start;height:calc(100vh - 64px);overflow:auto;padding:22px 14px 30px;
     background:rgba(9,10,13,.6);backdrop-filter:blur(14px);border-right:1px solid rgba(255,255,255,.06)}
   .side .grp{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
@@ -2747,6 +2794,13 @@ window.PB = (function(){
         { id:'cur', device:'This device', where:'Chrome · current session', when:Date.now(), current:true },
         { id:'s2',  device:'iPhone',      where:'Safari · mobile',          when:Date.now()-864e5*2 },
         { id:'s3',  device:'Windows PC',  where:'Firefox',                  when:Date.now()-864e5*9 }
+      ],
+      notifications: [
+        { id:'n5', kind:'rewards',  title:'PainKiller drop', meta:'250 PK credited to your balance.', at:Date.now()-36e5, read:false },
+        { id:'n4', kind:'tx',       title:'Deposit confirmed', meta:'420 USDT credited.', at:Date.now()-864e5, read:false },
+        { id:'n3', kind:'security', title:'New sign-in', meta:'Chrome on Windows · if this wasn’t you, secure your account.', at:Date.now()-864e5*2, read:true },
+        { id:'n2', kind:'tx',       title:'Withdrawal sent', meta:'128.40 USDT sent to your wallet.', at:Date.now()-864e5*4, read:true },
+        { id:'n1', kind:'rewards',  title:'Level up', meta:'You reached Ward Tier 3.', at:Date.now()-864e5*9, read:true }
       ]
     };
   }
@@ -2947,12 +3001,14 @@ window.PB = (function(){
       state.verification.submittedAt = Date.now();
       state.verification.rejectedReason = null;
       state.account = 'verify_pending';
+      pushNotif('security', 'Verification submitted', 'We’ll email you when review completes.');
       return Promise.resolve({ status:'pending' }).then(tap);
     },
     // Demo affordance only — a real backend decides this, never the client.
     __approveVerification: function(){
       state.verification.tier = 1;
       state.account = 'verified';
+      pushNotif('security', 'Verification approved', 'Tier 1 unlocked · higher withdrawal limits.');
       return Promise.resolve(true).then(tap);
     },
 
@@ -2991,6 +3047,7 @@ window.PB = (function(){
     recordDeposit: function(amount){
       state.counters.deposit += amount;
       state.balance.real += amount;
+      pushNotif('tx', 'Deposit confirmed', amount + ' USDT credited.');
       return Promise.resolve(state.balance).then(tap);
     },
     requestWithdrawal: function(amount, coin){
@@ -3001,9 +3058,25 @@ window.PB = (function(){
       var rec = { id:'w' + Date.now(), amount:amount, coin:coin || 'USDT',
                   at:Date.now(), status:'pending' };
       state.withdrawals.unshift(rec);
+      pushNotif('tx', 'Withdrawal requested', amount + ' ' + (coin || 'USDT') + ' is on its way.');
       return Promise.resolve(rec).then(tap);
+    },
+    markNotifRead: function(id){
+      if(!state.notifications) return Promise.resolve(true);
+      state.notifications.forEach(function(n){ if(n.id === id) n.read = true; });
+      return Promise.resolve(true).then(tap);
+    },
+    markAllNotifsRead: function(){
+      if(!state.notifications) return Promise.resolve(true);
+      state.notifications.forEach(function(n){ n.read = true; });
+      return Promise.resolve(true).then(tap);
     }
   };
+  function pushNotif(kind, title, meta){
+    if(!state.notifications) state.notifications = [];
+    state.notifications.unshift({ id:'n' + Date.now() + Math.random().toString(36).slice(2,6),
+      kind:kind, title:title, meta:meta, at:Date.now(), read:false });
+  }
   function tap(v){ emit(); return v; }
 
   load();
@@ -3039,6 +3112,22 @@ window.PB = (function(){
     <div class="search"><input id="gameSearch" type="search" placeholder="Search games" autocomplete="off" aria-label="Search games"></div>
     <div class="bal">USDT 2,840 · <b>PK 1,250</b></div>
     <button class="btn" id="btnSignIn">Sign in</button>
+    <div class="notifzone" id="notifZone">
+      <button class="notifbtn" id="notifBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="dot" id="notifDot">0</span>
+      </button>
+      <div class="notifpanel" id="notifPanel" role="menu">
+        <div class="notifpanel-head">
+          <span class="kick">Notifications</span>
+          <button type="button" id="notifMarkAll">Mark all read</button>
+        </div>
+        <div class="notiflist" id="notifList"></div>
+        <div class="notifpanel-foot">
+          <button type="button" id="notifManage">Manage preferences</button>
+        </div>
+      </div>
+    </div>
     <div class="acctzone" id="acctZone">
       <button class="acctbtn" id="acctBtn" type="button" aria-haspopup="true" aria-expanded="false">
         <span class="ava" id="acctAva">P</span>
@@ -7388,12 +7477,66 @@ document.querySelectorAll('.pgback').forEach(function(b){
 
   function closeMenu(){ zone.classList.remove('open'); acctBtn.setAttribute('aria-expanded','false'); }
   function toggleMenu(){
+    closeNotif();
     var open = zone.classList.toggle('open');
     acctBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
   acctBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleMenu(); });
   document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeMenu(); });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenu(); });
+
+  // ---- notification bell ----
+  var notifZone = document.getElementById('notifZone');
+  var notifBtn = document.getElementById('notifBtn');
+  var notifDot = document.getElementById('notifDot');
+  var notifList = document.getElementById('notifList');
+  function closeNotif(){ notifZone.classList.remove('open'); notifBtn.setAttribute('aria-expanded','false'); }
+  function toggleNotif(){
+    closeMenu();
+    var open = notifZone.classList.toggle('open');
+    notifBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  notifBtn.addEventListener('click', function(e){ e.stopPropagation(); toggleNotif(); });
+  document.addEventListener('click', function(e){ if(!notifZone.contains(e.target)) closeNotif(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNotif(); });
+
+  var NOTIF_ICONS = {
+    tx: '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+    security: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    rewards: '<path d="M12 2l2.4 5.2L20 8l-4 4.1L17 18l-5-2.9L7 18l1-5.9L4 8l5.6-.8z"/>',
+    marketing: '<path d="M3 11l18-7-7 18-2-8-8-3z"/>'
+  };
+  function notifIcon(kind){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' + (NOTIF_ICONS[kind] || NOTIF_ICONS.tx) + '</svg>';
+  }
+  function paintNotifBell(){
+    if(!window.PB || !PB.state.notifications) return;
+    var list = PB.state.notifications;
+    var unread = list.filter(function(n){ return !n.read; }).length;
+    notifZone.classList.toggle('has-unread', unread > 0);
+    notifDot.textContent = unread > 9 ? '9+' : String(unread);
+    if(!list.length){
+      notifList.innerHTML = '<div class="notif-empty">Nothing yet. We’ll let you know when something needs you.</div>';
+      return;
+    }
+    notifList.innerHTML = list.map(function(n){
+      return '<button type="button" class="notif-item' + (n.read ? '' : ' unread') + '" data-notif="' + n.id + '">' +
+        '<span class="ic">' + notifIcon(n.kind) + '</span>' +
+        '<span class="tx"><b>' + n.title + '</b><span>' + n.meta + '</span><time>' + PB.fmtDate(n.at) + '</time></span>' +
+        '</button>';
+    }).join('');
+  }
+  notifList.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-notif]'); if(!b) return;
+    if(window.PB) PB.api.markNotifRead(b.dataset.notif);
+  });
+  document.getElementById('notifMarkAll').addEventListener('click', function(){
+    if(window.PB) PB.api.markAllNotifsRead();
+  });
+  document.getElementById('notifManage').addEventListener('click', function(){
+    closeNotif();
+    goChart('prefs');
+  });
 
   function goChart(tab){
     document.querySelectorAll('.side a').forEach(function(a){
@@ -7411,6 +7554,9 @@ document.querySelectorAll('.pgback').forEach(function(b){
     document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim() === 'Triage') a.click(); });
   });
   document.getElementById('acctSignOut').addEventListener('click', function(){ closeMenu(); window.signOut(); });
+
+  if(window.PB) PB.onChange(paintNotifBell);
+  paintNotifBell();
 
   function fillChart(user){
     var alias = user.alias || (user.email ? user.email.split('@')[0] : 'Patient');
