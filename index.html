@@ -2801,12 +2801,21 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
-  var hidden = false;
-  function hide(){
+  var MIN_SHOW = 3200; // let the glitch (2.8s) and drip (up to 4.5s) cycles actually play
+  var shownAt = Date.now();
+  var hidden = false, loaded = false;
+  function reveal(){
     if(hidden) return;
     hidden = true;
     pre.classList.add('done');
     setTimeout(function(){ if(pre.parentNode) pre.parentNode.removeChild(pre); }, 550);
+  }
+  function hide(){
+    if(loaded) return;
+    loaded = true;
+    var elapsed = Date.now() - shownAt;
+    if(elapsed >= MIN_SHOW) reveal();
+    else setTimeout(reveal, MIN_SHOW - elapsed);
   }
   window.addEventListener('load', hide);
   setTimeout(hide, 4000); // safety net: never trap the user behind the preloader
