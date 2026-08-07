@@ -2473,16 +2473,18 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   /* ===== email verification banner (site-wide — a warning nobody sees is
      not a warning, so this sits under the topbar on every view) ===== */
   .ev-bar{grid-column:1/3;grid-row:2;display:none;align-items:center;gap:13px;flex-wrap:wrap;
-    border-bottom:1px solid rgba(224,161,62,.45);background:rgba(34,24,8,.97);
-    padding:11px 22px;position:sticky;top:64px;z-index:45}
+    border-bottom:1px solid rgba(255,255,255,.08);border-left:3px solid var(--warn);
+    background:rgba(15,17,22,.97);
+    padding:11px 22px 11px 19px;position:sticky;top:64px;z-index:45}
   body.email-unverified .ev-bar{display:flex}
-  @media(max-width:900px){ .ev-bar{grid-column:1;top:56px;padding:11px 14px} }
-  .ev-bar span{flex:1;min-width:200px;font-size:12.5px;color:var(--warn)}
-  .ev-bar b{color:#fff}
+  @media(max-width:900px){ .ev-bar{grid-column:1;top:56px;padding:11px 14px 11px 11px} }
+  .ev-bar .kick{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--warn);flex:none}
+  .ev-bar span:not(.kick){flex:1;min-width:200px;font-size:12px;color:var(--ink-dim)}
+  .ev-bar b{color:var(--ink);font-weight:600}
   .ev-bar button{flex:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
-    color:#e0a13e;background:rgba(224,161,62,.14);border:1px solid rgba(224,161,62,.5);
-    border-radius:8px;padding:9px 13px;cursor:pointer}
-  .ev-bar button:hover{color:#fff;background:rgba(224,161,62,.26)}
+    color:var(--ink-dim);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+    border-radius:8px;padding:9px 13px;cursor:pointer;transition:color .2s,border-color .2s}
+  .ev-bar button:hover{color:var(--ink);border-color:rgba(255,255,255,.22)}
 
   /* ===== two-factor ===== */
   .tfa-qr{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
@@ -2533,8 +2535,9 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     background:linear-gradient(90deg,#7FD6E8,#5bb9cf);transition:width .35s ease}
   .kyc-bar i.warn{background:linear-gradient(90deg,var(--warn),#c9871f)}
   .kyc-bar i.full{background:linear-gradient(90deg,#8f0e26,var(--blood))}
-  .kyc-warn{margin-top:10px;border-radius:9px;padding:10px 13px;font-size:12px;
-    background:rgba(224,161,62,.1);border:1px solid rgba(224,161,62,.42);color:#e0a13e}
+  .kyc-warn{margin-top:10px;border-radius:9px;padding:10px 13px 10px 14px;font-size:12px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+    border-left:3px solid var(--warn);color:var(--ink-dim)}
   .kyc-docs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
   @media(max-width:600px){.kyc-docs{grid-template-columns:1fr}}
   .kyc-doc{position:relative;display:block;border:1px dashed rgba(255,255,255,.2);border-radius:12px;
@@ -2569,8 +2572,9 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     .rg-name{grid-column:1/-1}
     .rg-line input::placeholder{color:#5b6069}
   }
-  .rg-pending{margin-top:12px;border:1px dashed rgba(224,161,62,.5);background:rgba(224,161,62,.08);
-    border-radius:10px;padding:11px 14px;font-size:12px;color:#e0a13e}
+  .rg-pending{margin-top:12px;border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--warn);
+    background:rgba(255,255,255,.03);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--ink-dim)}
+  .rg-pending .kick{color:var(--warn)}
   .rg-pending .pr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 0}
   .rg-pending button{background:none;border:0;color:var(--danger-ink);font-family:var(--mono);font-size:9.5px;
     letter-spacing:.12em;text-transform:uppercase;cursor:pointer;padding:2px 6px}
@@ -3213,7 +3217,8 @@ window.PB = (function(){
   <div class="side-scrim" id="sideScrim"></div>
 
   <div class="ev-bar">
-    <span><b>Confirm your email.</b> Until you do we can't send you a password reset — so losing your password
+    <span class="kick">Verify email</span>
+    <span>Until you do we can't send you a password reset — so losing your password
       would lock you out for good.</span>
     <button type="button" id="evResend">Resend the email</button>
     <button type="button" id="evDemo">Confirm (demo)</button>
@@ -5944,7 +5949,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
 <script>
 (function(){
   const VIEWS = {'threshold raid':'raid','anesthesia':'anes','painkillers':'pk','affiliate':'aff'};
-  const CLEAR = ['lobby','promotions','originals','slots','live casino','pain scale'].concat(Object.keys(VIEWS));
+  const CLEAR = ['lobby','promotions','originals','slots','live casino','pain scale','the chart'].concat(Object.keys(VIEWS));
 
   function nav(cb){ document.querySelectorAll('.side a').forEach(cb); }
   function navText(a){ return a.textContent.trim().toLowerCase().replace(/\s*[\d,]+$/,'').trim(); }
@@ -5958,7 +5963,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   }
   function clearView(){
     document.body.removeAttribute('data-view');
-    nav(function(a){ if(Object.keys(VIEWS).includes(navText(a))) a.classList.remove('on'); });
+    nav(function(a){ if(Object.keys(VIEWS).includes(navText(a)) || navText(a) === 'the chart') a.classList.remove('on'); });
   }
   nav(function(a){
     const t = navText(a);
@@ -6087,7 +6092,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   // Router for the ported v5 modules + my tracker page
   const VIEWS = {'threshold raid':'view-synapse','anesthesia':'view-anesthesia','painkillers':'view-pk','affiliate':'view-affiliate','arcade':'view-arcade','triage':'view-support'};
   const NAMES = Object.keys(VIEWS);
-  const NAVCLR = ['lobby','promotions','originals','slots','live casino','pain scale'].concat(NAMES);
+  const NAVCLR = ['lobby','promotions','originals','slots','live casino','pain scale','the chart'].concat(NAMES);
 
   function nav(cb){ document.querySelectorAll('.side a').forEach(cb); }
   function navText(a){ return a.textContent.trim().toLowerCase().replace(/\s*[\d,]+$/,'').trim(); }
@@ -6116,7 +6121,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   function clearView(){
     document.body.removeAttribute('data-view');
     hideAllPorted();
-    nav(function(a){ if(NAMES.includes(navText(a))) a.classList.remove('on'); });
+    nav(function(a){ if(NAMES.includes(navText(a)) || navText(a) === 'the chart') a.classList.remove('on'); });
     if(typeof syncTabs === 'function') syncTabs(false);
     setMode('casino'); if(window.__syncSports) window.__syncSports(false);
   }
@@ -7943,7 +7948,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
     var p = PB.state.rg.pending || [];
     if(!p.length){ pendBox.hidden = true; pendBox.innerHTML = ''; return; }
     pendBox.hidden = false;
-    pendBox.innerHTML = '<div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;' +
+    pendBox.innerHTML = '<div class="kick" style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;' +
       'text-transform:uppercase;margin-bottom:6px">Pending increases · old limit still applies</div>' +
       p.map(function(x){
         return '<div class="pr"><span>' + x.kind + ' · ' + x.period + ' → ' +
