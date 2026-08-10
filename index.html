@@ -3190,6 +3190,11 @@ window.PB = (function(){
       pushNotif('tx', 'Deposit confirmed', amount + ' USDT credited.');
       return Promise.resolve(state.balance).then(tap);
     },
+    convertPk: function(pkAmount, usdtAmount){
+      state.balance.real += usdtAmount;
+      pushNotif('rewards', 'PainKillers converted', pkAmount.toLocaleString() + ' PK → ' + usdtAmount.toFixed(2) + ' USDT.');
+      return Promise.resolve(state.balance).then(tap);
+    },
     requestWithdrawal: function(amount, coin){
       state.balance.real -= amount;
       state.balance.locked += amount;
@@ -4464,7 +4469,7 @@ window.PB = (function(){
                 <div class="pk-wallet-info">
                   <h3 style="font-size:26px;margin:0 0 2px"><span class="js-pk-bal" id="pk-wallet-num">1,250</span> PK</h3>
                   <p style="margin:0 0 12px">≈ 6.25 USDT · peg 1,000 PK = 5 USDT · converts instantly, no wagering, minimum 1,000 PK</p>
-                  <button class="btn btn-blue" onclick="openWallet()">Convert PK</button>
+                  <button class="btn btn-blue" onclick="openModal('pk-convert-modal')">Convert PK</button>
                 </div>
               </div>
 
@@ -5168,6 +5173,33 @@ window.PB = (function(){
         <button class="rec-back" id="recBack" type="button">← Back</button>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg v5m" id="pk-convert-modal">
+  <div class="modal" role="dialog" aria-label="Convert PainKillers" style="max-width:400px">
+    <div class="mhead"><h3>Convert PainKillers</h3><button class="x" onclick="closeModal('pk-convert-modal')">✕</button></div>
+    <div class="mbody">
+      <div id="pkcStep1">
+        <p class="pf-lead">Peg is fixed at 1,000 PK = 5 USDT. Converts instantly, no wagering attached.
+          You have <b class="js-pk-bal" id="pkcAvail">1,250</b> PK.</p>
+        <label class="tfa-lab" for="pkcAmount">Amount to convert</label>
+        <input class="rec-in" id="pkcAmount" type="number" step="1" min="1000" placeholder="Minimum 1,000 PK">
+        <div class="pf-lead" id="pkcPreview" style="margin:8px 0 0">≈ 0.00 USDT</div>
+        <div class="tfa-err" id="pkcErr" hidden></div>
+        <button class="btn btn-blue" id="pkcConvertAll" type="button"
+                style="width:100%;margin-top:12px;border-radius:var(--r-md)">Convert all</button>
+        <button class="btn btn-blue" id="pkcConfirm" type="button"
+                style="width:100%;margin-top:8px;border-radius:var(--r-md)">Convert</button>
+      </div>
+      <div id="pkcStep2" hidden>
+        <div class="tfa-done">Converted</div>
+        <p class="pf-lead"><b id="pkcDoneAmt">0</b> PK converted to <b id="pkcDoneUsdt">0.00 USDT</b>, credited to
+          your balance instantly.</p>
+        <button class="btn btn-blue" type="button" onclick="closeModal('pk-convert-modal')"
+                style="width:100%;margin-top:6px;border-radius:var(--r-md)">Done</button>
+      </div>
     </div>
   </div>
 </div>
@@ -6373,6 +6405,51 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   // the app-wide PK balance - every existing "1,250" display shares the .js-pk-bal class
   let pkBalance = 1250;
   function syncPkBalance(){ document.querySelectorAll('.js-pk-bal').forEach(el => el.textContent = fmt(pkBalance)); }
+
+  // -- convert PK -> USDT (peg: 1,000 PK = 5 USDT) --
+  const PK_PEG = 200; // 1000 PK / 5 USDT
+  const pkcAmount = document.getElementById('pkcAmount');
+  const pkcPreview = document.getElementById('pkcPreview');
+  const pkcErr = document.getElementById('pkcErr');
+  const pkcAvail = document.getElementById('pkcAvail');
+  const pkcConvertAll = document.getElementById('pkcConvertAll');
+  const pkcConfirm = document.getElementById('pkcConfirm');
+  const pkcStep1 = document.getElementById('pkcStep1');
+  const pkcStep2 = document.getElementById('pkcStep2');
+  function pkcClearErr(){ if(pkcErr){ pkcErr.hidden = true; pkcErr.textContent = ''; } }
+  function pkcUpdatePreview(){
+    if(!pkcAmount || !pkcPreview) return;
+    const n = Number(pkcAmount.value) || 0;
+    pkcPreview.textContent = '≈ ' + (n / PK_PEG).toFixed(2) + ' USDT';
+  }
+  if(pkcAmount) pkcAmount.addEventListener('input', function(){ pkcClearErr(); pkcUpdatePreview(); });
+  if(pkcConvertAll) pkcConvertAll.addEventListener('click', function(){
+    if(pkcAmount) pkcAmount.value = pkBalance;
+    pkcClearErr(); pkcUpdatePreview();
+  });
+  if(pkcConfirm) pkcConfirm.addEventListener('click', function(){
+    const n = Math.floor(Number(pkcAmount.value) || 0);
+    if(n < 1000){ pkcErr.textContent = 'Minimum 1,000 PK.'; pkcErr.hidden = false; return; }
+    if(n > pkBalance){ pkcErr.textContent = 'You only have ' + fmt(pkBalance) + ' PK.'; pkcErr.hidden = false; return; }
+    const usdt = n / PK_PEG;
+    pkBalance -= n;
+    syncPkBalance();
+    if(window.PB) PB.api.convertPk(n, usdt);
+    document.getElementById('pkcDoneAmt').textContent = fmt(n);
+    document.getElementById('pkcDoneUsdt').textContent = usdt.toFixed(2) + ' USDT';
+    pkcStep1.hidden = true; pkcStep2.hidden = false;
+  });
+  // .modal-bg has no CSS transition, so there's no transitionend to hook for a
+  // close-triggered reset - reset fresh each time the modal is opened instead.
+  document.querySelectorAll('button[onclick*="openModal(\'pk-convert-modal\')"]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(pkcStep1) pkcStep1.hidden = false;
+      if(pkcStep2) pkcStep2.hidden = true;
+      if(pkcAmount) pkcAmount.value = '';
+      pkcClearErr(); pkcUpdatePreview();
+      if(pkcAvail) pkcAvail.textContent = fmt(pkBalance);
+    });
+  });
 
   // -- live relief feed --
   const feedRows = document.getElementById('pk-feed-rows'), feedToday = document.getElementById('pk-feed-today');
