@@ -2713,96 +2713,38 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .v5m .provgrid{display:flex;flex-wrap:wrap;gap:8px}
   .v5m .provgrid span{font-weight:700;font-size:11px;padding:8px 13px;background:var(--card-hi);color:var(--ink-hi);border-radius:var(--r-pill)}
 
-  /* ===== preloader (bleeding-triangle glitch mark, shown until the page is ready) ===== */
+  /* ===== preloader (pulse-line mark, shown until the page is ready) ===== */
   #preloader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
     background:var(--bg);transition:opacity .5s ease;}
   #preloader.done{opacity:0;pointer-events:none}
-  .glitch-container{position:relative;width:140px;height:145px;overflow:visible;animation:glitch-distress 2.8s infinite}
-  @media(min-width:640px){ .glitch-container{width:190px;height:196px} }
-  .blood-fill{fill:#c82128}
-  .glitch-container svg{overflow:visible}
-  .smooth-drip{transform-box:fill-box;transform-origin:center top;animation-iteration-count:infinite;
-    animation-timing-function:cubic-bezier(.895,.03,.685,.22)}
-  .drip-1{animation:ultra-flow 3.5s infinite .4s}
-  .drip-2{animation:ultra-flow 4.2s infinite 0s}
-  .drip-3{animation:ultra-flow 3.8s infinite 1.2s}
-  .drip-4{animation:ultra-flow 4.5s infinite .7s}
-  @keyframes ultra-flow{
-    0%,35%{transform:translateY(0) scale(1,1);opacity:1}
-    65%{transform:translateY(35px) scale(.5,3.2);opacity:1}
-    85%{transform:translateY(160px) scale(.3,4.0);opacity:1}
-    95%,100%{transform:translateY(270px) scale(0,0);opacity:0}
-  }
-  .fluid-reservoir{animation:fluid-pulse 3s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center bottom}
-  @keyframes fluid-pulse{ 0%{transform:scaleY(1)} 100%{transform:scaleY(1.4)} }
-  @keyframes glitch-distress{
-    0%,89%,100%{transform:translate(0,0);filter:drop-shadow(0 0 0 transparent)}
-    90%{transform:translate(-5px,2px);filter:url(#scratch-filter) drop-shadow(5px 0 0 #00ffff) drop-shadow(-5px 0 0 #ff00ff)}
-    92%{transform:translate(4px,-3px);filter:url(#scratch-filter)}
-    94%{transform:translate(-3px,-1px);filter:url(#scratch-filter) drop-shadow(-4px 0 0 #00ffff) drop-shadow(4px 0 0 #ff00ff)}
-    96%{transform:translate(2px,3px);filter:url(#scratch-filter)}
-    98%{transform:translate(-1px,-1px)}
-  }
+  .pulse-mark{width:200px;height:150px}
+  @media(min-width:640px){ .pulse-mark{width:260px;height:195px} }
+  .pulse-mark .track{stroke:rgba(255,255,255,.14)}
+  .pulse-mark .beat{stroke:var(--blood)}
   @media(prefers-reduced-motion:reduce){
-    .glitch-container,.smooth-drip,.fluid-reservoir{animation:none}
+    .pulse-mark .beat animate{display:none}
+    .pulse-mark .beat{opacity:1}
   }
 </style>
 </head>
 <body>
 <div id="preloader">
-  <div class="glitch-container">
-    <svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 537.6 556.32">
-      <defs>
-        <style>
-          .cls-1{fill:#c82128;filter:url(#outer-glow-1);stroke:#ee2c31;stroke-miterlimit:10;stroke-width:.5px}
-        </style>
-        <filter id="outer-glow-1" x="0" y="0" width="537.6" height="556.32" filterUnits="userSpaceOnUse">
-          <feOffset dx="0" dy="0"/>
-          <feGaussianBlur result="blur" stdDeviation="42.94"/>
-          <feFlood flood-color="#ed1f24" flood-opacity="1"/>
-          <feComposite in2="blur" operator="in"/>
-          <feComposite in="SourceGraphic"/>
-        </filter>
-        <filter id="ultra-goo" x="80" y="370" width="360" height="450" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
-          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -6" result="goo"/>
-          <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-        </filter>
-        <filter id="scratch-filter">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9 0.04" numOctaves="4" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-      <g id="Layer_1-2" data-name="Layer 1">
-        <polygon class="cls-1" points="269.79 128.86 128.87 427.27 408.43 427.27 269.79 128.86"/>
-        <g filter="url(#ultra-goo)" class="blood-fill">
-          <rect x="135" y="412" width="270" height="18" class="fluid-reservoir"/>
-          <g class="smooth-drip drip-1">
-            <path d="M 175,420 Q 175,445 175,445 Q 175,445 175,420 Z"/>
-            <circle cx="175" cy="427" r="18"/>
-          </g>
-          <g class="smooth-drip drip-2">
-            <path d="M 240,420 Q 240,448 240,448 Q 240,448 240,420 Z"/>
-            <circle cx="240" cy="427" r="21"/>
-          </g>
-          <g class="smooth-drip drip-3">
-            <path d="M 310,420 Q 310,442 310,442 Q 310,442 310,420 Z"/>
-            <circle cx="310" cy="427" r="16"/>
-          </g>
-          <g class="smooth-drip drip-4">
-            <path d="M 370,420 Q 370,446 370,446 Q 370,446 370,420 Z"/>
-            <circle cx="370" cy="427" r="19"/>
-          </g>
-        </g>
-      </g>
-    </svg>
-  </div>
+  <svg class="pulse-mark" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg">
+    <polyline class="track" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"
+      fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline class="beat" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"
+      fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+      stroke-dasharray="48, 144" stroke-dashoffset="192">
+      <animate attributeName="stroke-dashoffset" from="192" to="0" dur="1.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1; 0; 0" keyTimes="0; 0.725; 1" dur="1.4s" repeatCount="indefinite"/>
+    </polyline>
+  </svg>
 </div>
 <script>
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
-  var MIN_SHOW = 3200; // let the glitch (2.8s) and drip (up to 4.5s) cycles actually play
+  var MIN_SHOW = 1800; // let the 1.4s pulse cycle actually play at least once
   var shownAt = Date.now();
   var hidden = false, loaded = false;
   function reveal(){
