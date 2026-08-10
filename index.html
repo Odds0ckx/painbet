@@ -154,6 +154,7 @@
   .acctbtn:hover{background:rgba(255,255,255,.09)}
   .acctbtn .ava{width:26px;height:26px;border-radius:50%;background:var(--blood);color:#fff;
     display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none}
+  .ava.has-img,.ava2.has-img{background-size:cover;background-position:center;color:transparent}
   .acctbtn .acctid{font-size:10.5px;letter-spacing:.06em}
   .acctbtn .chev{width:14px;height:14px;transition:transform .2s}
   .acctzone.open .acctbtn .chev{transform:rotate(180deg)}
@@ -2226,6 +2227,20 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     padding:11px 16px;cursor:pointer;border:0;background:var(--blood);color:#fff}
   .ch-btn.alt{background:rgba(255,255,255,.07);color:#c3c8d1;border:1px solid rgba(255,255,255,.15)}
   .ch-btn:disabled{opacity:.5;cursor:not-allowed}
+
+  /* ===== profile picture (avatar + rank badge) ===== */
+  .pf-avatar-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .pf-avatar-wrap{position:relative;flex:none}
+  .pf-avatar{width:76px;height:76px;border-radius:50%;background:var(--blood);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;
+    background-size:cover;background-position:center;border:2px solid rgba(255,255,255,.12)}
+  .pf-avatar.has-img{color:transparent}
+  .pf-avatar-badge{position:absolute;bottom:-4px;right:-6px;font-family:var(--mono);font-size:9px;
+    font-weight:700;letter-spacing:.04em;color:#fff;background:var(--blood);border:2px solid #15171b;
+    border-radius:999px;padding:3px 7px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .pf-avatar-actions{display:flex;flex-direction:column;gap:8px;min-width:180px}
+  .pf-avatar-actions .ch-actions{margin-top:0}
+  .pf-avatar-meta{font-size:11.5px;color:#8b909a;line-height:1.5}
   .ch-note{display:none;font-family:var(--mono);font-size:10.5px;color:#a8e4f2;margin-top:10px}
   .ch-note.show{display:block}
   .ch-2fa{display:flex;align-items:center;gap:12px;margin-top:14px}
@@ -2837,6 +2852,7 @@ window.PB = (function(){
     return {
       account: 'anonymous',
       user: null,
+      avatar: null,       // data URL; kept separate from `user` so it survives re-sign-in
       balance: { real: 0, bonus: 0, locked: 0 },
       verification: { tier: 0, submittedAt: null, rejectedReason: null, cumulativeWithdrawn: 0 },
       twofa: { enabled: false, secret: null, backupCodes: [] },
@@ -3719,6 +3735,26 @@ window.PB = (function(){
 
   <div class="acct-pane on" data-pane="profile">
     <div class="pscard ch-sec">
+      <div class="kick">Profile picture</div>
+      <div class="pf-avatar-row">
+        <div class="pf-avatar-wrap">
+          <div class="pf-avatar" id="pfAvatar">P</div>
+          <span class="pf-avatar-badge" id="pfAvatarBadge" title="Pain Scale rank">LVL 7.8</span>
+        </div>
+        <div class="pf-avatar-actions">
+          <p class="pf-avatar-meta">Shown on The Chart and wherever your account appears. Your Pain Scale
+            rank stays pinned to the corner.</p>
+          <div class="ch-actions">
+            <label class="ch-btn alt" for="pfAvatarFile" style="display:inline-flex;align-items:center">Upload picture</label>
+            <input type="file" id="pfAvatarFile" accept="image/*" style="display:none">
+            <button class="ch-btn alt" id="pfAvatarRemove" type="button" disabled>Remove</button>
+          </div>
+        </div>
+      </div>
+      <div class="ch-note" id="pfAvatarNote"></div>
+    </div>
+
+    <div class="pscard ch-sec" style="margin-top:16px">
       <div class="kick">Patient details</div>
       <div class="ch-form">
         <div class="ch-frow">
@@ -8443,6 +8479,14 @@ document.querySelectorAll('.pgback').forEach(function(b){
     PB.state.prefs = next;
     return Promise.resolve(next).then(function(v){ PB.onChange && bump(); return v; });
   };
+  PB.api.setAvatar = function(dataUrl){
+    PB.state.avatar = dataUrl;
+    return Promise.resolve(dataUrl).then(function(v){ bump(); return v; });
+  };
+  PB.api.removeAvatar = function(){
+    PB.state.avatar = null;
+    return Promise.resolve(true).then(function(v){ bump(); return v; });
+  };
   PB.api.revokeSession = function(id){
     PB.state.sessions = PB.state.sessions.filter(function(s){ return s.id !== id; });
     return Promise.resolve(true).then(function(v){ bump(); return v; });
@@ -8641,8 +8685,46 @@ document.querySelectorAll('.pgback').forEach(function(b){
     });
   });
 
+  // ---- profile picture -------------------------------------------------------
+  var pfFile = document.getElementById('pfAvatarFile');
+  var pfRemove = document.getElementById('pfAvatarRemove');
+  if(pfFile) pfFile.addEventListener('change', function(){
+    var file = pfFile.files && pfFile.files[0];
+    pfFile.value = '';
+    if(!file) return;
+    if(!/^image\//.test(file.type)){
+      say('pfAvatarNote', 'That file is not an image.', true);
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(){
+      PB.api.setAvatar(reader.result).then(function(){
+        say('pfAvatarNote', 'Picture updated.', false);
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  if(pfRemove) pfRemove.addEventListener('click', function(){
+    PB.api.removeAvatar().then(function(){
+      say('pfAvatarNote', 'Picture removed.', false);
+    });
+  });
+
   // ---- painting -------------------------------------------------------------
-  function repaintAll(){ paintNotif(); paintSelects(); paintLinked(); paintSessions(); paintAddresses(); }
+  function repaintAll(){ paintNotif(); paintSelects(); paintLinked(); paintSessions(); paintAddresses(); paintAvatar(); }
+
+  function paintAvatar(){
+    var url = PB.state.avatar;
+    var apply = function(el){
+      if(!el) return;
+      el.classList.toggle('has-img', !!url);
+      el.style.backgroundImage = url ? 'url(' + JSON.stringify(url) + ')' : '';
+    };
+    apply(document.getElementById('acctAva'));
+    apply(document.getElementById('acctAva2'));
+    apply(document.getElementById('pfAvatar'));
+    if(pfRemove) pfRemove.disabled = !url;
+  }
 
   function paintNotif(){
     if(!notifGrid || !PB.state.prefs) return;
