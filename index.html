@@ -2717,26 +2717,43 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   #preloader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
     background:var(--bg);transition:opacity .5s ease;}
   #preloader.done{opacity:0;pointer-events:none}
-  .pulse-mark{width:200px;height:150px}
-  @media(min-width:640px){ .pulse-mark{width:260px;height:195px} }
-  .pulse-mark .track{stroke:rgba(255,255,255,.14)}
-  .pulse-mark .beat{stroke:var(--blood)}
   @media(prefers-reduced-motion:reduce){
-    .pulse-mark .beat animate{display:none}
-    .pulse-mark .beat{opacity:1}
+    #preloader svg polyline:last-of-type animate{display:none}
+    #preloader svg polyline:last-of-type{opacity:1}
   }
 </style>
 </head>
 <body>
 <div id="preloader">
-  <svg class="pulse-mark" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg">
-    <polyline class="track" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"
-      fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <polyline class="beat" points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"
-      fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
-      stroke-dasharray="48, 144" stroke-dashoffset="192">
-      <animate attributeName="stroke-dashoffset" from="192" to="0" dur="1.4s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="1; 0; 0" keyTimes="0; 0.725; 1" dur="1.4s" repeatCount="indefinite"/>
+  <svg height="48px" width="64px" viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg">
+    <polyline
+      points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"
+      fill="none"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+    </polyline>
+    <polyline
+      points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24"
+      fill="none"
+      stroke="#FF0000"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-dasharray="48, 144"
+      stroke-dashoffset="192">
+      <animate
+        attributeName="stroke-dashoffset"
+        from="192"
+        to="0"
+        dur="1.4s"
+        repeatCount="indefinite" />
+      <animate
+        attributeName="opacity"
+        values="1; 0; 0"
+        keyTimes="0; 0.725; 1"
+        dur="1.4s"
+        repeatCount="indefinite" />
     </polyline>
   </svg>
 </div>
@@ -2744,7 +2761,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 (function(){
   var pre = document.getElementById('preloader');
   if(!pre) return;
-  var MIN_SHOW = 1800; // let the 1.4s pulse cycle actually play at least once
+  var CYCLE = 1400; // matches the SVG's dur="1.4s" so we never cut the loop off mid-sweep
   var shownAt = Date.now();
   var hidden = false, loaded = false;
   function reveal(){
@@ -2757,8 +2774,9 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
     if(loaded) return;
     loaded = true;
     var elapsed = Date.now() - shownAt;
-    if(elapsed >= MIN_SHOW) reveal();
-    else setTimeout(reveal, MIN_SHOW - elapsed);
+    var target = Math.max(CYCLE, Math.ceil(elapsed / CYCLE) * CYCLE);
+    var wait = target - elapsed;
+    if(wait <= 0) reveal(); else setTimeout(reveal, wait);
   }
   window.addEventListener('load', hide);
   setTimeout(hide, 4000); // safety net: never trap the user behind the preloader
