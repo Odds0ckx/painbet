@@ -135,9 +135,45 @@
   .grow{flex:1}
   .search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
     border-radius:9px;padding:8px 12px;color:var(--ink-dim);font-size:12px;min-width:200px}
-  .bal{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink);
-    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 12px}
-  .bal b{color:var(--blood)}
+  .balzone{position:relative}
+  .balbtn{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink);
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 12px;
+    display:flex;align-items:center;gap:6px;cursor:pointer;transition:background .2s}
+  .balbtn:hover{background:rgba(255,255,255,.09)}
+  .balbtn b{color:var(--blood)}
+  .balbtn .chev{width:12px;height:12px;flex:none;color:var(--ink-dim);transition:transform .2s}
+  .balzone.open .balbtn .chev{transform:rotate(180deg)}
+  .balpanel{position:absolute;top:calc(100% + 8px);left:0;width:280px;max-width:calc(100vw - 28px);z-index:60;
+    background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:14px;
+    box-shadow:0 20px 50px rgba(0,0,0,.55);padding:8px;
+    opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
+    transition:opacity .18s,transform .18s,visibility .18s}
+  .balzone.open .balpanel{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+  .baltabs{display:flex;gap:4px;padding:4px 4px 8px}
+  .baltabs button{flex:1;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--ink-dim);
+    border-radius:8px;padding:8px 6px;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
+  .baltabs button.on{background:var(--blood);border-color:var(--blood);color:#fff}
+  .balrows{display:flex;flex-direction:column;gap:2px;max-height:280px;overflow-y:auto}
+  .balrows[hidden]{display:none}
+  .balrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:9px}
+  .balrow:hover{background:rgba(255,255,255,.05)}
+  .balrow .coin-ic{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;
+    justify-content:center;font-family:var(--mono);font-size:8.5px;font-weight:800;color:#fff}
+  .balrow .nm{display:flex;flex-direction:column;gap:1px;font-size:12px;color:var(--ink)}
+  .balrow .nm small{color:var(--ink-dim);font-weight:400;font-size:10px}
+  .balrow .amt{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--ink);text-align:right}
+  .balrow .amt small{display:block;color:var(--ink-dim);font-weight:400;font-size:10px;margin-top:1px}
+  .bal-empty{padding:22px 10px;text-align:center;font-size:11.5px;color:var(--ink-dim)}
+  .balpanel-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:10px 6px 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.08)}
+  .balpanel-foot span{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim)}
+  .baltoggle{width:34px;height:19px;border-radius:999px;background:rgba(255,255,255,.14);border:0;
+    position:relative;cursor:pointer;flex:none;transition:background .2s;padding:0}
+  .baltoggle::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+    background:#fff;transition:transform .2s}
+  .baltoggle.on{background:var(--blood)}
+  .baltoggle.on::after{transform:translateX(15px)}
   .btn{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border-radius:9px;
     padding:10px 16px;cursor:pointer;border:1px solid rgba(255,255,255,.14);background:transparent;color:var(--ink);transition:all .2s}
   .btn:hover{background:rgba(255,255,255,.06)}
@@ -346,7 +382,8 @@
       transition:background .2s,color .2s,border-color .2s}
     .mobmode button.on{background:var(--blood);border-color:var(--blood);color:#fff}
     .topbar img.logo{height:24px}
-    .bal{font-size:10px;padding:7px 9px;margin-left:auto}
+    .balbtn{font-size:10px;padding:7px 9px}
+    .balzone{margin-left:auto}
     .btn.red{padding:9px 13px;font-size:9.5px}
     .main{padding:18px 14px 30px;grid-column:1}
 
@@ -3186,6 +3223,7 @@ window.PB = (function(){
     get state(){ return state; },
     gate: gate,
     onChange: onChange,
+    emit: emit,
     api: api,
     isLocked: isLocked,
     effectiveLimit: effectiveLimit,
@@ -3210,7 +3248,24 @@ window.PB = (function(){
     </nav>
     <div class="grow"></div>
     <div class="search"><input id="gameSearch" type="search" placeholder="Search games" autocomplete="off" aria-label="Search games"></div>
-    <div class="bal">USDT 2,840 · <b>PK 1,250</b></div>
+    <div class="balzone" id="balZone">
+      <button class="balbtn" id="balBtn" type="button" aria-haspopup="true" aria-expanded="false">
+        <span id="balMain">USDT 2,840</span> · <b id="balPk">PK 1,250</b>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="balpanel" id="balPanel" role="menu">
+        <div class="baltabs" id="balTabs" role="tablist">
+          <button type="button" class="on" data-tab="crypto" role="tab" aria-selected="true">Crypto</button>
+          <button type="button" data-tab="bonus" role="tab" aria-selected="false">Bonus</button>
+        </div>
+        <div class="balrows" id="balRowsCrypto"></div>
+        <div class="balrows" id="balRowsBonus" hidden></div>
+        <div class="balpanel-foot">
+          <span>Display in USD</span>
+          <button type="button" class="baltoggle" id="balUsdToggle" aria-label="Display balances in USD" aria-pressed="false"></button>
+        </div>
+      </div>
+    </div>
     <button class="btn" id="btnSignIn">Sign in</button>
     <div class="notifzone" id="notifZone">
       <button class="notifbtn" id="notifBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
@@ -8485,7 +8540,7 @@ document.querySelectorAll('.pgback').forEach(function(b){
   // reset or a stale saved payload can never leave them undefined here.
   PB.api.setPrefs = function(next){
     PB.state.prefs = next;
-    return Promise.resolve(next).then(function(v){ PB.onChange && bump(); return v; });
+    return Promise.resolve(next).then(function(v){ PB.emit(); return v; });
   };
   PB.api.setAvatar = function(dataUrl){
     PB.state.avatar = dataUrl;
@@ -9136,16 +9191,16 @@ document.querySelectorAll('.pgback').forEach(function(b){
 
   // ---- live balance in the topbar -----------------------------------------
   function paintBalance(){
-    var el = document.querySelector('.topbar .bal');
+    var el = document.getElementById('balMain');
     if(!el || !PB.state.balance) return;
     if(PB.state.account === 'anonymous') return;   // keep the marketing figure while logged out
     var b = PB.state.balance;
     var ccy = (PB.state.prefs && PB.state.prefs.display.currency) || 'USDT';
     var total = b.real + b.bonus;
     el.innerHTML = ccy + ' ' + total.toLocaleString(undefined, {maximumFractionDigits:2}) +
-      (b.bonus > 0 ? ' <span style="color:#e0a13e">(+' + b.bonus.toFixed(0) + ' bonus)</span>' : '') +
-      ' · <b>PK 1,250</b>';
-    el.title = 'Withdrawable ' + b.real.toFixed(2) + ' · bonus ' + b.bonus.toFixed(2) +
+      (b.bonus > 0 ? ' <span style="color:#e0a13e">(+' + b.bonus.toFixed(0) + ' bonus)</span>' : '');
+    var btn = document.getElementById('balBtn');
+    if(btn) btn.title = 'Withdrawable ' + b.real.toFixed(2) + ' · bonus ' + b.bonus.toFixed(2) +
                ' · in play ' + b.locked.toFixed(2);
   }
 
@@ -9184,6 +9239,97 @@ document.querySelectorAll('.pgback').forEach(function(b){
   function repaint(){ paintEmail(); paintWithdrawals(); paintBalance(); }
   PB.onChange(function(){ repaint(); armReminder(); });
   repaint(); armReminder();
+})();
+</script>
+
+<script>
+(function(){
+  // ---- balance dropdown: crypto / bonus breakdown, USD display toggle ----
+  var zone = document.getElementById('balZone');
+  var btn = document.getElementById('balBtn');
+  var tabs = document.getElementById('balTabs');
+  var rowsCrypto = document.getElementById('balRowsCrypto');
+  var rowsBonus = document.getElementById('balRowsBonus');
+  var usdToggle = document.getElementById('balUsdToggle');
+  if(!zone || !btn) return;
+
+  function closeBal(){ zone.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
+  function toggleBal(){
+    var open = zone.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  btn.addEventListener('click', function(e){ e.stopPropagation(); toggleBal(); });
+  document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeBal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeBal(); });
+
+  var COINS = [
+    { code:'USDT', name:'Tether · TRC20', color:'#26A17B', primary:true },
+    { code:'BTC',  name:'Bitcoin',        color:'#F7931A' },
+    { code:'ETH',  name:'Ethereum',       color:'#627EEA' },
+    { code:'TRX',  name:'Tron',           color:'#c8102e' },
+    { code:'SOL',  name:'Solana',         color:'#9945FF' },
+    { code:'USDC', name:'USD Coin',       color:'#2775CA' }
+  ];
+
+  function fmt(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:8}); }
+
+  function paintCryptoRows(usd){
+    if(!rowsCrypto) return;
+    var real = (window.PB && PB.state.balance && PB.state.balance.real) || 0;
+    rowsCrypto.innerHTML = COINS.map(function(c){
+      var amount = c.primary ? real : 0;
+      var shown = (usd ? '$' : '') + fmt(amount) + (usd ? '' : ' ' + c.code);
+      return '<div class="balrow"><span class="coin-ic" style="background:' + c.color + '">' + c.code.slice(0,1) + '</span>' +
+        '<span class="nm">' + c.code + '<small>' + c.name + '</small></span>' +
+        '<span class="amt">' + shown + '</span></div>';
+    }).join('');
+  }
+
+  function paintBonusRows(){
+    if(!rowsBonus) return;
+    var b = (window.PB && PB.state.balance) || { bonus:0, locked:0 };
+    if(!b.bonus){
+      rowsBonus.innerHTML = '<div class="bal-empty">No active bonus balance.</div>';
+      return;
+    }
+    rowsBonus.innerHTML =
+      '<div class="balrow"><span class="coin-ic" style="background:#e0a13e">B</span>' +
+      '<span class="nm">Bonus balance<small>Wagering in progress</small></span>' +
+      '<span class="amt">' + fmt(b.bonus) + ' USDT</span></div>' +
+      (b.locked ? '<div class="balrow"><span class="coin-ic" style="background:#7FD6E8;color:#0b1114">L</span>' +
+        '<span class="nm">In play<small>Awaiting round settlement</small></span>' +
+        '<span class="amt">' + fmt(b.locked) + ' USDT</span></div>' : '');
+  }
+
+  if(tabs) tabs.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-tab]'); if(!b) return;
+    tabs.querySelectorAll('button').forEach(function(t){
+      var on = t === b;
+      t.classList.toggle('on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    rowsCrypto.hidden = b.dataset.tab !== 'crypto';
+    rowsBonus.hidden = b.dataset.tab !== 'bonus';
+  });
+
+  if(usdToggle) usdToggle.addEventListener('click', function(){
+    if(!window.PB) return;
+    var next = JSON.parse(JSON.stringify(PB.state.prefs));
+    next.display.currency = next.display.currency === 'USD' ? 'USDT' : 'USD';
+    PB.api.setPrefs(next);
+  });
+
+  function paintBalDropdown(){
+    if(!window.PB) return;
+    var usd = !!(PB.state.prefs && PB.state.prefs.display.currency === 'USD');
+    if(usdToggle){
+      usdToggle.classList.toggle('on', usd);
+      usdToggle.setAttribute('aria-pressed', usd ? 'true' : 'false');
+    }
+    paintCryptoRows(usd);
+    paintBonusRows();
+  }
+  if(window.PB){ PB.onChange(paintBalDropdown); paintBalDropdown(); }
 })();
 </script>
 
