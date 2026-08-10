@@ -156,8 +156,11 @@
   .baltabs button.on{background:var(--blood);border-color:var(--blood);color:#fff}
   .balrows{display:flex;flex-direction:column;gap:2px;max-height:280px;overflow-y:auto}
   .balrows[hidden]{display:none}
-  .balrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:9px}
+  .balrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:9px;cursor:pointer}
   .balrow:hover{background:rgba(255,255,255,.05)}
+  .balrow.preferred{background:rgba(224,22,60,.08)}
+  .preferred-tag{font-style:normal;font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--blood);border:1px solid rgba(224,22,60,.4);border-radius:5px;padding:1px 5px;margin-left:6px;vertical-align:1px}
   .balrow .coin-ic{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;
     justify-content:center;font-family:var(--mono);font-size:8.5px;font-weight:800;color:#fff}
   .balrow .nm{display:flex;flex-direction:column;gap:1px;font-size:12px;color:var(--ink)}
@@ -3260,6 +3263,7 @@ window.PB = (function(){
         </div>
         <div class="balrows" id="balRowsCrypto"></div>
         <div class="balrows" id="balRowsBonus" hidden></div>
+        <div class="ch-note" id="balPrefNote" style="padding:0 6px"></div>
         <div class="balpanel-foot">
           <span>Display in USD</span>
           <button type="button" class="baltoggle" id="balUsdToggle" aria-label="Display balances in USD" aria-pressed="false"></button>
@@ -9259,28 +9263,45 @@ document.querySelectorAll('.pgback').forEach(function(b){
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
   btn.addEventListener('click', function(e){ e.stopPropagation(); toggleBal(); });
-  document.addEventListener('click', function(e){ if(!zone.contains(e.target)) closeBal(); });
+  // Use composedPath (captured at dispatch time) rather than zone.contains(e.target):
+  // selecting a coin repaints .balrows via innerHTML mid-bubble, detaching the
+  // clicked node from the tree before this listener runs, which would make
+  // zone.contains(e.target) wrongly report "outside" and close the panel.
+  document.addEventListener('click', function(e){
+    var path = typeof e.composedPath === 'function' ? e.composedPath() : null;
+    var inside = path ? path.indexOf(zone) !== -1 : zone.contains(e.target);
+    if(!inside) closeBal();
+  });
   document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeBal(); });
 
   var COINS = [
-    { code:'USDT', name:'Tether · TRC20', color:'#26A17B', primary:true },
-    { code:'BTC',  name:'Bitcoin',        color:'#F7931A' },
-    { code:'ETH',  name:'Ethereum',       color:'#627EEA' },
-    { code:'TRX',  name:'Tron',           color:'#c8102e' },
-    { code:'SOL',  name:'Solana',         color:'#9945FF' },
-    { code:'USDC', name:'USD Coin',       color:'#2775CA' }
+    { code:'USDT', name:'Tether · TRC20', color:'#26A17B', primary:true, label:'USDT · TRC20' },
+    { code:'BTC',  name:'Bitcoin',        color:'#F7931A', label:'BTC' },
+    { code:'ETH',  name:'Ethereum',       color:'#627EEA', label:'ETH' },
+    { code:'TRX',  name:'Tron',           color:'#c8102e', label:'TRX' },
+    { code:'SOL',  name:'Solana',         color:'#9945FF', label:'SOL' },
+    { code:'USDC', name:'USD Coin',       color:'#2775CA', label:'USDC' }
   ];
 
   function fmt(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:8}); }
 
+  function currentPreferredCode(){
+    var el = document.getElementById('chCoin');
+    var v = (el && el.value) || 'USDT';
+    return v.split(/[\s·]/)[0].toUpperCase();
+  }
+
   function paintCryptoRows(usd){
     if(!rowsCrypto) return;
     var real = (window.PB && PB.state.balance && PB.state.balance.real) || 0;
+    var preferred = currentPreferredCode();
     rowsCrypto.innerHTML = COINS.map(function(c){
       var amount = c.primary ? real : 0;
       var shown = (usd ? '$' : '') + fmt(amount) + (usd ? '' : ' ' + c.code);
-      return '<div class="balrow"><span class="coin-ic" style="background:' + c.color + '">' + c.code.slice(0,1) + '</span>' +
-        '<span class="nm">' + c.code + '<small>' + c.name + '</small></span>' +
+      var isPreferred = c.code === preferred;
+      return '<div class="balrow' + (isPreferred ? ' preferred' : '') + '" data-coin="' + c.code + '" title="Set as preferred coin">' +
+        '<span class="coin-ic" style="background:' + c.color + '">' + c.code.slice(0,1) + '</span>' +
+        '<span class="nm">' + c.code + (isPreferred ? ' <i class="preferred-tag">Preferred</i>' : '') + '<small>' + c.name + '</small></span>' +
         '<span class="amt">' + shown + '</span></div>';
     }).join('');
   }
@@ -9317,6 +9338,28 @@ document.querySelectorAll('.pgback').forEach(function(b){
     var next = JSON.parse(JSON.stringify(PB.state.prefs));
     next.display.currency = next.display.currency === 'USD' ? 'USDT' : 'USD';
     PB.api.setPrefs(next);
+  });
+
+  // Selecting a coin sets it as the preferred coin (same field editable on
+  // The Chart's Patient details) rather than swapping the topbar figure —
+  // painbet only tracks a real balance in USDT, so showing e.g. "0.00 BTC"
+  // as the headline number would read as a lost balance, not a currency switch.
+  var balPrefNote = document.getElementById('balPrefNote');
+  if(rowsCrypto) rowsCrypto.addEventListener('click', function(e){
+    var row = e.target.closest('.balrow[data-coin]'); if(!row) return;
+    var coin = COINS.filter(function(c){ return c.code === row.dataset.coin; })[0];
+    if(!coin) return;
+    var chCoin = document.getElementById('chCoin');
+    var chBandCoin = document.getElementById('chBandCoin');
+    if(chCoin) chCoin.value = coin.label;
+    if(chBandCoin) chBandCoin.textContent = coin.label;
+    paintCryptoRows(usdToggle && usdToggle.classList.contains('on'));
+    if(balPrefNote){
+      balPrefNote.textContent = 'Preferred coin set to ' + coin.code + '.';
+      balPrefNote.classList.add('show');
+      clearTimeout(balPrefNote._t);
+      balPrefNote._t = setTimeout(function(){ balPrefNote.classList.remove('show'); }, 2600);
+    }
   });
 
   function paintBalDropdown(){
