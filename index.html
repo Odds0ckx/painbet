@@ -136,6 +136,12 @@
   .search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
     border-radius:9px;padding:8px 12px;color:var(--ink-dim);font-size:12px;min-width:200px}
   .balzone{position:relative}
+  /* A balance belongs to an account. With nobody signed in there is no
+     figure to show, so the whole chip goes rather than displaying an
+     invented one to a stranger. The PainKillers nav item stays visible —
+     it is a product page worth discovering — but its badge does not. */
+  body.pk-hidden .balzone{display:none}
+  body.pk-hidden .side a .pk{display:none}
   .balbtn{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink);
     background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 12px;
     display:flex;align-items:center;gap:6px;cursor:pointer;transition:background .2s}
@@ -2936,7 +2942,7 @@ window.PB = (function(){
       account: 'anonymous',
       user: null,
       avatar: null,       // data URL; kept separate from `user` so it survives re-sign-in
-      balance: { real: 0, bonus: 0, locked: 0 },
+      balance: { real: 0, bonus: 0, locked: 0, pk: 0 },
       verification: { tier: 0, submittedAt: null, rejectedReason: null, cumulativeWithdrawn: 0 },
       twofa: { enabled: false, secret: null, backupCodes: [] },
       seeds: { serverSeedHash: null, clientSeed: null, nonce: 0, previous: [] },
@@ -3121,6 +3127,7 @@ window.PB = (function(){
       state.account = 'active';
       state.user = user;
       if(!state.balance.real) state.balance.real = 2840;   // demo float
+      if(!state.balance.pk) state.balance.pk = 1250;       // demo PainKillers
       return Promise.resolve(state).then(tap);
     },
     signOut: function(){
@@ -3225,7 +3232,16 @@ window.PB = (function(){
       pushNotif('tx', 'Deposit confirmed', amount + ' USDT credited.');
       return Promise.resolve(state.balance).then(tap);
     },
+    // PainKillers earned from wagering. Rate is per 100 USDT staked and
+    // scales with Pain scale level (8 PK at L0 up to 42 at L10), then the
+    // Tolerance streak multiplier applies on top.
+    // DEVS: the server should own this — accrue on bet settlement, not on a timer.
+    accruePk: function(amount){
+      state.balance.pk = (state.balance.pk || 0) + amount;
+      return Promise.resolve(state.balance).then(tap);
+    },
     convertPk: function(pkAmount, usdtAmount){
+      state.balance.pk = Math.max(0, (state.balance.pk || 0) - pkAmount);
       state.balance.real += usdtAmount;
       pushNotif('rewards', 'PainKillers converted', pkAmount.toLocaleString() + ' PK → ' + usdtAmount.toFixed(2) + ' USDT.');
       return Promise.resolve(state.balance).then(tap);
@@ -3293,7 +3309,7 @@ window.PB = (function(){
     <div class="search"><input id="gameSearch" type="search" placeholder="Search games" autocomplete="off" aria-label="Search games"></div>
     <div class="balzone" id="balZone">
       <button class="balbtn" id="balBtn" type="button" aria-haspopup="true" aria-expanded="false">
-        <span id="balMain">USDT 2,840</span> · <b id="balPk">PK 1,250</b>
+        <span id="balMain">USDT 2,840</span> · <b id="balPk">PK <span class="js-pk-bal">1,250</span></b>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="balpanel" id="balPanel" role="menu">
@@ -3383,7 +3399,7 @@ window.PB = (function(){
     <div class="grp blue">Pain system</div>
     <a href="#"><svg class="ic"><use href="#i-gauge"/></svg><span class="lbl">Pain scale</span></a>
     <a href="#"><svg class="ic"><use href="#i-target"/></svg><span class="lbl">Threshold Raid</span></a>
-    <a href="#"><svg class="ic"><use href="#i-pill"/></svg><span class="lbl">PainKillers</span> <span class="pk">1,250</span></a>
+    <a href="#"><svg class="ic"><use href="#i-pill"/></svg><span class="lbl">PainKillers</span> <span class="pk js-pk-bal">1,250</span></a>
     <a href="#"><svg class="ic"><use href="#i-drop"/></svg><span class="lbl">Anesthesia</span></a>
     <a href="#"><svg class="ic"><use href="#i-track"/></svg><span class="lbl">PainTracker</span></a>
 
@@ -3825,7 +3841,7 @@ window.PB = (function(){
       <span class="kv">Patient<b id="chBandAlias">WardRat_77</b></span>
       <span class="kv">Admitted<b>03 Jun 2026</b></span>
       <span class="kv">Preferred coin<b id="chBandCoin">USDT · TRC20</b></span>
-      <span class="lvl">LVL 7.8 · AGONY · PK 1,250</span>
+      <span class="lvl">LVL 7.8 · AGONY · PK <span class="js-pk-bal">1,250</span></span>
     </div>
   </div>
 
@@ -6448,9 +6464,28 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   const GAMES = ['Flatline','Nerve','Bonesaw','Dosage','Spike','Pulse','Blackout','Rigor','Relapse'];
   const fmt = n => Math.round(n).toLocaleString('en-US');
 
-  // the app-wide PK balance - every existing "1,250" display shares the .js-pk-bal class
-  let pkBalance = 1250;
-  function syncPkBalance(){ document.querySelectorAll('.js-pk-bal').forEach(el => el.textContent = fmt(pkBalance)); }
+  // The app-wide PK balance. PB.state.balance.pk is the single source of
+  // truth so it persists, survives a reload, and agrees with the topbar and
+  // sidebar. This stays a live view rather than a copy — assigning to
+  // pkBalance writes straight through to state.
+  Object.defineProperty(window, 'pkBalance', {
+    get(){ return (window.PB && PB.state.balance.pk) || 0; },
+    set(v){ if(window.PB) PB.state.balance.pk = Math.max(0, v); }
+  });
+  // Anyone not signed in has no balance to show — a personal figure in front
+  // of a stranger is invented state, the same problem the signed-out topbar had.
+  function pkVisible(){ return !!(window.PB && PB.state.account !== 'anonymous' && PB.state.account !== 'closed'); }
+  function syncPkBalance(){
+    const show = pkVisible();
+    document.body.classList.toggle('pk-hidden', !show);
+    document.querySelectorAll('.js-pk-bal').forEach(el => el.textContent = show ? fmt(pkBalance) : '—');
+  }
+  window.syncPkBalance = syncPkBalance;
+  if(window.PB) PB.onChange(syncPkBalance);
+  // Run once on load too. Without this the markup keeps its hardcoded 1,250
+  // until something else changes state — which is exactly the window in which
+  // a signed-out visitor would see a balance that isn't theirs.
+  syncPkBalance();
 
   // -- convert PK -> USDT (peg: 1,000 PK = 5 USDT) --
   const PK_PEG = 200; // 1000 PK / 5 USDT
@@ -6478,9 +6513,10 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
     if(n < 1000){ pkcErr.textContent = 'Minimum 1,000 PK.'; pkcErr.hidden = false; return; }
     if(n > pkBalance){ pkcErr.textContent = 'You only have ' + fmt(pkBalance) + ' PK.'; pkcErr.hidden = false; return; }
     const usdt = n / PK_PEG;
-    pkBalance -= n;
-    syncPkBalance();
+    // PB.api.convertPk owns both sides of the swap — deducting PK here as
+    // well would take it twice now that pkBalance writes through to state.
     if(window.PB) PB.api.convertPk(n, usdt);
+    syncPkBalance();
     document.getElementById('pkcDoneAmt').textContent = fmt(n);
     document.getElementById('pkcDoneUsdt').textContent = usdt.toFixed(2) + ' USDT';
     pkcStep1.hidden = true; pkcStep2.hidden = false;
@@ -6528,9 +6564,11 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   const walletNum = document.getElementById('pk-wallet-num'), ivSess = document.getElementById('pk-ivsess');
   let sessionIntake = 0;
   setInterval(() => {
-    if(!isOn()) return;
+    // Nobody accrues rewards without an account.
+    if(!isOn() || !pkVisible()) return;
     const pk = Math.random() < 0.3 ? 2 : 1;
-    pkBalance += pk; sessionIntake += pk;
+    sessionIntake += pk;
+    if(window.PB) PB.api.accruePk(pk); else pkBalance += pk;
     syncPkBalance();
     if(ivSess) ivSess.textContent = '+'+sessionIntake+' PK';
     if(walletNum) walletNum.classList.add('hit');
@@ -9320,7 +9358,9 @@ document.querySelectorAll('.pgback').forEach(function(b){
   function paintBalance(){
     var el = document.getElementById('balMain');
     if(!el || !PB.state.balance) return;
-    if(PB.state.account === 'anonymous') return;   // keep the marketing figure while logged out
+    // The chip itself is hidden by body.pk-hidden while signed out; bail here
+    // so we never write a figure into markup a stranger could still reach.
+    if(PB.state.account === 'anonymous' || PB.state.account === 'closed') return;
     var b = PB.state.balance;
     var ccy = (PB.state.prefs && PB.state.prefs.display.currency) || 'USDT';
     var total = b.real + b.bonus;
