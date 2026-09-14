@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Pain Scale · pain.bet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== tokens — match the live site's :root exactly, not the neon mockup's ===== */
+:root{
+  --bg:#232427;
+  --card:#1b1d20;--card-2:#232529;--card-hi:hsla(0,0%,100%,.04);--card-hi2:hsla(0,0%,100%,.07);
+  --ink:hsla(0,0%,100%,.55);--ink-hi:hsla(0,0%,100%,.75);--ink-lo:hsla(0,0%,100%,.25);--white:#fff;
+  --red:#E10600;--redhi:#FF3B33;--red-dim:#8f0400;--red-deep:#520703;--red-wash:rgba(224,22,60,.1);
+  --blue:#7FD6E8;--blue-dim:#16333a;--blue-wash:rgba(127,214,232,.1);
+  --disp:'Archivo Black','Archivo',sans-serif;
+  --sans:'Archivo',sans-serif;
+  --mono:'Archivo',sans-serif; /* site has no monospace family; numerals stay tabular via font-variant */
+  --r-lg:16px;--r-md:12px;--r-sm:8px;--r-pill:999px;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --shadow:0 10px 28px rgba(0,0,0,.35);
+  --shadow-lg:0 18px 44px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:14.5px/1.5 var(--sans);padding:28px 18px 90px;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto}
+a{color:inherit}
+::selection{background:var(--red);color:#fff}
+
+.crumb{font-weight:700;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:14px}
+.crumb b{color:var(--redhi)}
+.pagehead{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.pagehead h1{font-family:var(--disp);font-size:28px;letter-spacing:.01em;color:#fff;text-transform:uppercase}
+.pagehead .tag{font-size:12px;font-weight:700;color:var(--ink-lo)}
+.pagehead .tag b{color:var(--white)}
+
+.grid{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+/* ---------- dosimeter card ---------- */
+.dosimeter{background:linear-gradient(165deg,var(--card) 0%,var(--card-2) 100%);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow);border:1px solid hsla(0,0%,100%,.05)}
+.dose-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid hsla(0,0%,100%,.06)}
+.dose-head .lbl{font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--redhi);display:flex;align-items:center;gap:6px}
+.dose-head .lbl .dot{width:6px;height:6px;border-radius:50%;background:var(--redhi);animation:pulse 1.6s infinite}
+.dose-head .cal{font-size:10px;color:var(--ink-lo)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.readout{background:#151619;border:1px solid var(--red-deep);border-radius:var(--r-md);padding:14px;text-align:center;margin-bottom:18px}
+.readout .k{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:6px}
+.readout .v{display:flex;align-items:center;justify-content:center;gap:10px}
+.readout .num{font-family:var(--disp);font-size:44px;color:var(--redhi);text-shadow:0 0 24px rgba(255,59,51,.5)}
+.readout .tier{font-family:var(--disp);font-size:15px;color:#fff;text-transform:uppercase;letter-spacing:.02em}
+.readout .stage{font-size:9.5px;font-weight:800;color:var(--redhi);background:rgba(224,22,60,.15);border:1px solid rgba(224,22,60,.4);border-radius:6px;padding:2px 6px;margin-top:3px;display:inline-block;text-transform:uppercase;letter-spacing:.06em}
+.readout .next{margin-top:10px;padding-top:10px;border-top:1px solid hsla(0,0%,100%,.06);display:flex;justify-content:space-between;font-size:10.5px}
+.readout .next b{color:var(--redhi)}
+
+.tube-row{display:flex;gap:14px;margin:16px 0}
+.tube{position:relative;width:52px;height:400px;background:#101113;border:2px solid hsla(0,0%,100%,.08);border-radius:16px;overflow:hidden;flex:none}
+.tube-ticks{position:absolute;inset:0;display:flex;flex-direction:column-reverse;justify-content:space-between;padding:8px 4px;z-index:2;pointer-events:none}
+.tube-ticks span{display:block;height:1px;background:hsla(0,0%,100%,.08);position:relative}
+.tube-ticks span::after{content:attr(data-n);position:absolute;left:4px;top:-7px;font-size:8px;font-weight:700;color:var(--ink-lo)}
+.tube-fill{position:absolute;left:0;right:0;bottom:0;height:78%;border-radius:0 0 14px 14px;background:linear-gradient(0deg,var(--red-deep) 0%,var(--red) 55%,var(--redhi) 100%);box-shadow:0 0 26px rgba(225,6,0,.4) inset;transition:height .8s var(--ease-out)}
+.tube-fill.threshold{background:linear-gradient(0deg,var(--blue-dim) 0%,var(--blue) 100%);box-shadow:0 0 26px rgba(127,214,232,.4) inset}
+.tube-fill::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:hsla(0,0%,100%,.25);border-radius:50%;filter:blur(1px)}
+.tube-zone-blue{position:absolute;left:0;right:0;top:0;height:20%;background:linear-gradient(0deg,transparent,rgba(127,214,232,.08));border-bottom:1px dashed rgba(127,214,232,.35);z-index:1}
+.tube-zone-blue::after{content:'THRESHOLD';position:absolute;top:3px;right:4px;font-size:6.5px;font-weight:800;letter-spacing:.1em;color:var(--blue)}
+
+.ladder{flex:1;display:flex;flex-direction:column;gap:6px}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid hsla(0,0%,100%,.05);background:hsla(0,0%,100%,.015);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.trow:hover{transform:translateX(2px)}
+.trow .l{display:flex;align-items:center;gap:8px;min-width:0}
+.trow .num{width:26px;height:26px;border-radius:8px;background:#101113;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:11px;color:var(--ink-hi);flex:none}
+.trow .name{font-size:11px;font-weight:800;color:var(--ink-hi);text-transform:uppercase;line-height:1.15}
+.trow .sub{font-size:9.5px;color:var(--ink-lo)}
+.trow .usd{font-size:9.5px;color:var(--ink-lo);white-space:nowrap}
+.trow.active{border-color:var(--redhi);background:var(--red-wash);box-shadow:0 0 0 1px var(--redhi) inset}
+.trow.active .num{background:var(--redhi);color:#1b0000}
+.trow.active .name{color:#fff}
+.trow.active .usd{color:var(--redhi);font-weight:800}
+.trow.blue.active{border-color:var(--blue);background:var(--blue-wash);box-shadow:0 0 0 1px var(--blue) inset}
+.trow.blue.active .num{background:var(--blue);color:#04181c}
+.trow.blue .name{color:var(--blue)}
+.trow .tag-current{font-size:8.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--redhi);background:rgba(224,22,60,.15);border:1px solid rgba(224,22,60,.4);border-radius:5px;padding:2px 6px;flex:none}
+/* .focus previews a tier's column in the matrix without touching .active,
+   which always stays pinned to the player's real current tier (Agony) */
+.trow.focus:not(.active){border-color:hsla(0,0%,100%,.25)}
+
+.dose-actions{margin-top:18px;padding-top:16px;border-top:1px solid hsla(0,0%,100%,.06);display:flex;flex-direction:column;gap:8px}
+.btn{font-family:var(--sans);font-weight:800;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;border:none;border-radius:var(--r-sm);padding:12px 14px;cursor:pointer;transition:filter .15s,transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(90deg,var(--red-deep),var(--red) 60%,var(--redhi));color:#fff;box-shadow:0 0 22px rgba(224,22,60,.3)}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-ghost{background:hsla(0,0%,100%,.05);color:var(--ink-hi);font-size:10.5px}
+.btn-ghost:hover{background:hsla(0,0%,100%,.09);color:#fff}
+
+/* ---------- right column ---------- */
+.panel{background:linear-gradient(165deg,var(--card) 0%,var(--card-2) 100%);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow);border:1px solid hsla(0,0%,100%,.05);margin-bottom:20px}
+.panel-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid hsla(0,0%,100%,.06)}
+.panel-head .eyebrow{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--redhi);display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.panel-head .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.panel-head h2{font-family:var(--disp);font-size:19px;color:#fff;text-transform:uppercase}
+.panel-head .active-pill{font-size:10.5px;color:var(--ink-lo);background:#151619;border:1px solid hsla(0,0%,100%,.07);border-radius:var(--r-pill);padding:6px 12px}
+.panel-head .active-pill b{color:var(--redhi)}
+
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+thead th{padding:12px 10px;text-align:center;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-lo);border-bottom:1px solid hsla(0,0%,100%,.07)}
+thead th:first-child{text-align:left}
+thead th.on{color:var(--redhi);background:var(--red-wash);border-left:2px solid var(--redhi);border-right:2px solid var(--redhi)}
+thead th.on small{display:block;font-size:8px;color:#fff;font-weight:700;letter-spacing:.1em;margin-top:2px}
+thead th.blue{color:var(--blue);background:var(--blue-wash)}
+thead th.blue small{color:var(--blue)}
+tbody td{padding:11px 10px;text-align:center;color:var(--ink-hi);border-bottom:1px solid hsla(0,0%,100%,.04)}
+tbody td:first-child{text-align:left;font-weight:700;color:#fff}
+tbody td:first-child span{color:var(--ink-lo);font-weight:500}
+tbody td.on{color:var(--redhi);font-weight:800;background:var(--red-wash);border-left:2px solid var(--redhi);border-right:2px solid var(--redhi);font-size:13px}
+tbody td.blue{color:var(--blue);font-weight:800;background:var(--blue-wash);font-size:13px}
+tbody tr:last-child td{border-bottom:none}
+.rowdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px}
+
+.directive{margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:#151619;border:1px solid hsla(0,0%,100%,.06);font-size:11px;color:var(--ink-lo);display:flex;gap:8px;flex-wrap:wrap}
+.directive b{color:var(--redhi)}
+
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.cards{grid-template-columns:1fr}}
+.spec{background:var(--card-2);border:1px solid hsla(0,0%,100%,.06);border-radius:var(--r-md);padding:14px;transition:border-color .2s,transform .2s}
+.spec:hover{transform:translateY(-2px);border-color:var(--redhi)}
+.spec.blue:hover{border-color:var(--blue)}
+.spec .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.spec .ic{width:34px;height:34px;border-radius:10px;background:var(--red-wash);border:1px solid var(--red-deep);display:flex;align-items:center;justify-content:center;color:var(--redhi)}
+.spec.blue .ic{background:var(--blue-wash);border-color:var(--blue-dim);color:var(--blue)}
+.spec .no{font-size:8.5px;color:var(--ink-lo);border:1px solid hsla(0,0%,100%,.08);border-radius:var(--r-pill);padding:2px 7px}
+.spec .kicker{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--redhi);display:block;margin-bottom:3px}
+.spec.blue .kicker{color:var(--blue)}
+.spec h3{font-size:13px;color:#fff;margin-bottom:6px}
+.spec p{font-size:11px;color:var(--ink-lo);line-height:1.55}
+.spec .foot{margin-top:12px;padding-top:10px;border-top:1px solid hsla(0,0%,100%,.06);display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink-lo)}
+.spec .foot b{color:var(--redhi)}
+.spec.blue .foot b{color:var(--blue)}
+
+footer{margin-top:26px;padding-top:16px;border-top:1px solid hsla(0,0%,100%,.06);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:10.5px;color:var(--ink-lo)}
+footer a{text-decoration:underline;text-underline-offset:2px}
+footer a:hover{color:var(--redhi)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb">Lobby / <b>Pain Scale</b></div>
+  <div class="pagehead">
+    <h1>The Pain Scale</h1>
+    <div class="tag">Wager to climb <b>0 → 10</b>. Level 9 breaks blue.</div>
+  </div>
+
+  <div class="grid">
+    <!-- ================= LEFT: DOSIMETER ================= -->
+    <aside class="dosimeter">
+      <div class="dose-head">
+        <span class="lbl"><span class="dot"></span>Your Pain Scale</span>
+        <span class="cal">Updates live as you wager</span>
+      </div>
+
+      <div class="readout">
+        <div class="k">Current level</div>
+        <div class="v">
+          <span class="num" id="rd-level">7.8</span>
+          <div style="text-align:left">
+            <div class="tier" id="rd-tier">AGONY</div>
+            <span class="stage" id="rd-stage">LEVEL 7–8</span>
+          </div>
+        </div>
+        <div class="next">
+          <span>Next level 9 (Threshold)</span>
+          <b id="rd-next">108,000 USDT to go</b>
+        </div>
+      </div>
+
+      <div class="tube-row">
+        <div class="tube" id="tube">
+          <div class="tube-zone-blue"></div>
+          <div class="tube-ticks">
+            <span data-n="0"></span><span data-n="1"></span><span data-n="2"></span><span data-n="3"></span>
+            <span data-n="4"></span><span data-n="5"></span><span data-n="6"></span><span data-n="7"></span>
+            <span data-n="8"></span><span data-n="9"></span><span data-n="10"></span>
+          </div>
+          <div class="tube-fill" id="tube-fill" style="height:78%"></div>
+        </div>
+        <div class="ladder" id="ladder">
+          <div class="trow" data-tier="5" data-name="Threshold" data-lvl="9–10">
+            <div class="l"><span class="num">9</span><div><div class="name">Threshold</div><div class="sub">720K+ USDT wagered</div></div></div>
+            <span class="usd">Breaks blue</span>
+          </div>
+          <div class="trow active" data-tier="4" data-name="Agony" data-lvl="7–8">
+            <div class="l"><span class="num">7</span><div><div class="name">Agony · Lvl 7.8</div><div class="sub">480K–720K USDT wagered</div></div></div>
+            <span class="tag-current">CURRENT</span>
+          </div>
+          <div class="trow" data-tier="3" data-name="Burn" data-lvl="5–6">
+            <div class="l"><span class="num">5</span><div><div class="name">Burn</div><div class="sub">320K–480K USDT</div></div></div>
+            <span class="usd">320,000</span>
+          </div>
+          <div class="trow" data-tier="2" data-name="Ache" data-lvl="3–4">
+            <div class="l"><span class="num">3</span><div><div class="name">Ache</div><div class="sub">150K–320K USDT</div></div></div>
+            <span class="usd">150,000</span>
+          </div>
+          <div class="trow" data-tier="1" data-name="Sting" data-lvl="1–2">
+            <div class="l"><span class="num">1</span><div><div class="name">Sting</div><div class="sub">50K–150K USDT</div></div></div>
+            <span class="usd">50,000</span>
+          </div>
+          <div class="trow" data-tier="0" data-name="Numb" data-lvl="0">
+            <div class="l"><span class="num">0</span><div><div class="name">Numb</div><div class="sub">0–50K USDT</div></div></div>
+            <span class="usd">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dose-actions">
+        <button class="btn btn-primary">Wager to climb the scale</button>
+        <div class="btn-row">
+          <button class="btn btn-ghost">Level history</button>
+          <button class="btn btn-ghost">How it's calculated</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= RIGHT: MATRIX + CARDS ================= -->
+    <div>
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow"><span class="dot"></span>Rates by Pain Scale level</div>
+            <h2>What each level pays</h2>
+          </div>
+          <div class="active-pill">Your tier: <b>Agony · Level 7–8</b></div>
+        </div>
+        <div style="overflow-x:auto">
+        <table id="matrix">
+          <thead>
+            <tr>
+              <th>Reward</th>
+              <th>0<br><small>Numb</small></th>
+              <th>1–2<br><small>Sting</small></th>
+              <th>3–4<br><small>Ache</small></th>
+              <th>5–6<br><small>Burn</small></th>
+              <th class="on">7–8<br><small>Agony (you)</small></th>
+              <th class="blue">9–10<br><small>Threshold</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="rowdot" style="background:var(--redhi)"></span>Relief <span>· rakeback, paid as you play</span></td>
+              <td>2%</td><td>4%</td><td>6%</td><td>8%</td>
+              <td class="on">10%</td>
+              <td class="blue">12%</td>
+            </tr>
+            <tr>
+              <td><span class="rowdot" style="background:#eab308"></span>Anesthesia <span>· weekly loss payback</span></td>
+              <td>0%</td><td>2%</td><td>4%</td><td>6%</td>
+              <td class="on">8%</td>
+              <td class="blue">10%</td>
+            </tr>
+            <tr>
+              <td><span class="rowdot" style="background:var(--red)"></span>PainKillers <span>· PK per 100 USDT wagered</span></td>
+              <td>10 PK</td><td>14 PK</td><td>18 PK</td><td>24 PK</td>
+              <td class="on">32 PK</td>
+              <td class="blue">45 PK</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="directive"><b>How it works:</b><span>Anesthesia is calculated on net real-money losses Monday 00:00 UTC to Sunday 23:59 UTC and paid every Monday as withdrawable balance — no wagering requirement attached. Relief pays out continuously as you play. PainKillers convert at 1,000 PK = 5 USDT.</span></div>
+      </section>
+
+      <section>
+        <div class="panel-head" style="border-bottom:none;padding-bottom:6px;margin-bottom:10px">
+          <div>
+            <div class="eyebrow"><span class="dot"></span>What climbing unlocks</div>
+            <h2 style="font-size:17px">Relief, Anesthesia &amp; PainKillers</h2>
+          </div>
+        </div>
+        <div class="cards">
+          <article class="spec">
+            <div class="top">
+              <div class="ic">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.5c-4.5 0-7-3.5-7-7 0-4 7-12 7-12s7 8 7 12c0 3.5-2.5 7-7 7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="no">01</span>
+            </div>
+            <span class="kicker">Relief</span>
+            <h3>Rakeback on every bet</h3>
+            <p>A cut of every wager comes back to your balance, win or lose. The rate climbs automatically with your level, from 2% at Numb up to 12% at Threshold.</p>
+            <div class="foot"><span>Paid</span><b>As you play</b></div>
+          </article>
+          <article class="spec">
+            <div class="top">
+              <div class="ic" style="background:rgba(234,179,8,.12);border-color:rgba(234,179,8,.4);color:#eab308">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="no">02</span>
+            </div>
+            <span class="kicker" style="color:#eab308">Anesthesia</span>
+            <h3>Monday loss payback</h3>
+            <p>Up to 10% of last week's net real-money losses, paid straight into withdrawable balance. Zero wagering requirement, rate set by your Pain Scale level.</p>
+            <div class="foot"><span>Injected</span><b style="color:#eab308">Every Monday 00:00 UTC</b></div>
+          </article>
+          <article class="spec">
+            <div class="top">
+              <div class="ic">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="no">03</span>
+            </div>
+            <span class="kicker">PainKillers</span>
+            <h3>Earn PK on every bet</h3>
+            <p>PK accrual scales with your level too — from 10 PK per 100 USDT wagered at Numb up to 45 PK at Threshold. Redeem PK at 1,000 PK = 5 USDT.</p>
+            <div class="foot"><span>Your rate</span><b>32 PK / 100 USDT</b></div>
+          </article>
+          <article class="spec blue">
+            <div class="top">
+              <div class="ic">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18m0-18l4 4m-4-4L8 7m4 14l4-4m-4 4l-4-4M3 12h18M3 12l4-4m-4 4l4 4m14-4l-4-4m4 4l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="no">TERMINAL</span>
+            </div>
+            <span class="kicker">Threshold</span>
+            <h3>Levels 9 &amp; 10: it breaks blue</h3>
+            <p>The top of the scale. Unlocks the max rate on all three rewards — 12% rakeback, 10% Anesthesia, 45 PK per 100 USDT — plus a dedicated host.</p>
+            <div class="foot"><span>Requires</span><b>720,000 USDT wagered</b></div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <span>Pain Scale levels are calculated on lifetime real-money volume wagered on pain.bet.</span>
+    <span><a href="#">Full rules</a> &nbsp;·&nbsp; <a href="#">PainKillers dispensary</a> &nbsp;·&nbsp; <a href="#">Support</a></span>
+  </footer>
+</div>
+
+<script>
+/* Real per-tier data, used to drive both the ladder and the matrix highlight.
+   Kept in one table so a rate change only needs editing here, not in markup. */
+const TIERS = [
+  { id:0, name:'Numb',      lvl:'0',    range:'0 – 50,000 USDT',        min:0,      relief:'2%',  anes:'0%',  pk:'10 PK' },
+  { id:1, name:'Sting',     lvl:'1–2',  range:'50,000 – 150,000 USDT',  min:50000,  relief:'4%',  anes:'2%',  pk:'14 PK' },
+  { id:2, name:'Ache',      lvl:'3–4',  range:'150,000 – 320,000 USDT', min:150000, relief:'6%',  anes:'4%',  pk:'18 PK' },
+  { id:3, name:'Burn',      lvl:'5–6',  range:'320,000 – 480,000 USDT', min:320000, relief:'8%',  anes:'6%',  pk:'24 PK' },
+  { id:4, name:'Agony',     lvl:'7–8',  range:'480,000 – 720,000 USDT', min:480000, relief:'10%', anes:'8%',  pk:'32 PK' },
+  { id:5, name:'Threshold', lvl:'9–10', range:'720,000+ USDT',          min:720000, relief:'12%', anes:'10%', pk:'45 PK' },
+];
+
+/* Clicking a ladder row previews that tier's column in the matrix.
+   It never moves the CURRENT tag or the red "active" ring — those are
+   the player's real tier (Agony) and stay put regardless of what's
+   being previewed. */
+const colIndex = { Numb:1, Sting:2, Ache:3, Burn:4, Agony:5, Threshold:6 };
+document.querySelectorAll('#ladder .trow').forEach(row=>{
+  row.addEventListener('click', ()=>{
+    document.querySelectorAll('#ladder .trow').forEach(r=>r.classList.remove('focus'));
+    row.classList.add('focus');
+
+    const tier = TIERS[+row.dataset.tier];
+    document.querySelectorAll('#matrix th, #matrix td').forEach(c=>c.classList.remove('on','blue'));
+    const cls = tier.id===5 ? 'blue' : 'on';
+    document.querySelectorAll('#matrix tr').forEach(tr=>{
+      const cell = tr.children[colIndex[tier.name]];
+      if (cell) cell.classList.add(cls);
+    });
+  });
+});
+</script>
+</body>
+</html>
