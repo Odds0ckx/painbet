@@ -83,9 +83,6 @@ a{color:inherit}
 
 /* ---------- dosimeter card ---------- */
 .dosimeter{position:relative;background:linear-gradient(165deg,var(--card) 0%,var(--card-2) 100%);border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.05);overflow:hidden}
-.reticle{position:absolute;width:12px;height:12px;pointer-events:none;border-color:var(--redhi)}
-.reticle.tl{top:10px;left:10px;border-top:2px solid;border-left:2px solid}
-.reticle.tr{top:10px;right:10px;border-top:2px solid;border-right:2px solid}
 .dose-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid hsla(0,0%,100%,.06)}
 .dose-head .lbl{font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--redhi);display:flex;align-items:center;gap:6px}
 .dose-head .lbl .dot{width:6px;height:6px;border-radius:50%;background:var(--redhi);box-shadow:0 0 8px var(--redhi);animation:pulse 1.6s infinite}
@@ -120,10 +117,10 @@ a{color:inherit}
 @keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:.8}100%{transform:translateY(-160px);opacity:0}}
 .tube-zone-blue{position:absolute;left:0;right:0;top:0;height:20%;background:linear-gradient(0deg,transparent,rgba(127,214,232,.1));border-bottom:1px dashed rgba(127,214,232,.4);z-index:1}
 
-.ladder{flex:1;display:flex;flex-direction:column;gap:7px}
+.ladder{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
 .trow{position:relative;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:11px;background:hsla(0,0%,100%,.02);cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
 .trow:hover{transform:translateX(3px);background:hsla(0,0%,100%,.05)}
-.trow-top{display:flex;align-items:center;gap:9px}
+.trow-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;row-gap:4px}
 .trow .num{width:27px;height:27px;border-radius:8px;background:#101113;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:11px;color:var(--ink-hi);flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .trow .name{flex:1;min-width:0;font-size:11px;font-weight:800;color:var(--ink-hi);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .trow .sub{font-size:9.5px;color:var(--ink-lo);padding-left:36px}
@@ -146,6 +143,7 @@ a{color:inherit}
 .btn-primary{background:linear-gradient(90deg,var(--red-deep),var(--red) 55%,var(--redhi));color:#fff;box-shadow:0 0 26px rgba(224,22,60,.4),inset 0 1px 0 rgba(255,255,255,.15)}
 .btn-primary:hover{filter:brightness(1.12)}
 .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.btn-row .btn{min-width:0}
 .btn-ghost{background:hsla(0,0%,100%,.05);color:var(--ink-hi);font-size:10.5px}
 .btn-ghost:hover{background:hsla(0,0%,100%,.09);color:#fff}
 
@@ -269,7 +267,6 @@ footer a:hover{color:var(--redhi)}
   <div class="grid">
     <!-- ================= LEFT: DOSIMETER ================= -->
     <aside class="dosimeter">
-      <span class="reticle tl"></span><span class="reticle tr"></span>
       <div class="dose-head">
         <span class="lbl"><span class="dot"></span>Your Pain Scale</span>
         <span class="cal">Updates live as you wager</span>
