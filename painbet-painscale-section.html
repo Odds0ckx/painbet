@@ -117,13 +117,13 @@ a{color:inherit}
 .tube-zone-blue::after{content:'THRESHOLD';position:absolute;top:4px;right:5px;font-size:6.5px;font-weight:800;letter-spacing:.1em;color:var(--blue);text-shadow:0 0 6px rgba(127,214,232,.6)}
 
 .ladder{flex:1;display:flex;flex-direction:column;gap:7px}
-.trow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;border-radius:11px;background:hsla(0,0%,100%,.02);cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
+.trow{position:relative;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:11px;background:hsla(0,0%,100%,.02);cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
 .trow:hover{transform:translateX(3px);background:hsla(0,0%,100%,.05)}
-.trow .l{display:flex;align-items:center;gap:9px;min-width:0}
+.trow-top{display:flex;align-items:center;gap:9px}
 .trow .num{width:27px;height:27px;border-radius:8px;background:#101113;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:11px;color:var(--ink-hi);flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
-.trow .name{font-size:11px;font-weight:800;color:var(--ink-hi);text-transform:uppercase;line-height:1.2}
-.trow .sub{font-size:9.5px;color:var(--ink-lo)}
-.trow .usd{font-size:9.5px;color:var(--ink-lo);white-space:nowrap}
+.trow .name{flex:1;min-width:0;font-size:11px;font-weight:800;color:var(--ink-hi);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .sub{font-size:9.5px;color:var(--ink-lo);padding-left:36px}
+.trow .usd{font-size:9.5px;color:var(--ink-lo);white-space:nowrap;flex:none}
 .trow.active{background:var(--red-wash);box-shadow:0 0 0 1px var(--redhi) inset,0 0 22px -6px rgba(255,59,51,.6)}
 .trow.active .num{background:var(--redhi);color:#1b0000;box-shadow:0 0 12px rgba(255,59,51,.7)}
 .trow.active .name{color:#fff}
@@ -296,28 +296,28 @@ footer a:hover{color:var(--redhi)}
         </div>
         <div class="ladder" id="ladder">
           <div class="trow" data-tier="5" data-name="Threshold" data-lvl="9–10">
-            <div class="l"><span class="num">9</span><div><div class="name">Threshold</div><div class="sub">720K+ USDT wagered</div></div></div>
-            <span class="usd">Breaks blue</span>
+            <div class="trow-top"><span class="num">9</span><span class="name">Threshold</span><span class="usd">Breaks blue</span></div>
+            <div class="sub">720K+ USDT wagered</div>
           </div>
           <div class="trow active" data-tier="4" data-name="Agony" data-lvl="7–8">
-            <div class="l"><span class="num">7</span><div><div class="name">Agony · Lvl 7.8</div><div class="sub">480K–720K USDT wagered</div></div></div>
-            <span class="tag-current">CURRENT</span>
+            <div class="trow-top"><span class="num">7</span><span class="name">Agony · Lvl 7.8</span><span class="tag-current">CURRENT</span></div>
+            <div class="sub">480K–720K USDT wagered</div>
           </div>
           <div class="trow" data-tier="3" data-name="Burn" data-lvl="5–6">
-            <div class="l"><span class="num">5</span><div><div class="name">Burn</div><div class="sub">320K–480K USDT</div></div></div>
-            <span class="usd">320,000</span>
+            <div class="trow-top"><span class="num">5</span><span class="name">Burn</span><span class="usd">320,000</span></div>
+            <div class="sub">320K–480K USDT</div>
           </div>
           <div class="trow" data-tier="2" data-name="Ache" data-lvl="3–4">
-            <div class="l"><span class="num">3</span><div><div class="name">Ache</div><div class="sub">150K–320K USDT</div></div></div>
-            <span class="usd">150,000</span>
+            <div class="trow-top"><span class="num">3</span><span class="name">Ache</span><span class="usd">150,000</span></div>
+            <div class="sub">150K–320K USDT</div>
           </div>
           <div class="trow" data-tier="1" data-name="Sting" data-lvl="1–2">
-            <div class="l"><span class="num">1</span><div><div class="name">Sting</div><div class="sub">50K–150K USDT</div></div></div>
-            <span class="usd">50,000</span>
+            <div class="trow-top"><span class="num">1</span><span class="name">Sting</span><span class="usd">50,000</span></div>
+            <div class="sub">50K–150K USDT</div>
           </div>
           <div class="trow" data-tier="0" data-name="Numb" data-lvl="0">
-            <div class="l"><span class="num">0</span><div><div class="name">Numb</div><div class="sub">0–50K USDT</div></div></div>
-            <span class="usd">0</span>
+            <div class="trow-top"><span class="num">0</span><span class="name">Numb</span><span class="usd">0</span></div>
+            <div class="sub">0–50K USDT</div>
           </div>
         </div>
       </div>
