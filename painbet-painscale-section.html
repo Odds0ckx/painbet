@@ -117,13 +117,13 @@ a{color:inherit}
 .tube-zone-blue::after{content:'THRESHOLD';position:absolute;top:4px;right:5px;font-size:6.5px;font-weight:800;letter-spacing:.1em;color:var(--blue);text-shadow:0 0 6px rgba(127,214,232,.6)}
 
 .ladder{flex:1;display:flex;flex-direction:column;gap:7px}
-.trow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;border-radius:11px;background:hsla(0,0%,100%,.02);cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
+.trow{position:relative;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:11px;background:hsla(0,0%,100%,.02);cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
 .trow:hover{transform:translateX(3px);background:hsla(0,0%,100%,.05)}
-.trow .l{display:flex;align-items:center;gap:9px;min-width:0}
+.trow-top{display:flex;align-items:center;gap:9px}
 .trow .num{width:27px;height:27px;border-radius:8px;background:#101113;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:11px;color:var(--ink-hi);flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
-.trow .name{font-size:11px;font-weight:800;color:var(--ink-hi);text-transform:uppercase;line-height:1.2}
-.trow .sub{font-size:9.5px;color:var(--ink-lo)}
-.trow .usd{font-size:9.5px;color:var(--ink-lo);white-space:nowrap}
+.trow .name{flex:1;min-width:0;font-size:11px;font-weight:800;color:var(--ink-hi);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow .sub{font-size:9.5px;color:var(--ink-lo);padding-left:36px}
+.trow .usd{font-size:9.5px;color:var(--ink-lo);white-space:nowrap;flex:none}
 .trow.active{background:var(--red-wash);box-shadow:0 0 0 1px var(--redhi) inset,0 0 22px -6px rgba(255,59,51,.6)}
 .trow.active .num{background:var(--redhi);color:#1b0000;box-shadow:0 0 12px rgba(255,59,51,.7)}
 .trow.active .name{color:#fff}
@@ -186,8 +186,32 @@ tbody tr:hover td.blue{background:var(--blue-wash)}
 .spec .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
 .spec .ic{width:36px;height:36px;border-radius:10px;background:var(--red-wash);display:flex;align-items:center;justify-content:center;color:var(--redhi);transition:transform .25s}
 .spec:hover .ic{transform:scale(1.08)}
-.spec .ic svg{filter:drop-shadow(0 0 5px currentColor)}
+.spec .ic svg{filter:drop-shadow(0 0 5px currentColor);transition:filter .25s}
+.spec:hover .ic svg{filter:drop-shadow(0 0 8px currentColor)}
 .spec.blue .ic{background:var(--blue-wash);color:var(--blue)}
+
+/* ---------- icon micro-animations: slow instrument-idle, amplified on hover ---------- */
+.ic-relief{transform-origin:50% 100%;animation:dripBreathe 3.6s ease-in-out infinite}
+.spec:hover .ic-relief{animation-duration:1.3s}
+@keyframes dripBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.08)}}
+
+.ic-anesthesia{animation:doseShift 3.8s ease-in-out infinite}
+.spec:hover .ic-anesthesia{animation-duration:.9s}
+@keyframes doseShift{0%,100%{transform:translate(0,0)}50%{transform:translate(-1px,1px)}}
+
+.ic-painkillers{transform-origin:50% 50%;animation:capsuleRoll 4.2s ease-in-out infinite}
+.spec:hover .ic-painkillers{animation-duration:1.1s}
+@keyframes capsuleRoll{0%,100%{transform:rotate(0deg)}50%{transform:rotate(8deg)}}
+
+.ic-threshold circle{transform-origin:12px 12px;animation:radarPing 3s ease-in-out infinite}
+.ic-threshold circle:nth-child(2){animation-delay:.5s}
+.ic-threshold circle:nth-child(3){animation-delay:1s}
+.spec.blue:hover .ic-threshold circle{animation-duration:1.2s}
+@keyframes radarPing{0%,100%{opacity:.4}50%{opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  .ic-relief,.ic-anesthesia,.ic-painkillers,.ic-threshold circle{animation:none}
+}
 .spec .no{font-size:8.5px;color:var(--ink-lo);border-radius:var(--r-pill);padding:2px 7px;background:hsla(0,0%,100%,.05)}
 .spec .kicker{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--redhi);display:block;margin-bottom:4px}
 .spec.blue .kicker{color:var(--blue)}
@@ -272,28 +296,28 @@ footer a:hover{color:var(--redhi)}
         </div>
         <div class="ladder" id="ladder">
           <div class="trow" data-tier="5" data-name="Threshold" data-lvl="9–10">
-            <div class="l"><span class="num">9</span><div><div class="name">Threshold</div><div class="sub">720K+ USDT wagered</div></div></div>
-            <span class="usd">Breaks blue</span>
+            <div class="trow-top"><span class="num">9</span><span class="name">Threshold</span><span class="usd">Breaks blue</span></div>
+            <div class="sub">720K+ USDT wagered</div>
           </div>
           <div class="trow active" data-tier="4" data-name="Agony" data-lvl="7–8">
-            <div class="l"><span class="num">7</span><div><div class="name">Agony · Lvl 7.8</div><div class="sub">480K–720K USDT wagered</div></div></div>
-            <span class="tag-current">CURRENT</span>
+            <div class="trow-top"><span class="num">7</span><span class="name">Agony · Lvl 7.8</span><span class="tag-current">CURRENT</span></div>
+            <div class="sub">480K–720K USDT wagered</div>
           </div>
           <div class="trow" data-tier="3" data-name="Burn" data-lvl="5–6">
-            <div class="l"><span class="num">5</span><div><div class="name">Burn</div><div class="sub">320K–480K USDT</div></div></div>
-            <span class="usd">320,000</span>
+            <div class="trow-top"><span class="num">5</span><span class="name">Burn</span><span class="usd">320,000</span></div>
+            <div class="sub">320K–480K USDT</div>
           </div>
           <div class="trow" data-tier="2" data-name="Ache" data-lvl="3–4">
-            <div class="l"><span class="num">3</span><div><div class="name">Ache</div><div class="sub">150K–320K USDT</div></div></div>
-            <span class="usd">150,000</span>
+            <div class="trow-top"><span class="num">3</span><span class="name">Ache</span><span class="usd">150,000</span></div>
+            <div class="sub">150K–320K USDT</div>
           </div>
           <div class="trow" data-tier="1" data-name="Sting" data-lvl="1–2">
-            <div class="l"><span class="num">1</span><div><div class="name">Sting</div><div class="sub">50K–150K USDT</div></div></div>
-            <span class="usd">50,000</span>
+            <div class="trow-top"><span class="num">1</span><span class="name">Sting</span><span class="usd">50,000</span></div>
+            <div class="sub">50K–150K USDT</div>
           </div>
           <div class="trow" data-tier="0" data-name="Numb" data-lvl="0">
-            <div class="l"><span class="num">0</span><div><div class="name">Numb</div><div class="sub">0–50K USDT</div></div></div>
-            <span class="usd">0</span>
+            <div class="trow-top"><span class="num">0</span><span class="name">Numb</span><span class="usd">0</span></div>
+            <div class="sub">0–50K USDT</div>
           </div>
         </div>
       </div>
@@ -366,7 +390,7 @@ footer a:hover{color:var(--redhi)}
           <article class="spec">
             <div class="top">
               <div class="ic">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.5c-4.5 0-7-3.5-7-7 0-4 7-12 7-12s7 8 7 12c0 3.5-2.5 7-7 7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg class="ic-relief" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.5c-4.5 0-7-3.5-7-7 0-4 7-12 7-12s7 8 7 12c0 3.5-2.5 7-7 7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <span class="no">01</span>
             </div>
@@ -378,7 +402,7 @@ footer a:hover{color:var(--redhi)}
           <article class="spec">
             <div class="top">
               <div class="ic" style="background:rgba(234,179,8,.12);color:#eab308">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 2 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="m17 7 3-3" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.4 0-3.4L15 5" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 11 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="m5 19-3 3" stroke-linecap="round" stroke-linejoin="round"/><path d="m14 4 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg class="ic-anesthesia" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 2 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="m17 7 3-3" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.4 0-3.4L15 5" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 11 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="m5 19-3 3" stroke-linecap="round" stroke-linejoin="round"/><path d="m14 4 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <span class="no">02</span>
             </div>
@@ -390,7 +414,7 @@ footer a:hover{color:var(--redhi)}
           <article class="spec">
             <div class="top">
               <div class="ic">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" stroke-linecap="round" stroke-linejoin="round"/><path d="m8.5 8.5 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg class="ic-painkillers" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" stroke-linecap="round" stroke-linejoin="round"/><path d="m8.5 8.5 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <span class="no">03</span>
             </div>
@@ -402,7 +426,7 @@ footer a:hover{color:var(--redhi)}
           <article class="spec blue">
             <div class="top">
               <div class="ic">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/></svg>
+                <svg class="ic-threshold" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/></svg>
               </div>
               <span class="no">TERMINAL</span>
             </div>
