@@ -101,6 +101,8 @@ a{color:inherit}
 .readout .next b{color:var(--redhi)}
 
 .tube-row{display:flex;gap:16px;margin:18px 0}
+.tube-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:none}
+.tube-cap{font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);text-shadow:0 0 6px rgba(127,214,232,.5);white-space:nowrap}
 .tube{position:relative;width:56px;height:420px;background:#0b0c0e;border-radius:18px;overflow:hidden;flex:none;box-shadow:inset 0 2px 10px rgba(0,0,0,.6)}
 .tube::before,.tube::after{content:'';position:absolute;top:0;bottom:0;width:5px;background:hsla(0,0%,100%,.08);z-index:3}
 .tube::before{left:5px;width:2px;background:hsla(0,0%,100%,.18)}
@@ -117,7 +119,6 @@ a{color:inherit}
 .tube-fill .bub.b3{width:4px;height:4px;left:20px;bottom:130px;animation:rise 4s 1.2s infinite ease-in}
 @keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:.8}100%{transform:translateY(-160px);opacity:0}}
 .tube-zone-blue{position:absolute;left:0;right:0;top:0;height:20%;background:linear-gradient(0deg,transparent,rgba(127,214,232,.1));border-bottom:1px dashed rgba(127,214,232,.4);z-index:1}
-.tube-zone-blue::after{content:'THRESHOLD';position:absolute;top:4px;right:5px;font-size:6.5px;font-weight:800;letter-spacing:.1em;color:var(--blue);text-shadow:0 0 6px rgba(127,214,232,.6)}
 
 .ladder{flex:1;display:flex;flex-direction:column;gap:7px}
 .trow{position:relative;display:flex;flex-direction:column;gap:4px;padding:9px 11px;border-radius:11px;background:hsla(0,0%,100%,.02);cursor:pointer;transition:background .2s,transform .2s,box-shadow .2s}
@@ -290,6 +291,8 @@ footer a:hover{color:var(--redhi)}
       </div>
 
       <div class="tube-row">
+        <div class="tube-col">
+        <div class="tube-cap">Threshold zone</div>
         <div class="tube" id="tube">
           <div class="tube-zone-blue"></div>
           <div class="tube-ticks">
@@ -301,6 +304,7 @@ footer a:hover{color:var(--redhi)}
             <div class="meniscus"></div>
             <div class="bub b1"></div><div class="bub b2"></div><div class="bub b3"></div>
           </div>
+        </div>
         </div>
         <div class="ladder" id="ladder">
           <div class="trow" data-tier="5" data-name="Threshold" data-lvl="9–10">
