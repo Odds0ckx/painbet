@@ -21,24 +21,26 @@
     --sans:'Inter',-apple-system,system-ui,sans-serif;
     --tile-r:18px;
     --panel-bg:#0b0c0f;
-    --panel-weave:#101114;
+    --panel-weave:#16181c;
   }
-  /* dashboard-console panel treatment for the chrome: a solid milled panel with a
-     faint carbon-fiber micro-weave texture and soft shadow depth instead of a hard border */
-  .console-panel{background-color:var(--panel-bg);
+  /* dashboard-console panel treatment for the chrome: a solid milled panel with
+     soft shadow depth instead of a hard border. Reference's carbon-fiber micro-weave
+     was a page-background texture behind its solid container, not on the container
+     itself, so it belongs on .ambient below, not here. */
+  .console-panel{background:var(--panel-bg);backdrop-filter:none;border:0}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--bg)!important}
+  body{background:var(--bg)!important;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;padding:48px 40px 96px}
+
+  /* faint corridor backdrop for the glass to read against, with a carbon-fiber
+     micro-weave texture (ported from the reference's body background) */
+  .ambient{position:fixed;inset:0;z-index:0;background-color:#101114;
     background-image:
       linear-gradient(45deg,var(--panel-weave) 25%,transparent 25%),
       linear-gradient(-45deg,var(--panel-weave) 25%,transparent 25%),
       linear-gradient(45deg,transparent 75%,var(--panel-weave) 75%),
       linear-gradient(-45deg,transparent 75%,var(--panel-weave) 75%);
-    background-size:4px 4px;
-    backdrop-filter:none;border:0}
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{background:var(--bg)!important}
-  body{background:var(--bg)!important;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh;position:relative;padding:48px 40px 96px}
-
-  /* faint corridor backdrop for the glass to read against */
-  .ambient{position:fixed;inset:0;z-index:0;background:#101114}
+    background-size:4px 4px}
   .wrap{position:relative;z-index:1}
 
   .kicker{font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--blood);margin-bottom:8px}
