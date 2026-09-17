@@ -2289,8 +2289,8 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   @media (max-width:900px){ .cockpit-deck{grid-template-columns:1fr} }
 
   .cd-with{position:relative;overflow:hidden;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);
-    backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between}
-  .cd-with-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+    backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column}
+  .cd-with-head{padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
   .cd-with-title{display:flex;align-items:flex-start;gap:12px}
   .cd-with-ic{flex:none;width:30px;height:30px;border-radius:9px;background:rgba(127,214,232,.12);border:1px solid rgba(127,214,232,.3);
     display:grid;place-items:center;color:#7FD6E8}
@@ -2309,10 +2309,25 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-stat .val.cyan{color:#7FD6E8}
   .cd-stat .foot{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#57946b}
 
-  .cd-with .boltfx{position:absolute;right:16px;top:14px;width:44px;height:82px;pointer-events:none;opacity:.85}
-  .cd-with .boltfx-glow{position:absolute;left:50%;top:20px;width:50px;height:50px;margin:-25px 0 0 -25px;
-    border-radius:50%;background:radial-gradient(circle,rgba(127,214,232,.45),transparent 70%);filter:blur(2px)}
-  .cd-with .boltfx-ring{position:absolute;left:1px;top:44px;width:42px;height:16px;stroke:#7FD6E8;stroke-width:2.5;fill:none;opacity:.8}
+  .cd-with-body{display:flex;flex-direction:column;justify-content:space-between;flex:1;gap:16px}
+
+  /* lightning bolt: drop + strike, CSS-only, reuses boltDrop/boltGlow/boltRing/boltSpark keyframes */
+  .cd-with .boltfx{position:absolute;right:14px;top:4px;width:56px;height:104px;pointer-events:none;z-index:1}
+  .cd-with .boltfx-glow{position:absolute;left:50%;top:26px;width:64px;height:64px;margin:-32px 0 0 -32px;
+    border-radius:50%;background:radial-gradient(circle,rgba(127,214,232,.4),transparent 70%);filter:blur(5px);
+    animation:boltGlow 5.6s ease-in-out infinite}
+  .cd-with .boltfx-shape{position:absolute;left:50%;top:4px;width:32px;height:50px;margin-left:-16px;
+    background:#7FD6E8;box-shadow:0 0 14px rgba(127,214,232,.8);
+    clip-path:polygon(40% 0%,100% 0,65% 40%,88% 40%,8% 100%,36% 50%,0 50%);
+    animation:boltDrop 5.6s cubic-bezier(.3,1.4,.4,1) infinite}
+  .cd-with .boltfx-ring{position:absolute;left:2px;top:58px;width:52px;height:20px;stroke:#7FD6E8;stroke-width:3;
+    fill:none;stroke-linecap:round;stroke-dashoffset:179px;stroke-dasharray:0px 178px;
+    animation:boltRing 5.6s ease-in-out infinite}
+  .cd-with .boltfx-spark{position:absolute;top:64px;width:26px;height:2px;stroke:#7FD6E8;stroke-width:3;
+    fill:none;stroke-linecap:round;stroke-dashoffset:71px;stroke-dasharray:0px 70px;
+    animation:boltSpark 5.6s ease-in-out infinite}
+  .cd-with .boltfx-spark.left{left:-10px;transform:rotate(130deg)}
+  .cd-with .boltfx-spark.right{right:-10px;transform:rotate(40deg)}
 
   .cd-agony{position:relative;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);
     backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
@@ -3495,7 +3510,14 @@ window.PB = (function(){
 
     <section class="cockpit-deck lobbyview" style="margin-bottom:26px">
       <div class="cd-with">
-        <div>
+        <div class="boltfx" aria-hidden="true">
+          <span class="boltfx-glow"></span>
+          <span class="boltfx-shape"></span>
+          <svg viewBox="0 0 112 44" class="boltfx-ring"><path d="M96.9355003,2 C109.46067,13.4022454 131.614152,42 56.9906735,42 C-17.6328048,42 1.51790702,13.5493875 13.0513641,2"></path></svg>
+          <svg viewBox="0 0 70 3" class="boltfx-spark left"><path transform="translate(-2,0)" d="M2,1.5 L70,1.5"></path></svg>
+          <svg viewBox="0 0 70 3" class="boltfx-spark right"><path transform="translate(-2,0)" d="M2,1.5 L70,1.5"></path></svg>
+        </div>
+        <div class="cd-with-body">
           <div class="cd-with-head">
             <div class="cd-with-title">
               <div class="cd-with-ic">
@@ -3505,10 +3527,6 @@ window.PB = (function(){
                 <h3>Lightning fast <b>withdrawals</b></h3>
                 <p>Cashouts are signed and broadcast around the clock. No pending queues, no "additional review" theatre. Your win, your wallet, minutes apart.</p>
               </div>
-            </div>
-            <div class="boltfx" aria-hidden="true">
-              <span class="boltfx-glow"></span>
-              <svg viewBox="0 0 112 44" class="boltfx-ring"><path d="M96.9355003,2 C109.46067,13.4022454 131.614152,42 56.9906735,42 C-17.6328048,42 1.51790702,13.5493875 13.0513641,2"></path></svg>
             </div>
           </div>
           <div class="cd-with-stats">
