@@ -2396,10 +2396,18 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-agony-head .progtxt{font-family:var(--mono);font-size:10.5px;color:var(--ink-dim)}
   .cd-agony-head .progtxt b{color:#fff}
 
-  .cd-agony-bar{width:100%;height:10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--glass-border);
-    padding:2px;overflow:hidden}
-  .cd-agony-bar i{display:block;height:100%;border-radius:999px;width:85%;
+  /* needle-gauge style progress bar: tick-marked track, gradient fill, white needle at the current value */
+  .cd-agony-bar{position:relative;width:100%;height:24px;border-radius:999px;background:rgba(255,255,255,.06);
+    border:1px solid var(--glass-border);overflow:hidden}
+  .cd-agony-bar .fill{position:absolute;inset:0;width:85%;height:100%;border-radius:999px;
     background:linear-gradient(90deg,#8f0e26,var(--blood) 55%,#7FD6E8);box-shadow:0 0 12px rgba(224,22,60,.5)}
+  .cd-agony-bar .ticks{position:absolute;inset:0;z-index:2;display:flex;pointer-events:none}
+  .cd-agony-bar .ticks span{position:relative;flex:1;display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:3px;font-family:var(--mono);font-size:7px;color:rgba(255,255,255,.45)}
+  .cd-agony-bar .ticks span::before{content:'';position:absolute;top:3px;left:50%;width:1px;height:6px;
+    background:rgba(255,255,255,.3);transform:translateX(-50%)}
+  .cd-agony-bar .needle{position:absolute;top:2px;bottom:2px;left:85%;width:3px;border-radius:2px;
+    background:#fff;box-shadow:0 0 6px #fff,0 0 10px rgba(255,255,255,.6);transform:translateX(-50%);z-index:3}
   .cd-agony-tiers{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
     text-transform:uppercase;color:#6b707a;margin-top:8px}
   .cd-agony-reward{margin-top:6px;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
@@ -3616,7 +3624,13 @@ window.PB = (function(){
           <span class="progtxt">85% to level 8 · <b>108K USDT to go</b></span>
         </div>
         <div>
-          <div class="cd-agony-bar"><i></i></div>
+          <div class="cd-agony-bar">
+            <span class="fill"></span>
+            <span class="ticks">
+              <span>.1</span><span>.2</span><span>.3</span><span>.4</span><span>.5</span><span>.6</span><span>.7</span><span>.8</span>
+            </span>
+            <span class="needle"></span>
+          </div>
           <div class="cd-agony-tiers">
             <span>Tier 7 (anesthetized)</span>
             <span>Tier 8 (numbed)</span>
