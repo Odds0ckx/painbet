@@ -2301,13 +2301,38 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-with p{font-size:11.5px;color:#b6bcc6;line-height:1.55;margin-top:6px;max-width:520px;font-family:var(--mono)}
 
   .cd-with-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:16px}
-  .cd-stat{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 14px;
+
+  /* vault-terminal screen tiles, adapted from the "403 in a vault terminal" reference */
+  .cd-term{position:relative;overflow:hidden;border-radius:10px;padding:12px 14px;
+    background:radial-gradient(ellipse at center,#16321a 0%,#030504 90%);
+    border:1px solid rgba(54,186,44,.35);
+    box-shadow:inset 0 0 22px rgba(0,0,0,.7),inset 0 0 14px rgba(54,186,44,.1);
     display:flex;flex-direction:column;gap:4px;font-family:var(--mono)}
-  .cd-stat .lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
-  .cd-stat .val{font-size:19px;font-weight:800;color:#fff;line-height:1.1}
-  .cd-stat .val small{font-size:11px;font-weight:400;color:var(--ink-dim)}
-  .cd-stat .val.cyan{color:#7FD6E8}
-  .cd-stat .foot{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#57946b}
+  .cd-term::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.35) 3px);
+    mix-blend-mode:multiply;opacity:.55}
+  .cd-term::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.6) 100%)}
+  .cd-term .lbl{position:relative;z-index:2;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#5c9a5f}
+  .cd-term .val{position:relative;z-index:2;font-size:19px;font-weight:800;color:#7cff8c;line-height:1.1;
+    text-shadow:0 0 8px rgba(124,255,140,.65),0 0 2px rgba(124,255,140,.4)}
+  .cd-term .val small{font-size:11px;font-weight:400;color:#5c9a5f;text-shadow:none}
+  .cd-term .foot{position:relative;z-index:2;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#4a7a4d}
+
+  /* glitch/buzz distortion on the readout value, reusing the vault-terminal clip trick */
+  .term-glitch{position:relative;display:inline-block}
+  .term-glitch::before,.term-glitch::after{content:attr(data-text);position:absolute;left:0;top:0;
+    width:100%;white-space:nowrap;overflow:hidden;background:#0e1f10;color:#7cff8c}
+  .term-glitch::before{left:2px;animation:cdGlitch1 2.6s infinite linear alternate-reverse}
+  .term-glitch::after{left:-2px;animation:cdGlitch2 3.2s infinite linear alternate-reverse}
+  @keyframes cdGlitch1{
+    0%{clip-path:inset(10% 0 80% 0)} 20%{clip-path:inset(60% 0 5% 0)} 40%{clip-path:inset(20% 0 55% 0)}
+    60%{clip-path:inset(75% 0 10% 0)} 80%{clip-path:inset(5% 0 70% 0)} 100%{clip-path:inset(40% 0 40% 0)}
+  }
+  @keyframes cdGlitch2{
+    0%{clip-path:inset(70% 0 5% 0)} 20%{clip-path:inset(15% 0 65% 0)} 40%{clip-path:inset(50% 0 30% 0)}
+    60%{clip-path:inset(5% 0 80% 0)} 80%{clip-path:inset(65% 0 15% 0)} 100%{clip-path:inset(25% 0 55% 0)}
+  }
 
   .cd-with-body{display:flex;flex-direction:column;justify-content:space-between;flex:1;gap:16px}
 
@@ -2330,7 +2355,8 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-with .boltfx-spark.right{right:-10px;transform:rotate(40deg)}
 
   .cd-agony{position:relative;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);
-    backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+    backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;
+    align-items:stretch;justify-content:space-between;gap:16px;margin-bottom:0}
   .cd-agony-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .cd-agony-lvl{display:flex;align-items:center;gap:8px}
   .cd-agony-dot{width:9px;height:9px;border-radius:50%;background:var(--blood);box-shadow:0 0 0 0 rgba(224,22,60,.6);animation:cdPing 1.6s ease-out infinite}
@@ -2344,8 +2370,9 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-agony-bar i{display:block;height:100%;border-radius:999px;width:85%;
     background:linear-gradient(90deg,#8f0e26,var(--blood) 55%,#7FD6E8);box-shadow:0 0 12px rgba(224,22,60,.5)}
   .cd-agony-tiers{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
-    text-transform:uppercase;color:#6b707a}
-  .cd-agony-tiers .mid{color:var(--blood);font-weight:700}
+    text-transform:uppercase;color:#6b707a;margin-top:8px}
+  .cd-agony-reward{margin-top:6px;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--blood);font-weight:700}
 
   .cd-agony-buffer{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09);border-radius:12px;
     padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:11px}
@@ -3530,19 +3557,19 @@ window.PB = (function(){
             </div>
           </div>
           <div class="cd-with-stats">
-            <div class="cd-stat">
+            <div class="cd-term">
               <span class="lbl">Median cashout</span>
-              <span class="val">~90 <small>sec</small></span>
+              <span class="val"><span class="term-glitch" data-text="~90 sec">~90 <small>sec</small></span></span>
               <span class="foot">Median cashout to chain</span>
             </div>
-            <div class="cd-stat">
+            <div class="cd-term">
               <span class="lbl">Pipeline</span>
-              <span class="val cyan">24/7</span>
+              <span class="val"><span class="term-glitch" data-text="24/7">24/7</span></span>
               <span class="foot">Automated signing · no office hours</span>
             </div>
-            <div class="cd-stat">
+            <div class="cd-term">
               <span class="lbl">Settlement</span>
-              <span class="val">Your coin</span>
+              <span class="val"><span class="term-glitch" data-text="Your coin">Your coin</span></span>
               <span class="foot">Paid in the currency you play</span>
             </div>
           </div>
@@ -3553,17 +3580,17 @@ window.PB = (function(){
         <div class="cd-agony-head">
           <div class="cd-agony-lvl">
             <span class="cd-agony-dot"></span>
-            <span class="lvl">Agony · lvl 7.8</span>
+            <span>Agony · lvl 7.8</span>
           </div>
           <span class="progtxt">85% to level 8 · <b>108K USDT to go</b></span>
         </div>
         <div>
-          <div class="cd-agony-bar bar"><i></i></div>
-          <div class="cd-agony-tiers" style="margin-top:8px">
+          <div class="cd-agony-bar"><i></i></div>
+          <div class="cd-agony-tiers">
             <span>Tier 7 (anesthetized)</span>
-            <span class="mid">Next reward: +2.5% loss vault</span>
             <span>Tier 8 (numbed)</span>
           </div>
+          <div class="cd-agony-reward">Next reward: +2.5% loss vault</div>
         </div>
         <div class="cd-agony-buffer">
           <span class="lbl">Current loss buffer protection:</span>
