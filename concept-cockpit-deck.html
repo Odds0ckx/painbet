@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>PAIN.BET — Cockpit Deck Layout Test</title>
+<style>
+  :root{
+    --bg:#07080a;
+    --glass:rgba(15,17,22,0.70);
+    --glass-border:rgba(255,255,255,0.10);
+    --ink:#e8eaee;
+    --ink-dim:#9aa0aa;
+    --blood:#e0163c;
+    --cyan:#7FD6E8;
+    --mono:'JetBrains Mono','SF Mono',ui-monospace,monospace;
+    --sans:'Inter',-apple-system,system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--bg)!important}
+  body{background:var(--bg)!important;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh;padding:48px 40px 96px}
+  .wrap{max-width:1200px;margin:0 auto}
+
+  .kicker{font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--blood);margin-bottom:8px}
+  .pagetitle{font-size:22px;font-weight:800;letter-spacing:-.02em;margin-bottom:36px;color:var(--ink-dim)}
+  .pagetitle b{color:var(--ink)}
+
+  /* ===================== COCKPIT DECK: two-box layout test ===================== */
+  .cockpit-deck{display:grid;grid-template-columns:7fr 5fr;gap:16px;margin-bottom:26px}
+  @media (max-width:900px){ .cockpit-deck{grid-template-columns:1fr} }
+
+  /* ---- Box 1: Lightning Fast Withdrawals ---- */
+  .cd-with{position:relative;overflow:hidden;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between}
+  .cd-with-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+  .cd-with-title{display:flex;align-items:flex-start;gap:12px}
+  .cd-with-ic{flex:none;width:30px;height:30px;border-radius:9px;background:rgba(127,214,232,.12);border:1px solid rgba(127,214,232,.3);
+    display:grid;place-items:center;color:var(--cyan)}
+  .cd-with-ic svg{width:16px;height:16px}
+  .cd-with h3{font-family:'Archivo Black','Archivo',sans-serif;font-weight:400;font-size:clamp(15px,1.6vw,18px);
+    text-transform:uppercase;letter-spacing:.02em;color:#fff}
+  .cd-with h3 b{color:var(--cyan);text-shadow:0 0 16px rgba(127,214,232,.5)}
+  .cd-with p{font-size:11.5px;color:#b6bcc6;line-height:1.55;margin-top:6px;max-width:520px;font-family:var(--mono)}
+
+  .cd-with-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:16px}
+  .cd-stat{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:12px 14px;
+    display:flex;flex-direction:column;gap:4px;font-family:var(--mono)}
+  .cd-stat .lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+  .cd-stat .val{font-size:19px;font-weight:800;color:#fff;line-height:1.1}
+  .cd-stat .val small{font-size:11px;font-weight:400;color:var(--ink-dim)}
+  .cd-stat .val.cyan{color:var(--cyan)}
+  .cd-stat .foot{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#57946b}
+
+  /* Bolt fx graphic reused from the site's support-page treatment */
+  .cd-with .boltfx{position:absolute;right:16px;top:14px;width:44px;height:82px;pointer-events:none;opacity:.85}
+  .cd-with .boltfx-glow{position:absolute;left:50%;top:20px;width:50px;height:50px;margin:-25px 0 0 -25px;
+    border-radius:50%;background:radial-gradient(circle,rgba(127,214,232,.45),transparent 70%);filter:blur(2px)}
+  .cd-with .boltfx-ring{position:absolute;left:1px;top:44px;width:42px;height:16px;stroke:var(--cyan);stroke-width:2.5;fill:none;opacity:.8}
+
+  /* ---- Box 2: Agony Levels ---- */
+  .cd-agony{position:relative;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+  .cd-agony-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .cd-agony-lvl{display:flex;align-items:center;gap:8px}
+  .cd-agony-dot{width:9px;height:9px;border-radius:50%;background:var(--blood);box-shadow:0 0 0 0 rgba(224,22,60,.6);animation:cdPing 1.6s ease-out infinite}
+  @keyframes cdPing{0%{box-shadow:0 0 0 0 rgba(224,22,60,.6)}70%{box-shadow:0 0 0 9px rgba(224,22,60,0)}100%{box-shadow:0 0 0 0 rgba(224,22,60,0)}}
+  .cd-agony-lvl span{font-family:var(--mono);font-weight:800;font-size:13px;letter-spacing:.08em;color:#fff;text-transform:uppercase}
+  .cd-agony-head .progtxt{font-family:var(--mono);font-size:10.5px;color:var(--ink-dim)}
+  .cd-agony-head .progtxt b{color:#fff}
+
+  .cd-agony-bar{width:100%;height:10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--glass-border);
+    padding:2px;overflow:hidden}
+  .cd-agony-bar i{display:block;height:100%;border-radius:999px;width:85%;
+    background:linear-gradient(90deg,#8f0e26,var(--blood) 55%,var(--cyan));box-shadow:0 0 12px rgba(224,22,60,.5)}
+  .cd-agony-tiers{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+    text-transform:uppercase;color:#6b707a}
+  .cd-agony-tiers .mid{color:var(--blood);font-weight:700}
+
+  .cd-agony-buffer{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09);border-radius:12px;
+    padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:11px}
+  .cd-agony-buffer .lbl{color:var(--ink-dim)}
+  .cd-agony-buffer .val{color:#38ef7d;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Layout Test</div>
+  <div class="pagetitle">Cockpit deck — <b>withdrawals + agony</b> side by side</div>
+
+  <section class="cockpit-deck">
+    <!-- Box 1: Lightning Fast Withdrawals -->
+    <div class="cd-with">
+      <div>
+        <div class="cd-with-head">
+          <div class="cd-with-title">
+            <div class="cd-with-ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <div>
+              <h3>Lightning fast <b>withdrawals</b></h3>
+              <p>Cashouts are signed and broadcast around the clock. No pending queues, no "additional review" theatre. Your win, your wallet, minutes apart.</p>
+            </div>
+          </div>
+          <div class="boltfx" aria-hidden="true">
+            <span class="boltfx-glow"></span>
+            <svg viewBox="0 0 112 44" class="boltfx-ring"><path d="M96.9355003,2 C109.46067,13.4022454 131.614152,42 56.9906735,42 C-17.6328048,42 1.51790702,13.5493875 13.0513641,2"></path></svg>
+          </div>
+        </div>
+        <div class="cd-with-stats">
+          <div class="cd-stat">
+            <span class="lbl">Median cashout</span>
+            <span class="val">~90 <small>sec</small></span>
+            <span class="foot">Median cashout to chain</span>
+          </div>
+          <div class="cd-stat">
+            <span class="lbl">Pipeline</span>
+            <span class="val cyan">24/7</span>
+            <span class="foot">Automated signing · no office hours</span>
+          </div>
+          <div class="cd-stat">
+            <span class="lbl">Settlement</span>
+            <span class="val">Your coin</span>
+            <span class="foot">Paid in the currency you play</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Box 2: Agony Levels -->
+    <div class="cd-agony">
+      <div class="cd-agony-head">
+        <div class="cd-agony-lvl">
+          <span class="cd-agony-dot"></span>
+          <span>Agony · lvl 7.8</span>
+        </div>
+        <span class="progtxt">85% to level 8 · <b>108K USDT to go</b></span>
+      </div>
+      <div>
+        <div class="cd-agony-bar"><i></i></div>
+        <div class="cd-agony-tiers" style="margin-top:8px">
+          <span>Tier 7 (anesthetized)</span>
+          <span class="mid">Next reward: +2.5% loss vault</span>
+          <span>Tier 8 (numbed)</span>
+        </div>
+      </div>
+      <div class="cd-agony-buffer">
+        <span class="lbl">Current loss buffer protection:</span>
+        <span class="val">$14,280.00 / Active</span>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
