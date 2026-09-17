@@ -2305,17 +2305,28 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
 
   .cd-with-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:16px}
 
-  /* vault-terminal screen tiles, ported from the "403 in a vault terminal" reference, recolored to the site's brand cyan */
-  .cd-term{position:relative;overflow:hidden;border-radius:10px;padding:12px 14px;
+  /* vault-terminal screen tiles, ported from the "403 in a vault terminal" reference, recolored to the site's brand cyan.
+     The reference is two layers: a beveled outer casing (its `body:before`, a thick border with a different
+     alpha per side to fake a 3D frame) around an inset screen (`.container`/`.inner-container`) that carries
+     the dot-matrix texture, vignette and glow. .cd-term is the frame, .cd-term-screen is the screen. */
+  .cd-term{position:relative;border-radius:12px;padding:5px;
+    background:linear-gradient(160deg,rgba(180,224,230,.5) 0%,rgba(10,22,25,.9) 30%,rgba(0,0,0,.95) 65%,rgba(127,214,232,.22) 100%);
+    box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 3px 10px rgba(0,0,0,.55)}
+  .cd-term-screen{position:relative;overflow:hidden;border-radius:8px;padding:11px 13px;
     background:radial-gradient(ellipse at center,#0f262b 0%,#020506 100%);
-    border:1px solid rgba(127,214,232,.35);
-    box-shadow:inset 0 0 32px 8px rgba(0,0,0,.45);
+    box-shadow:inset 0 0 26px 6px rgba(0,0,0,.6);
     display:flex;flex-direction:column;gap:4px;font-family:var(--mono)}
-  .cd-term .lbl{position:relative;z-index:2;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#5f9aa3}
-  .cd-term .val{position:relative;z-index:2;font-size:19px;font-weight:800;color:#7FD6E8;line-height:1.1;
+  .cd-term-screen::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+    background-image:radial-gradient(rgba(127,214,232,.35) 1px,transparent 1px);
+    background-size:3px 3px;mix-blend-mode:screen;opacity:.5}
+  .cd-term-screen::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.4) 3px);
+    mix-blend-mode:multiply;opacity:.6}
+  .cd-term-screen .lbl{position:relative;z-index:2;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#5f9aa3}
+  .cd-term-screen .val{position:relative;z-index:2;font-size:19px;font-weight:800;color:#7FD6E8;line-height:1.1;
     text-shadow:0 0 8px #7FD6E8}
-  .cd-term .val small{font-size:11px;font-weight:400;color:#5f9aa3;text-shadow:none}
-  .cd-term .foot{position:relative;z-index:2;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#3f6a70}
+  .cd-term-screen .val small{font-size:11px;font-weight:400;color:#5f9aa3;text-shadow:none}
+  .cd-term-screen .foot{position:relative;z-index:2;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#3f6a70}
 
   /* glitch distortion on the readout value: same two-layer clip-rect technique as the reference's
      .buzz/noise-anim/noise-anim-2, scaled down ~8x (that CSS was built for 128px display text) to
@@ -3577,21 +3588,21 @@ window.PB = (function(){
             </div>
           </div>
           <div class="cd-with-stats">
-            <div class="cd-term">
+            <div class="cd-term"><div class="cd-term-screen">
               <span class="lbl">Median cashout</span>
               <span class="val"><span class="term-glitch" data-text="~90 sec">~90 <small>sec</small></span></span>
               <span class="foot">Median cashout to chain</span>
-            </div>
-            <div class="cd-term">
+            </div></div>
+            <div class="cd-term"><div class="cd-term-screen">
               <span class="lbl">Pipeline</span>
               <span class="val"><span class="term-glitch" data-text="24/7">24/7</span></span>
               <span class="foot">Automated signing · no office hours</span>
-            </div>
-            <div class="cd-term">
+            </div></div>
+            <div class="cd-term"><div class="cd-term-screen">
               <span class="lbl">Settlement</span>
               <span class="val"><span class="term-glitch" data-text="Your coin">Your coin</span></span>
               <span class="foot">Paid in the currency you play</span>
-            </div>
+            </div></div>
           </div>
         </div>
       </div>
