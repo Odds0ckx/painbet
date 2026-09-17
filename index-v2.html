@@ -2322,22 +2322,22 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-term-screen::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
     background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.4) 3px);
     mix-blend-mode:multiply;opacity:.6}
-  .cd-term-screen .lbl{position:relative;z-index:2;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#5f9aa3}
-  .cd-term-screen .val{position:relative;z-index:2;font-size:19px;font-weight:800;color:#7FD6E8;line-height:1.1;
+  .cd-term-screen .lbl{position:relative;z-index:2;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#F44336}
+  .cd-term-screen .val{position:relative;z-index:2;font-size:34px;font-weight:800;color:#7FD6E8;line-height:1.1;
     text-shadow:0 0 8px #7FD6E8}
   .cd-term-screen .val small{font-size:11px;font-weight:400;color:#5f9aa3;text-shadow:none}
-  .cd-term-screen .foot{position:relative;z-index:2;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#3f6a70}
+  .cd-term-screen .foot{position:relative;z-index:2;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ffffff}
 
   /* glitch distortion on the readout value: same two-layer clip-rect technique as the reference's
      .buzz/noise-anim/noise-anim-2, scaled down ~8x (that CSS was built for 128px display text) to
      fit our small stat readouts, and recolored from terminal green to the site's brand cyan */
   .term-glitch{position:relative;display:inline-block;color:#7FD6E8}
-  .term-glitch::after{content:attr(data-text);position:absolute;left:1px;top:0;width:100%;
+  .term-glitch::after{content:attr(data-text);position:absolute;left:.5px;top:0;width:100%;opacity:.45;
     white-space:nowrap;overflow:hidden;background:#0f262b;color:#7FD6E8;
-    animation:cdNoise 2s infinite linear alternate-reverse}
-  .term-glitch::before{content:attr(data-text);position:absolute;left:-1px;top:0;width:100%;
+    animation:cdNoise 3.6s infinite linear alternate-reverse}
+  .term-glitch::before{content:attr(data-text);position:absolute;left:-.5px;top:0;width:100%;opacity:.45;
     white-space:nowrap;overflow:hidden;background:#0f262b;color:#7FD6E8;
-    animation:cdNoise2 3s infinite linear alternate-reverse}
+    animation:cdNoise2 5.4s infinite linear alternate-reverse}
   @keyframes cdNoise{
     0%{clip:rect(8px,9999px,9px,0)} 3.33%{clip:rect(8px,9999px,9px,0)} 6.67%{clip:rect(10px,9999px,16px,0)}
     10%{clip:rect(2px,9999px,8px,0)} 13.33%{clip:rect(5px,9999px,2px,0)} 16.67%{clip:rect(6px,9999px,13px,0)}
@@ -3590,7 +3590,7 @@ window.PB = (function(){
           <div class="cd-with-stats">
             <div class="cd-term"><div class="cd-term-screen">
               <span class="lbl">Median cashout</span>
-              <span class="val"><span class="term-glitch" data-text="~90 sec">~90 <small>sec</small></span></span>
+              <span class="val"><span class="term-glitch" data-text="90 sec">90 <small>sec</small></span></span>
               <span class="foot">Median cashout to chain</span>
             </div></div>
             <div class="cd-term"><div class="cd-term-screen">
