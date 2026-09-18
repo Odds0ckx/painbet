@@ -320,20 +320,16 @@
     border-radius:0 18px 18px 0;
     box-shadow:inset 0 2px 4px var(--shadow-light),40px 0 80px -20px rgba(0,0,0,.8)}
   .side .grp{font-family:var(--disp);font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--ink);display:flex;align-items:center;gap:9px;margin:24px 10px 10px}
+    color:#ed2749;display:flex;align-items:center;gap:9px;margin:24px 10px 10px}
   .side .grp:first-child{margin-top:2px}
-  .side .grp::before{content:'';width:6px;height:6px;border-radius:50%;flex:none;background:var(--ink-lo,#454a52)}
-  .side .grp.red::before{background:var(--blood);box-shadow:0 0 9px rgba(224,22,60,.65)}
-  .side .grp.blue::before{background:#7FD6E8;box-shadow:0 0 9px rgba(127,214,232,.55)}
   .side .grp.sub{font-size:9.5px;font-weight:600;letter-spacing:.2em;color:var(--ink-dim);margin-top:18px}
-  .side .grp.sub::before{display:none}
   .side a{display:flex;align-items:center;gap:11px;color:#c8ccd4;text-decoration:none;
     font-size:13px;padding:9px 10px;border-radius:9px;transition:background .15s,color .15s}
   .side a .ic{width:17px;height:17px;flex:none;opacity:.8;transition:opacity .15s}
   .side a .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .side a:hover{background:rgba(255,255,255,.05);color:var(--ink)}
   .side a:hover .ic{opacity:1}
-  .side a.on{background:rgba(224,22,60,.12);color:var(--ink)}
+  .side a.on{background:rgba(224,22,60,.12);color:#ed2749}
   .side a.on .ic{color:var(--blood);opacity:1}
   .side a .pk{font-family:var(--mono);font-size:10px;color:var(--blood);flex:none}
 
@@ -376,7 +372,7 @@
     box-shadow:0 4px 8px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.1)}
 
   /* selected sidebar row lifts out of the panel like a raised segment */
-  .side a.on{color:var(--ink);text-shadow:0 0 12px rgba(224,22,60,.45);
+  .side a.on{color:#ed2749;text-shadow:0 0 12px rgba(224,22,60,.45);
     background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
     box-shadow:0 4px 8px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.1)}
   .painchip{display:flex;align-items:center;gap:16px;margin-bottom:26px;padding:14px 18px;border-radius:14px;
@@ -2351,13 +2347,10 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cockpit-deck{display:grid;grid-template-columns:7fr 5fr;gap:16px;margin-bottom:26px}
   @media (max-width:900px){ .cockpit-deck{grid-template-columns:1fr} }
 
-  .cd-with{position:relative;overflow:hidden;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);
+  .cd-with{position:relative;overflow:hidden;border-radius:18px;background:#16191e;
     backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column}
   .cd-with-head{padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
   .cd-with-title{display:flex;align-items:flex-start;gap:12px}
-  .cd-with-ic{flex:none;width:30px;height:30px;border-radius:9px;background:rgba(127,214,232,.12);border:1px solid rgba(127,214,232,.3);
-    display:grid;place-items:center;color:#7FD6E8}
-  .cd-with-ic svg{width:16px;height:16px}
   .cd-with h3{font-family:'Archivo Black','Archivo',sans-serif;font-weight:400;font-size:clamp(15px,1.6vw,18px);
     text-transform:uppercase;letter-spacing:.02em;color:#fff}
   .cd-with h3 b{color:#7FD6E8;text-shadow:0 0 16px rgba(127,214,232,.5)}
@@ -2445,7 +2438,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-with .boltfx-spark.left{left:-10px;transform:rotate(130deg)}
   .cd-with .boltfx-spark.right{right:-10px;transform:rotate(40deg)}
 
-  .cd-agony{position:relative;border-radius:18px;background:var(--glass);border:1px solid var(--glass-border);
+  .cd-agony{position:relative;border-radius:18px;background:#16191e;border:none;
     backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;
     align-items:stretch;justify-content:space-between;gap:16px;margin-bottom:0}
   .cd-agony-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -3653,9 +3646,6 @@ window.PB = (function(){
         <div class="cd-with-body">
           <div class="cd-with-head">
             <div class="cd-with-title">
-              <div class="cd-with-ic">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-              </div>
               <div>
                 <h3>Lightning fast <b>withdrawals</b></h3>
                 <p>Cashouts are signed and broadcast around the clock. No pending queues, no "additional review" theatre. Your win, your wallet, minutes apart.</p>
