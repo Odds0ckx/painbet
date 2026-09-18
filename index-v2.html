@@ -62,7 +62,9 @@
   .row-head .viewall{background:none;border:0;padding:0;cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--redhi);white-space:nowrap}
   .row-head .viewall:hover{text-decoration:underline}
 
-  .rail.originals,.rail.slots,.rail.live{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:16px;scroll-snap-type:x proximity;padding:56px 14px 14px;margin:-54px -14px -14px;scrollbar-width:none}
+  .rail.originals,.rail.slots,.rail.live{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:16px;scroll-snap-type:x proximity;padding:56px 14px 14px;margin:-54px -14px -14px;scrollbar-width:none;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);
+    mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent)}
   .rail.originals::-webkit-scrollbar,.rail.slots::-webkit-scrollbar,.rail.live::-webkit-scrollbar{display:none}
   .rail.originals .tile{flex:0 0 calc((100% - 5*16px)/6.4);min-width:140px;scroll-snap-align:start}
   .rail.slots .tile,.rail.live .tile{flex:0 0 192px;width:192px;scroll-snap-align:start}
