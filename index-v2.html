@@ -64,7 +64,8 @@
 
   .rail.originals,.rail.slots,.rail.live{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:16px;scroll-snap-type:x proximity;padding:56px 14px 14px;margin:-54px -14px -14px;scrollbar-width:none}
   .rail.originals::-webkit-scrollbar,.rail.slots::-webkit-scrollbar,.rail.live::-webkit-scrollbar{display:none}
-  .rail.originals .tile,.rail.slots .tile,.rail.live .tile{flex:0 0 calc((100% - 5*16px)/6.4);min-width:140px;scroll-snap-align:start}
+  .rail.originals .tile{flex:0 0 calc((100% - 5*16px)/6.4);min-width:140px;scroll-snap-align:start}
+  .rail.slots .tile,.rail.live .tile{flex:0 0 256px;width:256px;scroll-snap-align:start}
 
   .banners{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .banner{position:relative;overflow:hidden;border-radius:var(--tile-r);background:var(--glass);border:1px solid var(--glass-border);
@@ -97,9 +98,11 @@
   /* Mint style card: art is the card, glass frame, soft lift */
   .tile{position:relative;overflow:hidden;border-radius:var(--tile-r);background:var(--glass);border:1px solid var(--glass-border);
     backdrop-filter:blur(12px) saturate(1.15);-webkit-backdrop-filter:blur(12px) saturate(1.15);
-    aspect-ratio:3/4;cursor:pointer;
+    cursor:pointer;
     box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.03);
     transition:border-color .28s, box-shadow .28s}
+  .tile.orig{aspect-ratio:3/4}
+  .tile:not(.orig){width:256px;height:192px}
   .tile::before{content:'';position:absolute;inset:0;z-index:2;background:var(--veil);opacity:0;transition:opacity .25s;pointer-events:none}
   .tile:hover{border-color:rgba(224,22,60,.65);box-shadow:0 14px 34px rgba(0,0,0,.55), 0 0 0 1.5px rgba(224,22,60,.6), 0 0 32px rgba(224,22,60,.5), 0 0 64px rgba(224,22,60,.24)}
   .tile{will-change:transform;transform-style:preserve-3d}
@@ -490,7 +493,8 @@
     .rail{display:flex !important;overflow-x:auto;scroll-snap-type:x proximity;gap:12px;
       margin:-38px -14px 0;padding:38px 14px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .rail::-webkit-scrollbar{display:none}
-    .rail .tile{flex:0 0 38vw;scroll-snap-align:start}
+    .rail .tile.orig{flex:0 0 38vw;scroll-snap-align:start}
+    .rail .tile:not(.orig){flex:0 0 256px;scroll-snap-align:start}
 
     .provmarquee{margin:0 -14px;padding:20px 14px}
     .prov{flex:0 0 128px;height:60px}
@@ -507,7 +511,7 @@
     .bottomnav svg{width:19px;height:19px;fill:currentColor}
   }
   @media (max-width: 480px){
-    .rail .tile{flex:0 0 44vw}
+    .rail .tile.orig{flex:0 0 44vw}
     .banner{flex:0 0 88%}
   }
 
@@ -1179,6 +1183,8 @@
 .v5m .promo .ekg svg{width:200%;height:100%;animation:ekgmove 8s linear infinite}
 /* ---------- game rails ---------- */
 .rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+/* "View all" grids for Slots/Live use fixed 256x192 tiles; Originals keeps the responsive 6-col grid */
+#view-slots-all .rail,#view-live-all .rail{grid-template-columns:repeat(auto-fill,256px)}
 .v5m .gcard .meta .t{display:block;font-weight:700;font-size:12.5px;color:var(--white)}
 /* Pain Originals: 3D tilt + radial shatter-shard hover, .v5m adapted from a user-provided
    demo - a concentric-ring "impact crack" mesh radiating from the card's center, .v5m fragments swaying in a slow-motion sine-wave loop, .v5m plus a cursor-tracking glow.
