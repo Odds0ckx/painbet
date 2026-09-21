@@ -178,16 +178,21 @@
   .balbtn .chev{width:12px;height:12px;flex:none;color:var(--ink-dim);transition:transform .2s}
   .balzone.open .balbtn .chev{transform:rotate(180deg)}
   .balpanel{position:absolute;top:calc(100% + 8px);left:0;width:280px;max-width:calc(100vw - 28px);z-index:60;
-    background:rgba(15,17,22,.98);border:1px solid rgba(255,255,255,.12);border-radius:14px;
-    box-shadow:0 20px 50px rgba(0,0,0,.55);padding:8px;
+    background:var(--panel-bg);border:0;border-radius:14px;
+    box-shadow:inset 0 1px 2px var(--shadow-light),0 20px 50px rgba(0,0,0,.55);padding:8px;
     opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;
     transition:opacity .18s,transform .18s,visibility .18s}
   .balzone.open .balpanel{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
-  .baltabs{display:flex;gap:4px;padding:4px 4px 8px}
+  .baltabs{display:flex;gap:2px;padding:3px;margin:1px 4px 8px;background:var(--milled-dark);border-radius:9px;
+    box-shadow:inset 0 3px 6px rgba(0,0,0,.5)}
   .baltabs button{flex:1;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
-    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--ink-dim);
-    border-radius:8px;padding:8px 6px;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
-  .baltabs button.on{background:var(--blood);border-color:var(--blood);color:#fff}
+    background:transparent;border:0;color:var(--ink-dim);
+    border-radius:6px;padding:8px 6px;cursor:pointer;transition:all .2s cubic-bezier(.16,1,.3,1)}
+  .baltabs button:hover{background:rgba(255,255,255,.04);color:var(--ink)}
+  .baltabs button.on{color:var(--blood);text-shadow:0 0 12px rgba(224,22,60,.7);
+    background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
+    box-shadow:0 4px 8px rgba(0,0,0,.3),inset 0 1px 1px rgba(255,255,255,.1)}
+  .baltabs button.on:hover{color:var(--blood)}
   .balrows{display:flex;flex-direction:column;gap:2px;max-height:280px;overflow-y:auto}
   .balrows[hidden]{display:none}
   .balrow{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:9px;cursor:pointer}
@@ -342,11 +347,13 @@
     color:#ed2749;display:flex;align-items:center;gap:9px;margin:24px 10px 10px}
   .side .grp:first-child{margin-top:2px}
   .side .grp.sub{font-size:9.5px;font-weight:600;letter-spacing:.2em;color:var(--ink-dim);margin-top:18px}
-  .side a{display:flex;align-items:center;gap:11px;color:#c8ccd4;text-decoration:none;
-    font-size:13px;padding:9px 10px;border-radius:9px;transition:background .15s,color .15s}
-  .side a .ic{width:17px;height:17px;flex:none;opacity:.8;transition:opacity .15s}
+  .side a{position:relative;display:flex;align-items:center;gap:11px;color:#c8ccd4;text-decoration:none;
+    font-size:13px;padding:9px 10px;border-radius:9px;transition:background .18s,box-shadow .18s,color .18s}
+  .side a .ic{width:17px;height:17px;flex:none;opacity:.8;transition:opacity .18s}
   .side a .lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .side a:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+  .side a:hover{color:var(--ink);
+    background:linear-gradient(315deg,var(--clay-top),var(--clay-base));
+    box-shadow:inset 0 -1px 2px rgba(255,255,255,.14),inset 0 2px 3px rgba(0,0,0,.35)}
   .side a:hover .ic{opacity:1}
   .side a.on{background:rgba(224,22,60,.12);color:#ed2749}
   .side a.on .ic{color:var(--blood);opacity:1}
@@ -364,8 +371,8 @@
     box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1);
     transition:all .2s cubic-bezier(.16,1,.3,1)}
   .navburger:hover,.btn:hover,.balbtn:hover,.notifbtn:hover{
-    background:linear-gradient(135deg,#252a32,var(--clay-base));
-    box-shadow:0 8px 16px rgba(0,0,0,.45),inset 0 1px 2px rgba(255,255,255,.14)}
+    background:linear-gradient(315deg,var(--clay-top),var(--clay-base));
+    box-shadow:0 8px 16px rgba(0,0,0,.45),inset 0 -1px 2px rgba(255,255,255,.16),inset 0 2px 3px rgba(0,0,0,.4)}
   .navburger:active,.btn:active,.balbtn:active,.notifbtn:active{transform:scale(.96);
     box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 3px 6px rgba(0,0,0,.7)}
   .balzone.open .balbtn,.notifzone.open .notifbtn{
@@ -2369,7 +2376,8 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cockpit-deck{display:grid;grid-template-columns:7fr 5fr;gap:16px;margin-bottom:26px}
   @media (max-width:900px){ .cockpit-deck{grid-template-columns:1fr} }
 
-  .cd-with{position:relative;overflow:hidden;border-radius:18px;background:#16191e;
+  .cd-with{position:relative;overflow:hidden;border-radius:18px;background:var(--panel-bg);
+    box-shadow:inset 0 1px 2px var(--shadow-light);
     backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column}
   .cd-with-head{padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
   .cd-with-title{display:flex;align-items:flex-start;gap:12px}
@@ -2384,22 +2392,22 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
      The reference is two layers: a beveled outer casing (its `body:before`, a thick border with a different
      alpha per side to fake a 3D frame) around an inset screen (`.container`/`.inner-container`) that carries
      the dot-matrix texture, vignette and glow. .cd-term is the frame, .cd-term-screen is the screen. */
-  .cd-term{position:relative;border-radius:12px;padding:5px;
+  .cd-term{position:relative;min-width:0;display:flex;border-radius:12px;padding:5px;
     background:linear-gradient(160deg,rgba(180,224,230,.5) 0%,rgba(10,22,25,.9) 30%,rgba(0,0,0,.95) 65%,rgba(127,214,232,.22) 100%);
     box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 3px 10px rgba(0,0,0,.55)}
-  .cd-term-screen{position:relative;overflow:hidden;border-radius:8px;padding:11px 13px;
+  .cd-term-screen{position:relative;min-width:0;flex:1;overflow:hidden;border-radius:8px;padding:11px 13px;
     background:radial-gradient(ellipse at center,#0f262b 0%,#020506 100%);
-    box-shadow:inset 0 0 26px 6px rgba(0,0,0,.6);
-    display:flex;flex-direction:column;gap:4px;font-family:var(--mono)}
-  .cd-term-screen::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+    box-shadow:inset 0 0 26px 6px rgba(0,0,0,.6);container-type:inline-size;
+    display:flex;flex-direction:column;justify-content:center;gap:4px;font-family:var(--mono)}
+  .cd-term-screen::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:3;
     background-image:radial-gradient(rgba(127,214,232,.35) 1px,transparent 1px);
     background-size:3px 3px;mix-blend-mode:screen;opacity:.5}
   .cd-term-screen::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
     background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0px,rgba(0,0,0,0) 2px,rgba(0,0,0,.4) 3px);
     mix-blend-mode:multiply;opacity:.6}
   .cd-term-screen .lbl{position:relative;z-index:2;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#F44336}
-  .cd-term-screen .val{position:relative;z-index:2;font-size:34px;font-weight:800;color:#7FD6E8;line-height:1.1;
-    text-shadow:0 0 8px #7FD6E8}
+  .cd-term-screen .val{position:relative;z-index:2;font-size:clamp(20px,4.4cqw,34px);font-weight:800;color:#7FD6E8;line-height:1.1;
+    text-shadow:0 0 8px #7FD6E8;overflow-wrap:break-word}
   .cd-term-screen .val small{font-size:11px;font-weight:400;color:#5f9aa3;text-shadow:none}
   .cd-term-screen .foot{position:relative;z-index:2;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ffffff}
 
@@ -2460,7 +2468,8 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-with .boltfx-spark.left{left:-10px;transform:rotate(130deg)}
   .cd-with .boltfx-spark.right{right:-10px;transform:rotate(40deg)}
 
-  .cd-agony{position:relative;border-radius:18px;background:#16191e;border:none;
+  .cd-agony{position:relative;border-radius:18px;background:var(--panel-bg);border:none;
+    box-shadow:inset 0 1px 2px var(--shadow-light);
     backdrop-filter:blur(14px) saturate(1.15);padding:22px 24px;display:flex;flex-direction:column;
     align-items:stretch;justify-content:space-between;gap:16px;margin-bottom:0}
   .cd-agony-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -2495,7 +2504,7 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .cd-agony-reward{margin-top:6px;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
     text-transform:uppercase;color:var(--blood);font-weight:700}
 
-  .cd-agony-buffer{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.09);border-radius:12px;
+  .cd-agony-buffer{background:var(--milled-dark);border:0;box-shadow:inset 0 3px 6px rgba(0,0,0,.5);border-radius:12px;
     padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:11px}
   .cd-agony-buffer .lbl{color:var(--ink-dim)}
   .cd-agony-buffer .val{color:#38ef7d;font-weight:700}
