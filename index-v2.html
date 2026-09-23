@@ -2817,6 +2817,149 @@ body:not([data-mode="sports"]) .betslip-tab{display:none}
   .ch-btn.alt{background:rgba(255,255,255,.07);color:#c3c8d1;border:1px solid rgba(255,255,255,.15)}
   .ch-btn:disabled{opacity:.5;cursor:not-allowed}
 
+  /* ===== The Chart · console chrome (wristband, vitals, segment tabs, dosage limits) ===== */
+  #chartPage .pscard{border-radius:18px;background:var(--panel-bg);backdrop-filter:none;border:0;
+    box-shadow:0 20px 40px rgba(0,0,0,.55),inset 0 2px 4px var(--shadow-light)}
+  #chartPage .ch-head{padding:22px;margin-bottom:18px}
+  #chartPage .wb{position:relative;display:flex;align-items:center;gap:16px;padding:12px 16px;border-radius:22px;
+    background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
+    box-shadow:0 10px 22px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.1),inset 0 -2px 4px rgba(0,0,0,.35)}
+  #chartPage .wb-holes{display:flex;flex-direction:column;gap:7px;flex:none}
+  #chartPage .wb-holes i{display:block;width:9px;height:9px;border-radius:50%;background:#060708;box-shadow:inset 0 2px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.07)}
+  #chartPage .wb-holes.r{margin-left:4px}
+  #chartPage .wb-label{position:relative;flex:1;min-width:0;display:flex;align-items:center;gap:22px;padding:12px 18px;border-radius:10px;
+    background:linear-gradient(180deg,#e9e5dc,#d8d3c8);color:#1b1c20;font-family:var(--mono);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 0 rgba(0,0,0,.18),0 2px 4px rgba(0,0,0,.35)}
+  #chartPage .wb-code{display:flex;flex-direction:column;gap:5px;flex:none}
+  #chartPage .wb-bars{display:flex;align-items:stretch;height:38px}
+  #chartPage .wb-bars i{display:block;flex:none;background:#15161a}
+  #chartPage .wb-code .bid{font-size:13px;font-weight:800;letter-spacing:.14em;color:#101114}
+  #chartPage .wb-fields{display:flex;gap:22px;flex-wrap:wrap;row-gap:8px;min-width:0}
+  #chartPage .wb-fields .kv{display:flex;flex-direction:column;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#6a6760}
+  #chartPage .wb-fields .kv b{font-size:12.5px;letter-spacing:.02em;text-transform:none;color:#15161a;margin-top:3px;white-space:nowrap}
+  #chartPage .wb-stamp{position:absolute;right:12px;top:8px;font-size:8px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blood);
+    border:1.5px solid rgba(224,22,60,.7);border-radius:4px;padding:2px 5px;transform:rotate(-6deg);opacity:.8}
+  #chartPage .wb-reads{display:flex;gap:10px;flex:none}
+  #chartPage .wb-read{display:flex;flex-direction:column;justify-content:center;gap:6px;min-width:112px;padding:10px 14px;border-radius:12px;
+    background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+  #chartPage .wb-read .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-lo)}
+  #chartPage .wb-read b{font-size:15px;font-weight:800;color:#fff;white-space:nowrap}
+  #chartPage .wb-read b em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--redhi);margin-left:3px}
+  #chartPage .wb-lvl{min-width:150px}
+  #chartPage .wb-tube{position:relative;height:9px;border-radius:6px;background:#050607;box-shadow:inset 0 1px 3px rgba(0,0,0,.9);overflow:hidden}
+  #chartPage .wb-tube i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;
+    background:linear-gradient(90deg,#7a0a1f,var(--blood) 60%,#ff3459);box-shadow:0 0 10px rgba(224,22,60,.55)}
+  #chartPage .wb-tube::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),rgba(0,0,0,.55) calc(10% - 1px) 10%)}
+
+  #chartPage .vit{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+  #chartPage .vit-c{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;border:0;cursor:pointer;
+    padding:13px 15px;border-radius:12px;color:var(--ink);font:inherit;
+    background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7);transition:all .2s cubic-bezier(.16,1,.3,1)}
+  #chartPage .vit-c:hover{background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 8px 16px rgba(0,0,0,.45),inset 0 1px 2px rgba(255,255,255,.1)}
+  #chartPage .vit-c:active{transform:scale(.96);box-shadow:inset 0 3px 6px rgba(0,0,0,.7)}
+  #chartPage .vit-c .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-lo)}
+  #chartPage .vit-c b{font-size:20px;font-weight:800;color:#fff;line-height:1.2}
+  #chartPage .vit-c b em{font-style:normal;font-size:12px;color:var(--ink-lo);margin-left:1px}
+  #chartPage .vit-sub,#chartPage .vit-next{font-size:11px;line-height:1.4;color:var(--ink-lo)}
+  #chartPage .vit-next{color:var(--redhi);font-weight:700}
+  #chartPage .vit-c.good .vit-next{color:var(--blue)}
+  #chartPage .vit-pips{display:flex;gap:4px;margin:2px 0}
+  #chartPage .vit-pips i{width:16px;height:5px;border-radius:3px;background:#1d2027;box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
+  #chartPage .vit-pips i.on{background:var(--blue);box-shadow:0 0 6px rgba(127,214,232,.5)}
+  #chartPage .vit-c.low .vit-pips i.on{background:var(--blood);box-shadow:0 0 6px rgba(224,22,60,.5)}
+
+  #chartPage .acct-tabs{display:inline-flex;max-width:100%;gap:4px;margin:0 0 18px;padding:5px;border:0;border-radius:14px;
+    background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+  #chartPage .acct-tabs button{border:0;border-radius:10px;padding:10px 16px;color:var(--ink-lo);font-size:10px;transition:all .2s cubic-bezier(.16,1,.3,1)}
+  #chartPage .acct-tabs button:hover{color:#fff}
+  #chartPage .acct-tabs button.on{color:#fff;background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
+    box-shadow:0 6px 12px rgba(0,0,0,.45),inset 0 1px 2px rgba(255,255,255,.12)}
+  #chartPage .acct-tabs button:active{transform:scale(.96)}
+  #chartPage .acct-pane{scroll-margin-top:90px}
+  #chartPage .acct-pane > .pscard{margin-top:0 !important;margin-bottom:16px}
+  #chartPage .acct-pane > .pscard > .ch-actrow:first-child{margin-top:0}
+
+  #chartPage .ch-btn{border:0;border-radius:10px;font-weight:700;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,#f0264c,var(--blood));box-shadow:0 6px 12px rgba(0,0,0,.45),0 0 18px rgba(224,22,60,.3),inset 0 1px 2px rgba(255,255,255,.22);transition:all .2s cubic-bezier(.16,1,.3,1)}
+  #chartPage .ch-btn:hover:not(:disabled){background:linear-gradient(315deg,#ff3459,#e8214a)}
+  #chartPage .ch-btn.alt{color:var(--ink-hi);border:0;background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1)}
+  #chartPage .ch-btn.alt:hover:not(:disabled){color:#fff;background:linear-gradient(315deg,var(--clay-top),var(--clay-base))}
+  #chartPage .ch-btn:active:not(:disabled){transform:scale(.96);box-shadow:inset 0 3px 6px rgba(0,0,0,.7)}
+  #chartPage .ch-form input,#chartPage .af-linkrow input{background:#060708;border:0;border-radius:10px;box-shadow:inset 0 2px 5px rgba(0,0,0,.8)}
+
+  #chartPage .ch-refrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+  #chartPage .ch-refrow .ch-rs{min-width:140px;padding:10px 14px;border:0;border-radius:12px;background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+  #chartPage .ch-refbtns{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+
+  /* limits as dosage rows */
+  #chartPage .rg-limits{display:flex;flex-direction:column;gap:10px;border:0;border-radius:0;overflow:visible}
+  #chartPage .rg-line{display:grid;grid-template-columns:minmax(150px,1fr) auto minmax(150px,210px);grid-template-areas:"n s a" "u u u";
+    align-items:center;gap:12px 16px;padding:14px 16px;border:0;border-radius:14px;background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+  #chartPage .rg-name{grid-area:n;font-size:13.5px;font-weight:700;color:#fff}
+  #chartPage .rg-name i{font-size:11px;font-weight:400;color:var(--ink-lo)}
+  #chartPage .rg-seg{grid-area:s;display:flex;gap:3px;padding:4px;border-radius:11px;background:#060708;box-shadow:inset 0 2px 5px rgba(0,0,0,.85)}
+  #chartPage .rg-seg button{position:relative;border:0;border-radius:8px;padding:8px 12px;background:none;cursor:pointer;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);transition:all .2s cubic-bezier(.16,1,.3,1)}
+  #chartPage .rg-seg button:hover{color:#fff}
+  #chartPage .rg-seg button.on{color:#fff;background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 4px 10px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.12)}
+  #chartPage .rg-seg button.set::after{content:'';position:absolute;top:4px;right:4px;width:4px;height:4px;border-radius:50%;background:var(--blue);box-shadow:0 0 5px var(--blue)}
+  #chartPage .rg-amt{grid-area:a;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:10px;background:#060708;box-shadow:inset 0 2px 5px rgba(0,0,0,.85)}
+  #chartPage .rg-amt input{flex:1;min-width:0;width:auto;background:none;border:0;box-shadow:none;padding:11px 0;color:#fff;font-family:var(--mono);font-size:14px;font-weight:700}
+  #chartPage .rg-amt input[hidden]{display:none}
+  #chartPage .rg-amt input::placeholder{color:var(--ink-lo);font-weight:400}
+  #chartPage .rg-amt input::-webkit-inner-spin-button{-webkit-appearance:none}
+  #chartPage .rg-amt span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-lo)}
+  #chartPage .rg-use{grid-area:u;display:flex;align-items:center;gap:12px}
+  #chartPage .rg-bar{position:relative;flex:1;height:6px;border-radius:4px;background:#060708;box-shadow:inset 0 1px 3px rgba(0,0,0,.9);overflow:hidden}
+  #chartPage .rg-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,#3d8c9b,var(--blue));box-shadow:0 0 8px rgba(127,214,232,.45);transition:width .5s}
+  #chartPage .rg-use.hot .rg-bar i{background:linear-gradient(90deg,#b0122f,var(--redhi));box-shadow:0 0 8px rgba(224,22,60,.5)}
+  #chartPage .rg-use.none .rg-bar{background:repeating-linear-gradient(135deg,#0b0c0f 0 6px,#111318 6px 12px)}
+  #chartPage .rg-usetxt{flex:none;font-size:11.5px;color:var(--ink-lo)}
+  #chartPage .rg-usetxt b{color:#fff}
+  #chartPage .rg-usetxt em{font-style:normal;color:var(--redhi);font-weight:700}
+  #chartPage .rg-chips button{border:0;border-radius:10px;padding:9px 14px;color:var(--ink-hi);
+    background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1);transition:all .2s cubic-bezier(.16,1,.3,1)}
+  #chartPage .rg-chips button:hover{color:#fff;background:linear-gradient(315deg,var(--clay-top),var(--clay-base))}
+  #chartPage .rg-chips button:active{transform:scale(.96)}
+  #chartPage #rgReminder{display:inline-flex;gap:3px;padding:4px;border-radius:11px;background:#060708;box-shadow:inset 0 2px 5px rgba(0,0,0,.85)}
+  #chartPage #rgReminder button{background:none;box-shadow:none;color:var(--ink-lo)}
+  #chartPage #rgReminder button.on{color:#fff;background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 4px 10px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.12)}
+  #chartPage .rg-danger{border:0;border-radius:14px;background:#140a0d;box-shadow:inset 0 3px 8px rgba(0,0,0,.7),inset 0 0 0 1px rgba(224,22,60,.18)}
+  /* irreversible: clay with red ink, never the red CTA clay that invites a click */
+  #chartPage .rg-danger .rg-chips button{color:var(--redhi)}
+  #chartPage .rg-danger .rg-chips button:hover{color:#fff;border:0}
+  #chartPage .rg-pending{border:0;border-radius:12px;background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+  /* rows, devices, addresses and upload slots as milled wells */
+  #chartPage .lk,#chartPage .sess,#chartPage .addr,#chartPage .addr-empty,#chartPage .kyc-doc{border:0;border-radius:12px;
+    background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+  #chartPage .sess.current{background:var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7),inset 0 0 0 1px rgba(127,214,232,.22)}
+  #chartPage .kyc-doc:hover{background:#0d0e12;box-shadow:inset 0 3px 8px rgba(0,0,0,.7),inset 0 0 0 1px rgba(224,22,60,.3)}
+  #chartPage .addr-add input,#chartPage .addr-add select,#chartPage #chClient,#chartPage .ch-sec input[type=text]:not([disabled]){background:#060708;border:0;border-radius:10px;box-shadow:inset 0 2px 5px rgba(0,0,0,.8)}
+  #chartPage .af-copy{border:0;border-radius:10px;color:var(--ink-hi);background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1)}
+  #chartPage .af-copy:hover{color:#fff;background:linear-gradient(315deg,var(--clay-top),var(--clay-base))}
+  #chartPage .af-copy:active{transform:scale(.96)}
+  @media(max-width:1100px){
+    #chartPage .wb{flex-wrap:wrap}
+    #chartPage .wb-holes{display:none}
+    #chartPage .wb-label{flex-basis:100%}
+    #chartPage .wb-reads{flex:1}
+    #chartPage .wb-read{flex:1}
+    #chartPage .vit{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:700px){
+    #chartPage .ch-head{padding:14px}
+    #chartPage .wb{padding:10px;border-radius:16px}
+    #chartPage .wb-label{flex-direction:column;align-items:flex-start;gap:12px;padding:12px 14px}
+    #chartPage .wb-fields{gap:12px 18px}
+    #chartPage .wb-reads{flex-direction:column;width:100%}
+    #chartPage .acct-tabs{display:flex;overflow-x:auto}
+    #chartPage .rg-line{grid-template-columns:1fr;grid-template-areas:"n" "s" "a" "u"}
+    #chartPage .rg-seg button{flex:1}
+    #chartPage .rg-use{flex-wrap:wrap}
+    #chartPage .rg-usetxt{flex:1 1 100%}
+    #chartPage .ch-refbtns{margin-left:0}
+  }
+
   /* ===== profile picture (avatar + rank badge) ===== */
   .pf-avatar-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
   .pf-avatar-wrap{position:relative;flex:none}
@@ -4697,25 +4840,67 @@ window.PB = (function(){
   <div class="gcrumb"><button class="pgback" type="button">Pain.bet</button> / <span class="here">The Chart</span></div>
   <div class="row-head"><h2>The Chart</h2><span class="meta">Your patient record · details, security, referral coms</span></div>
 
-  <div class="pscard">
-    <div class="ch-band">
-      <span class="bid" id="chBandId">PB-728423</span>
-      <span class="kv">Patient<b id="chBandAlias">WardRat_77</b></span>
-      <span class="kv">Admitted<b>03 Jun 2026</b></span>
-      <span class="kv">Preferred coin<b id="chBandCoin">USDT · TRC20</b></span>
-      <span class="lvl">LVL 7.8 · AGONY · PK <span class="js-pk-bal">1,250</span></span>
+  <div class="pscard ch-head">
+    <div class="wb" aria-label="Patient wristband">
+      <span class="wb-holes" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div class="wb-label">
+        <div class="wb-code">
+          <div class="wb-bars" id="chBars" aria-hidden="true"></div>
+          <span class="bid" id="chBandId">PB-728423</span>
+        </div>
+        <div class="wb-fields">
+          <span class="kv">Patient<b id="chBandAlias">WardRat_77</b></span>
+          <span class="kv">Admitted<b>03 Jun 2026</b></span>
+          <span class="kv">Blood type<b id="chBandCoin">USDT · TRC20</b></span>
+          <span class="kv">Ward<b>Agony</b></span>
+        </div>
+        <span class="wb-stamp">pain.bet</span>
+      </div>
+      <div class="wb-reads">
+        <div class="wb-read wb-lvl">
+          <span class="k">Pain scale</span>
+          <div class="wb-tube" aria-hidden="true"><i style="width:78%"></i></div>
+          <b>LVL 7.8 <em>Agony</em></b>
+        </div>
+        <div class="wb-read">
+          <span class="k">PainKillers</span>
+          <b><span class="js-pk-bal">1,250</span> <em>PK</em></b>
+        </div>
+      </div>
+      <span class="wb-holes r" aria-hidden="true"><i></i><i></i></span>
+    </div>
+
+    <div class="vit" id="chVitals">
+      <button type="button" class="vit-c" data-go="security" id="vitHealth">
+        <span class="k">Account health</span>
+        <b><span id="vitHealthN">0</span><em>/5</em></b>
+        <span class="vit-pips" id="vitPips"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="vit-next" id="vitNext">Next: turn on 2FA</span>
+      </button>
+      <button type="button" class="vit-c" data-go="security">
+        <span class="k">Verification</span>
+        <b id="vitTier">Tier 0</b>
+        <span class="vit-sub" id="vitTierSub">Unverified · withdrawals up to 2,000</span>
+      </button>
+      <button type="button" class="vit-c" data-go="limits">
+        <span class="k">Active limits</span>
+        <b id="vitLimits">None</b>
+        <span class="vit-sub" id="vitLimitsSub">Nothing caps your play</span>
+      </button>
+      <button type="button" class="vit-c" data-go="security">
+        <span class="k">Last sign-in</span>
+        <b id="vitLast">—</b>
+        <span class="vit-sub" id="vitLastSub">Not you? Sign it out</span>
+      </button>
     </div>
   </div>
 
   <nav class="acct-tabs" id="acctTabs" role="tablist" aria-label="Account sections">
     <button type="button" data-tab="profile" class="on" role="tab">Profile</button>
-    <button type="button" data-tab="security" role="tab">Security</button>
-    <button type="button" data-tab="verify" role="tab">Verification</button>
+    <button type="button" data-tab="security" role="tab">Security &amp; ID</button>
     <button type="button" data-tab="prefs" role="tab">Preferences</button>
     <button type="button" data-tab="limits" role="tab">Limits &amp; breaks</button>
-    <button type="button" data-tab="wallet" role="tab">Wallet</button>
-    <button type="button" data-tab="activity" role="tab">Activity</button>
-    <button type="button" data-tab="referral" role="tab">Referral</button>
+    <button type="button" data-tab="wallet" role="tab">Wallet &amp; activity</button>
   </nav>
 
   <div class="acct-pane on" data-pane="profile">
@@ -4843,31 +5028,20 @@ window.PB = (function(){
     </div>
   </div>
 
-  <div class="acct-pane" data-pane="referral">
-    <div class="pscard ch-sec">
-      <div class="kick">Referral coms · 0.5% of every wager</div>
+  <div class="acct-pane" data-pane="profile" data-sub="referral">
+    <div class="pscard ch-sec ch-ref">
+      <div class="ch-actrow" style="margin-top:0"><div class="kick">Referrals</div><span class="meta">25% of the house edge on everything they play</span></div>
       <div class="af-linkrow" style="margin-top:4px">
         <input id="chLink" type="text" readonly value="https://pain.bet/r/PB-728423">
         <button class="af-copy" id="chCopy" type="button">Copy link</button>
       </div>
-      <div class="ch-refstats">
-        <div class="ch-rs"><b>14</b><span>Referrals</span></div>
-        <div class="ch-rs"><b>9</b><span>Active this month</span></div>
-        <div class="ch-rs"><b>182,400</b><span>Referred wager · USDT</span></div>
-        <div class="ch-rs"><b>912.00</b><span>Earned lifetime · USDT</span></div>
-      </div>
-      <table class="ch-comtbl">
-        <thead><tr><th>Date</th><th>Patient</th><th>Wagered</th><th style="text-align:right">Com</th></tr></thead>
-        <tbody>
-          <tr><td>28 Jul</td><td>PB-9917</td><td>12,600</td><td class="amt">+63.00</td></tr>
-          <tr><td>27 Jul</td><td>PB-8804</td><td>7,150</td><td class="amt">+35.75</td></tr>
-          <tr><td>27 Jul</td><td>PB-9917</td><td>3,980</td><td class="amt">+19.90</td></tr>
-          <tr><td>26 Jul</td><td>PB-7712</td><td>1,950</td><td class="amt">+9.75</td></tr>
-        </tbody>
-      </table>
-      <div class="ch-unpaid">
-        <div><span>Unpaid balance</span><b>128.40 USDT</b></div>
-        <button class="ch-btn" id="chPayout" type="button">Withdraw to wallet</button>
+      <div class="ch-refrow">
+        <div class="ch-rs"><b>14</b><span>Referred patients</span></div>
+        <div class="ch-rs"><b>128.40</b><span>Unpaid · USDT</span></div>
+        <div class="ch-refbtns">
+          <button class="ch-btn" id="chPayout" type="button">Withdraw to wallet</button>
+          <button class="ch-btn alt" id="chGoAff" type="button">Open Affiliate</button>
+        </div>
       </div>
       <div class="ch-note" id="chPaid">Sent. Watch your wallet, it will not take long.</div>
     </div>
@@ -4957,7 +5131,7 @@ window.PB = (function(){
     </div>
   </div>
 
-  <div class="acct-pane" data-pane="verify">
+  <div class="acct-pane" data-pane="security" data-sub="verify">
   <div class="pscard" id="chKyc" style="margin-top:16px">
     <div class="ch-actrow"><div class="kick">Verification</div><span class="meta" id="kycTierLabel">Tier 0 &middot; unverified</span></div>
 
@@ -5006,24 +5180,29 @@ window.PB = (function(){
       not by you, and not by support.</p>
 
     <div class="rg-limits">
-      <div class="rg-head"><span></span><span>Daily</span><span>Weekly</span><span>Monthly</span></div>
-      <div class="rg-line" data-kind="deposit">
+      <div class="rg-line" data-kind="deposit" data-sel="daily">
         <span class="rg-name">Deposit limit<i>USDT you can add</i></span>
-        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily deposit limit">
-        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly deposit limit">
-        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly deposit limit">
+        <div class="rg-seg" role="group" aria-label="Deposit limit period">
+          <button type="button" data-p="daily" class="on">Daily</button><button type="button" data-p="weekly">Weekly</button><button type="button" data-p="monthly">Monthly</button>
+        </div>
+        <label class="rg-amt"><input type="number" min="0" step="1" data-period="daily" placeholder="No limit" aria-label="Daily deposit limit"><input type="number" min="0" step="1" data-period="weekly" placeholder="No limit" aria-label="Weekly deposit limit"><input type="number" min="0" step="1" data-period="monthly" placeholder="No limit" aria-label="Monthly deposit limit"><span>USDT</span></label>
+        <div class="rg-use" data-verb="deposited"><div class="rg-bar"><i></i></div><span class="rg-usetxt"></span></div>
       </div>
-      <div class="rg-line" data-kind="loss">
-        <span class="rg-name">Loss limit<i>net losses before play stops</i></span>
-        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily loss limit">
-        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly loss limit">
-        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly loss limit">
+      <div class="rg-line" data-kind="loss" data-sel="daily">
+        <span class="rg-name">Loss limit<i>Net losses before play stops</i></span>
+        <div class="rg-seg" role="group" aria-label="Loss limit period">
+          <button type="button" data-p="daily" class="on">Daily</button><button type="button" data-p="weekly">Weekly</button><button type="button" data-p="monthly">Monthly</button>
+        </div>
+        <label class="rg-amt"><input type="number" min="0" step="1" data-period="daily" placeholder="No limit" aria-label="Daily loss limit"><input type="number" min="0" step="1" data-period="weekly" placeholder="No limit" aria-label="Weekly loss limit"><input type="number" min="0" step="1" data-period="monthly" placeholder="No limit" aria-label="Monthly loss limit"><span>USDT</span></label>
+        <div class="rg-use" data-verb="lost"><div class="rg-bar"><i></i></div><span class="rg-usetxt"></span></div>
       </div>
-      <div class="rg-line" data-kind="wager">
-        <span class="rg-name">Wager limit<i>total staked</i></span>
-        <input type="number" min="0" step="1" data-period="daily" placeholder="None" aria-label="Daily wager limit">
-        <input type="number" min="0" step="1" data-period="weekly" placeholder="None" aria-label="Weekly wager limit">
-        <input type="number" min="0" step="1" data-period="monthly" placeholder="None" aria-label="Monthly wager limit">
+      <div class="rg-line" data-kind="wager" data-sel="daily">
+        <span class="rg-name">Wager limit<i>Total staked</i></span>
+        <div class="rg-seg" role="group" aria-label="Wager limit period">
+          <button type="button" data-p="daily" class="on">Daily</button><button type="button" data-p="weekly">Weekly</button><button type="button" data-p="monthly">Monthly</button>
+        </div>
+        <label class="rg-amt"><input type="number" min="0" step="1" data-period="daily" placeholder="No limit" aria-label="Daily wager limit"><input type="number" min="0" step="1" data-period="weekly" placeholder="No limit" aria-label="Weekly wager limit"><input type="number" min="0" step="1" data-period="monthly" placeholder="No limit" aria-label="Monthly wager limit"><span>USDT</span></label>
+        <div class="rg-use" data-verb="staked"><div class="rg-bar"><i></i></div><span class="rg-usetxt"></span></div>
       </div>
     </div>
     <div class="ch-actions" style="margin-top:12px">
@@ -5074,34 +5253,6 @@ window.PB = (function(){
   </div>
   </div>
 
-  <div class="acct-pane" data-pane="activity">
-  <div class="pscard" id="chActivity" style="margin-top:16px">
-    <div class="ch-actrow"><div class="kick">Game activity</div><span class="meta">Casino rounds · this patient record</span></div>
-    <p class="rg-sub" style="margin-top:2px">Every Pain Original round can be re-derived from its seeds. Verify
-      opens the checker with that round already filled in — you never have to copy anything by hand.</p>
-    <table class="ch-comtbl">
-      <thead><tr><th>Time</th><th>Game</th><th>Stake</th><th>Multiplier</th><th class="r">Payout</th><th class="r">Fairness</th></tr></thead>
-      <tbody>
-        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="418"><td>Today 04:12</td><td>FLATLINE</td><td>25.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-25.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
-        <tr><td>Today 03:58</td><td>Sweet Bonanza 1000</td><td>10.00</td><td>14.60x</td><td class="r"><span class="ch-pill win">+146.00</span></td><td class="r"><span class="vfy-na" title="Third-party provider — fairness is certified by the provider, not seed-verified here">Provider</span></td></tr>
-        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="417"><td>Today 03:41</td><td>BONESAW</td><td>15.00</td><td>3.20x</td><td class="r"><span class="ch-pill win">+48.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
-        <tr><td>Yesterday 22:07</td><td>Crazy Time</td><td>50.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-50.00</span></td><td class="r"><span class="vfy-na" title="Third-party provider — fairness is certified by the provider, not seed-verified here">Provider</span></td></tr>
-        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="416"><td>Yesterday 21:50</td><td>NERVE</td><td>20.00</td><td>1.80x</td><td class="r"><span class="ch-pill win">+36.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
-        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="415"><td>Yesterday 21:30</td><td>DOSAGE</td><td>10.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-10.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="pscard" style="margin-top:16px">
-    <div class="ch-actrow"><div class="kick">Sportsbook activity</div><span class="meta">Live · from your bet slip</span></div>
-    <table class="ch-comtbl">
-      <thead><tr><th>Time</th><th>Match &middot; pick</th><th>Stake</th><th class="r">Status</th></tr></thead>
-      <tbody id="chSportsBody"><tr><td colspan="4" class="ch-empty">No bets placed yet.</td></tr></tbody>
-    </table>
-  </div>
-
-  </div>
-
   <div class="acct-pane" data-pane="wallet">
     <div class="pscard" id="pwCard" hidden>
       <div class="ch-actrow"><div class="kick">In flight</div><span class="meta">Cancel any time before it's signed</span></div>
@@ -5137,6 +5288,34 @@ window.PB = (function(){
       </tbody>
     </table>
   </div>
+  </div>
+
+  <div class="acct-pane" data-pane="wallet" data-sub="activity">
+  <div class="pscard" id="chActivity" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Game activity</div><span class="meta">Casino rounds · this patient record</span></div>
+    <p class="rg-sub" style="margin-top:2px">Every Pain Original round can be re-derived from its seeds. Verify
+      opens the checker with that round already filled in — you never have to copy anything by hand.</p>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Game</th><th>Stake</th><th>Multiplier</th><th class="r">Payout</th><th class="r">Fairness</th></tr></thead>
+      <tbody>
+        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="418"><td>Today 04:12</td><td>FLATLINE</td><td>25.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-25.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
+        <tr><td>Today 03:58</td><td>Sweet Bonanza 1000</td><td>10.00</td><td>14.60x</td><td class="r"><span class="ch-pill win">+146.00</span></td><td class="r"><span class="vfy-na" title="Third-party provider — fairness is certified by the provider, not seed-verified here">Provider</span></td></tr>
+        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="417"><td>Today 03:41</td><td>BONESAW</td><td>15.00</td><td>3.20x</td><td class="r"><span class="ch-pill win">+48.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
+        <tr><td>Yesterday 22:07</td><td>Crazy Time</td><td>50.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-50.00</span></td><td class="r"><span class="vfy-na" title="Third-party provider — fairness is certified by the provider, not seed-verified here">Provider</span></td></tr>
+        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="416"><td>Yesterday 21:50</td><td>NERVE</td><td>20.00</td><td>1.80x</td><td class="r"><span class="ch-pill win">+36.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
+        <tr data-server="a3f1c9d7e2b48605" data-client="wardrat-77" data-nonce="415"><td>Yesterday 21:30</td><td>DOSAGE</td><td>10.00</td><td>0.00x</td><td class="r"><span class="ch-pill loss">-10.00</span></td><td class="r"><button class="vfy" type="button">Verify</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pscard" style="margin-top:16px">
+    <div class="ch-actrow"><div class="kick">Sportsbook activity</div><span class="meta">Live · from your bet slip</span></div>
+    <table class="ch-comtbl">
+      <thead><tr><th>Time</th><th>Match &middot; pick</th><th>Stake</th><th class="r">Status</th></tr></thead>
+      <tbody id="chSportsBody"><tr><td colspan="4" class="ch-empty">No bets placed yet.</td></tr></tbody>
+    </table>
+  </div>
+
   </div>
 </section>
 
@@ -9659,6 +9838,118 @@ document.querySelectorAll('.pgback').forEach(function(b){
 })();
 </script>
 
+<!-- The Chart header: wristband barcode, vitals readouts, per-limit period
+     switch and usage bars. Reads PB.state only; writes nothing. -->
+<script>
+(function(){
+  'use strict';
+  if(!window.PB) return;
+  var page = document.getElementById('chartPage');
+  if(!page) return;
+
+  // ---- wristband barcode, derived from the patient id ------------------
+  var idEl = document.getElementById('chBandId'), bars = document.getElementById('chBars');
+  function paintBars(){
+    var id = (idEl.textContent || '').replace(/\D/g,'') || '0', h = '';
+    var seq = ('1' + id + id.split('').reverse().join('') + id + '1').split('');
+    seq.forEach(function(d, n){
+      var w = 1 + (Number(d) % 3), gap = 1 + ((Number(d) + n) % 2);
+      h += '<i style="width:' + w + 'px;margin-right:' + gap + 'px"></i>';
+    });
+    bars.innerHTML = h;
+  }
+  new MutationObserver(paintBars).observe(idEl, {childList:true, characterData:true, subtree:true});
+  paintBars();
+
+  // ---- limit rows: one visible period per row -------------------------
+  var PER = { daily:'today', weekly:'this week', monthly:'this month' };
+  function limitOf(kind, per){ var v = (PB.state.rg.limits[kind] || {})[per]; return v == null ? null : v; }
+  function paintRow(line){
+    var kind = line.dataset.kind, per = line.dataset.sel;
+    line.querySelectorAll('.rg-seg button').forEach(function(b){
+      b.classList.toggle('on', b.dataset.p === per);
+      b.classList.toggle('set', limitOf(kind, b.dataset.p) != null);
+    });
+    line.querySelectorAll('.rg-amt input').forEach(function(inp){ inp.hidden = inp.dataset.period !== per; });
+    // Only a day counter exists in the state layer; the mock reads it for
+    // every period, so weekly and monthly show at least today's use.
+    var used = Math.max(0, Math.round((PB.state.counters || {})[kind] || 0));
+    var lim = limitOf(kind, per), use = line.querySelector('.rg-use');
+    var pend = (PB.state.rg.pending || []).filter(function(x){ return x.kind === kind && x.period === per; })[0];
+    var pct = lim ? Math.min(100, used / lim * 100) : 0;
+    use.querySelector('i').style.width = (lim ? Math.max(pct, used ? 2 : 0) : 0) + '%';
+    use.classList.toggle('none', !lim);
+    use.classList.toggle('hot', !!lim && pct >= 80);
+    use.querySelector('.rg-usetxt').innerHTML = lim
+      ? '<b>' + used.toLocaleString() + '</b> of ' + lim.toLocaleString() + ' USDT ' + use.dataset.verb + ' ' + PER[per] +
+        (pct >= 100 ? ' · <em>limit reached</em>' : '') +
+        (pend ? ' · rises to ' + pend.value.toLocaleString() + ' on ' + PB.fmtDate(pend.effectiveAt) : '')
+      : 'No ' + per + ' limit · ' + used.toLocaleString() + ' USDT ' + use.dataset.verb + ' ' + PER[per];
+  }
+  page.querySelectorAll('.rg-line').forEach(function(line){
+    line.querySelector('.rg-seg').addEventListener('click', function(e){
+      var b = e.target.closest('button[data-p]'); if(!b) return;
+      line.dataset.sel = b.dataset.p; paintRow(line);
+    });
+  });
+
+  // ---- vitals ---------------------------------------------------------
+  function ago(ts){
+    var m = Math.round((Date.now() - ts) / 6e4);
+    if(m < 60) return m + 'm ago'; if(m < 1440) return Math.round(m / 60) + 'h ago';
+    return Math.round(m / 1440) + 'd ago';
+  }
+  function paintVitals(){
+    var st = PB.state, lim = st.rg.limits;
+    var nLim = 0; ['deposit','loss','wager'].forEach(function(k){
+      ['daily','weekly','monthly'].forEach(function(p){ if((lim[k] || {})[p] != null) nLim++; }); });
+    var linked = Object.keys(st.linked || {}).some(function(k){ return st.linked[k]; });
+    var checks = [
+      { ok: !!(st.twofa && st.twofa.enabled), next:'Next: turn on 2FA', go:'security' },
+      { ok: !!st.emailVerified,               next:'Next: confirm your email', go:'security' },
+      { ok: st.verification.tier > 0,         next:'Next: verify your ID', go:'verify' },
+      { ok: nLim > 0,                         next:'Next: set a deposit limit', go:'limits' },
+      { ok: linked,                           next:'Next: link a backup sign-in', go:'profile' }
+    ];
+    var n = checks.filter(function(c){ return c.ok; }).length, miss = checks.filter(function(c){ return !c.ok; })[0];
+    document.getElementById('vitHealthN').textContent = n;
+    document.querySelectorAll('#vitPips i').forEach(function(p, k){ p.classList.toggle('on', checks[k].ok); });
+    var health = document.getElementById('vitHealth');
+    health.dataset.go = miss ? miss.go : 'security';
+    health.classList.toggle('good', n === 5); health.classList.toggle('low', n <= 2);
+    document.getElementById('vitNext').textContent = miss ? miss.next : 'All five in place';
+
+    var v = st.verification;
+    document.getElementById('vitTier').textContent = 'Tier ' + (v.tier > 0 ? 1 : 0);
+    document.getElementById('vitTierSub').textContent = v.tier > 0 ? 'Identified · no withdrawal cap'
+      : (v.submittedAt ? 'In review · usually under a day' : 'Unverified · withdrawals up to 2,000');
+
+    var pend = (st.rg.pending || []).length;
+    document.getElementById('vitLimits').textContent = nLim ? nLim + ' set' : 'None';
+    document.getElementById('vitLimitsSub').textContent = nLim
+      ? (pend ? pend + ' increase' + (pend > 1 ? 's' : '') + ' pending' : 'Lowering one is instant')
+      : 'Nothing caps your play';
+
+    var prev = (st.sessions || []).filter(function(x){ return !x.current; })
+      .sort(function(a, b){ return b.when - a.when; })[0];
+    document.getElementById('vitLast').textContent = prev ? prev.device : 'Only here';
+    document.getElementById('vitLastSub').textContent = prev ? prev.where + ' · ' + ago(prev.when) + ' · not you?' : 'No other devices';
+  }
+  document.getElementById('chVitals').addEventListener('click', function(e){
+    var c = e.target.closest('[data-go]'); if(c && PB.showAccountTab) PB.showAccountTab(c.dataset.go);
+  });
+
+  var aff = document.getElementById('chGoAff');
+  if(aff) aff.addEventListener('click', function(){
+    document.querySelectorAll('.side a').forEach(function(a){ if(a.textContent.trim() === 'Affiliate') a.click(); });
+  });
+
+  function paint(){ paintVitals(); page.querySelectorAll('.rg-line').forEach(paintRow); }
+  PB.onChange(paint);
+  paint();
+})();
+</script>
+
 <!-- ===================================================================
      Verification — logic spec §13.
      Threshold model: play and withdraw freely until cumulative lifetime
@@ -10010,7 +10301,12 @@ document.querySelectorAll('.pgback').forEach(function(b){
       showTab(b.dataset.tab);
     });
   }
+  // Verification, Activity and Referral were folded into other tabs; old
+  // links (bell menu, KYC prompts, account menu) still ask for them by name.
+  var TAB_ALIAS = { verify:'security', activity:'wallet', referral:'profile' };
   function showTab(name){
+    var sub = TAB_ALIAS[name] ? name : null;
+    name = TAB_ALIAS[name] || name;
     document.querySelectorAll('.acct-tabs button').forEach(function(b){
       b.classList.toggle('on', b.dataset.tab === name);
       b.setAttribute('aria-selected', b.dataset.tab === name ? 'true' : 'false');
@@ -10018,7 +10314,9 @@ document.querySelectorAll('.pgback').forEach(function(b){
     document.querySelectorAll('.acct-pane').forEach(function(p){
       p.classList.toggle('on', p.dataset.pane === name);
     });
-    window.scrollTo({top:0, behavior:'smooth'});
+    var target = sub && document.querySelector('.acct-pane[data-sub="' + sub + '"]');
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    else window.scrollTo({top:0, behavior:'smooth'});
   }
   PB.showAccountTab = showTab;
 
