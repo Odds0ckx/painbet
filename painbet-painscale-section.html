@@ -278,6 +278,46 @@ footer a:hover{color:var(--redhi)}
 .spec .vcap b{color:var(--blue)}
 .spec p{font-size:11px;color:var(--ink);line-height:1.5;margin-bottom:14px}
 .spec .foot{align-items:center;gap:8px;white-space:nowrap;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+
+/* ===== index-v2 console chrome, ported: solid milled panels with a soft top bevel
+   and deep shadow instead of borders/gradients; carbon-fiber micro-weave on the page
+   backdrop (never on the panels); raised clay buttons whose light flips on hover and
+   that sink when pressed; recessed milled wells for readouts, with the selected
+   segment (your tier) raised back out of its well. Values match index-v2.html. ===== */
+:root{--panel-bg:#101217;--panel-weave:#16181c;--clay-top:#20242b;--clay-base:#171a21;--milled-dark:#0a0b0e}
+html{background-color:#101114;background-image:
+  linear-gradient(45deg,var(--panel-weave) 25%,transparent 25%),
+  linear-gradient(-45deg,var(--panel-weave) 25%,transparent 25%),
+  linear-gradient(45deg,transparent 75%,var(--panel-weave) 75%),
+  linear-gradient(-45deg,transparent 75%,var(--panel-weave) 75%);
+  background-size:4px 4px}
+.dosimeter,.panel,.spec{background:var(--panel-bg);border:0;border-radius:18px;
+  box-shadow:0 20px 40px rgba(0,0,0,.55),inset 0 2px 4px rgba(255,255,255,.06)}
+.spec:hover{box-shadow:0 24px 44px rgba(0,0,0,.6),inset 0 2px 4px rgba(255,255,255,.06),0 0 0 1px rgba(255,59,51,.25)}
+.spec.blue:hover{box-shadow:0 24px 44px rgba(0,0,0,.6),inset 0 2px 4px rgba(255,255,255,.06),0 0 0 1px rgba(127,214,232,.3)}
+/* milled wells */
+.readout{background:radial-gradient(ellipse at 50% -10%, rgba(225,6,0,.14), transparent 60%),var(--milled-dark);box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+.directive,.panel-head .active-pill,.pagehead .tag,.spec .no{background:var(--milled-dark);box-shadow:inset 0 2px 5px rgba(0,0,0,.6)}
+.tube{background:var(--milled-dark);box-shadow:inset 0 3px 10px rgba(0,0,0,.8)}
+.spec .ic{box-shadow:inset 0 2px 5px rgba(0,0,0,.55)}
+/* tier bands: each sits in a milled well; your tier is raised back out of it */
+.ladder .trow{background:var(--milled-dark);box-shadow:inset 0 2px 5px rgba(0,0,0,.6);transition:all .2s cubic-bezier(.16,1,.3,1)}
+.ladder .trow:hover{background:#0e1014;transform:none}
+.ladder .trow.active{background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
+  box-shadow:0 6px 12px rgba(0,0,0,.45),inset 0 1px 2px rgba(255,255,255,.1),0 0 22px -8px rgba(255,59,51,.6)}
+.ladder .trow.active .name{color:var(--redhi);text-shadow:0 0 12px rgba(224,22,60,.7)}
+.ladder .trow.blue{background:linear-gradient(0deg,rgba(127,214,232,.06),rgba(127,214,232,.1)),var(--milled-dark)}
+/* clay buttons */
+.btn{border:0;transition:all .2s cubic-bezier(.16,1,.3,1)}
+.btn-ghost{color:var(--ink-hi);background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
+  box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1)}
+.btn-ghost:hover{color:#fff;background:linear-gradient(315deg,var(--clay-top),var(--clay-base));
+  box-shadow:0 8px 16px rgba(0,0,0,.45),inset 0 -1px 2px rgba(255,255,255,.16),inset 0 2px 3px rgba(0,0,0,.4)}
+.btn-primary{background:linear-gradient(135deg,#f0264c,var(--red));
+  box-shadow:0 6px 12px rgba(0,0,0,.45),0 0 18px rgba(224,22,60,.3),inset 0 1px 2px rgba(255,255,255,.22)}
+.btn-primary:hover{filter:none;background:linear-gradient(315deg,#ff3459,#e8214a);
+  box-shadow:0 8px 16px rgba(0,0,0,.5),0 0 26px rgba(224,22,60,.45),inset 0 -1px 2px rgba(255,255,255,.28)}
+.btn-ghost:active,.btn-primary:active{transform:scale(.96);box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 3px 6px rgba(0,0,0,.7)}
 </style>
 </head>
 <body>
