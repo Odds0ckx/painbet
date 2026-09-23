@@ -1725,6 +1725,27 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .syn-stage.firing .syn-fire-tag{opacity:1}
 .v5m .rd-phases em{font-style:normal}
 @media(max-width:560px){.v5m .rd-phases{font-size:9px}.v5m .rd-phases em{display:none}.v5m .rd-hp-top .v b{font-size:21px}}
+/* Threshold Raid on the index-v2 console chrome (see CLAUDE.md): the section is a
+   solid console panel, the panels inside it are recessed milled wells, readout
+   tiles and your board row are raised clay segments, the CTA is red clay. */
+#view-synapse.v5m .blk{background:var(--panel-bg);backdrop-filter:none;border:0;border-radius:18px;
+  box-shadow:0 20px 40px rgba(0,0,0,.55),inset 0 2px 4px var(--shadow-light)}
+#view-synapse.v5m .panel{background:var(--milled-dark);border-radius:14px;box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+#view-synapse.v5m .panel h4{border-bottom-color:hsla(0,0%,100%,.04)}
+#view-synapse.v5m .syn-stage{background:radial-gradient(ellipse at 60% 55%,rgba(60,4,3,.45),var(--milled-dark) 72%)}
+#view-synapse.v5m .syn-metastrip>div{background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
+  box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1)}
+#view-synapse.v5m .rd-timer{background:var(--milled-dark);box-shadow:inset 0 2px 5px rgba(0,0,0,.6)}
+#view-synapse.v5m .rd-hpbar,#view-synapse.v5m .rd-tierbar{background:#060708;box-shadow:inset 0 2px 5px rgba(0,0,0,.8)}
+#view-synapse.v5m .rd-hits div{background:rgba(6,7,8,.72);box-shadow:inset 0 1px 3px rgba(0,0,0,.6)}
+#view-synapse.v5m .rd-bsplit span{background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 3px 6px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.08)}
+#view-synapse.v5m .btn-red{background:linear-gradient(135deg,#f0264c,var(--blood));border:0;
+  box-shadow:0 6px 12px rgba(0,0,0,.45),0 0 18px rgba(224,22,60,.3),inset 0 1px 2px rgba(255,255,255,.22);transition:all .2s cubic-bezier(.16,1,.3,1)}
+#view-synapse.v5m .btn-red:hover{transform:none;background:linear-gradient(315deg,#ff3459,#e8214a);
+  box-shadow:0 8px 16px rgba(0,0,0,.5),0 0 26px rgba(224,22,60,.45),inset 0 -1px 2px rgba(255,255,255,.28)}
+#view-synapse.v5m .btn-red:active{transform:scale(.96);box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 3px 6px rgba(0,0,0,.7)}
+#view-synapse.v5m #syn-lb tr.you{background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 4px 10px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,255,255,.08)}
+#view-synapse.v5m #syn-lb tr.you td.u{color:var(--redhi);text-shadow:0 0 12px rgba(224,22,60,.7)}
 /* v5: restore generated promo banner artwork (home + promotions views only) */
 #view-home .promo.hero-promo, #view-promos.v5m .promo.hero-promo{
   background-image:linear-gradient(90deg,rgba(12,12,12,.97) 0%,rgba(12,12,12,.86) 32%,rgba(12,12,12,.35) 58%,rgba(12,12,12,.05) 78%),url('assets/promo/welcome-dose-bg.png');
