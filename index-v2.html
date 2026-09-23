@@ -1403,6 +1403,61 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .ax-live-row{margin-top:14px}
 @media(max-width:960px){.v5m .ax-live-row{grid-template-columns:1fr}}
 .v5m .ax-monitor{position:relative;background:#0b0d0e;border-radius:var(--r-lg);padding:20px 18px 16px;overflow:hidden;border:1px solid rgba(127,214,232,.15);box-shadow:var(--shadow)}
+/* Anesthesia rework: one live readout (no loss-to-fill bar), a per-tier weekly cap,
+   8-week dose history, and the next-rate chip instead of the full tier table.
+   On the index-v2 console chrome: the section is a console panel, the panels are
+   milled wells, chips and the link button are raised clay. */
+#view-anesthesia.v5m .blk{background:var(--panel-bg);backdrop-filter:none;border:0;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.55),inset 0 2px 4px var(--shadow-light)}
+#view-anesthesia .ax-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:900px){#view-anesthesia .ax-grid{grid-template-columns:1fr}}
+#view-anesthesia.v5m .ax-monitor,#view-anesthesia .ax-panel{background:var(--milled-dark);border:0;border-radius:14px;box-shadow:inset 0 3px 8px rgba(0,0,0,.7)}
+#view-anesthesia .ax-panel{padding:18px 20px;display:flex;flex-direction:column}
+#view-anesthesia .ax-k{display:flex;align-items:center;gap:7px;font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+#view-anesthesia .ax-k .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue);animation:pk-blink 1.6s ease-in-out infinite}
+#view-anesthesia .ax-k-r{margin-left:auto;color:var(--ink-lo);letter-spacing:.1em}
+#view-anesthesia .ax-k-r b{color:var(--blue)}
+#view-anesthesia .ax-row3{display:grid;grid-template-columns:1fr auto 1.2fr;gap:10px;align-items:end}
+#view-anesthesia .ax-row3>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+#view-anesthesia .ax-row3 small{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo)}
+#view-anesthesia .ax-row3 b{font-weight:800;font-size:15px;color:#fff;white-space:nowrap}
+#view-anesthesia .ax-row3 b.loss{color:var(--redhi)}
+#view-anesthesia .ax-row3 b.win{color:var(--ink-hi)}
+#view-anesthesia .ax-row3 .dose{align-items:flex-end;text-align:right}
+#view-anesthesia .ax-row3 .dose b{font-family:var(--disp);font-weight:400;font-size:34px;line-height:1;color:var(--blue);text-shadow:0 0 16px rgba(127,214,232,.35)}
+#view-anesthesia .ax-row3 .dose em{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--ink-lo)}
+#view-anesthesia .ax-cover{margin-top:16px;padding:11px 13px;border-radius:10px;background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 4px 10px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,255,255,.08);font-size:11.5px;line-height:1.5;color:var(--ink)}
+#view-anesthesia .ax-cover b{color:var(--blue)}
+#view-anesthesia .ax-rg{margin-top:auto;padding-top:12px;font-size:10.5px;color:var(--ink-lo);line-height:1.5}
+#view-anesthesia .ax-rg button{background:none;border:0;padding:0;font:inherit;color:var(--ink-hi);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+#view-anesthesia .ax-hist{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;align-items:end;height:130px}
+#view-anesthesia .ax-hist .b{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%;min-width:0}
+#view-anesthesia .ax-hist .v{font-size:9.5px;font-weight:800;color:var(--blue);white-space:nowrap}
+#view-anesthesia .ax-hist .bar{width:100%;max-width:30px;border-radius:5px 5px 2px 2px;background:linear-gradient(0deg,#2e6f7c,var(--blue));box-shadow:0 0 10px rgba(127,214,232,.25)}
+#view-anesthesia .ax-hist .clean .v{color:var(--ink-lo)}
+#view-anesthesia .ax-hist .clean .bar{height:6px!important;background:none;box-shadow:none;border:1px dashed hsla(0,0%,100%,.2)}
+#view-anesthesia .ax-hist .d{font-family:var(--mono);font-size:8.5px;color:var(--ink-lo);white-space:nowrap}
+#view-anesthesia .ax-histnote{margin-top:12px;font-size:10.5px;color:var(--ink-lo)}
+#view-anesthesia .ax-next{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+#view-anesthesia .ax-rate{display:flex;align-items:baseline;gap:8px;font-family:var(--disp)}
+#view-anesthesia .ax-rate b{font-weight:400;font-size:30px;color:var(--redhi)}
+#view-anesthesia .ax-rate b.bl{font-size:36px;color:var(--blue);text-shadow:0 0 14px rgba(127,214,232,.35)}
+#view-anesthesia .ax-rate span{color:var(--ink-lo);font-size:16px}
+#view-anesthesia .ax-next-t{font-size:11.5px;color:var(--ink)}
+#view-anesthesia .ax-next-t b{color:var(--blue)}
+#view-anesthesia .ax-nbar{position:relative;height:6px;margin:14px 0 6px;border-radius:3px;background:#060708;box-shadow:inset 0 2px 4px rgba(0,0,0,.8)}
+#view-anesthesia .ax-nbar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,var(--red-deep),var(--redhi));box-shadow:0 0 8px rgba(255,36,80,.45)}
+#view-anesthesia .ax-nends{display:flex;justify-content:space-between;font-size:9px;font-weight:700;color:var(--ink-lo)}
+#view-anesthesia .ax-nends .you{color:#fff}
+#view-anesthesia .bl{color:var(--blue)}
+#view-anesthesia .ax-capup{margin-top:14px;font-size:11.5px;color:var(--ink)}
+#view-anesthesia .ax-capup b{color:#fff}
+#view-anesthesia .ax-capup b.bl{color:var(--blue)}
+#view-anesthesia .ax-link{margin-top:auto;align-self:flex-start;margin-top:16px;border:0;border-radius:10px;padding:10px 16px;font-weight:800;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-hi);cursor:pointer;
+  background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1);transition:all .2s cubic-bezier(.16,1,.3,1)}
+#view-anesthesia .ax-link:hover{color:#fff;background:linear-gradient(315deg,var(--clay-top),var(--clay-base));box-shadow:0 8px 16px rgba(0,0,0,.45),inset 0 -1px 2px rgba(255,255,255,.16),inset 0 2px 3px rgba(0,0,0,.4)}
+#view-anesthesia .ax-link:active{transform:scale(.96);box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 3px 6px rgba(0,0,0,.7)}
+#view-anesthesia .ax-hist .d em{font-style:normal}
+@media(max-width:520px){#view-anesthesia .ax-hist .d em{display:none}#view-anesthesia .ax-hist{gap:5px}#view-anesthesia .ax-row3{grid-template-columns:1fr 1fr}#view-anesthesia .ax-row3 .dose{grid-column:1/-1;align-items:flex-start;text-align:left}}
 .v5m .ax-monitor::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(255,255,255,.012) 2px 4px);pointer-events:none}
 .v5m .ax-scan{position:absolute;left:0;right:0;height:46px;top:-46px;background:linear-gradient(to bottom,transparent,rgba(127,214,232,.045),transparent);animation:ax-scan 5s linear infinite;pointer-events:none}
 
@@ -5480,7 +5535,7 @@ document.querySelectorAll('#painPage #ladder .trow').forEach(row=>{
         <section class="blk">
           <div class="sec-head"><h2>Anesthesia</h2><div class="tag">Weekly cashback · paid Monday 00:00 UTC · no wagering</div></div>
 
-          <div class="promos ax-live-row">
+          <div class="ax-grid">
             <div class="ax-monitor">
               <div class="ax-scan"></div>
               <div class="ax-montop"><span class="id">Next dose</span><span class="rec"><span class="dot"></span>Scheduled</span></div>
@@ -5491,41 +5546,36 @@ document.querySelectorAll('#painPage #ladder .trow').forEach(row=>{
                 <div class="cell"><div class="n" id="ax-cd-s">00</div><div class="u">Sec</div></div>
               </div>
               <div class="ax-ekgline"><svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path d="M0 24 H120 L135 24 145 6 155 36 165 24 H400 L415 24 425 6 435 36 445 24 H600 M600 24 H720 L735 24 745 6 755 36 765 24 H1000 L1015 24 1025 6 1035 36 1045 24 H1200" stroke="#7FD6E8" stroke-width="2" fill="none"/></svg></div>
-              <div class="ax-monfoot"><span>Projected dose <b>32.96 USDT</b></span><span>Straight to balance · no wagering</span></div>
+              <div class="ax-monfoot"><span>Projected dose <b id="ax-dose2">32.96 USDT</b></span><span>Straight to balance · no wagering</span></div>
             </div>
 
-            <div class="promo" style="padding:18px">
-              <div class="k" style="color:var(--blue)">This week · live</div>
-              <div class="ax-gnums">
-                <div class="loss"><div class="n" id="ax-loss">−412</div><small>Net loss · USDT</small></div>
-                <div class="back"><div class="n" id="ax-back">32.96</div><small>Monday dose · 8%</small></div>
+            <div class="ax-panel ax-week">
+              <div class="ax-k"><span class="dot"></span>This week · live</div>
+              <div class="ax-row3">
+                <div><small>Net result</small><b class="loss" id="ax-net">−412 USDT</b></div>
+                <div><small>Your rate · Agony</small><b>8%</b></div>
+                <div class="dose"><small>Monday dose</small><b id="ax-dose">32.96</b><em>USDT</em></div>
               </div>
-              <div class="ax-bloodbar"><div class="fill" id="ax-fill"></div><div class="refline" id="ax-ref"></div></div>
-              <div class="ax-gscale"><i style="left:0%">0</i><i style="left:25%">250</i><i style="left:50%">500</i><i style="left:75%">750</i><i style="left:100%">1,000</i></div>
-              <div class="ax-gnote">A winning week pays zero and nothing carries over. Every extra 100 lost this week is <b>+8.00 USDT</b> back on Monday.</div>
+              <div class="ax-cover" id="ax-cover"><b>8%</b> of this week's net loss comes back on Monday, capped at <b>500 USDT</b> at your tier. A winning week pays nothing and nothing carries over.</div>
+              <div class="ax-rg">Anesthesia softens a losing week. It isn't a reason to play one. <button type="button" onclick="openLegal('rg')">Set a deposit limit</button> · <button type="button" onclick="openLegal('rg')">Take a break</button></div>
             </div>
-          </div>
 
-          <div class="promos" style="margin-top:14px">
-            <div class="promo blue-promo" style="padding:20px">
-              <div class="k">This week</div>
-              <div class="trk-list">
-                <div class="trk"><div class="t">Net position · Monday to now</div><span class="trk-st">−412 USDT</span></div>
-                <div class="trk"><div class="t">Your rate · Agony</div><span class="trk-st ok">8%</span></div>
-                <div class="trk total"><div class="t">Projected Monday payout</div><span class="trk-st" style="color:var(--blue)">32.96 USDT</span></div>
-              </div>
-              <p class="mnote" style="margin-top:10px">Computed on real money net losses only. A winning week pays zero, nothing carries over. Paid to balance in USDT, no claim step.</p>
+            <div class="ax-panel">
+              <div class="ax-k">Last 8 doses <span class="ax-k-r">Total <b id="ax-histtotal">0 USDT</b></span></div>
+              <div class="ax-hist" id="ax-hist"></div>
+              <div class="ax-histnote">Clean weeks, where you finished up, pay no dose.</div>
             </div>
-            <div class="promo" style="padding:20px">
-              <div class="k" style="color:var(--redhi)">Rate by tier</div>
-              <div class="trk-list">
-                <div class="trk"><div class="t">Numb · 0</div><span class="trk-st">0%</span></div>
-                <div class="trk"><div class="t">Sting · 1–2</div><span class="trk-st">2%</span></div>
-                <div class="trk"><div class="t">Ache · 3–4</div><span class="trk-st">4%</span></div>
-                <div class="trk"><div class="t">Burn · 5–6</div><span class="trk-st">6%</span></div>
-                <div class="trk" style="outline:1px solid var(--red-dim)"><div class="t">Agony · 7–8 · you</div><span class="trk-st" style="color:var(--redhi)">8%</span></div>
-                <div class="trk"><div class="t">Threshold · 9–10</div><span class="trk-st">10%</span></div>
+
+            <div class="ax-panel">
+              <div class="ax-k">Your rate</div>
+              <div class="ax-next">
+                <div class="ax-rate"><b>8%</b><span>→</span><b class="bl">10%</b></div>
+                <div class="ax-next-t">at <b>Threshold</b> · <span>108K USDT to go</span></div>
               </div>
+              <div class="ax-nbar"><i style="width:55%"></i></div>
+              <div class="ax-nends"><span>Agony · 480K</span><span class="you">612K wagered</span><span class="bl">720K</span></div>
+              <div class="ax-capup">Your weekly cap rises too: <b>500</b> → <b class="bl">1,000 USDT</b></div>
+              <button type="button" class="ax-link" id="ax-topain">See the Pain Scale →</button>
             </div>
           </div>
         </section>
@@ -7543,24 +7593,43 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   setInterval(tickCountdown, 250);
   tickCountdown();
 
-  // -- blood loss gauge: net position drifts as mock bets settle --
-  const MAX = 1000, RATE = 0.08;
-  let loss = 412;
-  const lossEl = document.getElementById('ax-loss'), backEl = document.getElementById('ax-back'),
-        fillEl = document.getElementById('ax-fill'), refEl = document.getElementById('ax-ref');
-  function renderGauge(){
-    if(lossEl) lossEl.textContent = '−'+fmt(loss);
-    if(backEl) backEl.textContent = (loss*RATE).toFixed(2);
-    const p = Math.min(100, loss/MAX*100);
-    if(fillEl) fillEl.style.width = p+'%';
-    if(refEl) refEl.style.left = p+'%';
+  // -- this week: one live readout. Net result drifts as mock bets settle; the dose is
+  // RATE x net loss, capped per tier, and zero on a winning week. --
+  const RATE = 0.08, CAP = 500;
+  let net = -412;                                  // negative = down on the week
+  const netEl = document.getElementById('ax-net'), doseEl = document.getElementById('ax-dose'), dose2El = document.getElementById('ax-dose2');
+  function renderWeek(){
+    const dose = net < 0 ? Math.min(CAP, -net*RATE) : 0;
+    if(netEl){ netEl.textContent = (net<0?'−':'+')+fmt(Math.abs(net))+' USDT'; netEl.className = net<0 ? 'loss' : 'win'; }
+    if(doseEl) doseEl.textContent = dose.toFixed(2);
+    if(dose2El) dose2El.textContent = dose.toFixed(2)+' USDT';
   }
   setInterval(() => {
     if(!isOn()) return;
-    loss = Math.max(0, loss + (Math.random() < 0.68 ? Math.random()*22 : -Math.random()*30));
-    renderGauge();
+    net += (Math.random() < 0.55 ? -Math.random()*18 : Math.random()*20);
+    renderWeek();
   }, 1300);
-  renderGauge();
+  renderWeek();
+
+  // -- last 8 Mondays (mock history; 0 = clean week) --
+  const HIST = [18.40, 0, 41.20, 27.85, 0, 12.10, 36.00, 22.64];
+  const histEl = document.getElementById('ax-hist'), histTot = document.getElementById('ax-histtotal');
+  if(histEl){
+    const top = Math.max(...HIST), mon = nextMonday();
+    histEl.innerHTML = HIST.map((v,i) => {
+      const d = new Date(mon); d.setUTCDate(d.getUTCDate() - 7*(HIST.length-i));
+      const lbl = String(d.getUTCDate()).padStart(2,'0')+'<em> '+d.toLocaleString('en-US',{month:'short',timeZone:'UTC'})+'</em>';
+      return v > 0
+        ? `<div class="b"><span class="v">${v.toFixed(2)}</span><div class="bar" style="height:${Math.max(8, v/top*92)}px"></div><span class="d">${lbl}</span></div>`
+        : `<div class="b clean"><span class="v">Clean</span><div class="bar"></div><span class="d">${lbl}</span></div>`;
+    }).join('');
+    if(histTot) histTot.textContent = HIST.reduce((s,v)=>s+v,0).toFixed(2)+' USDT';
+  }
+  const toPain = document.getElementById('ax-topain');
+  if(toPain) toPain.addEventListener('click', () => {
+    const a = [...document.querySelectorAll('.side a')].find(x => x.textContent.trim().toLowerCase() === 'pain scale');
+    if(a) a.click();
+  });
 })();
 </script>
 
