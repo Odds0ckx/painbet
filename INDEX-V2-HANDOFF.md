@@ -1,6 +1,6 @@
 # index-v2.html — Session Handoff
 
-_Last updated: 2026-09-18. Hand this file to a new chat to continue the `index-v2.html` lobby experiment with full context._
+_Last updated: 2026-09-23. Hand this file to a new chat to continue the `index-v2.html` lobby experiment with full context._
 
 Read `HANDOFF.md` first for the overall project (brand rules, token system, how `index.html` is structured). This file only covers the **`index-v2.html`** workstream.
 
@@ -25,6 +25,23 @@ A **full copy of `index.html`** created as a layout sandbox for redesigning the 
 8. **Sidebar group labels** (`.side .grp` — "Casino" / "Pain system" / "More") — switched from `--mono` to `--disp` (Archivo Black), recolored to `#ed2749`, and the colored dot markers (`.grp::before`) were removed entirely.
 9. **Sidebar active-link color** — `.side a.on` text color changed to `#ed2749` in both places it's declared (base rule and the later clay-controls override — see gotcha below).
 10. **Cockpit cards borderless** — `.cd-with` and `.cd-agony` both dropped their `border:1px solid var(--glass-border)` and now use a flat `background:#16191e` instead of `var(--glass)`.
+
+## Page reworks — 2026-09-23 session (PRs #183–#193)
+
+Every Pain-system page plus Affiliate and Triage was reworked, each through a screenshot → go-ahead → commit → PR loop. Full rationale lives in the shared doc "pain.bet index-v2 updates — what changed and why". Grep the class prefix to find each block; every page's new CSS is scoped to its view id.
+
+| Page (view id) | What changed | CSS/JS prefix |
+| --- | --- | --- |
+| PainKillers (`#view-pk`) | Wallet drip → CSS-only syringe IV (10s seamless loop; standalone copy `painbet-syringe-drip.html`). Tolerance dial → calibrated 270° gauge ×1.0–×2.2 + 14-day capsule dose chart. Live relief feed → admissions log (time / patient / stake / result / relief), ~1 in 5 rows tagged YOU, only those move "You today". | `.pk-syr-*`, `.pk-dial`, `.pk-dose`, `.pk-frow`, `.pk-fcols` |
+| Pain Scale (`#painPage`) | Replaced wholesale with `painbet-painscale-section.html`'s page: tube + tier bands at real heights, YOU marker, blue 9–10 glass, next-level breakdown, numbers-first unlock cards, console chrome. Ported with every selector scoped under `#painPage`, keyframes renamed `ps2-*`, ladder script in an IIFE. | `#painPage …` (ported block), `.nx`, `.spec .val` |
+| Threshold Raid (`#view-synapse`) | Mechanic rebuilt: damage = USDT wagered during a timed window, no buy-in; boss level, countdown, HP bar with 75/50/25% phase breaks + PK drops; house-funded bounty split by √damage, 10% cap, 5% last hit; escape rolls 25% over and levels the boss up. Console chrome. | `.rd-*`, `.syn-*` (three.js neuron kept) |
+| Anesthesia (`#view-anesthesia`) | One live readout (fixed −404/−412 mismatch), loss-to-fill bar removed, weekly cap per tier applied in the calc, RG line, 8-week dose history, next-rate chip. | `.ax-*` |
+| Affiliate (`#view-affiliate`) | Standard deal 0.5% of wager → 25% of house edge; live referral dashboard (tiles, 30-day chart, top referrals); desk form behind "Apply for custom terms". | `.afd-*`, `.af-*`, `.afx-*`, `.aff2` |
+| Triage (`#view-support`) | "What's hurting?" picker with instant answers, Live chat the only red route, cases with timeline + inline reply + per-case escalate, "Need a break?" limits panel. | `.tri-*`, `.tk-*` |
+
+Up to #189 changes went into **both** `index.html` and `index-v2.html`; from #190 on, **index-v2 only** (standing rule in `CLAUDE.md`). `CLAUDE.md` also now requires the console chrome on any redone page and bans blue left-edge row accents.
+
+Placeholder data to replace before launch: raid HP/bounty/tiers, Anesthesia caps (500 Agony / 1,000 Threshold), affiliate 2.5% blended edge, Triage staff/wait counts, dose-chart window (fixed 14 days).
 
 ## Key classes and where they live
 
@@ -125,6 +142,7 @@ The icon concepts already agreed with the user (Option 2 mapping, Streamline "Pl
 ## Open / possible next steps
 
 - **Sidebar icons still pending** — blocked on the network access fix above (or the hand-drawn fallback) before wiring in replacements for `i-lobby`, `i-originals`, `i-live`, `i-gift`, `i-gauge`, `i-target`, `i-pill`, `i-drop`, `i-track`, `i-user`, `i-network`, `i-chat` (grep `symbol id="i-` for exact current markup). `i-originals`'s current slot-machine-adjacent icon should stay as-is per above.
-- **Nothing is wired into the live site.** `index.html` still has the old banner + `.painchip` strip. Promoting this means porting the cockpit deck + chrome changes into `index.html` (or renaming `index-v2.html` over it), which nobody has agreed to yet — ask first.
-- The bigger **"PAIN SCALE / WARD IV"** full-page mockup the user shared (patient dossier, dosage table, "what the climb buys" cards) was only mined for its gauge. The rest of that page is unbuilt.
+- **Promoting v2 is the user's call.** `index.html` is deliberately kept as the comparison baseline (see `CLAUDE.md`); it has the #183–#189 PainKillers/raid changes but not the cockpit deck, chrome, or the #190+ page reworks. The user will move v2 over themselves — don't do it unasked.
+- The Pain Scale page is now built (`#painPage`, from `painbet-painscale-section.html`). Dropped from the old view and possibly wanted back: Booster wagering row, patient info band, per-tick Drop roll note.
+- Not yet reworked: the lobby's Promotions page, PainTracker, The Chart, Arcade/Sports views. Apply the console chrome when they're redone.
 - `.ambient`'s weave is mostly hidden behind opaque content; it currently only reads at the chrome's rounded corners and through the glass cards' `backdrop-filter`. If more texture is wanted, that's the layer to raise.
