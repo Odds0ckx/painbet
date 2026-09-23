@@ -1673,6 +1673,42 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .pk-feedhead .today{color:var(--ink-hi);text-transform:none;letter-spacing:normal;font-weight:600}
 .v5m .pk-feedhead .today b{color:var(--blue);font-weight:800}
 .v5m .pk-frow .res.loss{color:var(--redhi);background:rgba(224,22,60,.12)}
+/* live relief feed as a clinical admissions log: time / patient + game / stake /
+   result / PK credit. Every row ends in the same blue credit, win or lose. Your own
+   settled bets are tagged YOU and raised out of the log, and only they move the
+   "You today" total, which pulses when they land. */
+.v5m .pk-feedhead .ward{color:var(--ink-lo);letter-spacing:.1em}
+.v5m .pk-feedhead .ward b{color:var(--ink-hi);font-weight:800}
+.v5m .pk-feedhead .today{transition:text-shadow .3s}
+.v5m .pk-feedhead .today.bump b{animation:pk-feed-bump .9s ease-out}
+@keyframes pk-feed-bump{0%{text-shadow:0 0 0 rgba(127,214,232,0)}25%{text-shadow:0 0 14px rgba(127,214,232,.95);color:#fff}100%{text-shadow:0 0 0 rgba(127,214,232,0)}}
+.v5m .pk-fcols,.v5m .pk-frow{display:grid;grid-template-columns:54px minmax(0,1fr) 78px 46px 58px;gap:8px;align-items:center}
+.v5m .pk-fcols{padding:0 8px 6px;border-bottom:1px solid hsla(0,0%,100%,.06);margin-bottom:4px;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo)}
+.v5m .pk-fcols .r,.v5m .pk-frow .w,.v5m .pk-frow .pkv{text-align:right}
+.v5m .pk-frow{padding:7px 8px;border-radius:8px;border-bottom:1px solid hsla(0,0%,100%,.035);font-size:11.5px;transition:background .9s,box-shadow .9s}
+.v5m .pk-frow .t{font-family:var(--mono);font-size:10px;color:var(--ink-lo)}
+.v5m .pk-frow .pt{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.v5m .pk-frow .pt .id{font-family:var(--mono);font-size:10.5px;color:var(--ink-hi);letter-spacing:.04em;white-space:nowrap}
+.v5m .pk-frow .pt .g{font-size:10px;color:var(--ink-lo);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v5m .pk-frow .w{font-family:var(--mono);font-size:10.5px;color:var(--ink-hi);white-space:nowrap}
+.v5m .pk-frow .res{justify-self:start;font-size:8.5px;font-weight:800;letter-spacing:.08em;padding:2px 6px;border-radius:5px}
+.v5m .pk-frow .res.win{color:var(--ink-hi);background:hsla(0,0%,100%,.07)}
+.v5m .pk-frow .pkv{font-weight:800;color:var(--blue);white-space:nowrap}
+.v5m .pk-frow.fresh{animation:pk-frow-in .5s cubic-bezier(.16,1,.3,1);background:rgba(127,214,232,.08)}
+@keyframes pk-frow-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.v5m .pk-frow.you{background:linear-gradient(135deg,#20242b,#171a21);box-shadow:0 4px 10px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.08)}
+.v5m .pk-frow.you .id{color:#fff}
+.v5m .pk-frow.you .id i{font-style:normal;font-family:var(--sans);font-size:8.5px;font-weight:800;letter-spacing:.08em;color:#04181c;background:var(--blue);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+.v5m .pk-frow.you .pkv{text-shadow:0 0 10px rgba(127,214,232,.6)}
+/* narrow cards (phones, and the 2-up row below 960px): drop the time column, let the header wrap */
+.v5m .pk-feedhead{flex-wrap:wrap;gap:4px 10px}
+@media(max-width:560px){
+  .v5m .pk-fcols,.v5m .pk-frow{grid-template-columns:minmax(0,1fr) 62px 40px 50px;gap:6px}
+  .v5m .pk-fcols span:first-child,.v5m .pk-frow .t{display:none}
+  .v5m .pk-frow .res{padding:2px 4px}
+  .v5m .pk-frow.you .pid{display:none}
+  .v5m .pk-frow.you .id i{margin-left:0}
+}
 .pk-wallet-top{display:flex;align-items:center;gap:16px;margin:6px 0 2px}
 .v5m .pk-wallet-info{flex:1 1 auto;min-width:0}
 /* syringe IV: a half-filled syringe pushes one drop down a clear pipe, then
@@ -4685,9 +4721,10 @@ window.PB = (function(){
               <p class="pk-lead">Every settled bet credits PK here, win or lose - this is that same relief happening in real time.</p>
               <div class="pk-feedbox">
                 <div class="pk-feedhead">
-                  <div class="live"><span class="dot"></span>Incoming</div>
-                  <div class="today">Today <b id="pk-feed-today">+86 PK</b></div>
+                  <div class="live"><span class="dot"></span>Admissions · <span class="ward"><b id="pk-feed-ward">38</b> on ward</span></div>
+                  <div class="today" id="pk-feed-todaybox">You today <b id="pk-feed-today">+86 PK</b></div>
                 </div>
+                <div class="pk-fcols"><span>Time</span><span>Patient</span><span class="r">Stake</span><span>Result</span><span class="r">Relief</span></div>
                 <div id="pk-feed-rows"></div>
               </div>
             </div>
@@ -6678,23 +6715,35 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
     });
   });
 
-  // -- live relief feed --
+  // -- live relief feed: an admissions log of settled bets site-wide. Roughly one
+  // in five rows is the player's own bet (demo) - those are tagged YOU, raised, and
+  // are the only rows that move the "You today" total. --
   const feedRows = document.getElementById('pk-feed-rows'), feedToday = document.getElementById('pk-feed-today');
-  let todayTotal = 86;
-  function addFeedRow(){
+  const feedTodayBox = document.getElementById('pk-feed-todaybox'), feedWard = document.getElementById('pk-feed-ward');
+  let todayTotal = 86, ward = 38;
+  const two = n => String(n).padStart(2,'0');
+  function addFeedRow(forceYou){
     if(!feedRows) return 0;
     const g = GAMES[Math.random()*GAMES.length|0];
     const wager = (Math.random()*180+5).toFixed(2);
     const pk = Math.max(1, Math.round(wager*0.3*(Math.random()*.4+.8)/10));
     const win = Math.random() < 0.42;
+    const you = forceYou === true || (forceYou !== false && Math.random() < 0.2);
+    const d = new Date(), t = two(d.getUTCHours())+':'+two(d.getUTCMinutes())+':'+two(d.getUTCSeconds());
+    const id = you ? '<span class="pid">PB-000000</span><i>YOU</i>' : 'PT-'+(1000+Math.random()*9000|0);
     const r = document.createElement('div');
-    r.className = 'pk-frow fresh';
-    r.innerHTML = `<span class="g">${g}</span><span class="w">${wager} USDT</span><span class="res ${win?'win':'loss'}">${win?'WIN':'LOSS'}</span><span class="pkv">+${pk} PK</span>`;
+    r.className = 'pk-frow fresh' + (you ? ' you' : '');
+    r.innerHTML = `<span class="t">${t}</span><span class="pt"><span class="id">${id}</span><span class="g">${g}</span></span><span class="w">${wager}</span><span class="res ${win?'win':'loss'}">${win?'WIN':'LOSS'}</span><span class="pkv">+${pk} PK</span>`;
     feedRows.prepend(r);
     setTimeout(() => r.classList.remove('fresh'), 900);
     while(feedRows.children.length > 7) feedRows.lastChild.remove();
-    todayTotal += pk;
-    if(feedToday) feedToday.textContent = '+'+fmt(todayTotal)+' PK';
+    if(you){
+      todayTotal += pk;
+      if(feedToday) feedToday.textContent = '+'+fmt(todayTotal)+' PK';
+      if(feedTodayBox){ feedTodayBox.classList.remove('bump'); void feedTodayBox.offsetWidth; feedTodayBox.classList.add('bump'); }
+    }
+    ward = Math.max(24, Math.min(61, ward + (Math.random()*5|0) - 2));
+    if(feedWard) feedWard.textContent = ward;
     return pk;
   }
   (function scheduleFeed(){
@@ -6734,7 +6783,7 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
     if(dialCd) dialCd.textContent = h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   }, 1000);
 
-  for(let i=0; i<5; i++) addFeedRow();   // seed the feed so it isn't empty on first load
+  for(let i=0; i<5; i++) addFeedRow(i === 2);   // seed the feed so it isn't empty on first load (one row is yours)
 })();
 (function(){
   const axView = document.getElementById('view-anesthesia');
