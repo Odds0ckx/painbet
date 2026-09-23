@@ -228,6 +228,42 @@ footer .fmark{width:22px;height:22px;border-radius:7px;background:var(--red-wash
 footer .fleft{display:flex;align-items:center}
 footer a{text-decoration:underline;text-underline-offset:2px}
 footer a:hover{color:var(--redhi)}
+
+/* ===== mockup: tiers drawn beside the tube at their real heights, 9-10 in blue glass,
+   next-level breakdown in the readout. 1 level = 40px of tube (10px padding top/bottom). ===== */
+.tube-row{align-items:flex-start}
+.tube-fill{height:calc(10px + var(--lvl) * 40px);background:linear-gradient(0deg,var(--red-deep) 0,var(--red) 190px,var(--redhi) 370px,var(--blue) 370px,#bdf0fa 420px) bottom/100% 420px no-repeat}
+.tube-zone-blue{height:calc(1 * 40px + 10px);background:linear-gradient(0deg,rgba(127,214,232,.08),rgba(127,214,232,.2));border-bottom:1px dashed rgba(127,214,232,.6);box-shadow:inset 0 0 14px rgba(127,214,232,.25)}
+.tube-zone-blue span{position:absolute;left:0;right:0;top:50%;transform:translateY(-10%);text-align:center;font-size:6.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);text-shadow:0 0 6px rgba(127,214,232,.6)}
+.tube-ticks span:nth-child(n+10){background:rgba(127,214,232,.35)}
+.tube-ticks span:nth-child(n+10)::after{color:var(--blue)}
+.ladder{position:relative;height:420px;display:block}
+.ladder .trow{position:absolute;left:0;right:0;bottom:calc(10px + var(--lo) * 40px + 2px);height:calc((var(--hi) - var(--lo)) * 40px - 4px);flex-direction:row;align-items:center;justify-content:space-between;gap:8px;padding:0 10px 0 12px;border-radius:0 9px 9px 0;border-left:2px solid hsla(0,0%,100%,.14);background:hsla(0,0%,100%,.02)}
+.ladder .trow .bt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ladder .trow .sub{padding-left:0;white-space:nowrap}
+.ladder .trow .lv{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-lo);white-space:nowrap}
+.ladder .trow[data-tier="0"] .bt{flex-direction:row;align-items:baseline;gap:8px}
+.ladder .trow.active{align-items:flex-start;padding-top:9px;border-left-color:var(--redhi);box-shadow:0 0 22px -8px rgba(255,59,51,.6)}
+.ladder .trow.active .lv{color:var(--redhi)}
+.ladder .trow.blue{border-left-color:var(--blue);background:var(--blue-wash);flex-direction:row}
+.ladder .trow.blue .bt{flex-direction:row;align-items:baseline;gap:8px}
+.ladder .trow.blue .sub,.ladder .trow.blue .lv{color:var(--blue)}
+.you-mark{position:absolute;left:-16px;right:0;bottom:calc(10px + var(--lvl) * 40px);height:0;border-top:1px dashed rgba(255,255,255,.55);pointer-events:none;z-index:2}
+.you-mark::before{content:'';position:absolute;left:-2px;top:-5px;border:5px solid transparent;border-right:6px solid #fff;border-left:0}
+.you-mark span{position:absolute;right:8px;top:-9px;font-size:8.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#1b0000;background:#fff;border-radius:5px;padding:2px 7px;box-shadow:0 0 12px rgba(255,255,255,.35)}
+.nx{margin-top:14px;padding-top:12px;border-top:1px solid hsla(0,0%,100%,.08);text-align:left}
+.nx-top{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;color:var(--ink)}
+.nx-top b{color:var(--redhi)}
+.nx .bl{color:var(--blue)!important}
+.nx-bar{position:relative;height:6px;margin:10px 0 6px;border-radius:99px;background:linear-gradient(90deg,hsla(0,0%,100%,.06) 85%,rgba(127,214,232,.35));}
+.nx-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--red-deep),var(--redhi));box-shadow:0 0 10px rgba(255,59,51,.55)}
+.nx-you{position:absolute;top:-3px;width:2px;height:12px;margin-left:-1px;background:#fff;border-radius:2px;box-shadow:0 0 6px #fff}
+.nx-ends{display:flex;justify-content:space-between;font-size:9px;font-weight:700;color:var(--ink-lo)}
+.nx-ends .you{color:#fff}
+.nx-gain{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.nx-gain span{background:var(--blue-wash);border-radius:8px;padding:6px 8px;font-size:10.5px;color:var(--ink);white-space:nowrap}
+.nx-gain em{display:block;font-style:normal;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:2px}
+.nx-gain b{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -281,53 +317,53 @@ footer a:hover{color:var(--redhi)}
             <span class="stage" id="rd-stage">LEVEL 7–8</span>
           </div>
         </div>
-        <div class="next">
-          <span>Next level 9 (Threshold)</span>
-          <b id="rd-next">108,000 USDT to go</b>
+        <div class="nx">
+          <div class="nx-top"><span>Next · <b class="bl">Level 9 · Threshold</b></span><b id="rd-next">108,000 USDT to go</b></div>
+          <div class="nx-bar"><i style="width:55%"></i><span class="nx-you" style="left:55%"></span></div>
+          <div class="nx-ends"><span>480K</span><span class="you">612K wagered</span><span class="bl">720K</span></div>
+          <div class="nx-gain">
+            <span><em>Relief</em>10% → <b>12%</b></span>
+            <span><em>Anesthesia</em>8% → <b>10%</b></span>
+            <span><em>PK / 100</em>32 → <b>45</b></span>
+          </div>
         </div>
       </div>
 
       <div class="tube-row">
         <div class="tube-col">
-        <div class="tube-cap">Threshold zone</div>
         <div class="tube" id="tube">
-          <div class="tube-zone-blue"></div>
+          <div class="tube-zone-blue"><span>Breaks blue</span></div>
           <div class="tube-ticks">
             <span data-n="0"></span><span data-n="1"></span><span data-n="2"></span><span data-n="3"></span>
             <span data-n="4"></span><span data-n="5"></span><span data-n="6"></span><span data-n="7"></span>
             <span data-n="8"></span><span data-n="9"></span><span data-n="10"></span>
           </div>
-          <div class="tube-fill" id="tube-fill" style="height:78%">
+          <div class="tube-fill" id="tube-fill" style="--lvl:7.8">
             <div class="meniscus"></div>
             <div class="bub b1"></div><div class="bub b2"></div><div class="bub b3"></div>
           </div>
         </div>
         </div>
         <div class="ladder" id="ladder">
-          <div class="trow" data-tier="5" data-name="Threshold" data-lvl="9–10">
-            <div class="trow-top"><span class="num">9</span><span class="name">Threshold</span><span class="usd">Breaks blue</span></div>
-            <div class="sub">720K+ USDT wagered</div>
+          <div class="trow blue" data-tier="5" data-name="Threshold" data-lvl="9–10" style="--lo:9;--hi:10">
+            <div class="bt"><span class="name">Threshold</span><span class="sub">720K+ USDT</span></div><span class="lv">Lvl 9–10</span>
           </div>
-          <div class="trow active" data-tier="4" data-name="Agony" data-lvl="7–8">
-            <div class="trow-top"><span class="num">7</span><span class="name">Agony · Lvl 7.8</span><span class="tag-current">CURRENT</span></div>
-            <div class="sub">480K–720K USDT wagered</div>
+          <div class="trow active" data-tier="4" data-name="Agony" data-lvl="7–8" style="--lo:7;--hi:9">
+            <div class="bt"><span class="name">Agony</span><span class="sub">480K–720K USDT</span></div><span class="lv">Lvl 7–8</span>
           </div>
-          <div class="trow" data-tier="3" data-name="Burn" data-lvl="5–6">
-            <div class="trow-top"><span class="num">5</span><span class="name">Burn</span><span class="usd">320,000</span></div>
-            <div class="sub">320K–480K USDT</div>
+          <div class="trow" data-tier="3" data-name="Burn" data-lvl="5–6" style="--lo:5;--hi:7">
+            <div class="bt"><span class="name">Burn</span><span class="sub">320K–480K USDT</span></div><span class="lv">Lvl 5–6</span>
           </div>
-          <div class="trow" data-tier="2" data-name="Ache" data-lvl="3–4">
-            <div class="trow-top"><span class="num">3</span><span class="name">Ache</span><span class="usd">150,000</span></div>
-            <div class="sub">150K–320K USDT</div>
+          <div class="trow" data-tier="2" data-name="Ache" data-lvl="3–4" style="--lo:3;--hi:5">
+            <div class="bt"><span class="name">Ache</span><span class="sub">150K–320K USDT</span></div><span class="lv">Lvl 3–4</span>
           </div>
-          <div class="trow" data-tier="1" data-name="Sting" data-lvl="1–2">
-            <div class="trow-top"><span class="num">1</span><span class="name">Sting</span><span class="usd">50,000</span></div>
-            <div class="sub">50K–150K USDT</div>
+          <div class="trow" data-tier="1" data-name="Sting" data-lvl="1–2" style="--lo:1;--hi:3">
+            <div class="bt"><span class="name">Sting</span><span class="sub">50K–150K USDT</span></div><span class="lv">Lvl 1–2</span>
           </div>
-          <div class="trow" data-tier="0" data-name="Numb" data-lvl="0">
-            <div class="trow-top"><span class="num">0</span><span class="name">Numb</span><span class="usd">0</span></div>
-            <div class="sub">0–50K USDT</div>
+          <div class="trow" data-tier="0" data-name="Numb" data-lvl="0" style="--lo:0;--hi:1">
+            <div class="bt"><span class="name">Numb</span><span class="sub">0–50K USDT</span></div><span class="lv">Lvl 0</span>
           </div>
+          <div class="you-mark" style="--lvl:7.8"><span>You · 7.8</span></div>
         </div>
       </div>
 
