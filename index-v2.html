@@ -2318,6 +2318,54 @@ body[data-mode="sports"] .mbar-casino{display:none}
   .afx-ok b{font-family:var(--mono);color:#a8e4f2;display:block;margin-bottom:5px}
   .afx-ok p{font-size:12px;color:#b6bcc6;line-height:1.5}
   @media (max-width:900px){ .afx-grid{grid-template-columns:1fr} .afx-stats{grid-template-columns:1fr 1fr} .aff2 .frow{grid-template-columns:1fr} }
+  /* Affiliate rework (index-v2 console chrome): live referral dashboard on top, the
+     standard deal paid as 25% of the house edge (can't be farmed on low-edge games the
+     way a flat 0.5%-of-wager could), and the desk application behind a button. */
+  #view-affiliate.v5m .blk{background:var(--panel-bg);backdrop-filter:none;border:0;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.55),inset 0 2px 4px var(--shadow-light)}
+  #view-affiliate .afd-panel{background:var(--milled-dark);border-radius:14px;box-shadow:inset 0 3px 8px rgba(0,0,0,.7);padding:18px 20px;margin-top:14px}
+  #view-affiliate .afd-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #view-affiliate .afd-k{display:flex;align-items:center;gap:7px;font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+  #view-affiliate .afd-k .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue);animation:pk-blink 1.6s ease-in-out infinite}
+  #view-affiliate .afd-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  #view-affiliate .afd-stats>div{display:flex;flex-direction:column;gap:4px;padding:11px 12px;border-radius:10px;background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1)}
+  #view-affiliate .afd-stats small{font-size:8.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);white-space:nowrap}
+  #view-affiliate .afd-stats b{font-family:var(--disp);font-weight:400;font-size:20px;line-height:1;color:#fff}
+  #view-affiliate .afd-stats em{font-style:normal;font-size:9px;font-weight:800;letter-spacing:.1em;color:var(--ink-lo)}
+  #view-affiliate .bl{color:var(--blue)!important}
+  #view-affiliate .afd-dashgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;margin-top:16px}
+  #view-affiliate .afd-sub{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:10px}
+  #view-affiliate .afd-chart{display:flex;align-items:flex-end;gap:3px;height:120px;padding-bottom:4px;border-bottom:1px solid hsla(0,0%,100%,.06)}
+  #view-affiliate .afd-chart i{flex:1;min-width:0;border-radius:3px 3px 1px 1px;background:linear-gradient(0deg,#2e6f7c,var(--blue));opacity:.85}
+  #view-affiliate .afd-chart i.z{background:hsla(0,0%,100%,.08);opacity:1}
+  #view-affiliate .afd-tbl{width:100%;border-collapse:collapse;font-size:11.5px}
+  #view-affiliate .afd-tbl th{font-size:8.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-lo);text-align:left;padding:0 0 6px}
+  #view-affiliate .afd-tbl td{padding:7px 0;border-top:1px solid hsla(0,0%,100%,.05);color:var(--ink-hi);font-family:var(--mono);font-size:10.5px}
+  #view-affiliate .afd-tbl .r{text-align:right}
+  #view-affiliate .afd-deal{font-family:var(--disp);font-size:22px;color:#fff;text-transform:uppercase;margin-bottom:6px}
+  #view-affiliate .afd-p{font-size:12px;line-height:1.55;color:var(--ink);margin:0 0 4px}
+  #view-affiliate .afd-p b{color:var(--blue)}
+  #view-affiliate .af-linkrow input,#view-affiliate .af-calc input{background:#060708;border:0;box-shadow:inset 0 2px 5px rgba(0,0,0,.8)}
+  #view-affiliate .af-copy,#view-affiliate .afd-apply{border:0;border-radius:10px;cursor:pointer;color:var(--ink-hi);background:linear-gradient(135deg,var(--clay-top),var(--clay-base));
+    box-shadow:0 6px 12px rgba(0,0,0,.4),inset 0 1px 2px rgba(255,255,255,.1);transition:all .2s cubic-bezier(.16,1,.3,1)}
+  #view-affiliate .af-copy:hover,#view-affiliate .afd-apply:hover{color:#fff;background:linear-gradient(315deg,var(--clay-top),var(--clay-base));box-shadow:0 8px 16px rgba(0,0,0,.45),inset 0 -1px 2px rgba(255,255,255,.16),inset 0 2px 3px rgba(0,0,0,.4)}
+  #view-affiliate .af-copy:active,#view-affiliate .afd-apply:active{transform:scale(.96);box-shadow:0 2px 4px rgba(0,0,0,.4),inset 0 3px 6px rgba(0,0,0,.7)}
+  #view-affiliate .af-copy{padding:0 16px}
+  #view-affiliate .afd-calcnote{margin-top:6px;font-size:10.5px;color:var(--ink-lo)}
+  #view-affiliate .afx-stats{margin-top:14px}
+  #view-affiliate .afx-stat{background:linear-gradient(135deg,var(--clay-top),var(--clay-base));border:0;box-shadow:0 4px 10px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.08)}
+  #view-affiliate .afd-custom .dl{padding:10px 0;border-top:1px solid hsla(0,0%,100%,.05)}
+  #view-affiliate .afd-apply{display:block;width:100%;margin-top:14px;padding:12px;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:#fff;background:linear-gradient(135deg,#f0264c,var(--blood));box-shadow:0 6px 12px rgba(0,0,0,.45),0 0 18px rgba(224,22,60,.3),inset 0 1px 2px rgba(255,255,255,.22)}
+  #view-affiliate .afd-apply:hover{background:linear-gradient(315deg,#ff3459,#e8214a);box-shadow:0 8px 16px rgba(0,0,0,.5),0 0 26px rgba(224,22,60,.45),inset 0 -1px 2px rgba(255,255,255,.28)}
+  #view-affiliate .afd-custom.open .afd-apply{display:none}
+  #view-affiliate .afd-form{display:none}
+  #view-affiliate .afd-custom.open .afd-form{display:block}
+  #view-affiliate .aff2 input[type=text],#view-affiliate .aff2 select,#view-affiliate .aff2 textarea{background-color:#060708;border:0;box-shadow:inset 0 2px 5px rgba(0,0,0,.8)}
+  #view-affiliate .afx-chip{border:0;border-radius:8px;padding:8px 11px;background:linear-gradient(135deg,var(--clay-top),var(--clay-base));box-shadow:0 4px 8px rgba(0,0,0,.35),inset 0 1px 1px rgba(255,255,255,.08);cursor:pointer}
+  #view-affiliate .afx-chip.on{background:#060708;color:var(--redhi);box-shadow:inset 0 2px 5px rgba(0,0,0,.8);text-shadow:0 0 10px rgba(224,22,60,.6)}
+  #view-affiliate .afd-note{margin-top:12px}
+  @media(max-width:1100px){#view-affiliate .afd-stats{grid-template-columns:repeat(3,1fr)}#view-affiliate .afd-dashgrid,#view-affiliate .afd-grid{grid-template-columns:1fr}}
+  @media(max-width:520px){#view-affiliate .afd-stats{grid-template-columns:1fr 1fr}}
 
   /* header unification pass */
   .row-head h2{font-family:'Archivo Black','Archivo',sans-serif;font-weight:400;
@@ -5587,10 +5635,40 @@ document.querySelectorAll('#painPage #ladder .trow').forEach(row=>{
         <section class="blk">
           <div class="sec-head"><h2>Refer the pain</h2><div class="tag">Paid in crypto · real time stats</div></div>
 
-          <div class="promos" style="margin-top:14px;grid-template-columns:1fr">
-            <div class="promo" style="padding:20px">
-              <div class="af-hero">Standard deal · <b>0.5% of every wager</b></div>
-              <p style="margin:4px 0 2px">No application, no minimum, no tiers to negotiate. Every patient gets a link. Share it anywhere and earn 0.5% of everything your referrals wager, win or lose, for life.</p>
+          <div class="afd-panel afd-dash">
+            <div class="afd-k"><span class="dot"></span>Your referrals · live</div>
+            <div class="afd-stats">
+              <div><small>Link clicks</small><b>1,284</b></div>
+              <div><small>Sign-ups</small><b>96</b></div>
+              <div><small>Active this month</small><b>14</b></div>
+              <div><small>This month</small><b class="bl">+42.18</b><em>USDT</em></div>
+              <div><small>Pending</small><b>11.40</b><em>USDT</em></div>
+              <div><small>Paid out</small><b>386.20</b><em>USDT</em></div>
+            </div>
+            <div class="afd-dashgrid">
+              <div>
+                <div class="afd-sub">Earnings · last 30 days</div>
+                <div class="afd-chart" id="afd-chart"></div>
+              </div>
+              <div>
+                <div class="afd-sub">Top referrals</div>
+                <table class="afd-tbl">
+                  <tr><th>Patient</th><th>Joined</th><th class="r">Wagered</th><th class="r">You earned</th></tr>
+                  <tr><td>nervend***</td><td>12 Aug</td><td class="r">8,420</td><td class="r bl">5.26</td></tr>
+                  <tr><td>coldcut***</td><td>03 Sep</td><td class="r">6,115</td><td class="r bl">3.82</td></tr>
+                  <tr><td>ripcord***</td><td>28 Jul</td><td class="r">4,980</td><td class="r bl">3.11</td></tr>
+                  <tr><td>venous***</td><td>19 Sep</td><td class="r">2,240</td><td class="r bl">1.40</td></tr>
+                  <tr><td>tremor***</td><td>07 Sep</td><td class="r">1,310</td><td class="r bl">0.82</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="afd-grid">
+            <div class="afd-panel">
+              <div class="afd-k">Standard deal</div>
+              <div class="afd-deal">25% of the house edge</div>
+              <p class="afd-p">On every bet your referrals settle, you earn a quarter of that game's house edge: <b>0.25%</b> of the stake on a 1% dice roll, <b>1.25%</b> on a 5% slot. Win or lose, for life. No application, no minimum.</p>
               <div class="af-linkrow">
                 <input id="afLink" type="text" readonly value="https://pain.bet/r/PB-728423">
                 <button class="af-copy" id="afCopy" type="button">Copy link</button>
@@ -5598,10 +5676,10 @@ document.querySelectorAll('#painPage #ladder .trow').forEach(row=>{
               <div class="af-calc">
                 <span>They wager</span>
                 <input id="afWager" type="text" inputmode="numeric" value="10,000">
-                <span>USDT a month · you earn</span>
-                <span class="res" id="afEarn">30.00 USDT</span>
-                <span>every month</span>
+                <span>USDT a month · you earn about</span>
+                <span class="res" id="afEarn">62.50 USDT</span>
               </div>
+              <div class="afd-calcnote">Estimate at a 2.5% blended house edge. Actual earnings follow the games they play.</div>
               <div class="afx-stats">
                 <div class="afx-stat"><b>Lifetime</b><span>Attribution per wallet</span></div>
                 <div class="afx-stat"><b>Real time</b><span>Stats and settlement</span></div>
@@ -5609,21 +5687,16 @@ document.querySelectorAll('#painPage #ladder .trow').forEach(row=>{
                 <div class="afx-stat"><b>No wagering</b><span>Withdraw any time</span></div>
               </div>
             </div>
-          </div>
 
-          <div class="afx-grid">
-            <div class="promo afx-deals" style="padding:20px">
-              <div class="k" style="color:var(--redhi)">Custom terms · the desk</div>
-              <p style="margin:6px 0 4px;font-size:12.5px;color:#b6bcc6">Professional books go beyond the standard link. Tell the desk what you run and get terms built for it.</p>
+            <div class="afd-panel aff2 afd-custom afx-deals" id="afd-custom">
+              <div class="afd-k" style="color:var(--redhi)">Custom terms · the desk</div>
+              <p class="afd-p">Running real traffic? Tell the desk what you run and get terms built for it.</p>
               <div class="dl"><div class="t">Rev share</div><p><b>Up to 40% lifetime</b> on referred net revenue, tiered by active players and volume.</p></div>
               <div class="dl"><div class="t">CPA</div><p><b>Flat per qualified depositor</b>, priced by GEO and traffic quality, capped monthly.</p></div>
               <div class="dl"><div class="t">Hybrid</div><p><b>CPA plus rev share</b> blended, for books that want cash flow and the long tail.</p></div>
               <div class="dl"><div class="t">Streamer</div><p><b>Session and content deals</b> with tracked codes, creative support, and scheduled drops.</p></div>
-              <p class="mnote" style="margin-top:12px">The desk answers within 48 hours. Terms in writing before any traffic moves.</p>
-            </div>
-
-            <div class="promo aff2" style="padding:20px">
-              <div class="k" style="color:var(--blue)">Affiliate application</div>
+              <button class="afd-apply" id="afd-apply" type="button">Apply for custom terms</button>
+              <div class="afd-form" id="afd-form">
               <div class="frow">
                 <div><label>Name or alias</label><input type="text" id="af2Name" placeholder="Who runs the traffic"></div>
                 <div><label>Email or Telegram</label><input type="text" id="af2Contact" placeholder="you@site.com or @handle"></div>
@@ -5658,6 +5731,8 @@ document.querySelectorAll('#painPage #ladder .trow').forEach(row=>{
               <button class="redgo" id="af2Go" style="width:100%;margin-top:16px" type="button">Send to the desk</button>
               <div class="afx-err" id="af2Err">Need a contact and at least one traffic source.</div>
               <div class="afx-ok" id="af2Ok"><b>Received · ticket AF-<span id="af2Ticket">0000</span></b><p>The desk answers within 48 hours on the contact you gave. Terms come in writing before any traffic moves.</p></div>
+              </div>
+              <p class="mnote afd-note">The desk answers within 48 hours. Terms in writing before any traffic moves.</p>
             </div>
           </div>
         </section>
@@ -8366,9 +8441,16 @@ if (canvas && stage && viewEl) {
   var w = document.getElementById('afWager'), out = document.getElementById('afEarn');
   function calc(){
     var n = parseFloat((w.value || '0').replace(/[^0-9.]/g,'')) || 0;
-    out.textContent = (n * 0.005).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USDT';
+    out.textContent = (n * 0.025 * 0.25).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' USDT';   // 25% of a 2.5% blended edge
   }
   if(w){ w.addEventListener('input', calc); calc(); }
+  // desk application sits behind a button
+  var ap = document.getElementById('afd-apply'), cu = document.getElementById('afd-custom');
+  if(ap && cu) ap.addEventListener('click', function(){ cu.classList.add('open'); });
+  // 30-day earnings (mock)
+  var ch = document.getElementById('afd-chart');
+  if(ch){ var v=[0.6,1.1,0,2.4,1.8,0.9,3.2,2.1,0,1.4,2.9,3.6,1.2,0.8,2.2,4.1,3.3,1.9,0,2.6,1.7,3.9,4.4,2.0,1.1,2.8,3.4,1.6,2.3,1.9], m=Math.max.apply(null,v);
+    ch.innerHTML = v.map(function(x){ return x ? '<i style="height:'+Math.max(6,x/m*100).toFixed(0)+'%" title="'+x.toFixed(2)+' USDT"></i>' : '<i class="z" style="height:3%"></i>'; }).join(''); }
 })();
 </script>
 
