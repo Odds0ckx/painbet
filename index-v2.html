@@ -1839,6 +1839,42 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .pk-dial .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .v5m .pk-dial .x{font-family:var(--disp);font-size:45px;color:#fff;line-height:1;text-shadow:0 0 14px rgba(224,22,60,.6);animation:pk-dialpulse 2.6s ease-in-out infinite}
 .v5m .pk-dial .cap{font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-lo);margin-top:4px}
+/* tolerance dial as a calibrated instrument: 270deg sweep over x1.0..x2.2,
+   a tick every x0.05 (major every x0.2) that lights red up to the current
+   reading, a white needle mark at the reading and a hollow marker on the next
+   tier. Ticks/labels are baked into the markup; only the arc fill is set by JS. */
+.v5m .pk-dial svg{transform:none;overflow:visible}
+.v5m .pk-dial .bezel{fill:hsla(0,0%,100%,.018);stroke:hsla(0,0%,100%,.07);stroke-width:1}
+.v5m .pk-dial .hub{fill:none;stroke:hsla(0,0%,100%,.06);stroke-width:1}
+.v5m .pk-dial .track{fill:none;stroke:hsla(0,0%,100%,.07);stroke-width:6;stroke-linecap:butt}
+.v5m .pk-dial .arc{fill:none;stroke:var(--red);stroke-width:6;stroke-linecap:butt;stroke-dasharray:100 200;stroke-dashoffset:100;filter:drop-shadow(0 0 6px rgba(224,22,60,.6));transition:stroke-dashoffset 1.2s var(--ease-out)}
+.v5m .pk-dial .t{fill:none;stroke:hsla(0,0%,100%,.16);stroke-width:1.1}
+.v5m .pk-dial .t.maj{stroke:hsla(0,0%,100%,.3);stroke-width:1.8}
+.v5m .pk-dial .t.on{stroke:var(--red);opacity:.8}
+.v5m .pk-dial .t.on.maj{stroke:var(--redhi);opacity:1}
+.v5m .pk-dial .lbl text{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.04em;fill:hsla(0,0%,100%,.22);text-anchor:middle;dominant-baseline:central}
+.v5m .pk-dial .lbl text.on{fill:var(--ink)}
+.v5m .pk-dial .lbl text.cur{fill:#fff}
+.v5m .pk-dial .lbl text.nxt{fill:var(--redhi)}
+.v5m .pk-dial .next{fill:none;stroke:var(--redhi);stroke-width:1.4}
+.v5m .pk-dial .needle{stroke:#fff;stroke-width:2.2;stroke-linecap:round;filter:drop-shadow(0 0 3px rgba(255,255,255,.7))}
+.v5m .pk-dial .cap{position:absolute;left:0;right:0;top:80%;margin:0;text-align:center;font-size:11px}
+/* streak as a two-week dose chart: a capsule per daily check-in */
+.v5m .pk-dose{background:var(--card-hi);border-radius:var(--r-md);padding:12px 14px 14px}
+.v5m .pk-dose-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-lo)}
+.v5m .pk-dose-head .d{color:var(--ink-hi);letter-spacing:.08em}
+.v5m .pk-dose-head .d b,.v5m .pk-dose-head .d em{color:var(--redhi);font-style:normal}
+.v5m .pk-dose-grid{display:grid;grid-template-columns:auto repeat(7,minmax(0,1fr));gap:10px 8px;align-items:start}
+.v5m .pk-dose-grid .wk{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-lo);line-height:12px;padding-right:4px;white-space:nowrap}
+.v5m .pk-dose .c{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.v5m .pk-dose .c i{display:block;width:100%;max-width:34px;height:12px;border-radius:99px;border:1px solid hsla(0,0%,100%,.13);box-sizing:border-box}
+.v5m .pk-dose .c span{font-family:var(--mono);font-size:9.5px;line-height:1;color:var(--ink-lo)}
+.v5m .pk-dose .c.on i{border:none;background:linear-gradient(90deg,var(--red) 0 50%,var(--red-deep) 50% 100%);box-shadow:inset 0 2px 1px -1px rgba(255,255,255,.4),0 0 8px rgba(224,22,60,.22)}
+.v5m .pk-dose .c.on span{color:var(--ink-hi)}
+.v5m .pk-dose .c.due i{border:1.5px dashed var(--redhi);animation:pk-dose-due 1.6s ease-in-out infinite}
+.v5m .pk-dose .c.due span,.v5m .pk-dose .c.goal span{color:var(--redhi);font-weight:700}
+.v5m .pk-dose .c.goal i{border-color:rgba(224,22,60,.55);background:rgba(224,22,60,.1)}
+@keyframes pk-dose-due{0%,100%{opacity:.4}50%{opacity:1}}
 .v5m .pk-warn{font-size:11px;color:var(--redhi);background:rgba(224,22,60,.08);border-radius:var(--r-sm);padding:9px 10px;line-height:1.45;margin-top:10px}
 /* grows to absorb any extra height the row-stretch gives this card, .v5m so the
    warning banner settles at the bottom instead of floating right under the
@@ -4720,15 +4756,36 @@ window.PB = (function(){
               <div class="k" style="color:var(--redhi)">Tolerance dial</div>
               <p class="pk-lead">Your rakeback multiplier for staying active. It climbs the longer your daily streak runs.</p>
               <div class="pk-dial">
-                <svg viewBox="0 0 120 120">
-                  <circle class="track" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="56.5"/>
-                  <circle class="arc" id="pk-dialarc" cx="60" cy="60" r="48" stroke-dasharray="226" stroke-dashoffset="226"/>
+                <svg viewBox="0 0 200 200" aria-hidden="true">
+                  <circle class="bezel" cx="100" cy="100" r="97"/>
+                  <circle class="hub" cx="100" cy="100" r="46"/>
+                  <path class="track" d="M39.19 160.81 A86 86 0 1 1 160.81 160.81"/>
+                  <path class="arc" id="pk-dialarc" pathLength="100" d="M39.19 160.81 A86 86 0 1 1 160.81 160.81"/>
+                  <path class="t on maj" d="M45.55 154.45L52.62 147.38M23 100L33 100M45.55 45.55L52.62 52.62M100 23L100 33"/>
+                  <path class="t on" d="M35.98 142.78L40.13 140M28.86 129.47L33.48 127.55M24.48 115.02L29.38 114.05M24.48 84.98L29.38 85.95M28.86 70.53L33.48 72.45M35.98 57.22L40.13 60M57.22 35.98L60 40.13M70.53 28.86L72.45 33.48M84.98 24.48L85.95 29.38"/>
+                  <path class="t off maj" d="M154.45 45.55L147.38 52.62M177 100L167 100M154.45 154.45L147.38 147.38"/>
+                  <path class="t off" d="M115.02 24.48L114.05 29.38M129.47 28.86L127.55 33.48M142.78 35.98L140 40.13M164.02 57.22L159.87 60M171.14 70.53L166.52 72.45M175.52 84.98L170.62 85.95M175.52 115.02L170.62 114.05M171.14 129.47L166.52 127.55M164.02 142.78L159.87 140"/>
+                  <g class="lbl">
+                    <text x="59.69" y="140.31" class="on">1.0</text>
+                    <text x="43" y="100" class="on">1.2</text>
+                    <text x="59.69" y="59.69" class="on">1.4</text>
+                    <text x="100" y="43" class="cur">1.6</text>
+                    <text x="140.31" y="59.69" class="nxt">1.8</text>
+                    <text x="157" y="100">2.0</text>
+                    <text x="140.31" y="140.31">2.2</text>
+                  </g>
+                  <circle class="next" cx="160.81" cy="39.19" r="3.4"/>
+                  <path class="needle" d="M100 20L100 7"/>
                 </svg>
-                <div class="center"><div class="x">×1.6</div><div class="cap">Tolerance</div></div>
+                <div class="center"><div class="x">×1.6</div></div>
+                <div class="cap">Tolerance</div>
               </div>
-              <div class="relief-body">
-                <div class="row"><span class="k">Streak</span><span class="v" style="color:var(--redhi)">Day 11</span></div>
-                <div class="row"><span class="k">Next · ×1.8</span><span class="v">3 days out</span></div>
+              <div class="pk-dose">
+                <div class="pk-dose-head"><span>Dose chart</span><span class="d">Day <b>11</b> · <em>×1.8</em> in 3 days</span></div>
+                <div class="pk-dose-grid">
+                  <span class="wk">Wk 1</span><div class="c on"><i></i><span>01</span></div><div class="c on"><i></i><span>02</span></div><div class="c on"><i></i><span>03</span></div><div class="c on"><i></i><span>04</span></div><div class="c on"><i></i><span>05</span></div><div class="c on"><i></i><span>06</span></div><div class="c on"><i></i><span>07</span></div>
+                  <span class="wk">Wk 2</span><div class="c on"><i></i><span>08</span></div><div class="c on"><i></i><span>09</span></div><div class="c on"><i></i><span>10</span></div><div class="c on"><i></i><span>11</span></div><div class="c due"><i></i><span>12</span></div><div class="c"><i></i><span>13</span></div><div class="c goal"><i></i><span>×1.8</span></div>
+                </div>
               </div>
               <div class="pk-spacer"></div>
               <div class="pk-warn"><b>Dose due in <span id="pk-dial-cd">7:41:22</span>.</b> Check in daily to keep it - miss a day and it resets to ×1.0.</div>
@@ -6937,8 +6994,8 @@ const IS_COARSE = window.matchMedia('(pointer: coarse)').matches;
   // -- tolerance dial: ring shows ×1.6 of a ×1.0..×2.2 range, plus the check-in countdown --
   const dialArc = document.getElementById('pk-dialarc'), dialCd = document.getElementById('pk-dial-cd');
   if(dialArc){
-    const RING = 226, span = RING*0.75, prog = (1.6-1.0)/(2.2-1.0);
-    requestAnimationFrame(() => { dialArc.style.strokeDashoffset = RING - span*prog; });
+    const prog = (1.6-1.0)/(2.2-1.0);   // arc path has pathLength=100
+    requestAnimationFrame(() => { dialArc.style.strokeDashoffset = 100*(1-prog); });
   }
   let cdSecs = 7*3600 + 41*60 + 22;
   setInterval(() => {
