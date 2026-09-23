@@ -264,6 +264,20 @@ footer a:hover{color:var(--redhi)}
 .nx-gain span{background:var(--blue-wash);border-radius:8px;padding:6px 8px;font-size:10.5px;color:var(--ink);white-space:nowrap}
 .nx-gain em{display:block;font-style:normal;font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-lo);margin-bottom:2px}
 .nx-gain b{color:var(--blue)}
+
+/* ===== mockup: unlock cards lead with the number (your rate -> Threshold rate), one line of copy,
+   footer on a single row; Anesthesia no longer yellow - red for rewards, blue only for Threshold ===== */
+.spec{min-height:0}
+.spec .kicker{margin-bottom:10px}
+.spec .val{display:flex;align-items:baseline;gap:6px;font-family:var(--disp);line-height:1;white-space:nowrap}
+.spec .val .now{font-size:20px;color:var(--redhi);text-shadow:0 0 12px rgba(255,59,51,.35)}
+.spec .val .ar{font-size:14px;color:var(--ink-lo);font-family:inherit}
+.spec .val .mx{font-size:26px;color:var(--blue);text-shadow:0 0 14px rgba(127,214,232,.35)}
+.spec .val .u{font-size:11px;color:var(--ink);letter-spacing:.04em}
+.spec .vcap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-lo);margin:8px 0 10px}
+.spec .vcap b{color:var(--blue)}
+.spec p{font-size:11px;color:var(--ink);line-height:1.5;margin-bottom:14px}
+.spec .foot{align-items:center;gap:8px;white-space:nowrap;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -407,7 +421,7 @@ footer a:hover{color:var(--redhi)}
               <td class="blue">12%</td>
             </tr>
             <tr>
-              <td><span class="rowdot" style="background:#eab308;color:#eab308"></span>Anesthesia <span>· weekly loss payback</span></td>
+              <td><span class="rowdot" style="background:var(--red-dim);color:var(--red-dim)"></span>Anesthesia <span>· weekly loss payback</span></td>
               <td>0%</td><td>2%</td><td>4%</td><td>6%</td>
               <td class="on">8%</td>
               <td class="blue">10%</td>
@@ -440,21 +454,21 @@ footer a:hover{color:var(--redhi)}
               <span class="no">01</span>
             </div>
             <span class="kicker">Relief</span>
-            <h3>Rakeback on every bet</h3>
-            <p>A cut of every wager comes back to your balance, win or lose. The rate climbs automatically with your level, from 2% at Numb up to 12% at Threshold.</p>
+            <div class="val"><span class="now">10%</span><span class="ar">→</span><span class="mx">12%</span></div><div class="vcap">Rakeback</div>
+            <p>Back to your balance on every bet, win or lose.</p>
             <div class="foot"><span>Paid</span><b>As you play</b></div>
           </article>
           <article class="spec">
             <div class="top">
-              <div class="ic" style="background:rgba(234,179,8,.12);color:#eab308">
+              <div class="ic">
                 <svg class="ic-anesthesia" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 2 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="m17 7 3-3" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.4 0-3.4L15 5" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 11 4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="m5 19-3 3" stroke-linecap="round" stroke-linejoin="round"/><path d="m14 4 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
               <span class="no">02</span>
             </div>
-            <span class="kicker" style="color:#eab308">Anesthesia</span>
-            <h3>Monday loss payback</h3>
-            <p>Up to 10% of last week's net real-money losses, paid straight into withdrawable balance. Zero wagering requirement, rate set by your Pain Scale level.</p>
-            <div class="foot"><span>Injected</span><b style="color:#eab308">Every Monday 00:00 UTC</b></div>
+            <span class="kicker">Anesthesia</span>
+            <div class="val"><span class="now">8%</span><span class="ar">→</span><span class="mx">10%</span></div><div class="vcap">Loss payback</div>
+            <p>Of last week's net losses, withdrawable, zero wagering.</p>
+            <div class="foot"><span>Injected</span><b>Mondays</b></div>
           </article>
           <article class="spec">
             <div class="top">
@@ -464,9 +478,9 @@ footer a:hover{color:var(--redhi)}
               <span class="no">03</span>
             </div>
             <span class="kicker">PainKillers</span>
-            <h3>Earn PK on every bet</h3>
-            <p>PK accrual scales with your level too — from 10 PK per 100 USDT wagered at Numb up to 45 PK at Threshold. Redeem PK at 1,000 PK = 5 USDT.</p>
-            <div class="foot"><span>Your rate</span><b>32 PK / 100 USDT</b></div>
+            <div class="val"><span class="now">32</span><span class="ar">→</span><span class="mx">45</span><span class="u">PK</span></div><div class="vcap">Per 100 USDT</div>
+            <p>Earned on every bet. 1,000 PK = 5 USDT.</p>
+            <div class="foot"><span>Redeem</span><b>Any time</b></div>
           </article>
           <article class="spec blue">
             <div class="top">
@@ -476,9 +490,9 @@ footer a:hover{color:var(--redhi)}
               <span class="no">MAX</span>
             </div>
             <span class="kicker">Threshold</span>
-            <h3>Levels 9 &amp; 10: it breaks blue</h3>
-            <p>The top of the scale. Unlocks the max rate on all three rewards — 12% rakeback, 10% Anesthesia, 45 PK per 100 USDT — plus a dedicated host.</p>
-            <div class="foot"><span>Requires</span><b>720,000 USDT wagered</b></div>
+            <div class="val"><span class="mx">720K</span><span class="u">USDT</span></div><div class="vcap"><b>108K to go</b></div>
+            <p>Max rate on all three rewards, plus a dedicated host.</p>
+            <div class="foot"><span>Unlocks</span><b>Level 9</b></div>
           </article>
         </div>
       </section>
