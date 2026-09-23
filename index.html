@@ -1292,27 +1292,9 @@ body[data-mode="sports"] .mbar-casino{display:none}
 
 .pk-feedhead .today{color:var(--ink-hi);text-transform:none;letter-spacing:normal;font-weight:600}
 .v5m .pk-feedhead .today b{color:var(--blue);font-weight:800}
-/* gooey IV drip: real metaball technique (blur + alpha threshold via
-   feColorMatrix), .v5m same trick as the drip-canvas exploration - recolored
-   from the original's neon cyan to morphine blue (--blue) to match the
-   brand's "blue = money coming back" rule instead of a generic neon look */
-/* drip sits to the LEFT of the balance, .v5m mirrored. Its viewBox is cropped to
-   the glass content (x 60..190 of the original 0..250) so the container hugs
-   the drip instead of reserving the empty sides the full-width viewBox had. */
 .pk-wallet-top{display:flex;align-items:center;gap:16px;margin:6px 0 2px}
 .v5m .pk-wallet-info{flex:1 1 auto;min-width:0}
-.v5m .pk-goo-wrap{flex:none;display:flex;justify-content:center;background:var(--card-hi);border-radius:var(--r-md);padding:8px 4px}
-.v5m .pk-goo-svg{height:150px;width:auto;display:block;transform:scaleX(-1)}
-@media(max-width:420px){.v5m .pk-goo-svg{height:120px}}
 
-@keyframes pk-goo-ceiling{
-  0%,100%{transform:scale(1,1)}
-}
-.pk-goo-drop{transform-origin:125px 120px;animation:pk-goo-fall 2.2s infinite cubic-bezier(.45,0,.75,1)}
-.v5m .pk-goo-ceiling{transform-origin:125px 110px;animation:pk-goo-ceiling 2.2s infinite ease-in-out}
-.v5m .pk-goo-surface{transform-origin:125px 310px;animation:pk-goo-swallow 2.2s infinite ease-in-out}
-.v5m .pk-goo-pipe{stroke-dasharray:25 15;animation:pk-goo-pipeflow 1.5s infinite linear}
-.v5m .pk-goo-bubble{animation:pk-goo-bubbles 4s infinite ease-in-out}
 .v5m .pk-dial{position:relative;width:250px;height:250px;margin:4px auto 14px}
 .v5m .pk-dial svg{width:100%;height:100%;transform:rotate(135deg)}
 .v5m .pk-dial .track{fill:none;stroke:hsla(0,0%,100%,.07);stroke-width:10;stroke-linecap:round}
@@ -1406,13 +1388,6 @@ body[data-mode="sports"] .mbar-casino{display:none}
 
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-@keyframes pk-goo-ceiling{
-  0%,100%{transform:scale(1,1)}
-  35%{transform:scale(.9,1.2)}
-  43%{transform:scale(1.1,.8)}
-  55%{transform:scale(1,1)}
-}
-
 @keyframes pk-dialpulse{0%,100%{text-shadow:0 0 10px rgba(224,22,60,.4)}50%{text-shadow:0 0 22px rgba(224,22,60,.85)}}
 
 @keyframes ax-scan{from{top:-46px}to{top:100%}}
@@ -1423,33 +1398,10 @@ body[data-mode="sports"] .mbar-casino{display:none}
 
 @keyframes pk-blink{0%,100%{opacity:1}50%{opacity:.35}}
 
-@keyframes pk-goo-pipeflow{0%{stroke-dashoffset:50}100%{stroke-dashoffset:0}}
-
 @keyframes ax-ekgmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 @keyframes ax-tick{0%{transform:translateY(-5px);opacity:.4}100%{transform:none;opacity:1}}
 
-@keyframes pk-goo-bubbles{
-  0%{transform:translateY(15px);opacity:0}
-  20%{opacity:.4}
-  80%{opacity:.4}
-  100%{transform:translateY(-30px);opacity:0}
-}
-
-@keyframes pk-goo-fall{
-  0%{transform:translateY(0) scale(1)}
-  35%{transform:translateY(15px) scale(1.1,1.3)}
-  42%{transform:translateY(35px) scale(.9,1.4)}
-  55%{transform:translateY(165px) scale(1);opacity:1}
-  56%,100%{transform:translateY(165px);opacity:0}
-}
-
-@keyframes pk-goo-swallow{
-  0%,48%{transform:translateY(0) scale(1)}
-  53%{transform:translateY(-6px) scale(1.1,.9)}
-  65%{transform:translateY(2px) scale(.95,1.05)}
-  80%{transform:translateY(0) scale(1)}
-}
 .v5m .btn{font-weight:800;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:10px 20px;border-radius:var(--r-pill);transition:background .3s var(--ease-out),color .3s var(--ease-out),transform .3s var(--ease-out),box-shadow .3s var(--ease-out)}
 .v5m .btn:hover{transform:translateY(-1px)}
 .v5m .btn:active{transform:translateY(1px)}
@@ -1489,13 +1441,6 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .sheet .shead2 .x{color:var(--ink);font-size:15px;padding:4px 8px;border-radius:var(--r-sm)}
 .v5m .sheet .shead2 .x:hover{color:#fff;background:var(--card-hi)}
 .v5m .sheet-painscale .btn{width:100%;margin-top:18px;text-align:center;border-radius:var(--r-md)}
-/* gooey IV drip: real metaball technique (blur + alpha threshold via
-   feColorMatrix), .v5m same trick as the drip-canvas exploration - recolored
-   from the original's neon cyan to morphine blue (--blue) to match the
-   brand's "blue = money coming back" rule instead of a generic neon look */
-/* drip sits to the LEFT of the balance, .v5m mirrored. Its viewBox is cropped to
-   the glass content (x 60..190 of the original 0..250) so the container hugs
-   the drip instead of reserving the empty sides the full-width viewBox had. */
 .pk-wallet-top{display:flex;align-items:center;gap:16px;margin:6px 0 2px}
 .v5m .pk-dial .x{font-family:var(--disp);font-size:45px;color:#fff;line-height:1;text-shadow:0 0 14px rgba(224,22,60,.6);animation:pk-dialpulse 2.6s ease-in-out infinite}
 .v5m .sp-bb-row .who{font-weight:700;font-size:12.5px;color:#fff}
@@ -1728,24 +1673,76 @@ body[data-mode="sports"] .mbar-casino{display:none}
 .v5m .pk-feedhead .today{color:var(--ink-hi);text-transform:none;letter-spacing:normal;font-weight:600}
 .v5m .pk-feedhead .today b{color:var(--blue);font-weight:800}
 .v5m .pk-frow .res.loss{color:var(--redhi);background:rgba(224,22,60,.12)}
-/* gooey IV drip: real metaball technique (blur + alpha threshold via
-   feColorMatrix), .v5m same trick as the drip-canvas exploration - recolored
-   from the original's neon cyan to morphine blue (--blue) to match the
-   brand's "blue = money coming back" rule instead of a generic neon look */
-/* drip sits to the LEFT of the balance, .v5m mirrored. Its viewBox is cropped to
-   the glass content (x 60..190 of the original 0..250) so the container hugs
-   the drip instead of reserving the empty sides the full-width viewBox had. */
 .pk-wallet-top{display:flex;align-items:center;gap:16px;margin:6px 0 2px}
 .v5m .pk-wallet-info{flex:1 1 auto;min-width:0}
-.v5m .pk-goo-wrap{flex:none;display:flex;justify-content:center;background:var(--card-hi);border-radius:var(--r-md);padding:8px 4px}
-.v5m .pk-goo-svg{height:150px;width:auto;display:block;transform:scaleX(-1)}
-@media(max-width:420px){.v5m .pk-goo-svg{height:120px}}
-.v5m .pk-goo-drop{transform-origin:125px 120px;animation:pk-goo-fall 2.2s infinite cubic-bezier(.45,0,.75,1)}
-.v5m .pk-goo-ceiling{transform-origin:125px 110px;animation:pk-goo-ceiling 2.2s infinite ease-in-out}
-.v5m .pk-goo-surface{transform-origin:125px 310px;animation:pk-goo-swallow 2.2s infinite ease-in-out}
-.v5m .pk-goo-pipe{stroke-dasharray:25 15;animation:pk-goo-pipeflow 1.5s infinite linear}
-.v5m .pk-goo-bubble{animation:pk-goo-bubbles 4s infinite ease-in-out}
-.v5m .pk-goo-bubble.sb2{animation-delay:2s}
+/* syringe IV: a half-filled syringe pushes one drop down a clear pipe, then
+   the pipe runs empty and the plunger eases back - one slow 10s seamless loop.
+   CSS-only keyframes on inline SVG; the gooey neck/snap is the metaball trick
+   (blur + alpha threshold via feColorMatrix), applied only to the liquid that
+   leaves the needle so the syringe itself stays crisp. Standalone copy with the
+   full timeline notes: painbet-syringe-drip.html */
+.v5m .pk-syr-wrap{flex:none;display:flex;justify-content:center;background:var(--card-hi);border-radius:var(--r-md);padding:10px 8px 0;overflow:hidden}
+.v5m .pk-syr-wrap .pk-syr-svg{height:250px;width:auto;display:block}
+@media(max-width:420px){.v5m .pk-syr-wrap .pk-syr-svg{height:200px}}
+.pk-syr-plunger{animation:pk-syr-push 10s infinite}
+.pk-syr-liquid{transform-origin:50px 212px;animation:pk-syr-level 10s infinite}
+.pk-syr-tip{transform-origin:50px 275px;animation:pk-syr-tip 10s infinite}
+.pk-syr-fall{animation:pk-syr-fall 10s infinite}
+.pk-syr-wob{transform-origin:50px 281px;animation:pk-syr-wob 10s infinite}
+.pk-syr-sat{transform-origin:50px 281px;animation:pk-syr-sat 10s infinite}
+
+/* plunger travel - 9 units down and back */
+@keyframes pk-syr-push{
+  0%,6%{transform:translateY(0);animation-timing-function:cubic-bezier(.45,0,.4,1)}
+  38%,56%{transform:translateY(9px);animation-timing-function:cubic-bezier(.5,0,.5,1)}
+  96%,100%{transform:translateY(0)}
+}
+/* liquid column shrinks with the stopper: 67 units tall, 9 pushed = 58/67 */
+@keyframes pk-syr-level{
+  0%,6%{transform:scaleY(1);animation-timing-function:cubic-bezier(.45,0,.4,1)}
+  38%,56%{transform:scaleY(.8657);animation-timing-function:cubic-bezier(.5,0,.5,1)}
+  96%,100%{transform:scaleY(1)}
+}
+/* bead on the needle tip: swells with the push, necks, recoils at the snap */
+@keyframes pk-syr-tip{
+  0%,6%{transform:scale(.78);animation-timing-function:ease-in-out}
+  38%{transform:scale(1.05,1.25);animation-timing-function:ease-in}
+  49%{transform:scale(.82,1.75);animation-timing-function:cubic-bezier(.2,.9,.3,1)}
+  53%{transform:scale(.86,.74);animation-timing-function:ease-out}
+  58%{transform:scale(.76,.92);animation-timing-function:ease-in-out}
+  66%,100%{transform:scale(.78)}
+}
+/* the drop's travel: hangs and stretches, then slides down the pipe and out */
+@keyframes pk-syr-fall{
+  0%,6%{transform:translateY(0);animation-timing-function:ease-in-out}
+  38%{transform:translateY(3px);animation-timing-function:ease-in}
+  50%{transform:translateY(10px);animation-timing-function:cubic-bezier(.4,.08,.7,.7)}
+  88%,100%{transform:translateY(150px)}
+}
+/* the drop's own shape: grows from nothing, stretches, jiggles after the snap */
+@keyframes pk-syr-wob{
+  0%,6%{transform:scale(0);animation-timing-function:ease-in-out}
+  38%{transform:scale(1);animation-timing-function:ease-in}
+  50%{transform:scale(.9,1.2);animation-timing-function:ease-out}
+  55%{transform:scale(1.1,.88);animation-timing-function:ease-in-out}
+  61%{transform:scale(.94,1.1);animation-timing-function:ease-in-out}
+  68%{transform:scale(1.04,.97);animation-timing-function:ease-in-out}
+  76%,100%{transform:scale(1)}
+}
+/* satellite droplet: born in the neck at the snap, trails the drop, then the
+   goo pulls it back in (offsets are relative to the falling drop) */
+@keyframes pk-syr-sat{
+  0%,49%{transform:translateY(-8px) scale(0)}
+  50%{transform:translateY(-8px) scale(1);animation-timing-function:ease-out}
+  57%{transform:translateY(-15px) scale(1);animation-timing-function:ease-in}
+  67%{transform:translateY(-3px) scale(.8)}
+  71%,100%{transform:translateY(0) scale(0)}
+}
+@media (prefers-reduced-motion: reduce){
+  .pk-syr-plunger,.pk-syr-liquid,.pk-syr-tip,.pk-syr-fall,.pk-syr-wob,.pk-syr-sat{animation:none}
+  .pk-syr-wob,.pk-syr-sat{transform:scale(0)}
+  .pk-syr-tip{transform:scale(.78)}
+}
 .v5m .pk-dial{position:relative;width:250px;height:250px;margin:4px auto 14px}
 .v5m .pk-dial svg{width:100%;height:100%;transform:rotate(135deg)}
 .v5m .pk-dial .track{fill:none;stroke:hsla(0,0%,100%,.07);stroke-width:10;stroke-linecap:round}
@@ -4471,51 +4468,142 @@ window.PB = (function(){
             <div class="promo blue-promo" style="padding:20px">
               <div class="k">Your PK wallet</div>
               <div class="pk-wallet-top">
-                <div class="pk-goo-wrap">
-                <svg viewBox="60 0 130 500" class="pk-goo-svg">
-                  <defs>
-                    <linearGradient id="pk-glassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stop-color="rgba(255,255,255,.3)"/>
-                      <stop offset="25%" stop-color="rgba(255,255,255,.1)"/>
-                      <stop offset="75%" stop-color="rgba(255,255,255,.05)"/>
-                      <stop offset="100%" stop-color="rgba(255,255,255,.25)"/>
-                    </linearGradient>
-                    <linearGradient id="pk-gooGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stop-color="#cdf3fb"/>
-                      <stop offset="100%" stop-color="#7FD6E8"/>
-                    </linearGradient>
-                    <filter id="pk-neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="4" result="blur"/>
-                      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                    </filter>
-                    <filter id="pk-gooeyFilter">
-                      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
-                      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo"/>
-                      <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
-                    </filter>
-                  </defs>
+                <div class="pk-syr-wrap">
+                  <svg class="pk-syr-svg" viewBox="15 0 70 400" role="img" aria-label="A half-filled syringe pushing a drop of liquid down a clear pipe">
+                    <defs>
+                      <!-- clear plastic: brighter at the rims where the wall is seen edge-on -->
+                      <linearGradient id="pk-syr-glass" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#fff" stop-opacity=".2"/>
+                        <stop offset=".18" stop-color="#fff" stop-opacity=".06"/>
+                        <stop offset=".7" stop-color="#fff" stop-opacity=".03"/>
+                        <stop offset="1" stop-color="#fff" stop-opacity=".16"/>
+                      </linearGradient>
+                      <!-- the dose: morphine blue, shaded like a cylinder of liquid -->
+                      <linearGradient id="pk-syr-liq" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#3e9fb4"/>
+                        <stop offset=".3" stop-color="#8fdcec"/>
+                        <stop offset=".55" stop-color="#b4ecf6"/>
+                        <stop offset="1" stop-color="#4fb3c8"/>
+                      </linearGradient>
+                      <radialGradient id="pk-syr-dropfill" cx=".4" cy=".35" r=".7">
+                        <stop offset="0" stop-color="#d6f6fc"/>
+                        <stop offset=".55" stop-color="#8fdcec"/>
+                        <stop offset="1" stop-color="#4aa9be"/>
+                      </radialGradient>
+                      <!-- black rubber stopper -->
+                      <linearGradient id="pk-syr-rubber" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#1b1d21"/>
+                        <stop offset=".35" stop-color="#4a4e56"/>
+                        <stop offset=".6" stop-color="#2a2d33"/>
+                        <stop offset="1" stop-color="#141518"/>
+                      </linearGradient>
+                      <!-- polypropylene plunger / flange -->
+                      <linearGradient id="pk-syr-pp" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#b9c2cb"/>
+                        <stop offset=".35" stop-color="#f1f5f8"/>
+                        <stop offset=".7" stop-color="#d4dbe2"/>
+                        <stop offset="1" stop-color="#9aa3ad"/>
+                      </linearGradient>
+                      <linearGradient id="pk-syr-steel" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#7d848c"/>
+                        <stop offset=".45" stop-color="#eef1f4"/>
+                        <stop offset="1" stop-color="#6b7178"/>
+                      </linearGradient>
+                      <!-- pipe dissolves at the bottom so the drop leaves instead of hitting an edge -->
+                      <linearGradient id="pk-syr-fadeGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset=".87" stop-color="#fff"/>
+                        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                      </linearGradient>
+                      <mask id="pk-syr-fade" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="400">
+                        <rect width="100" height="400" fill="url(#pk-syr-fadeGrad)"/>
+                      </mask>
+                      <clipPath id="pk-syr-bore"><rect x="41.4" y="258" width="17.2" height="150"/></clipPath>
+                      <!-- metaball goo: blur, then crush alpha so overlapping blurs fuse -->
+                      <filter id="pk-syr-goo" filterUnits="userSpaceOnUse" x="30" y="250" width="40" height="170" color-interpolation-filters="sRGB">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="2.1" result="blur"/>
+                        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo"/>
+                        <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+                      </filter>
+                    </defs>
 
-                  <rect x="75" y="100" width="100" height="240" rx="50" fill="url(#pk-glassGrad)" stroke="rgba(255,255,255,.15)" stroke-width="2"/>
-                  <path d="M 85 140 Q 80 220 85 300" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3" stroke-linecap="round"/>
+                    <!-- ===== clear pipe: back wall ===== -->
+                    <g mask="url(#pk-syr-fade)">
+                      <rect x="40" y="252" width="20" height="160" fill="url(#pk-syr-glass)"/>
+                    </g>
 
-                  <g filter="url(#pk-gooeyFilter)">
-                    <rect x="117" y="80" width="16" height="45" fill="url(#pk-gooGrad)"/>
-                    <circle class="pk-goo-ceiling" cx="125" cy="120" r="14" fill="url(#pk-gooGrad)"/>
-                    <circle class="pk-goo-drop" cx="125" cy="120" r="11" fill="url(#pk-gooGrad)" filter="url(#pk-neonGlow)"/>
-                    <path d="M 76 290 Q 125 315 174 290 L 174 340 L 76 340 Z" fill="url(#pk-gooGrad)"/>
-                    <circle class="pk-goo-surface" cx="125" cy="295" r="18" fill="url(#pk-gooGrad)"/>
-                  </g>
+                    <!-- ===== barrel: back wall ===== -->
+                    <path d="M35 78 H65 V208 Q65 214 58 218 L54 221 H46 L42 218 Q35 214 35 208 Z" fill="url(#pk-syr-glass)"/>
 
-                  <circle class="pk-goo-bubble sb1" cx="100" cy="315" r="3" fill="rgba(255,255,255,.4)"/>
-                  <circle class="pk-goo-bubble sb2" cx="150" cy="325" r="2" fill="rgba(255,255,255,.3)"/>
+                    <!-- ===== liquid in the barrel (stopper face down to the tip) ===== -->
+                    <rect class="pk-syr-liquid" x="36.4" y="145" width="27.2" height="67" fill="url(#pk-syr-liq)" opacity=".92"/>
+                    <path d="M36.4 208 Q36.4 213 42.5 217 L46.5 220 H53.5 L57.5 217 Q63.6 213 63.6 208 Z" fill="url(#pk-syr-liq)" opacity=".92"/>
+                    <rect x="48.6" y="219" width="2.8" height="16" fill="#8fdcec" opacity=".9"/>
+                    <circle cx="58.5" cy="199" r="1.3" fill="#fff" opacity=".35"/>
+                    <circle cx="41.5" cy="188" r=".8" fill="#fff" opacity=".3"/>
 
-                  <rect x="117" y="340" width="16" height="25" fill="url(#pk-glassGrad)" stroke="rgba(255,255,255,.1)"/>
+                    <!-- ===== plunger: thumb press, cross-ribbed rod, rubber stopper ===== -->
+                    <g class="pk-syr-plunger">
+                      <rect x="26" y="4" width="48" height="6" rx="3" fill="url(#pk-syr-pp)"/>
+                      <rect x="26" y="4" width="48" height="2" rx="1" fill="#fff" opacity=".5"/>
+                      <rect x="38" y="10" width="24" height="119" fill="url(#pk-syr-pp)" opacity=".38"/>
+                      <rect x="46.5" y="10" width="7" height="119" fill="url(#pk-syr-pp)"/>
+                      <rect x="48" y="10" width="1.4" height="119" fill="#fff" opacity=".55"/>
+                      <rect x="37" y="127" width="26" height="3" rx="1" fill="url(#pk-syr-pp)"/>
+                      <!-- stopper: two sealing ribs and a conical face -->
+                      <path d="M36.4 131 H63.6 V134.5 Q62 136 62 137 V139 Q62 140 63.6 141.5 V144.5 L50 148.5 L36.4 144.5 V141.5 Q38 140 38 139 V137 Q38 136 36.4 134.5 Z" fill="url(#pk-syr-rubber)"/>
+                      <path d="M37.5 132 H62.5" stroke="#fff" stroke-opacity=".18" stroke-width=".8"/>
+                      <path d="M37.5 142.5 H62.5" stroke="#fff" stroke-opacity=".14" stroke-width=".7"/>
+                    </g>
 
-                  <g>
-                    <path d="M 125 365 Q 125 420 170 450 T 140 500" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="10" stroke-linecap="round"/>
-                    <path class="pk-goo-pipe" d="M 125 365 Q 125 420 170 450 T 140 500" fill="none" stroke="url(#pk-gooGrad)" stroke-width="6" stroke-linecap="round" filter="url(#pk-neonGlow)"/>
-                  </g>
-                </svg>
+                    <!-- ===== the dose leaving the needle - the only gooey part ===== -->
+                    <g clip-path="url(#pk-syr-bore)">
+                      <g mask="url(#pk-syr-fade)">
+                        <g filter="url(#pk-syr-goo)" fill="url(#pk-syr-dropfill)">
+                          <rect x="49.1" y="258" width="1.8" height="17" fill="#8fdcec"/>
+                          <circle class="pk-syr-tip" cx="50" cy="277" r="3.2"/>
+                          <g class="pk-syr-fall">
+                            <circle class="pk-syr-wob" cx="50" cy="281" r="5.6"/>
+                            <circle class="pk-syr-sat" cx="50" cy="281" r="2"/>
+                          </g>
+                        </g>
+                        <!-- specular glint rides with the drop, outside the filter so it stays sharp -->
+                        <g class="pk-syr-fall"><g class="pk-syr-wob"><ellipse cx="48" cy="278.8" rx="1.6" ry="1.1" fill="#fff" opacity=".8"/></g></g>
+                      </g>
+                    </g>
+
+                    <!-- ===== needle: steel cannula through the pipe's septum ===== -->
+                    <rect x="48.9" y="248" width="2.2" height="27.5" fill="url(#pk-syr-steel)"/>
+                    <path d="M48.9 275.5 L51.1 273.8 V275.5 Z" fill="#9aa1a8"/>
+
+                    <!-- ===== barrel: front wall, print, flange ===== -->
+                    <path d="M35 78 H65 V208 Q65 214 58 218 L54 221 H46 L42 218 Q35 214 35 208 Z" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="1"/>
+                    <rect x="37.4" y="84" width="2.2" height="122" rx="1.1" fill="#fff" opacity=".28"/>
+                    <rect x="61.6" y="84" width=".9" height="122" rx=".45" fill="#fff" opacity=".14"/>
+                    <!-- graduations: zero at the shoulder (y 208), 1 unit per 12 -->
+                    <g stroke="#fff" stroke-opacity=".62" stroke-width=".7">
+                      <path d="M54 208 H64 M54 196 H64 M54 184 H64 M54 172 H64 M54 160 H64 M54 148 H64 M54 136 H64 M54 124 H64 M54 112 H64 M54 100 H64 M54 88 H64"/>
+                      <path d="M59 202 H64 M59 190 H64 M59 178 H64 M59 166 H64 M59 154 H64 M59 142 H64 M59 130 H64 M59 118 H64 M59 106 H64 M59 94 H64" stroke-opacity=".45"/>
+                    </g>
+                    <g fill="#fff" fill-opacity=".55" font-family="Helvetica,Arial,sans-serif" font-size="5.2" font-weight="700" text-anchor="end">
+                      <text x="53" y="186">2</text><text x="53" y="162">4</text><text x="53" y="138">6</text><text x="53" y="114">8</text><text x="53" y="90">10</text>
+                    </g>
+                    <!-- finger flange -->
+                    <path d="M20 74 Q17 74 17 77 Q17 80 20 80 H80 Q83 80 83 77 Q83 74 80 74 Z" fill="url(#pk-syr-pp)" opacity=".85"/>
+                    <path d="M21 74.8 H79" stroke="#fff" stroke-opacity=".6" stroke-width=".8"/>
+                    <!-- luer tip + needle hub -->
+                    <path d="M46.5 221 H53.5 V234 H46.5 Z" fill="url(#pk-syr-glass)" stroke="#fff" stroke-opacity=".32" stroke-width=".7"/>
+                    <path d="M44 233 H56 L54.5 248 H45.5 Z" fill="url(#pk-syr-pp)" opacity=".72"/>
+                    <path d="M45 236 H55 M45.3 239.5 H54.7 M45.6 243 H54.4" stroke="#1d2026" stroke-opacity=".35" stroke-width=".7"/>
+
+                    <!-- ===== clear pipe: septum cap + front wall ===== -->
+                    <rect x="38" y="247" width="24" height="10" rx="2" fill="url(#pk-syr-rubber)"/>
+                    <rect x="39" y="248" width="22" height="1.4" rx=".7" fill="#fff" opacity=".16"/>
+                    <g mask="url(#pk-syr-fade)">
+                      <path d="M40.5 257 V412 M59.5 257 V412" stroke="#fff" stroke-opacity=".36" stroke-width="1"/>
+                      <rect x="42.6" y="260" width="1.8" height="150" rx=".9" fill="#fff" opacity=".26"/>
+                      <rect x="56.2" y="260" width=".8" height="150" rx=".4" fill="#fff" opacity=".12"/>
+                    </g>
+                  </svg>
                 </div>
                 <div class="pk-wallet-info">
                   <h3 style="font-size:26px;margin:0 0 2px"><span class="js-pk-bal" id="pk-wallet-num">1,250</span> PK</h3>
